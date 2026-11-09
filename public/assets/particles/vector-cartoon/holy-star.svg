@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="holyGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="45%" stop-color="#fef08a"/>
+      <stop offset="80%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </radialGradient>
+  </defs>
+  <!-- 8-Point Cartoon Star with Thick Outline -->
+  <polygon points="64,6 74,46 114,36 84,64 122,64 84,74 114,102 74,92 64,122 54,92 14,102 44,74 6,64 44,64 14,36 54,46"
+           fill="url(#holyGrad)"
+           stroke="#78350f"
+           stroke-width="5"
+           stroke-linejoin="round"/>
+  <!-- Inner White Radiance Star -->
+  <polygon points="64,24 70,52 98,46 78,64 104,64 78,70 98,88 70,82 64,104 58,82 30,88 50,70 24,64 50,64 30,46 58,52"
+           fill="#ffffff"
+           opacity="0.9"/>
+  <!-- Center Glow Orb -->
+  <circle cx="64" cy="64" r="10" fill="#ffffff"/>
+  <!-- Radiant Corner Glints -->
+  <circle cx="28" cy="28" r="3.5" fill="#fef08a" stroke="#78350f" stroke-width="1.5"/>
+  <circle cx="100" cy="100" r="3.5" fill="#fef08a" stroke="#78350f" stroke-width="1.5"/>
+</svg>

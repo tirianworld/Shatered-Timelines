@@ -1,0 +1,1142 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { useGame } from '../context/GameContext';
+import { sound } from '../services/soundService';
+import confetti from 'canvas-confetti';
+import {
+  COOKING_INGREDIENTS,
+  COOKING_RECIPES,
+  INGREDIENT_CATEGORIES,
+  IngredientCategory,
+  CookingIngredient,
+  CookingRecipe,
+  matchRecipe,
+  loadTavernCookingStock,
+  saveTavernCookingStock,
+  loadChefAffection,
+  saveChefAffection,
+  loadDiscoveredRecipes,
+  saveDiscoveredRecipes,
+  TavernCookingStock,
+  ChefAffectionData,
+} from '../data/cookingData';
+import { CookingIngredientIcon } from './CookingIngredientIcon';
+import {
+  ChevronLeft,
+  Heart,
+  Flame,
+  Sparkles,
+  BookOpen,
+  ShoppingBag,
+  X,
+  Check,
+  Plus,
+  RotateCcw,
+  Coins,
+  ArrowLeft,
+  Utensils,
+} from 'lucide-react';
+
+interface TavernKitchenViewProps {
+  onClose: () => void;
+}
+
+// Computes uniform orbital coordinates around the central hub without overlapping
+const getOrbitalPositionStyle = (
+  index: number,
+  total: number,
+  radiusX = 36,
+  radiusY = 32,
+  centerY = 48
+) => {
+  if (total <= 0) return { left: '50%', top: '50%', transform: 'translate(-50%, -50%)' };
+  // Start at -90 deg (-Math.PI / 2) so first item is at 12 o'clock (top center)
+  const angle = (2 * Math.PI * index) / total - Math.PI / 2;
+  const left = 50 + radiusX * Math.cos(angle);
+  const top = centerY + radiusY * Math.sin(angle);
+  return {
+    left: `${left.toFixed(2)}%`,
+    top: `${top.toFixed(2)}%`,
+    transform: 'translate(-50%, -50%)',
+  };
+};
+
+export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose }) => {
+  const { gold, addGold, addShelfItem } = useGame();
+
+  // Navigation mode within the circle: 'categories' (select a category) or 'ingredients' (view ingredients of selected category)
+  const [viewMode, setViewMode] = useState<'categories' | 'ingredients'>('categories');
+  const [selectedCategory, setSelectedCategory] = useState<IngredientCategory>('carnes');
+
+  // Cutting board: 3 slots for ingredients
+  const [slots, setSlots] = useState<[CookingIngredient | null, CookingIngredient | null, CookingIngredient | null]>([
+    null,
+    null,
+    null,
+  ]);
+
+  // Active slot index (0, 1, or 2) - targeted by the golden sun pointer
+  const [activeSlotIndex, setActiveSlotIndex] = useState<number>(0);
+
+  // Stock of ingredients and chef affection
+  const [stock, setStock] = useState<TavernCookingStock>(() => loadTavernCookingStock());
+  const [affection, setAffection] = useState<ChefAffectionData>(() => loadChefAffection());
+  const [discoveredRecipes, setDiscoveredRecipes] = useState<string[]>(() => loadDiscoveredRecipes());
+
+  // UI Modals & Overlays
+  const [isRecipeBookOpen, setIsRecipeBookOpen] = useState(false);
+  const [recipeFilter, setRecipeFilter] = useState<string>('todas');
+  const [recipeSearch, setRecipeSearch] = useState<string>('');
+  const [recipePageLimit, setRecipePageLimit] = useState<number>(50);
+  const [isPantryOpen, setIsPantryOpen] = useState(false);
+  const [isAffectionModalOpen, setIsAffectionModalOpen] = useState(false);
+
+  // Filtered recipes memoized for the Recipe Book modal
+  const filteredRecipes = useMemo(() => {
+    const q = recipeSearch.trim().toLowerCase();
+    return COOKING_RECIPES.filter((rec) => {
+      if (recipeFilter !== 'todas' && !rec.requiredCategories.includes(recipeFilter as any)) {
+        return false;
+      }
+      if (q) {
+        return (
+          rec.name.toLowerCase().includes(q) ||
+          rec.buffBadge.toLowerCase().includes(q) ||
+          rec.lore.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    }).sort((a, b) => {
+      const aDisc = discoveredRecipes.includes(a.id) ? 1 : 0;
+      const bDisc = discoveredRecipes.includes(b.id) ? 1 : 0;
+      return bDisc - aDisc;
+    });
+  }, [recipeFilter, recipeSearch, discoveredRecipes]);
+
+  useEffect(() => {
+    setRecipePageLimit(50);
+  }, [recipeFilter, recipeSearch]);
+
+
+  // Cooking state & celebration modal
+  const [isCookingAnimation, setIsCookingAnimation] = useState(false);
+  const [cookedDishResult, setCookedDishResult] = useState<{
+    recipe: CookingRecipe;
+    duplicated: boolean;
+    affectionGain: number;
+  } | null>(null);
+
+  // Feedback notice banner
+  const [kitchenNotice, setKitchenNotice] = useState<string | null>(null);
+
+  const showNotice = (msg: string) => {
+    setKitchenNotice(msg);
+    setTimeout(() => setKitchenNotice(null), 2500);
+  };
+
+  // Check if 3 slots are filled
+  const isBoardFull = slots[0] !== null && slots[1] !== null && slots[2] !== null;
+  const previewRecipe: CookingRecipe | null = isBoardFull
+    ? matchRecipe([slots[0]!, slots[1]!, slots[2]!])
+    : null;
+
+  // Sync storage on change
+  useEffect(() => {
+    saveTavernCookingStock(stock);
+  }, [stock]);
+
+  useEffect(() => {
+    saveChefAffection(affection);
+  }, [affection]);
+
+  useEffect(() => {
+    saveDiscoveredRecipes(discoveredRecipes);
+  }, [discoveredRecipes]);
+
+  // Total ingredients count per category
+  const getCategoryCount = (catId: IngredientCategory) => {
+    const ings = COOKING_INGREDIENTS.filter((i) => i.category === catId);
+    return ings.reduce((sum, item) => sum + (stock[item.id] || 0), 0);
+  };
+
+  // Filter ingredients for current active category
+  const categoryIngredients = COOKING_INGREDIENTS.filter(
+    (ing) => ing.category === selectedCategory
+  );
+
+  // Switch to ingredients view for a clicked category
+  const handleSelectCategory = (catId: IngredientCategory) => {
+    sound.playSFX('click');
+    setSelectedCategory(catId);
+    setViewMode('ingredients');
+  };
+
+  // Place ingredient onto current active slot on cutting board
+  const handleSelectIngredient = (ingredient: CookingIngredient) => {
+    const currentCount = stock[ingredient.id] || 0;
+    if (currentCount <= 0) {
+      sound.playSFX('hurt');
+      showNotice(`¡Agotado! Compra más ${ingredient.name} en la Despensa.`);
+      return;
+    }
+
+    sound.playSFX('click');
+    const newSlots: [CookingIngredient | null, CookingIngredient | null, CookingIngredient | null] = [...slots];
+    newSlots[activeSlotIndex] = ingredient;
+    setSlots(newSlots);
+
+    // Auto-advance pointer to next empty slot
+    const nextEmpty = newSlots.findIndex((s) => s === null);
+    if (nextEmpty !== -1) {
+      setActiveSlotIndex(nextEmpty);
+    } else {
+      setActiveSlotIndex((activeSlotIndex + 1) % 3);
+    }
+
+    showNotice(`¡${ingredient.name} colocado en la tabla!`);
+  };
+
+  // Remove ingredient from a slot
+  const handleRemoveSlot = (index: number, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    sound.playSFX('click');
+    const newSlots: [CookingIngredient | null, CookingIngredient | null, CookingIngredient | null] = [...slots];
+    newSlots[index] = null;
+    setSlots(newSlots);
+    setActiveSlotIndex(index);
+  };
+
+  // Clear all slots
+  const handleClearBoard = () => {
+    sound.playSFX('click');
+    setSlots([null, null, null]);
+    setActiveSlotIndex(0);
+  };
+
+  // Cook the dish
+  const handleCook = () => {
+    if (!isBoardFull) return;
+
+    // Check stock for all 3 ingredients
+    const neededCounts: Record<string, number> = {};
+    for (const slot of slots) {
+      if (slot) {
+        neededCounts[slot.id] = (neededCounts[slot.id] || 0) + 1;
+      }
+    }
+
+    for (const [id, count] of Object.entries(neededCounts)) {
+      if ((stock[id] || 0) < count) {
+        sound.playSFX('hurt');
+        showNotice(`¡Faltan ingredientes en la despensa!`);
+        return;
+      }
+    }
+
+    // Deduct stock
+    const newStock = { ...stock };
+    for (const [id, count] of Object.entries(neededCounts)) {
+      newStock[id] = Math.max(0, (newStock[id] || 0) - count);
+    }
+    setStock(newStock);
+
+    // Start cooking animation & sound
+    setIsCookingAnimation(true);
+    sound.playSFX('laser1');
+    setTimeout(() => {
+      sound.playSFX('powerup');
+    }, 450);
+
+    const recipe = matchRecipe([slots[0]!, slots[1]!, slots[2]!]);
+
+    setTimeout(() => {
+      setIsCookingAnimation(false);
+
+      const isDuplicated = Math.random() < 0.2;
+      const countToAdd = isDuplicated ? 2 : 1;
+
+      // Add item to shelfInventory as food consumable
+      addShelfItem({
+        id: recipe.shelfItemId,
+        name: recipe.name,
+        category: 'food',
+        count: countToAdd,
+        icon: recipe.icon,
+        rarity: recipe.rarity,
+        description: `${recipe.lore} [${recipe.buffBadge}]: ${recipe.buffDescription}`,
+        priceGold: recipe.rarity === 'SSR' ? 450 : recipe.rarity === 'SR' ? 250 : 150,
+      });
+
+      // Update chef affection
+      const affGain = recipe.rarity === 'SSR' ? 120 : recipe.rarity === 'SR' ? 80 : 50;
+      setAffection((prev) => {
+        const nextPts = prev.points + affGain;
+        const nextLvl = Math.floor(nextPts / 200) + 1;
+        return {
+          ...prev,
+          points: nextPts,
+          level: Math.max(prev.level, nextLvl),
+        };
+      });
+
+      if (!discoveredRecipes.includes(recipe.id)) {
+        setDiscoveredRecipes((prev) => [...prev, recipe.id]);
+      }
+
+      try {
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.65 },
+          colors: ['#f59e0b', '#ef4444', '#10b981', '#3b82f6'],
+        });
+      } catch {
+        // Safe fallback
+      }
+      sound.playSFX('coin');
+
+      setCookedDishResult({
+        recipe,
+        duplicated: isDuplicated,
+        affectionGain: affGain,
+      });
+
+      setSlots([null, null, null]);
+      setActiveSlotIndex(0);
+    }, 1200);
+  };
+
+  // Quick auto-fill recipe from Cookbook
+  const handleAutoFillRecipe = (recipe: CookingRecipe) => {
+    let ing1: CookingIngredient | null = null;
+    let ing2: CookingIngredient | null = null;
+    let ing3: CookingIngredient | null = null;
+
+    if (recipe.specificIngredientIds && recipe.specificIngredientIds.length === 3) {
+      ing1 = COOKING_INGREDIENTS.find((i) => i.id === recipe.specificIngredientIds![0]) || null;
+      ing2 = COOKING_INGREDIENTS.find((i) => i.id === recipe.specificIngredientIds![1]) || null;
+      ing3 = COOKING_INGREDIENTS.find((i) => i.id === recipe.specificIngredientIds![2]) || null;
+    } else {
+      const chosen: CookingIngredient[] = [];
+      const usedCounts: Record<string, number> = {};
+
+      for (const cat of recipe.requiredCategories) {
+        // Try finding candidate with available stock first
+        let candidate = COOKING_INGREDIENTS.find(
+          (i) => i.category === cat && (stock[i.id] || 0) > (usedCounts[i.id] || 0)
+        );
+        // Fallback to any ingredient in that category
+        if (!candidate) {
+          candidate = COOKING_INGREDIENTS.find((i) => i.category === cat);
+        }
+        if (candidate) {
+          chosen.push(candidate);
+          usedCounts[candidate.id] = (usedCounts[candidate.id] || 0) + 1;
+        }
+      }
+
+      ing1 = chosen[0] || null;
+      ing2 = chosen[1] || null;
+      ing3 = chosen[2] || null;
+    }
+
+    if (ing1 && ing2 && ing3) {
+      sound.playSFX('click');
+      setSlots([ing1, ing2, ing3]);
+      setIsRecipeBookOpen(false);
+      showNotice(`¡Ingredientes para ${recipe.name} listos en la tabla!`);
+    }
+  };
+
+  // Buy ingredient from Pantry
+  const handleBuyIngredient = (ingredient: CookingIngredient) => {
+    if (gold < ingredient.priceGold) {
+      sound.playSFX('hurt');
+      showNotice('¡No tienes suficiente oro para comprar este ingrediente!');
+      return;
+    }
+    sound.playSFX('coin');
+    addGold(-ingredient.priceGold);
+    setStock((prev) => ({
+      ...prev,
+      [ingredient.id]: (prev[ingredient.id] || 0) + 1,
+    }));
+  };
+
+  // Claim daily free rations
+  const handleClaimFreeRations = () => {
+    sound.playSFX('powerup');
+    const updated = { ...stock };
+    COOKING_INGREDIENTS.forEach((ing) => {
+      updated[ing.id] = (updated[ing.id] || 0) + 2;
+    });
+    setStock(updated);
+    showNotice('¡Raciones frescas añadidas a la despensa!');
+  };
+
+  // Find active category object
+  const activeCategoryObj = INGREDIENT_CATEGORIES.find((c) => c.id === selectedCategory);
+
+  return (
+    <div className="absolute inset-0 w-full h-full bg-[#140602] text-stone-100 flex flex-col justify-between overflow-hidden select-none z-50 animate-fade-in font-sans">
+      {/* Background: Authentic Tavern Kitchen Interior */}
+      <img
+        src="/assets/backgrounds/cocina_taverna_icespear.png"
+        alt="Cocina de la Taberna de Icespear"
+        className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none z-0"
+      />
+
+      {/* Warm Ambient Hearth Glow */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/75 pointer-events-none z-0" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-orange-600/15 blur-3xl pointer-events-none z-0 animate-hearth-flicker" />
+
+      {/* Notice Banner */}
+      {kitchenNotice && (
+        <div className="absolute top-14 left-1/2 -translate-x-1/2 z-40 bg-[#3b170c]/95 border-2 border-amber-400 text-amber-200 px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-2xl animate-fade-in text-center max-w-xs">
+          {kitchenNotice}
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* 1. TOP HEADER                                                 */}
+      {/* ------------------------------------------------------------- */}
+      <header className="relative z-20 w-full pt-2.5 pb-2 px-3 bg-gradient-to-b from-[#2a0e05] via-[#1a0803]/90 to-transparent border-b border-amber-600/40 shadow-xl flex items-center justify-between">
+        {/* Back Button (Golden Arrow) */}
+        <button
+          onClick={() => {
+            sound.playSFX('click');
+            onClose();
+          }}
+          className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-b from-amber-700 to-amber-950 border border-amber-400 text-amber-200 shadow-lg cursor-pointer hover:scale-105 active:scale-95 transition-all"
+          title="Volver a la Taberna"
+        >
+          <ChevronLeft className="w-5 h-5 text-amber-300" />
+        </button>
+
+        {/* Center Title & Affection */}
+        <div
+          onClick={() => {
+            sound.playSFX('click');
+            setIsAffectionModalOpen(true);
+          }}
+          className="flex flex-col items-center cursor-pointer group"
+          title="Ver Nivel del Fogón"
+        >
+          <span className="text-[11px] uppercase tracking-widest font-black text-amber-300 drop-shadow">
+            Fogón de Icespear
+          </span>
+          <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/60 border border-amber-500/50 shadow-inner group-hover:border-amber-400 transition-all">
+            <Heart className="w-3 h-3 text-rose-500 fill-rose-500 animate-pulse" />
+            <span className="text-[11px] font-bold font-mono text-amber-200">
+              {affection.points.toLocaleString()}
+            </span>
+            <span className="text-[9px] text-amber-400 font-extrabold bg-amber-950/80 px-1 rounded border border-amber-600/60">
+              +
+            </span>
+          </div>
+        </div>
+
+        {/* Right Action: Pantry / Ingredients Drawer */}
+        <button
+          onClick={() => {
+            sound.playSFX('click');
+            setIsPantryOpen(true);
+          }}
+          className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gradient-to-b from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-amber-100 font-bold text-[11px] border border-amber-400/80 shadow-md active:scale-95 transition-all cursor-pointer"
+          title="Despensa de Ingredientes"
+        >
+          <ShoppingBag className="w-3.5 h-3.5 text-amber-200" />
+          <span>Despensa</span>
+        </button>
+      </header>
+
+      {/* ------------------------------------------------------------- */}
+      {/* 2. CIRCULAR CONSTELLATION STAGE (NO MAGORDITO, NO BARRA)       */}
+      {/* ------------------------------------------------------------- */}
+      <section className="relative z-10 flex-1 w-full flex flex-col items-center justify-center overflow-hidden">
+        {/* Responsive Celestial Dashed Orbit Ring */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30">
+          <ellipse
+            cx="50%"
+            cy="48%"
+            rx="36%"
+            ry="32%"
+            fill="none"
+            stroke="#fbbf24"
+            strokeWidth="1.5"
+            strokeDasharray="4 6"
+          />
+        </svg>
+
+        {/* Orbit Star Twinkles (✦) */}
+        <span className="absolute top-[28%] left-[10%] text-amber-300 text-xs animate-pulse pointer-events-none">✦</span>
+        <span className="absolute top-[16%] left-[28%] text-amber-200 text-sm animate-pulse pointer-events-none">✦</span>
+        <span className="absolute top-[16%] right-[28%] text-amber-200 text-sm animate-pulse pointer-events-none">✦</span>
+        <span className="absolute top-[28%] right-[10%] text-amber-300 text-xs animate-pulse pointer-events-none">✦</span>
+        <span className="absolute bottom-[34%] left-[15%] text-amber-400 text-xs pointer-events-none">✦</span>
+        <span className="absolute bottom-[34%] right-[15%] text-amber-400 text-xs pointer-events-none">✦</span>
+
+        {/* ========================================================= */}
+        {/* VIEW 1: CATEGORIES CIRCLE (Primero salen las categorías)  */}
+        {/* ========================================================= */}
+        {viewMode === 'categories' && (
+          <div className="relative w-full h-full flex items-center justify-center animate-fade-in">
+            {/* Center Cauldron / Hearth Hub */}
+            <div className="relative z-10 flex flex-col items-center justify-center pointer-events-none text-center px-4">
+              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-stone-900 via-stone-950 to-black border-3 border-amber-400/90 shadow-[0_0_20px_rgba(245,158,11,0.5)] flex flex-col items-center justify-center p-2">
+                <Flame className="w-7 h-7 sm:w-8 sm:h-8 text-orange-400 animate-hearth-flicker" />
+                <span className="text-[8.5px] sm:text-[9px] font-black uppercase text-amber-300 tracking-wider">
+                  Fogón
+                </span>
+              </div>
+              <span className="mt-1.5 text-xs font-black font-serif text-amber-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                Selecciona Categoría
+              </span>
+              <span className="text-[9.5px] text-stone-300/80 max-w-[170px] leading-tight">
+                Toca una para ver sus ingredientes
+              </span>
+            </div>
+
+            {/* Category Circular Plates around Orbit (Dynamically Spaced) */}
+            {INGREDIENT_CATEGORIES.map((cat, idx) => {
+              const pos = getOrbitalPositionStyle(idx, INGREDIENT_CATEGORIES.length, 36, 32, 48);
+              const totalCount = getCategoryCount(cat.id);
+
+              return (
+                <div
+                  key={cat.id}
+                  style={pos}
+                  onClick={() => handleSelectCategory(cat.id)}
+                  className="absolute flex flex-col items-center group cursor-pointer active:scale-95 transition-all z-20"
+                >
+                  {/* Category Circle Plate */}
+                  <div className="relative w-15 h-15 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-stone-800 via-stone-900 to-black border-2 border-amber-400/90 shadow-[0_0_15px_rgba(0,0,0,0.9)] flex items-center justify-center p-1.5 group-hover:scale-110 group-hover:border-yellow-300 transition-all">
+                    {/* Inner Plate Dish */}
+                    <div className="w-full h-full rounded-full bg-gradient-to-b from-slate-200/90 to-slate-400/80 flex items-center justify-center p-1 shadow-inner">
+                      <div className="w-full h-full rounded-full bg-stone-950 flex items-center justify-center overflow-hidden">
+                        <img
+                          src={cat.imageIcon}
+                          alt={cat.name}
+                          className="w-9 h-9 sm:w-10 sm:h-10 object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Available count badge */}
+                    <span className="absolute -bottom-1 -right-1 text-[10px] font-black font-mono px-1.5 py-0.2 rounded-full bg-amber-500 text-stone-950 border border-amber-200 shadow-md">
+                      {totalCount}
+                    </span>
+                  </div>
+
+                  {/* Category Name */}
+                  <span className="mt-1 text-[10px] sm:text-[11px] font-black text-center text-amber-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] max-w-[70px] truncate">
+                    {cat.name}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* VIEW 2: INGREDIENTS CIRCLE (Ingredientes de la categoría)  */}
+        {/* ========================================================= */}
+        {viewMode === 'ingredients' && (
+          <div className="relative w-full h-full flex items-center justify-center animate-fade-in">
+            {/* Center "Volver a Categorías" Hub */}
+            <div className="relative z-10 flex flex-col items-center justify-center text-center">
+              <button
+                onClick={() => {
+                  sound.playSFX('click');
+                  setViewMode('categories');
+                }}
+                className="group flex flex-col items-center justify-center w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-gradient-to-b from-stone-900 via-stone-950 to-black border-3 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.6)] cursor-pointer hover:scale-105 active:scale-95 transition-all p-2"
+                title="Volver a Categorías"
+              >
+                <div className="flex items-center gap-1 text-[10.5px] sm:text-[11px] font-black text-amber-300">
+                  <ArrowLeft className="w-3.5 h-3.5 text-amber-300 group-hover:-translate-x-0.5 transition-transform" />
+                  <span>Volver</span>
+                </div>
+                <span className="text-[9.5px] sm:text-[10px] font-serif font-bold text-stone-300 mt-0.5 truncate max-w-[65px]">
+                  {activeCategoryObj?.name}
+                </span>
+                <span className="text-[8px] text-amber-400/80">Categorías</span>
+              </button>
+            </div>
+
+            {/* Ingredients Plates around the Orbit (Dynamically Spaced) */}
+            {categoryIngredients.map((ing, idx) => {
+              const pos = getOrbitalPositionStyle(idx, categoryIngredients.length, 36, 32, 48);
+              const count = stock[ing.id] || 0;
+              const isSelected = slots.some((s) => s?.id === ing.id);
+
+              return (
+                <div
+                  key={ing.id}
+                  style={pos}
+                  onClick={() => handleSelectIngredient(ing)}
+                  className="absolute flex flex-col items-center group cursor-pointer active:scale-95 transition-all z-20"
+                >
+                  {/* Plate */}
+                  <div
+                    className={`relative w-15 h-15 sm:w-16 sm:h-16 rounded-full flex items-center justify-center p-1.5 transition-all transform group-hover:scale-110 shadow-xl ${
+                      count > 0
+                        ? 'bg-gradient-to-b from-stone-800 via-stone-900 to-black border-2 border-amber-400 shadow-amber-900/40'
+                        : 'bg-stone-900/80 border border-stone-600 opacity-60 grayscale'
+                    } ${isSelected ? 'ring-2 ring-yellow-400 ring-offset-2 ring-offset-black scale-105' : ''}`}
+                  >
+                    {/* Inner Silver Dish Rim */}
+                    <div className="w-full h-full rounded-full bg-gradient-to-b from-slate-200/90 to-slate-400/80 flex items-center justify-center p-1 shadow-inner">
+                      <div className="w-full h-full rounded-full bg-stone-950 flex items-center justify-center overflow-hidden">
+                        <CookingIngredientIcon ingredient={ing} className="w-10 h-10 sm:w-11 sm:h-11" />
+                      </div>
+                    </div>
+
+                    {/* Quantity Badge */}
+                    <span
+                      className={`absolute -bottom-1 -right-1 text-[10px] font-black font-mono px-1.5 py-0.2 rounded-full border shadow-md ${
+                        count > 0
+                          ? 'bg-amber-500 text-stone-950 border-amber-200'
+                          : 'bg-stone-700 text-stone-300 border-stone-500'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </div>
+
+                  {/* Ingredient Name */}
+                  <span className="mt-1 text-[9.5px] sm:text-[10px] font-bold text-center text-amber-100 max-w-[76px] leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] line-clamp-2">
+                    {ing.name}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* ------------------------------------------------------------- */}
+      {/* 3. FOREGROUND COUNTER: WOODEN CUTTING BOARD (7DS Style)       */}
+      {/* ------------------------------------------------------------- */}
+      <div className="relative z-20 w-full pt-1 pb-3 px-3 bg-gradient-to-t from-[#140602] via-[#210904]/95 to-transparent flex flex-col items-center">
+        {/* Recipe Match Preview Banner */}
+        <div className="w-full flex items-center justify-between px-2 mb-1">
+          {previewRecipe ? (
+            <div className="w-full flex items-center justify-between bg-amber-950/90 border border-amber-400 rounded-lg px-2.5 py-1.5 shadow-lg animate-fade-in">
+              <div className="flex items-center gap-2">
+                <img
+                  src={previewRecipe.icon}
+                  alt={previewRecipe.name}
+                  className="w-6 h-6 object-contain"
+                />
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-black text-amber-200">
+                      {previewRecipe.name}
+                    </span>
+                    <span className="text-[9px] font-extrabold px-1 rounded bg-amber-500 text-black">
+                      {previewRecipe.rarity}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-green-400 font-bold">
+                    {previewRecipe.buffBadge}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={handleClearBoard}
+                className="text-stone-400 hover:text-red-400 p-1 cursor-pointer"
+                title="Vaciar tabla"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="w-full text-center text-[10px] text-amber-300/80 font-serif py-0.5">
+              {slots.filter((s) => s !== null).length === 0
+                ? 'Coloca 3 ingredientes en la tabla para cocinar un plato.'
+                : `Ingredientes colocados: ${slots.filter((s) => s !== null).length}/3`}
+            </div>
+          )}
+        </div>
+
+        {/* 7DS Wooden Cutting Board */}
+        <div className="relative w-[340px] h-[95px] flex items-center justify-center">
+          {/* Wooden Board Shape with right handle */}
+          <div
+            className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#4a210f] via-[#321307] to-[#1c0a04] border-4 border-[#6d3215] shadow-[0_10px_25px_rgba(0,0,0,0.9),inset_0_2px_4px_rgba(255,200,100,0.2)] flex items-center justify-between px-5"
+            style={{
+              clipPath: 'polygon(0% 0%, 92% 0%, 92% 35%, 100% 35%, 100% 65%, 92% 65%, 92% 100%, 0% 100%)',
+            }}
+          >
+            <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-100 via-transparent to-black" />
+          </div>
+
+          {/* Right Handle Hole */}
+          <div className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-[#140602] border-2 border-[#522510] shadow-inner pointer-events-none" />
+
+          {/* 3 Circular Sockets on the Cutting Board */}
+          <div className="relative z-10 w-full flex items-center justify-center gap-7 pr-4">
+            {[0, 1, 2].map((slotIdx) => {
+              const item = slots[slotIdx];
+              const isActive = activeSlotIndex === slotIdx;
+
+              return (
+                <div key={slotIdx} className="relative flex flex-col items-center">
+                  {/* Golden Sun / Arrow Pointer above Active Slot */}
+                  {isActive && (
+                    <div className="absolute -top-4.5 flex flex-col items-center animate-bounce z-20 pointer-events-none">
+                      <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-b from-yellow-300 to-amber-500 border border-amber-100 shadow-[0_0_8px_#f59e0b] flex items-center justify-center">
+                        <div className="w-1.5 h-1.5 rounded-full bg-amber-950" />
+                      </div>
+                      <div className="w-0 h-0 border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-t-[5px] border-t-amber-400 -mt-0.5" />
+                    </div>
+                  )}
+
+                  {/* Circular Socket */}
+                  <div
+                    onClick={() => {
+                      sound.playSFX('click');
+                      setActiveSlotIndex(slotIdx);
+                    }}
+                    className={`relative w-15 h-15 rounded-full flex items-center justify-center transition-all cursor-pointer ${
+                      item
+                        ? 'bg-gradient-to-b from-stone-800 to-black border-2 border-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.3)]'
+                        : 'bg-black/70 border-2 border-dashed border-amber-600/50 hover:border-amber-400'
+                    } ${isActive ? 'ring-2 ring-amber-400 ring-offset-2 ring-offset-[#260e05]' : ''}`}
+                  >
+                    {item ? (
+                      <>
+                        <div className="w-12 h-12 rounded-full bg-stone-900 flex items-center justify-center overflow-hidden p-1 shadow-inner">
+                          <CookingIngredientIcon ingredient={item} className="w-9 h-9" />
+                        </div>
+                        {/* Cancel / Remove 'X' button on slot */}
+                        <button
+                          onClick={(e) => handleRemoveSlot(slotIdx, e)}
+                          className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-b from-red-600 to-red-800 border border-amber-300 text-white flex items-center justify-center shadow-md hover:scale-110 active:scale-95 cursor-pointer z-10"
+                          title="Quitar ingrediente"
+                        >
+                          <X className="w-3 h-3 text-amber-200 stroke-[3]" />
+                        </button>
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-amber-600/60">
+                        <Plus className="w-5 h-5" />
+                        <span className="text-[9px] font-black font-mono">
+                          {slotIdx + 1}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ------------------------------------------------------------- */}
+        {/* 4. BOTTOM ACTION ROW: "COCINAR PLATO" & RECETARIO BUTTON      */}
+        {/* ------------------------------------------------------------- */}
+        <div className="w-full flex items-center justify-between gap-3 mt-2 px-3">
+          <div className="w-12" />
+
+          {/* "Cocinar Plato" Button */}
+          <button
+            onClick={handleCook}
+            disabled={!isBoardFull || isCookingAnimation}
+            className={`flex-1 py-2.5 px-4 rounded-xl font-black font-serif text-sm tracking-wider uppercase flex items-center justify-center gap-2 border-2 transition-all cursor-pointer shadow-xl ${
+              isBoardFull && !isCookingAnimation
+                ? 'bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 hover:from-amber-500 hover:to-orange-500 text-white border-amber-300 shadow-[0_0_20px_rgba(249,115,22,0.6)] active:scale-95 animate-pulse'
+                : 'bg-stone-900/80 text-stone-500 border-stone-700 cursor-not-allowed opacity-60'
+            }`}
+          >
+            <Flame className={`w-5 h-5 ${isBoardFull ? 'text-yellow-300 animate-spin' : 'text-stone-500'}`} />
+            <span>{isCookingAnimation ? 'Cocinando...' : 'Cocinar Plato'}</span>
+          </button>
+
+          {/* Recetario Circular Button on Bottom-Right */}
+          <button
+            onClick={() => {
+              sound.playSFX('click');
+              setIsRecipeBookOpen(true);
+            }}
+            className="relative w-12 h-12 rounded-full bg-gradient-to-b from-amber-700 via-amber-900 to-black border-2 border-amber-400 p-1 flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 cursor-pointer transition-all shrink-0"
+            title="Libro de Recetas de la Taberna"
+          >
+            <div className="w-full h-full rounded-full bg-stone-900/90 flex items-center justify-center overflow-hidden">
+              <BookOpen className="w-5 h-5 text-amber-300" />
+            </div>
+            <span className="absolute -top-1 -right-1 bg-rose-600 text-white text-[9px] font-black px-1.5 py-0.2 rounded-full border border-amber-200 shadow">
+              {discoveredRecipes.length}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------- */}
+      {/* 5. COOKING ANIMATION OVERLAY                                  */}
+      {/* ------------------------------------------------------------- */}
+      {isCookingAnimation && (
+        <div className="absolute inset-0 z-50 bg-black/80 flex flex-col items-center justify-center animate-fade-in pointer-events-auto">
+          <div className="relative w-36 h-36 flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full bg-orange-600/30 blur-2xl animate-ping" />
+            <div className="w-28 h-28 rounded-full border-4 border-amber-400 border-t-orange-500 border-b-yellow-400 animate-spin flex items-center justify-center bg-black/70">
+              <Flame className="w-14 h-14 text-orange-500 animate-bounce" />
+            </div>
+          </div>
+          <h3 className="mt-4 text-amber-300 font-serif font-black text-lg tracking-wider animate-pulse">
+            ¡Cocinando en el Fogón de Icespear!
+          </h3>
+          <p className="text-xs text-amber-100/70 font-mono mt-1">
+            Los aromas mágicos llenan la taberna...
+          </p>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* 6. DISH CREATED CELEBRATION MODAL                             */}
+      {/* ------------------------------------------------------------- */}
+      {cookedDishResult && (
+        <div className="absolute inset-0 z-50 bg-black/85 flex items-center justify-center p-4 animate-fade-in">
+          <div className="relative w-full max-w-sm rounded-2xl bg-gradient-to-b from-[#2e1107] via-[#1c0803] to-[#0c0301] border-3 border-amber-400 shadow-2xl p-5 flex flex-col items-center text-center">
+            <div className="absolute -top-12 w-40 h-40 bg-amber-500/25 blur-3xl pointer-events-none rounded-full" />
+
+            <span className="text-[11px] font-black tracking-widest text-amber-400 uppercase">
+              ¡Plato Cocinado con Éxito!
+            </span>
+
+            <div className="relative w-24 h-24 my-3 rounded-full bg-gradient-to-b from-amber-500 to-amber-900 border-3 border-amber-300 p-2 shadow-2xl flex items-center justify-center">
+              <img
+                src={cookedDishResult.recipe.icon}
+                alt={cookedDishResult.recipe.name}
+                className="w-18 h-18 object-contain drop-shadow-xl animate-fade-in"
+              />
+              <span className="absolute -bottom-1 right-1 text-xs font-black px-2 py-0.5 rounded-full bg-black text-amber-300 border border-amber-400">
+                {cookedDishResult.recipe.rarity}
+              </span>
+            </div>
+
+            <h2 className="text-lg font-black font-serif text-amber-200">
+              {cookedDishResult.recipe.name}
+            </h2>
+
+            {cookedDishResult.duplicated && (
+              <span className="text-xs font-black text-emerald-400 bg-emerald-950/80 border border-emerald-500 px-2 py-0.5 rounded-full mt-1">
+                ¡Doble Ración! Obtuviste x2 unidades 🍖🍖
+              </span>
+            )}
+
+            <div className="w-full my-3 p-2.5 rounded-xl bg-black/60 border border-amber-500/50 flex flex-col items-center">
+              <span className="text-xs font-black text-amber-300">
+                {cookedDishResult.recipe.buffBadge}
+              </span>
+              <p className="text-[11px] text-stone-300 font-sans mt-0.5">
+                {cookedDishResult.recipe.buffDescription}
+              </p>
+            </div>
+
+            <p className="text-[10px] text-stone-400 font-serif italic mb-3">
+              "{cookedDishResult.recipe.lore}"
+            </p>
+
+            <div className="flex items-center gap-1.5 text-xs text-rose-400 font-bold mb-4">
+              <Heart className="w-3.5 h-3.5 fill-rose-500" />
+              <span>+{cookedDishResult.affectionGain} Afecto del Fogón</span>
+            </div>
+
+            <button
+              onClick={() => {
+                sound.playSFX('click');
+                setCookedDishResult(null);
+              }}
+              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-black text-xs uppercase tracking-wider border border-amber-300 shadow-xl cursor-pointer active:scale-95 transition-all"
+            >
+              ¡Guardar en la Bolsa de Combate!
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* 7. LIBRO DE RECETAS MODAL                                     */}
+      {/* ------------------------------------------------------------- */}
+      {isRecipeBookOpen && (
+        <div className="absolute inset-0 z-50 bg-black/85 flex items-center justify-center p-3 animate-fade-in">
+          <div className="relative w-full max-w-sm max-h-[92%] rounded-2xl bg-gradient-to-b from-[#2a0e05] to-[#120502] border-3 border-amber-500 shadow-2xl flex flex-col overflow-hidden">
+            <div className="p-3 bg-[#1e0a04] border-b border-amber-600/50 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-amber-300" />
+                <h3 className="text-sm font-black font-serif text-amber-200">
+                  Libro de Recetas ({COOKING_RECIPES.length})
+                </h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-600/50">
+                  {discoveredRecipes.length}/{COOKING_RECIPES.length}
+                </span>
+                <button
+                  onClick={() => setIsRecipeBookOpen(false)}
+                  className="text-stone-400 hover:text-white p-1 cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Search & Category Filter Bar */}
+            <div className="p-2 bg-stone-950/80 border-b border-stone-800 space-y-1.5">
+              <input
+                type="text"
+                placeholder="Buscar plato o efecto..."
+                value={recipeSearch}
+                onChange={(e) => setRecipeSearch(e.target.value)}
+                className="w-full px-2.5 py-1 text-xs bg-stone-900 border border-amber-600/40 rounded-lg text-amber-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+              />
+              <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
+                <button
+                  onClick={() => setRecipeFilter('todas')}
+                  className={`px-2 py-0.5 rounded-md text-[10px] font-bold shrink-0 transition-all cursor-pointer ${
+                    recipeFilter === 'todas'
+                      ? 'bg-amber-600 text-stone-950'
+                      : 'bg-stone-900 text-stone-400 hover:text-white border border-stone-800'
+                  }`}
+                >
+                  Todas ({COOKING_RECIPES.length})
+                </button>
+                {INGREDIENT_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setRecipeFilter(cat.id)}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1 ${
+                      recipeFilter === cat.id
+                        ? 'bg-amber-600 text-stone-950'
+                        : 'bg-stone-900 text-stone-400 hover:text-white border border-stone-800'
+                    }`}
+                  >
+                    <span>{cat.iconText}</span>
+                    <span>{cat.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-2.5 space-y-2 no-scrollbar">
+              {filteredRecipes.length === 0 ? (
+                <div className="text-center py-8 text-stone-400 text-xs font-serif">
+                  No se encontraron recetas con este filtro o búsqueda.
+                </div>
+              ) : (
+                filteredRecipes.slice(0, recipePageLimit).map((rec) => {
+                  const isDiscovered = discoveredRecipes.includes(rec.id);
+                  return (
+                    <div
+                      key={rec.id}
+                      className={`p-2 rounded-xl border flex items-center justify-between gap-2 ${
+                        isDiscovered
+                          ? 'bg-stone-900/80 border-amber-500/60'
+                          : 'bg-stone-950/60 border-stone-800 opacity-75'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-11 h-11 rounded-lg bg-stone-950 border border-amber-400/60 p-1 flex items-center justify-center shrink-0">
+                          {isDiscovered ? (
+                            <img
+                              src={rec.icon}
+                              alt={rec.name}
+                              className="w-full h-full object-contain"
+                            />
+                          ) : (
+                            <span className="text-lg">❓</span>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-xs font-black text-amber-200 truncate">
+                              {isDiscovered ? rec.name : '??? Receta Secreta'}
+                            </span>
+                            <span className="text-[9px] font-black px-1 rounded bg-amber-500 text-black shrink-0">
+                              {rec.rarity}
+                            </span>
+                          </div>
+                          <span className="text-[10px] text-green-400 font-bold block truncate">
+                            {isDiscovered ? rec.buffBadge : 'Descúbrela cocinando'}
+                          </span>
+                          <div className="flex items-center gap-1 mt-0.5 flex-wrap">
+                            {rec.specificIngredientIds && rec.specificIngredientIds.length === 3 ? (
+                              rec.specificIngredientIds.map((ingId, iIdx) => {
+                                const ingObj = COOKING_INGREDIENTS.find((i) => i.id === ingId);
+                                return (
+                                  <span
+                                    key={iIdx}
+                                    className="text-[8px] px-1 py-0.2 rounded bg-black/60 text-amber-200 border border-amber-700/60 shrink-0"
+                                  >
+                                    {ingObj?.name || ingId}
+                                  </span>
+                                );
+                              })
+                            ) : (
+                              rec.requiredCategories.map((cat, cIdx) => {
+                                const catObj = INGREDIENT_CATEGORIES.find((c) => c.id === cat);
+                                return (
+                                  <span
+                                    key={cIdx}
+                                    className="text-[8px] px-1 py-0.2 rounded bg-black/60 text-stone-300 border border-stone-700 shrink-0"
+                                  >
+                                    {catObj?.iconText} {catObj?.name}
+                                  </span>
+                                );
+                              })
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => handleAutoFillRecipe(rec)}
+                        className="px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-black text-[10px] uppercase border border-amber-300 shadow cursor-pointer active:scale-95 transition-all shrink-0"
+                      >
+                        Colocar
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+
+              {recipePageLimit < filteredRecipes.length && (
+                <button
+                  onClick={() => setRecipePageLimit((prev) => prev + 50)}
+                  className="w-full py-2 rounded-xl bg-amber-950/80 hover:bg-amber-900 border border-amber-500/60 text-amber-200 font-bold text-xs shadow-md transition-all cursor-pointer"
+                >
+                  Cargar más recetas (+50)... (Mostrando {Math.min(recipePageLimit, filteredRecipes.length)} de {filteredRecipes.length})
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* 8. DESPENSA DE INGREDIENTES MODAL                             */}
+      {/* ------------------------------------------------------------- */}
+      {isPantryOpen && (
+        <div className="absolute inset-0 z-50 bg-black/85 flex items-center justify-center p-3 animate-fade-in">
+          <div className="relative w-full max-w-sm max-h-[90%] rounded-2xl bg-gradient-to-b from-[#2a0e05] to-[#120502] border-3 border-amber-500 shadow-2xl flex flex-col overflow-hidden">
+            <div className="p-3 bg-[#1e0a04] border-b border-amber-600/50 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="w-4 h-4 text-amber-300" />
+                <h3 className="text-sm font-black font-serif text-amber-200">
+                  Despensa del Bastión
+                </h3>
+              </div>
+              <button
+                onClick={() => setIsPantryOpen(false)}
+                className="text-stone-400 hover:text-white p-1 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-2.5 bg-gradient-to-r from-amber-950 to-stone-900 border-b border-amber-700/40 flex items-center justify-between">
+              <div>
+                <span className="text-xs font-black text-amber-300 block">
+                  Raciones Diarias Gratuitas
+                </span>
+                <span className="text-[10px] text-stone-300">
+                  +2 de cada ingrediente para la despensa
+                </span>
+              </div>
+              <button
+                onClick={handleClaimFreeRations}
+                className="px-2.5 py-1 rounded-lg bg-green-600 hover:bg-green-500 text-white font-bold text-xs border border-green-300 shadow active:scale-95 transition-all cursor-pointer"
+              >
+                Reclamar
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-2.5 space-y-2 no-scrollbar">
+              {COOKING_INGREDIENTS.map((ing) => {
+                const count = stock[ing.id] || 0;
+                return (
+                  <div
+                    key={ing.id}
+                    className="p-2 rounded-xl bg-stone-900/80 border border-stone-700/60 flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-10 h-10 rounded-full bg-stone-950 border border-amber-500/40 flex items-center justify-center p-1">
+                        <CookingIngredientIcon ingredient={ing} className="w-8 h-8" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-amber-200 block">
+                          {ing.name}
+                        </span>
+                        <span className="text-[10px] text-stone-400">
+                          En despensa: <b className="text-amber-300">{count}</b>
+                        </span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleBuyIngredient(ing)}
+                      className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 text-white font-bold text-[11px] border border-amber-400 flex items-center gap-1 shadow cursor-pointer active:scale-95"
+                    >
+                      <Coins className="w-3 h-3 text-amber-300" />
+                      <span>{ing.priceGold} $</span>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* 9. REPUTACIÓN DEL FOGÓN MODAL                                 */}
+      {/* ------------------------------------------------------------- */}
+      {isAffectionModalOpen && (
+        <div className="absolute inset-0 z-50 bg-black/85 flex items-center justify-center p-3 animate-fade-in">
+          <div className="relative w-full max-w-sm rounded-2xl bg-gradient-to-b from-[#2a0e05] to-[#120502] border-3 border-amber-500 shadow-2xl p-4 flex flex-col items-center text-center">
+            <button
+              onClick={() => setIsAffectionModalOpen(false)}
+              className="absolute top-3 right-3 text-stone-400 hover:text-white p-1 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <Heart className="w-10 h-10 text-rose-500 fill-rose-500 mb-2 animate-pulse" />
+            <h3 className="text-base font-black font-serif text-amber-200">
+              Maestría del Fogón de Icespear
+            </h3>
+            <span className="text-xs text-amber-400 font-mono mt-0.5">
+              Nivel {affection.level} • {affection.points.toLocaleString()} Puntos
+            </span>
+
+            <div className="w-full my-3 p-3 rounded-xl bg-black/60 border border-amber-600/50 text-left space-y-2">
+              <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider block">
+                Beneficios Activos:
+              </span>
+              <div className="flex items-center gap-2 text-xs text-stone-200">
+                <Check className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                <span>+20% de probabilidad de Ración Doble al cocinar.</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-stone-200">
+                <Check className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                <span>Descuento de ingredientes en la Despensa.</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-stone-200">
+                <Check className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                <span>Acceso a recetas legendarias de combate.</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setIsAffectionModalOpen(false)}
+              className="w-full py-2 rounded-xl bg-amber-600 text-stone-950 font-bold text-xs uppercase cursor-pointer"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

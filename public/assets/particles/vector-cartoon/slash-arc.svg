@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="slashGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#bae6fd"/>
+      <stop offset="70%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+  <!-- Main Curved Slash Crescent Blade -->
+  <path d="M116 16 C90 32 40 50 18 104 C44 94 82 82 116 16 Z"
+        fill="url(#slashGrad)"
+        stroke="#0c4a6e"
+        stroke-width="5"
+        stroke-linejoin="round"/>
+  <!-- Razor Sharp Inner Edge -->
+  <path d="M112 22 C90 36 48 54 28 98 C46 90 84 80 112 22 Z"
+        fill="#ffffff"
+        opacity="0.95"/>
+  <!-- Speed lines / trailing mini slash -->
+  <path d="M102 12 C78 28 36 50 12 116 C26 104 60 76 102 12 Z"
+        fill="#38bdf8"
+        opacity="0.4"/>
+  <!-- Impact spark on blade -->
+  <circle cx="86" cy="46" r="3" fill="#ffffff"/>
+</svg>

@@ -1,0 +1,1632 @@
+[
+  {
+    "name": "cfxr aura rays",
+    "path": "/public/assets/cfxr/graphics/cfxr-aura-rays.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr aura rays.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 88398
+  },
+  {
+    "name": "cfxr aura runic",
+    "path": "/public/assets/cfxr/graphics/cfxr-aura-runic.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr aura runic.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 103360
+  },
+  {
+    "name": "cfxr blood dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-blood-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr blood dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 249893
+  },
+  {
+    "name": "cfxr blood splash dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-blood-splash-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr blood splash dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 149484
+  },
+  {
+    "name": "cfxr blood splash",
+    "path": "/public/assets/cfxr/graphics/cfxr-blood-splash.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr blood splash.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 46266
+  },
+  {
+    "name": "cfxr blood",
+    "path": "/public/assets/cfxr/graphics/cfxr-blood.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr blood.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 88799
+  },
+  {
+    "name": "cfxr bubble 2",
+    "path": "/public/assets/cfxr/graphics/cfxr-bubble-2.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr bubble 2.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 187820
+  },
+  {
+    "name": "cfxr bubble",
+    "path": "/public/assets/cfxr/graphics/cfxr-bubble.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr bubble.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 77519
+  },
+  {
+    "name": "cfxr card club",
+    "path": "/public/assets/cfxr/graphics/cfxr-card-club.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr card club.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 16386
+  },
+  {
+    "name": "cfxr card diamond",
+    "path": "/public/assets/cfxr/graphics/cfxr-card-diamond.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr card diamond.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 15958
+  },
+  {
+    "name": "cfxr card heart",
+    "path": "/public/assets/cfxr/graphics/cfxr-card-heart.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr card heart.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 15010
+  },
+  {
+    "name": "cfxr card spade",
+    "path": "/public/assets/cfxr/graphics/cfxr-card-spade.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr card spade.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 16256
+  },
+  {
+    "name": "cfxr cloud blur",
+    "path": "/public/assets/cfxr/graphics/cfxr-cloud-blur.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr cloud blur.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 58676
+  },
+  {
+    "name": "cfxr debris 3x3 normal",
+    "path": "/public/assets/cfxr/graphics/cfxr-debris-3x3-normal.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr debris 3x3 normal.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 350044
+  },
+  {
+    "name": "cfxr debris 3x3",
+    "path": "/public/assets/cfxr/graphics/cfxr-debris-3x3.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr debris 3x3.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 69455
+  },
+  {
+    "name": "cfxr debris flat unlit 3x3",
+    "path": "/public/assets/cfxr/graphics/cfxr-debris-flat-unlit-3x3.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr debris flat unlit 3x3.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 53402
+  },
+  {
+    "name": "cfxr debris ice 2x2 normal",
+    "path": "/public/assets/cfxr/graphics/cfxr-debris-ice-2x2-normal.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr debris ice 2x2 normal.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 76268
+  },
+  {
+    "name": "cfxr debris ice 2x2",
+    "path": "/public/assets/cfxr/graphics/cfxr-debris-ice-2x2.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr debris ice 2x2.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 159193
+  },
+  {
+    "name": "cfxr debris unlit 3x3",
+    "path": "/public/assets/cfxr/graphics/cfxr-debris-unlit-3x3.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr debris unlit 3x3.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 111095
+  },
+  {
+    "name": "cfxr debris wood 3x3 normal",
+    "path": "/public/assets/cfxr/graphics/cfxr-debris-wood-3x3-normal.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr debris wood 3x3 normal.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 196997
+  },
+  {
+    "name": "cfxr debris wood 3x3",
+    "path": "/public/assets/cfxr/graphics/cfxr-debris-wood-3x3.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr debris wood 3x3.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 22752
+  },
+  {
+    "name": "cfxr debris wood unlit 3x3",
+    "path": "/public/assets/cfxr/graphics/cfxr-debris-wood-unlit-3x3.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr debris wood unlit 3x3.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 74735
+  },
+  {
+    "name": "cfxr electric arc anim x4",
+    "path": "/public/assets/cfxr/graphics/cfxr-electric-arc-anim-x4.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr electric arc anim x4.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 32211
+  },
+  {
+    "name": "cfxr electric arcs fade x4",
+    "path": "/public/assets/cfxr/graphics/cfxr-electric-arcs-fade-x4.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr electric arcs fade x4.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 53625
+  },
+  {
+    "name": "cfxr electric arcs x4",
+    "path": "/public/assets/cfxr/graphics/cfxr-electric-arcs-x4.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr electric arcs x4.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 84042
+  },
+  {
+    "name": "cfxr electric small anim 4x2",
+    "path": "/public/assets/cfxr/graphics/cfxr-electric-small-anim-4x2.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr electric small anim 4x2.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 512,
+    "bytes": 68372
+  },
+  {
+    "name": "cfxr electric small anim2 7x2",
+    "path": "/public/assets/cfxr/graphics/cfxr-electric-small-anim2-7x2.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr electric small anim2 7x2.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 2048,
+    "height": 512,
+    "bytes": 74229
+  },
+  {
+    "name": "cfxr electric spark",
+    "path": "/public/assets/cfxr/graphics/cfxr-electric-spark.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr electric spark.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 10721
+  },
+  {
+    "name": "cfxr ember blur",
+    "path": "/public/assets/cfxr/graphics/cfxr-ember-blur.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr ember blur.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 128,
+    "bytes": 5463
+  },
+  {
+    "name": "cfxr explosion second color map",
+    "path": "/public/assets/cfxr/graphics/cfxr-explosion-second-color-map.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr explosion second color map.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 90798
+  },
+  {
+    "name": "cfxr explosion smoke alpha",
+    "path": "/public/assets/cfxr/graphics/cfxr-explosion-smoke-alpha.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr explosion smoke alpha.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 38919
+  },
+  {
+    "name": "cfxr explosion smoke dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-explosion-smoke-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr explosion smoke dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 58606
+  },
+  {
+    "name": "cfxr fire circle blur",
+    "path": "/public/assets/cfxr/graphics/cfxr-fire-circle-blur.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr fire circle blur.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 19729
+  },
+  {
+    "name": "cfxr fire circle crisp",
+    "path": "/public/assets/cfxr/graphics/cfxr-fire-circle-crisp.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr fire circle crisp.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 20908
+  },
+  {
+    "name": "cfxr fire circle drawn blurred",
+    "path": "/public/assets/cfxr/graphics/cfxr-fire-circle-drawn-blurred.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr fire circle drawn blurred.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 26033
+  },
+  {
+    "name": "cfxr fire circle drawn",
+    "path": "/public/assets/cfxr/graphics/cfxr-fire-circle-drawn.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr fire circle drawn.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 29895
+  },
+  {
+    "name": "cfxr fire circle plain",
+    "path": "/public/assets/cfxr/graphics/cfxr-fire-circle-plain.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr fire circle plain.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 20736
+  },
+  {
+    "name": "cfxr fire edge dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-fire-edge-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr fire edge dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 256,
+    "bytes": 54220
+  },
+  {
+    "name": "cfxr fire edge",
+    "path": "/public/assets/cfxr/graphics/cfxr-fire-edge.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr fire edge.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 256,
+    "bytes": 24105
+  },
+  {
+    "name": "cfxr fire small anim blurred",
+    "path": "/public/assets/cfxr/graphics/cfxr-fire-small-anim-blurred.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr fire small anim blurred.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 59283
+  },
+  {
+    "name": "cfxr fire small anim",
+    "path": "/public/assets/cfxr/graphics/cfxr-fire-small-anim.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr fire small anim.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 45726
+  },
+  {
+    "name": "cfxr flamme blur",
+    "path": "/public/assets/cfxr/graphics/cfxr-flamme-blur.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr flamme blur.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 128,
+    "height": 256,
+    "bytes": 21142
+  },
+  {
+    "name": "cfxr flamme candle",
+    "path": "/public/assets/cfxr/graphics/cfxr-flamme-candle.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr flamme candle.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 128,
+    "height": 256,
+    "bytes": 25267
+  },
+  {
+    "name": "cfxr flamme crisp",
+    "path": "/public/assets/cfxr/graphics/cfxr-flamme-crisp.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr flamme crisp.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 128,
+    "height": 256,
+    "bytes": 21572
+  },
+  {
+    "name": "cfxr flamme full blurred",
+    "path": "/public/assets/cfxr/graphics/cfxr-flamme-full-blurred.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr flamme full blurred.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 512,
+    "bytes": 29108
+  },
+  {
+    "name": "cfxr flamme plain",
+    "path": "/public/assets/cfxr/graphics/cfxr-flamme-plain.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr flamme plain.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 128,
+    "height": 256,
+    "bytes": 20910
+  },
+  {
+    "name": "cfxr flamme stepped",
+    "path": "/public/assets/cfxr/graphics/cfxr-flamme-stepped.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr flamme stepped.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 512,
+    "bytes": 12085
+  },
+  {
+    "name": "cfxr flare",
+    "path": "/public/assets/cfxr/graphics/cfxr-flare.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr flare.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 256,
+    "bytes": 17476
+  },
+  {
+    "name": "cfxr fly anim x4",
+    "path": "/public/assets/cfxr/graphics/cfxr-fly-anim-x4.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr fly anim x4.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 34568
+  },
+  {
+    "name": "cfxr ghost trail",
+    "path": "/public/assets/cfxr/graphics/cfxr-ghost-trail.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr ghost trail.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 256,
+    "bytes": 12255
+  },
+  {
+    "name": "cfxr heart break dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-heart-break-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr heart break dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 10734
+  },
+  {
+    "name": "cfxr heart break parts",
+    "path": "/public/assets/cfxr/graphics/cfxr-heart-break-parts.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr heart break parts.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 20549
+  },
+  {
+    "name": "cfxr heart",
+    "path": "/public/assets/cfxr/graphics/cfxr-heart.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr heart.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 15710
+  },
+  {
+    "name": "cfxr hit triangle 2",
+    "path": "/public/assets/cfxr/graphics/cfxr-hit-triangle-2.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr hit triangle 2.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 128,
+    "height": 256,
+    "bytes": 18632
+  },
+  {
+    "name": "cfxr hit triangle diamond dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-hit-triangle-diamond-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr hit triangle diamond dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 128,
+    "height": 256,
+    "bytes": 17817
+  },
+  {
+    "name": "cfxr hit triangle dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-hit-triangle-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr hit triangle dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 128,
+    "height": 256,
+    "bytes": 21122
+  },
+  {
+    "name": "cfxr hit triangle",
+    "path": "/public/assets/cfxr/graphics/cfxr-hit-triangle.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr hit triangle.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 128,
+    "height": 256,
+    "bytes": 16670
+  },
+  {
+    "name": "cfxr leave a normal",
+    "path": "/public/assets/cfxr/graphics/cfxr-leave-a-normal.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr leave a normal.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 1024,
+    "bytes": 213190
+  },
+  {
+    "name": "cfxr leave a",
+    "path": "/public/assets/cfxr/graphics/cfxr-leave-a.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr leave a.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 1024,
+    "bytes": 106108
+  },
+  {
+    "name": "cfxr leave b normal",
+    "path": "/public/assets/cfxr/graphics/cfxr-leave-b-normal.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr leave b normal.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 1024,
+    "bytes": 196981
+  },
+  {
+    "name": "cfxr leave b",
+    "path": "/public/assets/cfxr/graphics/cfxr-leave-b.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr leave b.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 1024,
+    "bytes": 94554
+  },
+  {
+    "name": "cfxr line loop electric",
+    "path": "/public/assets/cfxr/graphics/cfxr-line-loop-electric.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr line loop electric.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 128,
+    "bytes": 32095
+  },
+  {
+    "name": "cfxr magic star",
+    "path": "/public/assets/cfxr/graphics/cfxr-magic-star.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr magic star.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 26646
+  },
+  {
+    "name": "cfxr noise clouds big",
+    "path": "/public/assets/cfxr/graphics/cfxr-noise-clouds-big.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr noise clouds big.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 38453
+  },
+  {
+    "name": "cfxr perlin big",
+    "path": "/public/assets/cfxr/graphics/cfxr-perlin-big.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr perlin big.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 284328
+  },
+  {
+    "name": "cfxr perlin mid",
+    "path": "/public/assets/cfxr/graphics/cfxr-perlin-mid.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr perlin mid.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 251504
+  },
+  {
+    "name": "cfxr perlin smudge",
+    "path": "/public/assets/cfxr/graphics/cfxr-perlin-smudge.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr perlin smudge.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 1144216
+  },
+  {
+    "name": "cfxr petal normal",
+    "path": "/public/assets/cfxr/graphics/cfxr-petal-normal.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr petal normal.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1025,
+    "height": 1025,
+    "bytes": 268670
+  },
+  {
+    "name": "cfxr petal pink x4",
+    "path": "/public/assets/cfxr/graphics/cfxr-petal-pink-x4.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr petal pink x4.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 298987
+  },
+  {
+    "name": "cfxr puddle dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-puddle-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr puddle dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 52569
+  },
+  {
+    "name": "cfxr puddle",
+    "path": "/public/assets/cfxr/graphics/cfxr-puddle.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr puddle.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 14633
+  },
+  {
+    "name": "cfxr ring arc",
+    "path": "/public/assets/cfxr/graphics/cfxr-ring-arc.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr ring arc.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 128,
+    "bytes": 4877
+  },
+  {
+    "name": "cfxr ring electric",
+    "path": "/public/assets/cfxr/graphics/cfxr-ring-electric.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr ring electric.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 128,
+    "bytes": 18717
+  },
+  {
+    "name": "cfxr ring ice",
+    "path": "/public/assets/cfxr/graphics/cfxr-ring-ice.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr ring ice.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 128,
+    "bytes": 29872
+  },
+  {
+    "name": "cfxr ring ripple arc dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-ring-ripple-arc-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr ring ripple arc dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 32,
+    "bytes": 18149
+  },
+  {
+    "name": "cfxr ring ripple dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-ring-ripple-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr ring ripple dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 32,
+    "bytes": 18868
+  },
+  {
+    "name": "cfxr ring spikes revert",
+    "path": "/public/assets/cfxr/graphics/cfxr-ring-spikes-revert.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr ring spikes revert.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 128,
+    "bytes": 10175
+  },
+  {
+    "name": "cfxr screen distortion debug",
+    "path": "/public/assets/cfxr/graphics/cfxr-screen-distortion-debug.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr screen distortion debug.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 48221
+  },
+  {
+    "name": "cfxr screen distortion perlin",
+    "path": "/public/assets/cfxr/graphics/cfxr-screen-distortion-perlin.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr screen distortion perlin.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 47729
+  },
+  {
+    "name": "cfxr screen distortion ring",
+    "path": "/public/assets/cfxr/graphics/cfxr-screen-distortion-ring.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr screen distortion ring.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 60049
+  },
+  {
+    "name": "cfxr screen distortion sphere",
+    "path": "/public/assets/cfxr/graphics/cfxr-screen-distortion-sphere.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr screen distortion sphere.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 42222
+  },
+  {
+    "name": "cfxr skull 2 dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-skull-2-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr skull 2 dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 60570
+  },
+  {
+    "name": "cfxr skull 2",
+    "path": "/public/assets/cfxr/graphics/cfxr-skull-2.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr skull 2.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 38427
+  },
+  {
+    "name": "cfxr skull dissolve alt",
+    "path": "/public/assets/cfxr/graphics/cfxr-skull-dissolve-alt.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr skull dissolve alt.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 90069
+  },
+  {
+    "name": "cfxr skull dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-skull-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr skull dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 62235
+  },
+  {
+    "name": "cfxr skull outer outline",
+    "path": "/public/assets/cfxr/graphics/cfxr-skull-outer-outline.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr skull outer outline.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 35041
+  },
+  {
+    "name": "cfxr skull",
+    "path": "/public/assets/cfxr/graphics/cfxr-skull.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr skull.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 21311
+  },
+  {
+    "name": "cfxr smiley angry",
+    "path": "/public/assets/cfxr/graphics/cfxr-smiley-angry.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr smiley angry.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 23926
+  },
+  {
+    "name": "cfxr smiley frown",
+    "path": "/public/assets/cfxr/graphics/cfxr-smiley-frown.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr smiley frown.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 22767
+  },
+  {
+    "name": "cfxr smiley happy",
+    "path": "/public/assets/cfxr/graphics/cfxr-smiley-happy.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr smiley happy.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 22677
+  },
+  {
+    "name": "cfxr smiley smile",
+    "path": "/public/assets/cfxr/graphics/cfxr-smiley-smile.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr smiley smile.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 22479
+  },
+  {
+    "name": "cfxr smoke cloud corner dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-smoke-cloud-corner-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr smoke cloud corner dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 256,
+    "bytes": 29233
+  },
+  {
+    "name": "cfxr smoke cloud corner",
+    "path": "/public/assets/cfxr/graphics/cfxr-smoke-cloud-corner.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr smoke cloud corner.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 256,
+    "bytes": 23488
+  },
+  {
+    "name": "cfxr smoke cloud x4 blurred",
+    "path": "/public/assets/cfxr/graphics/cfxr-smoke-cloud-x4-blurred.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr smoke cloud x4 blurred.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 77213
+  },
+  {
+    "name": "cfxr smoke cloud x4 dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-smoke-cloud-x4-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr smoke cloud x4 dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 98026
+  },
+  {
+    "name": "cfxr smoke cloud x4 normal",
+    "path": "/public/assets/cfxr/graphics/cfxr-smoke-cloud-x4-normal.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr smoke cloud x4 normal.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 72028
+  },
+  {
+    "name": "cfxr smoke cloud x4 second color",
+    "path": "/public/assets/cfxr/graphics/cfxr-smoke-cloud-x4-second-color.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr smoke cloud x4 second color.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 31210
+  },
+  {
+    "name": "cfxr smoke cloud x4 white",
+    "path": "/public/assets/cfxr/graphics/cfxr-smoke-cloud-x4-white.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr smoke cloud x4 white.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 19548
+  },
+  {
+    "name": "cfxr smoke cloud x4",
+    "path": "/public/assets/cfxr/graphics/cfxr-smoke-cloud-x4.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr smoke cloud x4.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 27997
+  },
+  {
+    "name": "cfxr spikes half impact gradient",
+    "path": "/public/assets/cfxr/graphics/cfxr-spikes-half-impact-gradient.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr spikes half impact gradient.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 256,
+    "bytes": 44308
+  },
+  {
+    "name": "cfxr spikes impact dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-spikes-impact-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr spikes impact dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 59518
+  },
+  {
+    "name": "cfxr spikes impact",
+    "path": "/public/assets/cfxr/graphics/cfxr-spikes-impact.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr spikes impact.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 37836
+  },
+  {
+    "name": "cfxr star blurred",
+    "path": "/public/assets/cfxr/graphics/cfxr-star-blurred.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr star blurred.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 36085
+  },
+  {
+    "name": "cfxr star",
+    "path": "/public/assets/cfxr/graphics/cfxr-star.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr star.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 15331
+  },
+  {
+    "name": "cfxr stretch flamme crisp dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-flamme-crisp-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch flamme crisp dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 128,
+    "bytes": 22601
+  },
+  {
+    "name": "cfxr stretch flamme crisp",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-flamme-crisp.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch flamme crisp.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 128,
+    "bytes": 22021
+  },
+  {
+    "name": "cfxr stretch inv spike fade",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-inv-spike-fade.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch inv spike fade.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 256,
+    "bytes": 5404
+  },
+  {
+    "name": "cfxr stretch rain blur",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-rain-blur.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch rain blur.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 32,
+    "bytes": 15945
+  },
+  {
+    "name": "cfxr stretch ray blur",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-ray-blur.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch ray blur.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 128,
+    "bytes": 19570
+  },
+  {
+    "name": "cfxr stretch rectangle ray blur",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-rectangle-ray-blur.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch rectangle ray blur.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 256,
+    "bytes": 29577
+  },
+  {
+    "name": "cfxr stretch rectangle ray",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-rectangle-ray.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch rectangle ray.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 32,
+    "bytes": 16520
+  },
+  {
+    "name": "cfxr stretch sipkes blur x2",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-sipkes-blur-x2.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch sipkes blur x2.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 47767
+  },
+  {
+    "name": "cfxr stretch sipkes dissolve smooth x2",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-sipkes-dissolve-smooth-x2.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch sipkes dissolve smooth x2.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 51839
+  },
+  {
+    "name": "cfxr stretch sipkes dissolve x2",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-sipkes-dissolve-x2.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch sipkes dissolve x2.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 35933
+  },
+  {
+    "name": "cfxr stretch sipkes x2",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-sipkes-x2.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch sipkes x2.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 21674
+  },
+  {
+    "name": "cfxr stretch skull dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-skull-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch skull dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 63505
+  },
+  {
+    "name": "cfxr stretch skull",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-skull.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch skull.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 34482
+  },
+  {
+    "name": "cfxr stretch smoke arc dissolve",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-smoke-arc-dissolve.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch smoke arc dissolve.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 512,
+    "bytes": 23143
+  },
+  {
+    "name": "cfxr stretch smoke arc",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-smoke-arc.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch smoke arc.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 512,
+    "bytes": 13205
+  },
+  {
+    "name": "cfxr stretch smoke fume",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-smoke-fume.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch smoke fume.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 128,
+    "bytes": 23508
+  },
+  {
+    "name": "cfxr stretch spike fade",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-spike-fade.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch spike fade.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 256,
+    "bytes": 27613
+  },
+  {
+    "name": "cfxr stretch steam blur distort",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-steam-blur-distort.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch steam blur distort.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 128,
+    "height": 128,
+    "bytes": 21133
+  },
+  {
+    "name": "cfxr stretch trait blur",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-trait-blur.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch trait blur.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 128,
+    "bytes": 8729
+  },
+  {
+    "name": "cfxr stretch trait",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-trait.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch trait.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 128,
+    "bytes": 3344
+  },
+  {
+    "name": "cfxr stretch triangle fade",
+    "path": "/public/assets/cfxr/graphics/cfxr-stretch-triangle-fade.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr stretch triangle fade.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 256,
+    "bytes": 7962
+  },
+  {
+    "name": "cfxr sword trail mask light",
+    "path": "/public/assets/cfxr/graphics/cfxr-sword-trail-mask-light.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr sword trail mask light.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 2048,
+    "height": 512,
+    "bytes": 29753
+  },
+  {
+    "name": "cfxr sword trail mask lines",
+    "path": "/public/assets/cfxr/graphics/cfxr-sword-trail-mask-lines.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr sword trail mask lines.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 192795
+  },
+  {
+    "name": "cfxr sword trail mask plain",
+    "path": "/public/assets/cfxr/graphics/cfxr-sword-trail-mask-plain.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr sword trail mask plain.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 256,
+    "bytes": 23544
+  },
+  {
+    "name": "cfxr sword trail noise bubbles",
+    "path": "/public/assets/cfxr/graphics/cfxr-sword-trail-noise-bubbles.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr sword trail noise bubbles.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 397507
+  },
+  {
+    "name": "cfxr sword trail noise ice",
+    "path": "/public/assets/cfxr/graphics/cfxr-sword-trail-noise-ice.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr sword trail noise ice.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 52500
+  },
+  {
+    "name": "cfxr sword trail noise tech",
+    "path": "/public/assets/cfxr/graphics/cfxr-sword-trail-noise-tech.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr sword trail noise tech.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 29950
+  },
+  {
+    "name": "cfxr uv distortion fire perlin",
+    "path": "/public/assets/cfxr/graphics/cfxr-uv-distortion-fire-perlin.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr uv distortion fire perlin.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 53607
+  },
+  {
+    "name": "cfxr uv distortion fire smudge",
+    "path": "/public/assets/cfxr/graphics/cfxr-uv-distortion-fire-smudge.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr uv distortion fire smudge.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 53083
+  },
+  {
+    "name": "cfxr water drop blur anim",
+    "path": "/public/assets/cfxr/graphics/cfxr-water-drop-blur-anim.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr water drop blur anim.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 768,
+    "bytes": 60877
+  },
+  {
+    "name": "cfxr water foam",
+    "path": "/public/assets/cfxr/graphics/cfxr-water-foam.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr water foam.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 14562
+  },
+  {
+    "name": "cfxr water small splash hollow stretch",
+    "path": "/public/assets/cfxr/graphics/cfxr-water-small-splash-hollow-stretch.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr water small splash hollow stretch.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 45410
+  },
+  {
+    "name": "cfxr water small splash stretch",
+    "path": "/public/assets/cfxr/graphics/cfxr-water-small-splash-stretch.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr water small splash stretch.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 17829
+  },
+  {
+    "name": "cfxr ww smoke bright",
+    "path": "/public/assets/cfxr/graphics/cfxr-ww-smoke-bright.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr ww smoke bright.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 13374
+  },
+  {
+    "name": "cfxr ww smoke first color",
+    "path": "/public/assets/cfxr/graphics/cfxr-ww-smoke-first-color.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr ww smoke first color.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 10723
+  },
+  {
+    "name": "cfxr ww smoke glow",
+    "path": "/public/assets/cfxr/graphics/cfxr-ww-smoke-glow.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr ww smoke glow.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 70995
+  },
+  {
+    "name": "cfxr ww smoke second color",
+    "path": "/public/assets/cfxr/graphics/cfxr-ww-smoke-second-color.png",
+    "sourcePath": "CFXR Assets\\Graphics\\cfxr ww smoke second color.png",
+    "category": "graphics",
+    "format": "png",
+    "width": 512,
+    "height": 512,
+    "bytes": 12248
+  },
+  {
+    "name": "cfxr font AmazGoDaBold",
+    "path": "/public/assets/cfxr/misc/cfxr-font-amazgodabold.png",
+    "sourcePath": "CFXR Assets\\Misc\\cfxr font AmazGoDaBold.png",
+    "category": "misc",
+    "format": "png",
+    "width": 4949,
+    "height": 72,
+    "bytes": 129203
+  },
+  {
+    "name": "cfxr font WashYourHand",
+    "path": "/public/assets/cfxr/misc/cfxr-font-washyourhand.png",
+    "sourcePath": "CFXR Assets\\Misc\\cfxr font WashYourHand.png",
+    "category": "misc",
+    "format": "png",
+    "width": 4330,
+    "height": 80,
+    "bytes": 107891
+  },
+  {
+    "name": "CFXR Demo Ground",
+    "path": "/public/assets/cfxr/misc/cfxr-demo-ground.png",
+    "sourcePath": "Demo Assets\\CFXR Demo Ground.png",
+    "category": "misc",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 24638
+  },
+  {
+    "name": "CFXR Demo Btn Arrow R",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-arrow-r.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn Arrow R.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 2025
+  },
+  {
+    "name": "CFXR Demo Btn Arrow",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-arrow.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn Arrow.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 2029
+  },
+  {
+    "name": "CFXR Demo Btn Bloom H",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-bloom-h.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn Bloom H.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 25673
+  },
+  {
+    "name": "CFXR Demo Btn Bloom",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-bloom.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn Bloom.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 27150
+  },
+  {
+    "name": "CFXR Demo Btn Camera H",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-camera-h.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn Camera H.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 12583
+  },
+  {
+    "name": "CFXR Demo Btn Camera",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-camera.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn Camera.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 12141
+  },
+  {
+    "name": "CFXR Demo Btn CameraShake H",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-camerashake-h.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn CameraShake H.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 17240
+  },
+  {
+    "name": "CFXR Demo Btn CameraShake",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-camerashake.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn CameraShake.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 15837
+  },
+  {
+    "name": "CFXR Demo Btn Ground H",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-ground-h.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn Ground H.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 10869
+  },
+  {
+    "name": "CFXR Demo Btn Ground",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-ground.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn Ground.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 10549
+  },
+  {
+    "name": "CFXR Demo Btn Lights H",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-lights-h.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn Lights H.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 11920
+  },
+  {
+    "name": "CFXR Demo Btn Lights",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-lights.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn Lights.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 11473
+  },
+  {
+    "name": "CFXR Demo Btn SlowMo H",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-slowmo-h.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn SlowMo H.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 16741
+  },
+  {
+    "name": "CFXR Demo Btn SlowMo",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-btn-slowmo.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Btn SlowMo.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 256,
+    "height": 256,
+    "bytes": 15896
+  },
+  {
+    "name": "CFXR Demo Logo",
+    "path": "/public/assets/cfxr/demo-ui/cfxr-demo-logo.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR Demo Logo.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 364,
+    "height": 45,
+    "bytes": 32992
+  },
+  {
+    "name": "CFXR2 Demo Logo",
+    "path": "/public/assets/cfxr/demo-ui/cfxr2-demo-logo.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR2 Demo Logo.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 364,
+    "height": 45,
+    "bytes": 12260
+  },
+  {
+    "name": "CFXR3 Demo Logo",
+    "path": "/public/assets/cfxr/demo-ui/cfxr3-demo-logo.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR3 Demo Logo.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 364,
+    "height": 45,
+    "bytes": 12759
+  },
+  {
+    "name": "CFXR4 Demo Logo",
+    "path": "/public/assets/cfxr/demo-ui/cfxr4-demo-logo.png",
+    "sourcePath": "Demo Assets\\UI\\CFXR4 Demo Logo.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 364,
+    "height": 45,
+    "bytes": 12078
+  },
+  {
+    "name": "CFXRF Demo Logo",
+    "path": "/public/assets/cfxr/demo-ui/cfxrf-demo-logo.png",
+    "sourcePath": "Demo Assets\\UI\\CFXRF Demo Logo.png",
+    "category": "demo-ui",
+    "format": "png",
+    "width": 364,
+    "height": 45,
+    "bytes": 16926
+  }
+]

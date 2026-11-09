@@ -1,0 +1,367 @@
+[
+  {
+    "id": "espada_hielo_1",
+    "name": "Espada de Acero de Icespear",
+    "type": "weapon",
+    "rarity": "SR",
+    "level": 1,
+    "stats": {
+      "attack": 45,
+      "critRate": 0.05
+    },
+    "icon": "/assets/items/ESPADA LOUX.png",
+    "description": "Forjada en los hornos de Icespear con temple de nieve."
+  },
+  {
+    "id": "armadura_centinela_1",
+    "name": "Coraza del Centinela",
+    "type": "armor",
+    "rarity": "SR",
+    "level": 1,
+    "stats": {
+      "hp": 200,
+      "defense": 35
+    },
+    "icon": "/assets/items/ARMADURA LOUX.png",
+    "description": "Placas de metal pulido capaces de resistir el embate de las bestias."
+  },
+  {
+    "id": "anillo_astral_1",
+    "name": "Sello de la Casa Loux",
+    "type": "ring",
+    "rarity": "SSR",
+    "level": 1,
+    "stats": {
+      "attack": 30,
+      "defense": 20,
+      "hp": 120
+    },
+    "icon": "/assets/items/ANILLO ORO.png",
+    "description": "Grabado con el blasón de la dinastía Loux."
+  },
+  {
+    "id": "hacha_guerra_hierro",
+    "name": "Hacha de Guerra de Hierro",
+    "type": "weapon",
+    "rarity": "R",
+    "level": 1,
+    "stats": {
+      "attack": 34,
+      "critRate": 0.08
+    },
+    "icon": "/assets/aistudio/hacha_de_guerra_HIERRO_ITEM_f33aec86.png",
+    "description": "Hacha de combate pesada de dos filos, forjada en hierro reforzado con empuñadura de cuero."
+  },
+  {
+    "id": "hacha_guerra_quitina",
+    "name": "Hacha de Guerra de Quitina",
+    "type": "weapon",
+    "rarity": "SR",
+    "level": 1,
+    "stats": {
+      "attack": 41,
+      "critRate": 0.10
+    },
+    "icon": "/assets/aistudio/hacha_de_guerra_QUITINA_ITEM_17a3befe.png",
+    "description": "Labrada con corazas de bestias ancestrales, ligera pero dotada de un filo aserrado letal."
+  },
+  {
+    "id": "hacha_guerra_plata",
+    "name": "Hacha de Guerra de Plata",
+    "type": "weapon",
+    "rarity": "SR",
+    "level": 1,
+    "stats": {
+      "attack": 43,
+      "critRate": 0.12
+    },
+    "icon": "/assets/aistudio/hacha_de_guerra_PLATA_ITEM_2b85baf8.png",
+    "description": "Hacha ceremonial bendecida con plata purificada de la guardia de Icespear."
+  },
+  {
+    "id": "hacha_guerra_electrum",
+    "name": "Hacha de Guerra de Electrum",
+    "type": "weapon",
+    "rarity": "SSR",
+    "level": 1,
+    "stats": {
+      "attack": 46,
+      "critRate": 0.15
+    },
+    "icon": "/assets/aistudio/hacha_de_guerra_ELECTRUM_ITEM_93464ae3.png",
+    "description": "Forjada con aleación arcana de oro y plata con cristales de maná incrustados."
+  },
+  {
+    "id": "hacha_guerra_oro",
+    "name": "Hacha de Guerra de Oro",
+    "type": "weapon",
+    "rarity": "SSR",
+    "level": 1,
+    "stats": {
+      "attack": 49,
+      "critRate": 0.18
+    },
+    "icon": "/assets/aistudio/hacha_de_guerra_OROITEM_b7663ca8.png",
+    "description": "Obra maestra de los orfebres de Icespear adornada con un rubí de corte diamante."
+  },
+  {
+    "id": "martillo_hierro",
+    "name": "Martillo de Hierro",
+    "type": "weapon",
+    "rarity": "R",
+    "level": 1,
+    "stats": {
+      "attack": 30,
+      "critRate": 0.05
+    },
+    "icon": "/assets/aistudio/martillo_de_hierropng_562813c4.png",
+    "description": "Martillo pesado forjado para quebrar armaduras de hierro y aplastar defensas."
+  },
+  {
+    "id": "martillo_guerra_hierro",
+    "name": "Martillo de Guerra de Hierro",
+    "type": "weapon",
+    "rarity": "R",
+    "level": 1,
+    "stats": {
+      "attack": 35,
+      "critRate": 0.08
+    },
+    "icon": "/assets/aistudio/martillo_de_guerra_8845aea4.png",
+    "description": "Martillo de guerra de hierro con punta de pico perforadora."
+  },
+  {
+    "id": "martillo_quitina",
+    "name": "Martillo de Quitina",
+    "type": "weapon",
+    "rarity": "SR",
+    "level": 1,
+    "stats": {
+      "attack": 36,
+      "critRate": 0.07
+    },
+    "icon": "/assets/aistudio/martillo_de_quitinapng_72887996.png",
+    "description": "Mazo biológico endurecido con quitina orgánica fosilizada."
+  },
+  {
+    "id": "martillo_guerra_quitina",
+    "name": "Martillo de Guerra de Quitina",
+    "type": "weapon",
+    "rarity": "SR",
+    "level": 1,
+    "stats": {
+      "attack": 42,
+      "critRate": 0.10
+    },
+    "icon": "/assets/aistudio/martillo_de_guerra_de_quitina_ef9e5364.png",
+    "description": "Mazo de combate de quitina con colmillo perforador de gran impacto."
+  },
+  {
+    "id": "martillo_plata",
+    "name": "Martillo de Plata",
+    "type": "weapon",
+    "rarity": "SR",
+    "level": 1,
+    "stats": {
+      "attack": 38,
+      "critRate": 0.09
+    },
+    "icon": "/assets/aistudio/martillo_de_plata_12731c2b.png",
+    "description": "Martillo de plata maciza con inscripciones sagradas de Icespear."
+  },
+  {
+    "id": "martillo_guerra_plata",
+    "name": "Martillo de Guerra de Plata",
+    "type": "weapon",
+    "rarity": "SR",
+    "level": 1,
+    "stats": {
+      "attack": 45,
+      "critRate": 0.12
+    },
+    "icon": "/assets/aistudio/martillo_de_guerra_de_plata_d2e6353c.png",
+    "description": "Arma consagrada de plata estelar con púa anti-demoníaca."
+  },
+  {
+    "id": "martillo_electrum",
+    "name": "Martillo de Electrum",
+    "type": "weapon",
+    "rarity": "SSR",
+    "level": 1,
+    "stats": {
+      "attack": 42,
+      "critRate": 0.12
+    },
+    "icon": "/assets/aistudio/martillo_de_electrum_85e0be8f.png",
+    "description": "Martillo forjado en electrum cristalino imbuido de runas celestiales."
+  },
+  {
+    "id": "martillo_guerra_electrum",
+    "name": "Martillo de Guerra de Electrum",
+    "type": "weapon",
+    "rarity": "SSR",
+    "level": 1,
+    "stats": {
+      "attack": 48,
+      "critRate": 0.15
+    },
+    "icon": "/assets/aistudio/martillo_de_guerra_de_electrum_7e3e66a4.png",
+    "description": "Pico de guerra arcano con diamante pulido capaz de romper barreras mágicas."
+  },
+  {
+    "id": "martillo_oro",
+    "name": "Martillo de Oro",
+    "type": "weapon",
+    "rarity": "SSR",
+    "level": 1,
+    "stats": {
+      "attack": 44,
+      "critRate": 0.14
+    },
+    "icon": "/assets/aistudio/martillo_de_oro_2144f9ff.png",
+    "description": "Mazo ceremonial imperial revestido en oro puro y obsidiana con gema carmesí."
+  },
+  {
+    "id": "martillo_guerra_oro",
+    "name": "Martillo de Guerra de Oro",
+    "type": "weapon",
+    "rarity": "SSR",
+    "level": 1,
+    "stats": {
+      "attack": 52,
+      "critRate": 0.18
+    },
+    "icon": "/assets/aistudio/martillo_de_guerra_de_oro_b5f2d8a4.png",
+    "description": "Martillo de guerra imperial de oro bruñido y punta de lanza de ónice."
+  },
+  {
+    "id": "dagas_hierro",
+    "name": "Dagas de Hierro",
+    "type": "weapon",
+    "rarity": "R",
+    "level": 1,
+    "stats": {
+      "attack": 24,
+      "critRate": 0.12
+    },
+    "icon": "/assets/aistudio/dagas_de_hierro_basica_app_afd081a5.png",
+    "description": "Par de dagas cruzadas de hierro forjado, ágiles y balanceadas para cortes rápidos."
+  },
+  {
+    "id": "dagas_quitina",
+    "name": "Dagas de Quitina",
+    "type": "weapon",
+    "rarity": "SR",
+    "level": 1,
+    "stats": {
+      "attack": 28,
+      "critRate": 0.15
+    },
+    "icon": "/assets/aistudio/dagas_de_quitina_72864683.png",
+    "description": "Dagas de hueso y quitina salvaje con doble filo dentado letal."
+  },
+  {
+    "id": "dagas_plata",
+    "name": "Dagas de Plata",
+    "type": "weapon",
+    "rarity": "SR",
+    "level": 1,
+    "stats": {
+      "attack": 30,
+      "critRate": 0.16
+    },
+    "icon": "/assets/aistudio/dagas_de_plata_4988d0bc.png",
+    "description": "Dagas sagradas de la guardia con hojas de plata purificada."
+  },
+  {
+    "id": "dagas_electrum",
+    "name": "Dagas de Electrum",
+    "type": "weapon",
+    "rarity": "SSR",
+    "level": 1,
+    "stats": {
+      "attack": 32,
+      "critRate": 0.20
+    },
+    "icon": "/assets/aistudio/dagas_de_electrum_f8997ef3.png",
+    "description": "Dagas gemelas imbuidas de energía arcana y engastes de gemas celestes."
+  },
+  {
+    "id": "dagas_oro",
+    "name": "Dagas de Oro",
+    "type": "weapon",
+    "rarity": "SSR",
+    "level": 1,
+    "stats": {
+      "attack": 35,
+      "critRate": 0.22
+    },
+    "icon": "/assets/aistudio/dagas_de_oro_c08c3a2a.png",
+    "description": "Cuchillos de oro macizo y hojas de obsidiana con rubíes engarzados."
+  },
+  {
+    "id": "grimorio_hierro",
+    "name": "Grimorio de Hierro",
+    "type": "weapon",
+    "rarity": "R",
+    "level": 1,
+    "stats": {
+      "attack": 32,
+      "critRate": 0.05
+    },
+    "icon": "/assets/aistudio/grimorio_hierroapp_01bcdb9b.png",
+    "description": "Tomo arcano encuadernado en madera y hierro con el blasón draconiano."
+  },
+  {
+    "id": "grimorio_quitina",
+    "name": "Grimorio de Quitina",
+    "type": "weapon",
+    "rarity": "SR",
+    "level": 1,
+    "stats": {
+      "attack": 38,
+      "critRate": 0.08
+    },
+    "icon": "/assets/aistudio/grimorio_de_quitina_59eb86e3.png",
+    "description": "Compendio de magia salvaje sellado con placas de quitina y gema viva."
+  },
+  {
+    "id": "grimorio_plata",
+    "name": "Grimorio de Plata",
+    "type": "weapon",
+    "rarity": "SR",
+    "level": 1,
+    "stats": {
+      "attack": 40,
+      "critRate": 0.10
+    },
+    "icon": "/assets/aistudio/grimorio_de_plata_0acbecea.png",
+    "description": "Libro de rezos sagrados y plegarias de luz encuadernado en plata purificada."
+  },
+  {
+    "id": "grimorio_electrum",
+    "name": "Grimorio de Electrum",
+    "type": "weapon",
+    "rarity": "SSR",
+    "level": 1,
+    "stats": {
+      "attack": 44,
+      "critRate": 0.14
+    },
+    "icon": "/assets/aistudio/grimorio_de_electrum_f97ce2b3.png",
+    "description": "Libro de conjuros de alta hechicería con estrella de electrum y orfebrería dorada."
+  },
+  {
+    "id": "grimorio_oro",
+    "name": "Grimorio de Oro",
+    "type": "weapon",
+    "rarity": "SSR",
+    "level": 1,
+    "stats": {
+      "attack": 48,
+      "critRate": 0.16
+    },
+    "icon": "/assets/aistudio/grimorio_de_oro_7ebca939.png",
+    "description": "Tomo prohibido forjado en oro noble y cuero de abismo con gemas de rubí."
+  }
+]

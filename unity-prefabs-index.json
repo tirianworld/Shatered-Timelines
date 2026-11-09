@@ -1,0 +1,4207 @@
+[
+  {
+    "name": "CFXR2 Enemy Explosion (Lit)",
+    "category": "Eerie",
+    "sourcePath": "CFXR Prefabs\\Eerie\\CFXR2 Enemy Explosion (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Magic Explosion (Lit, Blue)",
+    "category": "Eerie",
+    "sourcePath": "CFXR Prefabs\\Eerie\\CFXR2 Magic Explosion (Lit, Blue).prefab"
+  },
+  {
+    "name": "CFXR2 Magic Explosion Spherical (Lit, Purple+Blue)",
+    "category": "Eerie",
+    "sourcePath": "CFXR Prefabs\\Eerie\\CFXR2 Magic Explosion Spherical (Lit, Purple+Blue).prefab"
+  },
+  {
+    "name": "CFXR2 Poison Cloud + Skulls",
+    "category": "Eerie",
+    "sourcePath": "CFXR Prefabs\\Eerie\\CFXR2 Poison Cloud + Skulls.prefab"
+  },
+  {
+    "name": "CFXR2 Skull Head + Eyes Resonance",
+    "category": "Eerie",
+    "sourcePath": "CFXR Prefabs\\Eerie\\CFXR2 Skull Head + Eyes Resonance.prefab"
+  },
+  {
+    "name": "CFXR2 Skull Head + Eyes",
+    "category": "Eerie",
+    "sourcePath": "CFXR Prefabs\\Eerie\\CFXR2 Skull Head + Eyes.prefab"
+  },
+  {
+    "name": "CFXR2 Skull Head Alt",
+    "category": "Eerie",
+    "sourcePath": "CFXR Prefabs\\Eerie\\CFXR2 Skull Head Alt.prefab"
+  },
+  {
+    "name": "CFXR2 Skull Head",
+    "category": "Eerie",
+    "sourcePath": "CFXR Prefabs\\Eerie\\CFXR2 Skull Head.prefab"
+  },
+  {
+    "name": "CFXR2 Skull Heads Burst",
+    "category": "Eerie",
+    "sourcePath": "CFXR Prefabs\\Eerie\\CFXR2 Skull Heads Burst.prefab"
+  },
+  {
+    "name": "CFXR2 Souls Escape",
+    "category": "Eerie",
+    "sourcePath": "CFXR Prefabs\\Eerie\\CFXR2 Souls Escape.prefab"
+  },
+  {
+    "name": "CFXR2 Wandering Souls",
+    "category": "Eerie",
+    "sourcePath": "CFXR Prefabs\\Eerie\\CFXR2 Wandering Souls.prefab"
+  },
+  {
+    "name": "CFXR2 WW Enemy Explosion",
+    "category": "Eerie",
+    "sourcePath": "CFXR Prefabs\\Eerie\\CFXR2 WW Enemy Explosion.prefab"
+  },
+  {
+    "name": "CFXR2 Enemy Explosion (Unlit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Enemy Explosion (Unlit).prefab"
+  },
+  {
+    "name": "CFXR2 Enemy Explosion + Skull (Lit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Enemy Explosion + Skull (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Enemy Explosion + Skull (Unlit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Enemy Explosion + Skull (Unlit).prefab"
+  },
+  {
+    "name": "CFXR2 Magic Explosion (Lit, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Magic Explosion (Lit, Green).prefab"
+  },
+  {
+    "name": "CFXR2 Magic Explosion (Lit, Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Magic Explosion (Lit, Purple).prefab"
+  },
+  {
+    "name": "CFXR2 Magic Explosion (Unlit, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Magic Explosion (Unlit, Blue).prefab"
+  },
+  {
+    "name": "CFXR2 Magic Explosion (Unlit, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Magic Explosion (Unlit, Green).prefab"
+  },
+  {
+    "name": "CFXR2 Magic Explosion Spherical (Lit, Red+Yellow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Magic Explosion Spherical (Lit, Red+Yellow).prefab"
+  },
+  {
+    "name": "CFXR2 Magic Explosion Spherical (Lit, Yellow+Cyan)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Magic Explosion Spherical (Lit, Yellow+Cyan).prefab"
+  },
+  {
+    "name": "CFXR2 Magic Explosion Spherical (Unlit, Purple+Blue) Variant",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Magic Explosion Spherical (Unlit, Purple+Blue) Variant.prefab"
+  },
+  {
+    "name": "CFXR2 Poison Cloud + Skulls (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Poison Cloud + Skulls (Purple).prefab"
+  },
+  {
+    "name": "CFXR2 Skull Head + Eyes (Fire HDR, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Skull Head + Eyes (Fire HDR, Blue).prefab"
+  },
+  {
+    "name": "CFXR2 Skull Head + Eyes (Fire HDR, Loop, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Skull Head + Eyes (Fire HDR, Loop, Blue).prefab"
+  },
+  {
+    "name": "CFXR2 Skull Head + Eyes (Fire HDR, Loop)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Skull Head + Eyes (Fire HDR, Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Skull Head + Eyes (Fire HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Skull Head + Eyes (Fire HDR).prefab"
+  },
+  {
+    "name": "CFXR2 Skull Head + Shadow",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Skull Head + Shadow.prefab"
+  },
+  {
+    "name": "CFXR2 Skulls Escape",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Skulls Escape.prefab"
+  },
+  {
+    "name": "CFXR2 Souls Escape (Omni)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Souls Escape (Omni).prefab"
+  },
+  {
+    "name": "CFXR2 Souls Escape (Single)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 Souls Escape (Single).prefab"
+  },
+  {
+    "name": "CFXR2 WW Enemy Explosion + Skull",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Eerie\\Variants\\CFXR2 WW Enemy Explosion + Skull.prefab"
+  },
+  {
+    "name": "CFXR Electric Barrier (HDR)",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR Electric Barrier (HDR).prefab"
+  },
+  {
+    "name": "CFXR Electric Barrier Simple (HDR)",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR Electric Barrier Simple (HDR).prefab"
+  },
+  {
+    "name": "CFXR Electric Explosion",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR Electric Explosion.prefab"
+  },
+  {
+    "name": "CFXR Electric Surface 2",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR Electric Surface 2.prefab"
+  },
+  {
+    "name": "CFXR Electric Surface",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR Electric Surface.prefab"
+  },
+  {
+    "name": "CFXR Electrified 1",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR Electrified 1.prefab"
+  },
+  {
+    "name": "CFXR Electrified 2",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR Electrified 2.prefab"
+  },
+  {
+    "name": "CFXR Electrified 3",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR Electrified 3.prefab"
+  },
+  {
+    "name": "CFXR Lightning Impact",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR Lightning Impact.prefab"
+  },
+  {
+    "name": "CFXR Lightning Strike + Impact",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR Lightning Strike + Impact.prefab"
+  },
+  {
+    "name": "CFXR2 Sparks Hit Directional",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR2 Sparks Hit Directional.prefab"
+  },
+  {
+    "name": "CFXR2 Sparks Hit Omni",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR2 Sparks Hit Omni.prefab"
+  },
+  {
+    "name": "CFXR2 Sparks Rain",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR2 Sparks Rain.prefab"
+  },
+  {
+    "name": "CFXR2 Sparks Source Directional",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR2 Sparks Source Directional.prefab"
+  },
+  {
+    "name": "CFXR2 Sparks Source Omni",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR2 Sparks Source Omni.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Electric A (Air)",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR3 Hit Electric A (Air).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Electric B (Air)",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR3 Hit Electric B (Air).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Electric C (Air)",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR3 Hit Electric C (Air).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion (HDR)",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR4 Sparks Explosion (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion Double",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR4 Sparks Explosion Double.prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion Straight Double",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR4 Sparks Explosion Straight Double.prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion Straight",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR4 Sparks Explosion Straight.prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion",
+    "category": "Electric",
+    "sourcePath": "CFXR Prefabs\\Electric\\CFXR4 Sparks Explosion.prefab"
+  },
+  {
+    "name": "CFXR Electric Barrier (HDR, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Barrier (HDR, Green).prefab"
+  },
+  {
+    "name": "CFXR Electric Barrier (HDR, Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Barrier (HDR, Purple).prefab"
+  },
+  {
+    "name": "CFXR Electric Barrier (LDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Barrier (LDR).prefab"
+  },
+  {
+    "name": "CFXR Electric Barrier Simple (HDR, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Barrier Simple (HDR, Green).prefab"
+  },
+  {
+    "name": "CFXR Electric Barrier Simple (HDR, no light)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Barrier Simple (HDR, no light).prefab"
+  },
+  {
+    "name": "CFXR Electric Barrier Simple (HDR, Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Barrier Simple (HDR, Purple).prefab"
+  },
+  {
+    "name": "CFXR Electric Barrier Simple (LDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Barrier Simple (LDR).prefab"
+  },
+  {
+    "name": "CFXR Electric Explosion (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Explosion (Green).prefab"
+  },
+  {
+    "name": "CFXR Electric Explosion (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Explosion (Purple).prefab"
+  },
+  {
+    "name": "CFXR Electric Explosion + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Explosion + Text.prefab"
+  },
+  {
+    "name": "CFXR Electric Surface (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Surface (Green).prefab"
+  },
+  {
+    "name": "CFXR Electric Surface (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Surface (Purple).prefab"
+  },
+  {
+    "name": "CFXR Electric Surface 2 (Contrast)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Surface 2 (Contrast).prefab"
+  },
+  {
+    "name": "CFXR Electric Surface 2 (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Surface 2 (Green).prefab"
+  },
+  {
+    "name": "CFXR Electric Surface 2 (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electric Surface 2 (Purple).prefab"
+  },
+  {
+    "name": "CFXR Electrified 1 (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electrified 1 (Green).prefab"
+  },
+  {
+    "name": "CFXR Electrified 1 (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electrified 1 (Purple).prefab"
+  },
+  {
+    "name": "CFXR Electrified 2 (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electrified 2 (Green).prefab"
+  },
+  {
+    "name": "CFXR Electrified 2 (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electrified 2 (Purple).prefab"
+  },
+  {
+    "name": "CFXR Electrified 3 (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electrified 3 (Green).prefab"
+  },
+  {
+    "name": "CFXR Electrified 3 (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Electrified 3 (Purple).prefab"
+  },
+  {
+    "name": "CFXR Lightning Impact (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Lightning Impact (Green).prefab"
+  },
+  {
+    "name": "CFXR Lightning Impact (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Lightning Impact (Purple).prefab"
+  },
+  {
+    "name": "CFXR Lightning Strike + Impact (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Lightning Strike + Impact (Green).prefab"
+  },
+  {
+    "name": "CFXR Lightning Strike + Impact (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Lightning Strike + Impact (Purple).prefab"
+  },
+  {
+    "name": "CFXR Lightning Strike + Impact + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR Lightning Strike + Impact + Text.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Electric A (Air, Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR3 Hit Electric A (Air, Purple).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Electric B (Air, Cyan) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR3 Hit Electric B (Air, Cyan) + Text.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Electric B (Air, Cyan)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR3 Hit Electric B (Air, Cyan).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Electric C (Air, Green) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR3 Hit Electric C (Air, Green) + Text.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Electric C (Air, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR3 Hit Electric C (Air, Green).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion (Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion (HDR, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion (HDR, Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion (HDR, Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion (HDR, Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion (HDR, Small, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion (HDR, Small, Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion (HDR, Small, Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion (HDR, Small, Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion (HDR, Small)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion (HDR, Small).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion (Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion (Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion (Small, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion (Small, Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion (Small, Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion (Small, Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion (Small)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion (Small).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion Straight (HDR, Small)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion Straight (HDR, Small).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion Straight (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion Straight (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Sparks Explosion Straight (Small)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Electric\\Variants\\CFXR4 Sparks Explosion Straight (Small).prefab"
+  },
+  {
+    "name": "CFXR Explosion 1",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR Explosion 1.prefab"
+  },
+  {
+    "name": "CFXR Explosion 2 Bigger",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR Explosion 2 Bigger.prefab"
+  },
+  {
+    "name": "CFXR Explosion 2",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR Explosion 2.prefab"
+  },
+  {
+    "name": "CFXR Explosion 3 Bigger",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR Explosion 3 Bigger.prefab"
+  },
+  {
+    "name": "CFXR Explosion 3",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR Explosion 3.prefab"
+  },
+  {
+    "name": "CFXR Explosion Smoke 1",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR Explosion Smoke 1.prefab"
+  },
+  {
+    "name": "CFXR Explosion Smoke 2 (HDR)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR Explosion Smoke 2 (HDR).prefab"
+  },
+  {
+    "name": "CFXR Explosion Smoke 2 Solo (HDR)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR Explosion Smoke 2 Solo (HDR).prefab"
+  },
+  {
+    "name": "CFXR Firework 1",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR Firework 1.prefab"
+  },
+  {
+    "name": "CFXR Firework 2",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR Firework 2.prefab"
+  },
+  {
+    "name": "CFXR Firework 3",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR Firework 3.prefab"
+  },
+  {
+    "name": "CFXR2 Canon Muzzle Flash",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR2 Canon Muzzle Flash.prefab"
+  },
+  {
+    "name": "CFXR2 Explosion (Lit, Omni)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR2 Explosion (Lit, Omni).prefab"
+  },
+  {
+    "name": "CFXR2 Explosion (Lit)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR2 Explosion (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Explosion + Projections (Lit)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR2 Explosion + Projections (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 WW Canon Muzzle Flash",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR2 WW Canon Muzzle Flash.prefab"
+  },
+  {
+    "name": "CFXR2 WW Explosion (Omni)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR2 WW Explosion (Omni).prefab"
+  },
+  {
+    "name": "CFXR2 WW Explosion + Projections (Omni)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR2 WW Explosion + Projections (Omni).prefab"
+  },
+  {
+    "name": "CFXR2 WW Explosion + Projections",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR2 WW Explosion + Projections.prefab"
+  },
+  {
+    "name": "CFXR2 WW Explosion",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR2 WW Explosion.prefab"
+  },
+  {
+    "name": "CFXR3 Fire Explosion A",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR3 Fire Explosion A.prefab"
+  },
+  {
+    "name": "CFXR3 Fire Explosion B",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR3 Fire Explosion B.prefab"
+  },
+  {
+    "name": "CFXR4 Explosion Orange (HDR) + Smoke",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Explosion Orange (HDR) + Smoke.prefab"
+  },
+  {
+    "name": "CFXR4 Explosion Orange (HDR)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Explosion Orange (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Explosion Quick",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Explosion Quick.prefab"
+  },
+  {
+    "name": "CFXR4 Firework 1 Cyan-Purple (HDR)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Firework 1 Cyan-Purple (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Firework 1 Cyan-Purple",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Firework 1 Cyan-Purple.prefab"
+  },
+  {
+    "name": "CFXR4 Firework 2 Cyan-Purple (HDR)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Firework 2 Cyan-Purple (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Firework HDR Shoot Multiple Loop (Random Color)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Firework HDR Shoot Multiple Loop (Random Color).prefab"
+  },
+  {
+    "name": "CFXR4 Firework HDR Shoot Single (Random Color)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Firework HDR Shoot Single (Random Color).prefab"
+  },
+  {
+    "name": "CFXR4 Firework with Glows Cyan-Purple (HDR)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Firework with Glows Cyan-Purple (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Firework with Glows Cyan-Purple",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Firework with Glows Cyan-Purple.prefab"
+  },
+  {
+    "name": "CFXR4 Firework with Glows HDR Shoot Multiple Loop (Random Color)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Firework with Glows HDR Shoot Multiple Loop (Random Color).prefab"
+  },
+  {
+    "name": "CFXR4 Firework with Glows HDR Shoot Single (Random Color)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Firework with Glows HDR Shoot Single (Random Color).prefab"
+  },
+  {
+    "name": "CFXR4 Monster Explosion Purple (Big)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Monster Explosion Purple (Big).prefab"
+  },
+  {
+    "name": "CFXR4 Monster Explosion Purple (HDR, Big)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Monster Explosion Purple (HDR, Big).prefab"
+  },
+  {
+    "name": "CFXR4 Monster Explosion Purple (HDR, Small)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Monster Explosion Purple (HDR, Small).prefab"
+  },
+  {
+    "name": "CFXR4 Monster Explosion Purple (Small)",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Monster Explosion Purple (Small).prefab"
+  },
+  {
+    "name": "CFXR4 Wave Explosion Purple",
+    "category": "Explosions",
+    "sourcePath": "CFXR Prefabs\\Explosions\\CFXR4 Wave Explosion Purple.prefab"
+  },
+  {
+    "name": "CFXR Explosion 1 (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 1 (HDR).prefab"
+  },
+  {
+    "name": "CFXR Explosion 1 (no smoke)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 1 (no smoke).prefab"
+  },
+  {
+    "name": "CFXR Explosion 1 + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 1 + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR Explosion 1 + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 1 + Text.prefab"
+  },
+  {
+    "name": "CFXR Explosion 2 (Bigger, HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 2 (Bigger, HDR).prefab"
+  },
+  {
+    "name": "CFXR Explosion 2 (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 2 (HDR).prefab"
+  },
+  {
+    "name": "CFXR Explosion 2 (no smoke)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 2 (no smoke).prefab"
+  },
+  {
+    "name": "CFXR Explosion 2 + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 2 + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR Explosion 2 + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 2 + Text.prefab"
+  },
+  {
+    "name": "CFXR Explosion 3 (Bigger, HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 3 (Bigger, HDR).prefab"
+  },
+  {
+    "name": "CFXR Explosion 3 (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 3 (HDR).prefab"
+  },
+  {
+    "name": "CFXR Explosion 3 + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 3 + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR Explosion 3 + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion 3 + Text.prefab"
+  },
+  {
+    "name": "CFXR Explosion Smoke 1 (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion Smoke 1 (HDR).prefab"
+  },
+  {
+    "name": "CFXR Explosion Smoke 2 (HDR, no smoke columns)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion Smoke 2 (HDR, no smoke columns).prefab"
+  },
+  {
+    "name": "CFXR Explosion Smoke 2 Solo (HDR, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Explosion Smoke 2 Solo (HDR, Blue).prefab"
+  },
+  {
+    "name": "CFXR Firework 1 (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 1 (Blue).prefab"
+  },
+  {
+    "name": "CFXR Firework 1 (Cold)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 1 (Cold).prefab"
+  },
+  {
+    "name": "CFXR Firework 1 (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 1 (Green).prefab"
+  },
+  {
+    "name": "CFXR Firework 1 (Hot)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 1 (Hot).prefab"
+  },
+  {
+    "name": "CFXR Firework 1 (Multicolor)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 1 (Multicolor).prefab"
+  },
+  {
+    "name": "CFXR Firework 1 (Red, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 1 (Red, Green).prefab"
+  },
+  {
+    "name": "CFXR Firework 1 (Red)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 1 (Red).prefab"
+  },
+  {
+    "name": "CFXR Firework 1 (Yellow, Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 1 (Yellow, Purple).prefab"
+  },
+  {
+    "name": "CFXR Firework 1 (Yellow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 1 (Yellow).prefab"
+  },
+  {
+    "name": "CFXR Firework 3 (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 3 (Blue).prefab"
+  },
+  {
+    "name": "CFXR Firework 3 (Multicolor)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 3 (Multicolor).prefab"
+  },
+  {
+    "name": "CFXR Firework 3 (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 3 (Purple).prefab"
+  },
+  {
+    "name": "CFXR Firework 3 (Yellow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR Firework 3 (Yellow).prefab"
+  },
+  {
+    "name": "CFXR2 Canon Muzzle Flash + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR2 Canon Muzzle Flash + Text.prefab"
+  },
+  {
+    "name": "CFXR2 Explosion (Lit, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR2 Explosion (Lit, Blue).prefab"
+  },
+  {
+    "name": "CFXR2 Explosion (Lit, Omni) + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR2 Explosion (Lit, Omni) + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR2 Explosion (Lit) + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR2 Explosion (Lit) + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR2 Explosion (Unlit, Omni)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR2 Explosion (Unlit, Omni).prefab"
+  },
+  {
+    "name": "CFXR2 Explosion (Unlit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR2 Explosion (Unlit).prefab"
+  },
+  {
+    "name": "CFXR2 Explosion + Projections (Lit, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR2 Explosion + Projections (Lit, Blue).prefab"
+  },
+  {
+    "name": "CFXR2 Explosion + Projections (Unlit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR2 Explosion + Projections (Unlit).prefab"
+  },
+  {
+    "name": "CFXR2 WW Explosion (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR2 WW Explosion (Green).prefab"
+  },
+  {
+    "name": "CFXR2 WW Explosion (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR2 WW Explosion (Purple).prefab"
+  },
+  {
+    "name": "CFXR3 Fire Explosion A (no smoke columns)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR3 Fire Explosion A (no smoke columns).prefab"
+  },
+  {
+    "name": "CFXR3 Fire Explosion A (no smoke)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR3 Fire Explosion A (no smoke).prefab"
+  },
+  {
+    "name": "CFXR3 Fire Explosion B (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR3 Fire Explosion B (Blue).prefab"
+  },
+  {
+    "name": "CFXR3 Fire Explosion B (Rainbow 2)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR3 Fire Explosion B (Rainbow 2).prefab"
+  },
+  {
+    "name": "CFXR3 Fire Explosion B (Rainbow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR3 Fire Explosion B (Rainbow).prefab"
+  },
+  {
+    "name": "CFXR4 Explosion Green (HDR) + Smoke",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Explosion Green (HDR) + Smoke.prefab"
+  },
+  {
+    "name": "CFXR4 Explosion Green (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Explosion Green (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Explosion Purple (HDR) + Dark Smoke",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Explosion Purple (HDR) + Dark Smoke.prefab"
+  },
+  {
+    "name": "CFXR4 Explosion Purple (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Explosion Purple (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Firework 1 Green (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Firework 1 Green (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Firework 1 Multicolor (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Firework 1 Multicolor (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Firework 1 Yellow-Orange (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Firework 1 Yellow-Orange (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Firework 2 Blue (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Firework 2 Blue (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Firework 2 Green (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Firework 2 Green (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Firework 2 Yellow-Purple (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Firework 2 Yellow-Purple (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Firework with Glows Cyan-Blue (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Firework with Glows Cyan-Blue (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Firework with Glows Pink-Red (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Firework with Glows Pink-Red (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Monster Explosion Blue (Big)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Monster Explosion Blue (Big).prefab"
+  },
+  {
+    "name": "CFXR4 Monster Explosion HDR Purple (Big) + Skull",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Monster Explosion HDR Purple (Big) + Skull.prefab"
+  },
+  {
+    "name": "CFXR4 Monster Explosion HDR Red (Big) + Skull",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Monster Explosion HDR Red (Big) + Skull.prefab"
+  },
+  {
+    "name": "CFXR4 Wave Explosion Blue",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Wave Explosion Blue.prefab"
+  },
+  {
+    "name": "CFXR4 Wave Explosion Red",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Explosions\\Variants\\CFXR4 Wave Explosion Red.prefab"
+  },
+  {
+    "name": "CFXR2 Expression Angry (Loop, Alt)",
+    "category": "Expressions",
+    "sourcePath": "CFXR Prefabs\\Expressions\\CFXR2 Expression Angry (Loop, Alt).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Angry (Loop, Frowns)",
+    "category": "Expressions",
+    "sourcePath": "CFXR Prefabs\\Expressions\\CFXR2 Expression Angry (Loop, Frowns).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Angry (Loop)",
+    "category": "Expressions",
+    "sourcePath": "CFXR Prefabs\\Expressions\\CFXR2 Expression Angry (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Happy (Loop)",
+    "category": "Expressions",
+    "sourcePath": "CFXR Prefabs\\Expressions\\CFXR2 Expression Happy (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Loving (Loop)",
+    "category": "Expressions",
+    "sourcePath": "CFXR Prefabs\\Expressions\\CFXR2 Expression Loving (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Sparkles (Loop, Alt)",
+    "category": "Expressions",
+    "sourcePath": "CFXR Prefabs\\Expressions\\CFXR2 Expression Sparkles (Loop, Alt).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Sparkles (Loop)",
+    "category": "Expressions",
+    "sourcePath": "CFXR Prefabs\\Expressions\\CFXR2 Expression Sparkles (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Stun (Loop)",
+    "category": "Expressions",
+    "sourcePath": "CFXR Prefabs\\Expressions\\CFXR2 Expression Stun (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Very Happy (Loop)",
+    "category": "Expressions",
+    "sourcePath": "CFXR Prefabs\\Expressions\\CFXR2 Expression Very Happy (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Angry (Timed, Alt)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Expressions\\Variants\\CFXR2 Expression Angry (Timed, Alt).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Angry (Timed, Frowns)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Expressions\\Variants\\CFXR2 Expression Angry (Timed, Frowns).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Angry (Timed)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Expressions\\Variants\\CFXR2 Expression Angry (Timed).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Happy (Timed)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Expressions\\Variants\\CFXR2 Expression Happy (Timed).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Loving (Timed)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Expressions\\Variants\\CFXR2 Expression Loving (Timed).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Sparkles (Timed, Alt)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Expressions\\Variants\\CFXR2 Expression Sparkles (Timed, Alt).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Sparkles (Timed)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Expressions\\Variants\\CFXR2 Expression Sparkles (Timed).prefab"
+  },
+  {
+    "name": "CFXR2 Expression Stun (Timed)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Expressions\\Variants\\CFXR2 Expression Stun (Timed).prefab"
+  },
+  {
+    "name": "CFXR Fire Breath",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR Fire Breath.prefab"
+  },
+  {
+    "name": "CFXR Fire Crisp",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR Fire Crisp.prefab"
+  },
+  {
+    "name": "CFXR Fire Plain",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR Fire Plain.prefab"
+  },
+  {
+    "name": "CFXR Fire Ring",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR Fire Ring.prefab"
+  },
+  {
+    "name": "CFXR Fire Trail",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR Fire Trail.prefab"
+  },
+  {
+    "name": "CFXR Fire",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR Fire.prefab"
+  },
+  {
+    "name": "CFXR Fireball + Fire Trail",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR Fireball + Fire Trail.prefab"
+  },
+  {
+    "name": "CFXR Fireball",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR Fireball.prefab"
+  },
+  {
+    "name": "CFXR Flame Candle",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR Flame Candle.prefab"
+  },
+  {
+    "name": "CFXR Flame Crisp",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR Flame Crisp.prefab"
+  },
+  {
+    "name": "CFXR Flame Plain",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR Flame Plain.prefab"
+  },
+  {
+    "name": "CFXR Flame",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR Flame.prefab"
+  },
+  {
+    "name": "CFXR2 Fireball",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR2 Fireball.prefab"
+  },
+  {
+    "name": "CFXR2 Firewall A",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR2 Firewall A.prefab"
+  },
+  {
+    "name": "CFXR2 Firewall B",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR2 Firewall B.prefab"
+  },
+  {
+    "name": "CFXR2 Firewall C",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR2 Firewall C.prefab"
+  },
+  {
+    "name": "CFXR3 Fire Shield A",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Fire Shield A.prefab"
+  },
+  {
+    "name": "CFXR3 Fire Shield B",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Fire Shield B.prefab"
+  },
+  {
+    "name": "CFXR3 Fire Trail A",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Fire Trail A.prefab"
+  },
+  {
+    "name": "CFXR3 Fire Trail B",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Fire Trail B.prefab"
+  },
+  {
+    "name": "CFXR3 Fire",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Fire.prefab"
+  },
+  {
+    "name": "CFXR3 Fireball A + Fire Trail",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Fireball A + Fire Trail.prefab"
+  },
+  {
+    "name": "CFXR3 Fireball A",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Fireball A.prefab"
+  },
+  {
+    "name": "CFXR3 Fireball B + Fire Trail",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Fireball B + Fire Trail.prefab"
+  },
+  {
+    "name": "CFXR3 Fireball B",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Fireball B.prefab"
+  },
+  {
+    "name": "CFXR3 Flying Ember",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Flying Ember.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Fire A (Air)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Hit Fire A (Air).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Fire A (Ground)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Hit Fire A (Ground).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Fire B (Air)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Hit Fire B (Air).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Fire B (Ground)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Hit Fire B (Ground).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Fire C (Air)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Hit Fire C (Air).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Fire C (Ground)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Hit Fire C (Ground).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Fire D (Air)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Hit Fire D (Air).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Fire D (Ground)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR3 Hit Fire D (Ground).prefab"
+  },
+  {
+    "name": "CFXR4 Burning Fire",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR4 Burning Fire.prefab"
+  },
+  {
+    "name": "CFXR4 Flamethrower + Smoke",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR4 Flamethrower + Smoke.prefab"
+  },
+  {
+    "name": "CFXR4 Flamethrower",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR4 Flamethrower.prefab"
+  },
+  {
+    "name": "CFXR4 Sun",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Fire\\CFXR4 Sun.prefab"
+  },
+  {
+    "name": "CFXR Fire (circle)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fire (circle).prefab"
+  },
+  {
+    "name": "CFXR Fire (line)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fire (line).prefab"
+  },
+  {
+    "name": "CFXR Fire + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fire + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR Fire Crisp (circle)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fire Crisp (circle).prefab"
+  },
+  {
+    "name": "CFXR Fire Crisp (line)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fire Crisp (line).prefab"
+  },
+  {
+    "name": "CFXR Fire Plain (circle)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fire Plain (circle).prefab"
+  },
+  {
+    "name": "CFXR Fire Plain (line)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fire Plain (line).prefab"
+  },
+  {
+    "name": "CFXR Fire Ring (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fire Ring (Blue).prefab"
+  },
+  {
+    "name": "CFXR Fire Ring (Shield)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fire Ring (Shield).prefab"
+  },
+  {
+    "name": "CFXR Fire Trail (no smoke)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fire Trail (no smoke).prefab"
+  },
+  {
+    "name": "CFXR Fire Trail (stretched)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fire Trail (stretched).prefab"
+  },
+  {
+    "name": "CFXR Fireball Crisp",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fireball Crisp.prefab"
+  },
+  {
+    "name": "CFXR Fireball Plain",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Fireball Plain.prefab"
+  },
+  {
+    "name": "CFXR Flame (calm, fine)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame (calm, fine).prefab"
+  },
+  {
+    "name": "CFXR Flame (calm)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame (calm).prefab"
+  },
+  {
+    "name": "CFXR Flame (fine)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame (fine).prefab"
+  },
+  {
+    "name": "CFXR Flame (unstable, fine)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame (unstable, fine).prefab"
+  },
+  {
+    "name": "CFXR Flame (unstable)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame (unstable).prefab"
+  },
+  {
+    "name": "CFXR Flame Candle (unstable)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame Candle (unstable).prefab"
+  },
+  {
+    "name": "CFXR Flame Crisp (calm, fine)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame Crisp (calm, fine).prefab"
+  },
+  {
+    "name": "CFXR Flame Crisp (calm)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame Crisp (calm).prefab"
+  },
+  {
+    "name": "CFXR Flame Crisp (fine)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame Crisp (fine).prefab"
+  },
+  {
+    "name": "CFXR Flame Crisp (unstable, fine)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame Crisp (unstable, fine).prefab"
+  },
+  {
+    "name": "CFXR Flame Crisp (unstable)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame Crisp (unstable).prefab"
+  },
+  {
+    "name": "CFXR Flame Plain (calm, fine)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame Plain (calm, fine).prefab"
+  },
+  {
+    "name": "CFXR Flame Plain (calm)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame Plain (calm).prefab"
+  },
+  {
+    "name": "CFXR Flame Plain (fine)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame Plain (fine).prefab"
+  },
+  {
+    "name": "CFXR Flame Plain (unstable, fine)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame Plain (unstable, fine).prefab"
+  },
+  {
+    "name": "CFXR Flame Plain (unstable)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR Flame Plain (unstable).prefab"
+  },
+  {
+    "name": "CFXR2 Fireball (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR2 Fireball (Blue).prefab"
+  },
+  {
+    "name": "CFXR2 Fireball (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR2 Fireball (Green).prefab"
+  },
+  {
+    "name": "CFXR2 Fireball + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR2 Fireball + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR2 Firewall A (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR2 Firewall A (Purple).prefab"
+  },
+  {
+    "name": "CFXR2 Firewall A + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR2 Firewall A + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR2 Firewall B (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR2 Firewall B (Blue).prefab"
+  },
+  {
+    "name": "CFXR2 Firewall C (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR2 Firewall C (Green).prefab"
+  },
+  {
+    "name": "CFXR3 Fire (No Smoke)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR3 Fire (No Smoke).prefab"
+  },
+  {
+    "name": "CFXR3 Fire Shield B (Prewarm)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR3 Fire Shield B (Prewarm).prefab"
+  },
+  {
+    "name": "CFXR3 Fireball A + Fire Trail (No Smoke)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR3 Fireball A + Fire Trail (No Smoke).prefab"
+  },
+  {
+    "name": "CFXR3 Fireball B + Fire Trail (No Smoke)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR3 Fireball B + Fire Trail (No Smoke).prefab"
+  },
+  {
+    "name": "CFXR3 Flying Ember (Upward Erratic)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR3 Flying Ember (Upward Erratic).prefab"
+  },
+  {
+    "name": "CFXR3 Flying Ember (Upward)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR3 Flying Ember (Upward).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Fire A (Air) + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR3 Hit Fire A (Air) + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Fire B (Air) + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR3 Hit Fire B (Air) + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Fire C (Air) + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR3 Hit Fire C (Air) + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Fire D (Air) + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR3 Hit Fire D (Air) + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR4 Burning Fire (Smaller)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR4 Burning Fire (Smaller).prefab"
+  },
+  {
+    "name": "CFXR4 Burning Fire (Wide)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Fire\\Variants\\CFXR4 Burning Fire (Wide).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Ice A (Air)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Ice\\CFXR3 Hit Ice A (Air).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Ice A (Ground)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Ice\\CFXR3 Hit Ice A (Ground).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Ice B (Air)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Ice\\CFXR3 Hit Ice B (Air).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Ice B (Ground)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Ice\\CFXR3 Hit Ice B (Ground).prefab"
+  },
+  {
+    "name": "CFXR3 Ice Debris Hit (Lit)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Ice\\CFXR3 Ice Debris Hit (Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Ice Shield",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Ice\\CFXR3 Ice Shield.prefab"
+  },
+  {
+    "name": "CFXR3 Ice Trail A",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Ice\\CFXR3 Ice Trail A.prefab"
+  },
+  {
+    "name": "CFXR3 Ice Trail B",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Ice\\CFXR3 Ice Trail B.prefab"
+  },
+  {
+    "name": "CFXR3 Iceball A + Ice Trail",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Ice\\CFXR3 Iceball A + Ice Trail.prefab"
+  },
+  {
+    "name": "CFXR3 Iceball A",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Ice\\CFXR3 Iceball A.prefab"
+  },
+  {
+    "name": "CFXR3 Iceball B + Ice Trail",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Ice\\CFXR3 Iceball B + Ice Trail.prefab"
+  },
+  {
+    "name": "CFXR3 Iceball B",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Ice\\CFXR3 Iceball B.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Ice A (Air, Purple) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Ice\\Variants\\CFXR3 Hit Ice A (Air, Purple) + Text.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Ice A (Air, Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Ice\\Variants\\CFXR3 Hit Ice A (Air, Purple).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Ice A (Air) + Debris",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Ice\\Variants\\CFXR3 Hit Ice A (Air) + Debris.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Ice A (Air) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Ice\\Variants\\CFXR3 Hit Ice A (Air) + Text.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Ice A (Ground, Purple) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Ice\\Variants\\CFXR3 Hit Ice A (Ground, Purple) + Text.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Ice A (Ground, Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Ice\\Variants\\CFXR3 Hit Ice A (Ground, Purple).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Ice B (Air, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Ice\\Variants\\CFXR3 Hit Ice B (Air, Green).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Ice B (Ground, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Ice\\Variants\\CFXR3 Hit Ice B (Ground, Green).prefab"
+  },
+  {
+    "name": "CFXR Big Impact HDR",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR Big Impact HDR.prefab"
+  },
+  {
+    "name": "CFXR Hit A (Red)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR Hit A (Red).prefab"
+  },
+  {
+    "name": "CFXR Hit B (Blue)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR Hit B (Blue).prefab"
+  },
+  {
+    "name": "CFXR Hit B 3D (Blue)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR Hit B 3D (Blue).prefab"
+  },
+  {
+    "name": "CFXR Hit C 3D",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR Hit C 3D.prefab"
+  },
+  {
+    "name": "CFXR Hit C",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR Hit C.prefab"
+  },
+  {
+    "name": "CFXR Hit D 3D (Yellow)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR Hit D 3D (Yellow).prefab"
+  },
+  {
+    "name": "CFXR Hit Sparks HDR",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR Hit Sparks HDR.prefab"
+  },
+  {
+    "name": "CFXR Impact Contrast",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR Impact Contrast.prefab"
+  },
+  {
+    "name": "CFXR Impact Glowing HDR (Blue)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR Impact Glowing HDR (Blue).prefab"
+  },
+  {
+    "name": "CFXR Slash (Blue)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR Slash (Blue).prefab"
+  },
+  {
+    "name": "CFXR Sparks Impact",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR Sparks Impact.prefab"
+  },
+  {
+    "name": "CFXR2 Debris Hit (Lit)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR2 Debris Hit (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Hit (Unlit)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR2 Debris Hit (Unlit).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Wood Hit (Lit)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR2 Debris Wood Hit (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Wood Hit (Unlit)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR2 Debris Wood Hit (Unlit).prefab"
+  },
+  {
+    "name": "CFXR2 Ground Hit (Alt)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR2 Ground Hit (Alt).prefab"
+  },
+  {
+    "name": "CFXR2 Ground Hit (Contrast)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR2 Ground Hit (Contrast).prefab"
+  },
+  {
+    "name": "CFXR2 Ground Hit",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR2 Ground Hit.prefab"
+  },
+  {
+    "name": "CFXR2 Hit (Contrast)",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR2 Hit (Contrast).prefab"
+  },
+  {
+    "name": "CFXR2 Hit",
+    "category": "Impacts",
+    "sourcePath": "CFXR Prefabs\\Impacts\\CFXR2 Hit.prefab"
+  },
+  {
+    "name": "CFXR Hit A (Blue, Blended)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit A (Blue, Blended).prefab"
+  },
+  {
+    "name": "CFXR Hit A (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit A (Blue).prefab"
+  },
+  {
+    "name": "CFXR Hit A (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit A (Green).prefab"
+  },
+  {
+    "name": "CFXR Hit A (Red, Blended)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit A (Red, Blended).prefab"
+  },
+  {
+    "name": "CFXR Hit A (Red) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit A (Red) + Text.prefab"
+  },
+  {
+    "name": "CFXR Hit B (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit B (Green).prefab"
+  },
+  {
+    "name": "CFXR Hit B (Yellow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit B (Yellow).prefab"
+  },
+  {
+    "name": "CFXR Hit B 3D (Blue) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit B 3D (Blue) + Text.prefab"
+  },
+  {
+    "name": "CFXR Hit B 3D (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit B 3D (Green).prefab"
+  },
+  {
+    "name": "CFXR Hit B 3D (Yellow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit B 3D (Yellow).prefab"
+  },
+  {
+    "name": "CFXR Hit C + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit C + Text.prefab"
+  },
+  {
+    "name": "CFXR Hit C 3D + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit C 3D + Text.prefab"
+  },
+  {
+    "name": "CFXR Hit D 3D (Cyan)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit D 3D (Cyan).prefab"
+  },
+  {
+    "name": "CFXR Hit D 3D (Yellow) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit D 3D (Yellow) + Text.prefab"
+  },
+  {
+    "name": "CFXR Hit Sparks",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Hit Sparks.prefab"
+  },
+  {
+    "name": "CFXR Impact Contrast (Blue, HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Impact Contrast (Blue, HDR).prefab"
+  },
+  {
+    "name": "CFXR Impact Contrast (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Impact Contrast (Blue).prefab"
+  },
+  {
+    "name": "CFXR Impact Contrast (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Impact Contrast (HDR).prefab"
+  },
+  {
+    "name": "CFXR Impact Contrast + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Impact Contrast + Text.prefab"
+  },
+  {
+    "name": "CFXR Impact Glowing Cross Blue HDR",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Impact Glowing Cross Blue HDR.prefab"
+  },
+  {
+    "name": "CFXR Impact Glowing Cross HDR (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Impact Glowing Cross HDR (Green).prefab"
+  },
+  {
+    "name": "CFXR Impact Glowing Cross HDR (Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Impact Glowing Cross HDR (Orange).prefab"
+  },
+  {
+    "name": "CFXR Impact Glowing HDR (Blue, No Flare)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Impact Glowing HDR (Blue, No Flare).prefab"
+  },
+  {
+    "name": "CFXR Impact Glowing HDR (Green, No Flare)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Impact Glowing HDR (Green, No Flare).prefab"
+  },
+  {
+    "name": "CFXR Impact Glowing HDR (Orange, No Flare)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Impact Glowing HDR (Orange, No Flare).prefab"
+  },
+  {
+    "name": "CFXR Impact Glowing HDR (Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Impact Glowing HDR (Orange).prefab"
+  },
+  {
+    "name": "CFXR Slash (Blue) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Slash (Blue) + Text.prefab"
+  },
+  {
+    "name": "CFXR Slash (Cross, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Slash (Cross, Blue).prefab"
+  },
+  {
+    "name": "CFXR Slash (Cross, Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Slash (Cross, Orange).prefab"
+  },
+  {
+    "name": "CFXR Slash (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Slash (Green).prefab"
+  },
+  {
+    "name": "CFXR Slash (Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Slash (Orange).prefab"
+  },
+  {
+    "name": "CFXR Sparks Impact (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Sparks Impact (Blue).prefab"
+  },
+  {
+    "name": "CFXR Sparks Impact (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR Sparks Impact (Purple).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Hit (Lit, Directional)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Debris Hit (Lit, Directional).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Hit (Lit, Sphere)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Debris Hit (Lit, Sphere).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Hit (Lit, Wide)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Debris Hit (Lit, Wide).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Hit (Unlit, Directional)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Debris Hit (Unlit, Directional).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Hit (Unlit, Sphere)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Debris Hit (Unlit, Sphere).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Hit (Unlit, Wide)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Debris Hit (Unlit, Wide).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Wood Hit (Lit, Directional)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Debris Wood Hit (Lit, Directional).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Wood Hit (Lit, Sphere)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Debris Wood Hit (Lit, Sphere).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Wood Hit (Unlit, Directional)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Debris Wood Hit (Unlit, Directional).prefab"
+  },
+  {
+    "name": "CFXR2 Debris Wood Hit (Unlit, Sphere)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Debris Wood Hit (Unlit, Sphere).prefab"
+  },
+  {
+    "name": "CFXR2 Ground Hit (Alt) + Debris (Lit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Ground Hit (Alt) + Debris (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Ground Hit (Contrast) + Debris (Lit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Ground Hit (Contrast) + Debris (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Ground Hit (Contrast) + Wood Debris (Lit) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Ground Hit (Contrast) + Wood Debris (Lit) + Text.prefab"
+  },
+  {
+    "name": "CFXR2 Ground Hit (Contrast) + Wood Debris (Lit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Ground Hit (Contrast) + Wood Debris (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Ground Hit + Debris (Lit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Ground Hit + Debris (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Hit (Contrast) + Debris (Lit) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Hit (Contrast) + Debris (Lit) + Text.prefab"
+  },
+  {
+    "name": "CFXR2 Hit (Contrast) + Debris (Lit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Hit (Contrast) + Debris (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Hit (Contrast) + Debris Wood (Lit) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Hit (Contrast) + Debris Wood (Lit) + Text.prefab"
+  },
+  {
+    "name": "CFXR2 Hit (Contrast) + Debris Wood (Lit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Hit (Contrast) + Debris Wood (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Hit + Debris (Lit) + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Hit + Debris (Lit) + Text.prefab"
+  },
+  {
+    "name": "CFXR2 Hit + Debris (Lit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Hit + Debris (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Hit + Debris Wood (Lit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Hit + Debris Wood (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Hit + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Hit + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR2 Hot Debris Hit (Lit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Hot Debris Hit (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Hot Debris Hit + Sparks (Lit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Impacts\\Variants\\CFXR2 Hot Debris Hit + Sparks (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Club (+ Stars)",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Club (+ Stars).prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Club (Alt)",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Club (Alt).prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Club",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Club.prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Diamond (+ Stars)",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Diamond (+ Stars).prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Diamond (Alt)",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Diamond (Alt).prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Diamond",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Diamond.prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Heart (+ Stars)",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Heart (+ Stars).prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Heart (Alt)",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Heart (Alt).prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Heart",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Heart.prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Magic Star",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Magic Star.prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Magic Stars",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Magic Stars.prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Spade (+ Stars)",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Spade (+ Stars).prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Spade (Alt)",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Spade (Alt).prefab"
+  },
+  {
+    "name": "CFXR2 Pickup Spade",
+    "category": "Item Pickups",
+    "sourcePath": "CFXR Prefabs\\Item Pickups\\CFXR2 Pickup Spade.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Light A (Air)",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 Hit Light A (Air).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Light B (Air)",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 Hit Light B (Air).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Light C (Air)",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 Hit Light C (Air).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Light Fireworks",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 Hit Light Fireworks.prefab"
+  },
+  {
+    "name": "CFXR3 Lightball A + Trail",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 Lightball A + Trail.prefab"
+  },
+  {
+    "name": "CFXR3 Lightball A",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 Lightball A.prefab"
+  },
+  {
+    "name": "CFXR3 Lightball B + Trail",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 Lightball B + Trail.prefab"
+  },
+  {
+    "name": "CFXR3 Lightball B",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 Lightball B.prefab"
+  },
+  {
+    "name": "CFXR3 LightGlow A (Loop)",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 LightGlow A (Loop).prefab"
+  },
+  {
+    "name": "CFXR3 LightGlow B (Loop)",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 LightGlow B (Loop).prefab"
+  },
+  {
+    "name": "CFXR3 LightGlow C (Loop)",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 LightGlow C (Loop).prefab"
+  },
+  {
+    "name": "CFXR3 Resurrection Light (Circle, Loop)",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 Resurrection Light (Circle, Loop).prefab"
+  },
+  {
+    "name": "CFXR3 Sky Rays (Loop)",
+    "category": "Light",
+    "sourcePath": "CFXR Prefabs\\Light\\CFXR3 Sky Rays (Loop).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Light A (Air, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Hit Light A (Air, Green).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Light A (Air, Rainbow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Hit Light A (Air, Rainbow).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Light B (Air, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Hit Light B (Air, Blue).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Light B (Air, Rainbow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Hit Light B (Air, Rainbow).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Light C (Air, Pink)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Hit Light C (Air, Pink).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Light C (Air, Rainbow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Hit Light C (Air, Rainbow).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Light Fireworks (Big)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Hit Light Fireworks (Big).prefab"
+  },
+  {
+    "name": "CFXR3 LightGlow A (Loop, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 LightGlow A (Loop, Blue).prefab"
+  },
+  {
+    "name": "CFXR3 LightGlow B (Loop, Red)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 LightGlow B (Loop, Red).prefab"
+  },
+  {
+    "name": "CFXR3 LightGlow C (Loop, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 LightGlow C (Loop, Green).prefab"
+  },
+  {
+    "name": "CFXR3 Resurrection Light (Circle)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Resurrection Light (Circle).prefab"
+  },
+  {
+    "name": "CFXR3 Resurrection Light (Oval, Loop)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Resurrection Light (Oval, Loop).prefab"
+  },
+  {
+    "name": "CFXR3 Resurrection Light (Oval)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Resurrection Light (Oval).prefab"
+  },
+  {
+    "name": "CFXR3 Sky Rays (Loop, Prewarm)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Sky Rays (Loop, Prewarm).prefab"
+  },
+  {
+    "name": "CFXR3 Sky Rays (Wider, Loop, Prewarm)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Sky Rays (Wider, Loop, Prewarm).prefab"
+  },
+  {
+    "name": "CFXR3 Sky Rays (Wider, Loop)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Light\\Variants\\CFXR3 Sky Rays (Wider, Loop).prefab"
+  },
+  {
+    "name": "CFXR Lava Drops Splash",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR Lava Drops Splash.prefab"
+  },
+  {
+    "name": "CFXR Lava Splash (Small)",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR Lava Splash (Small).prefab"
+  },
+  {
+    "name": "CFXR Lava Splash (Smaller)",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR Lava Splash (Smaller).prefab"
+  },
+  {
+    "name": "CFXR Lava Splash",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR Lava Splash.prefab"
+  },
+  {
+    "name": "CFXR Water Drops Splash",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR Water Drops Splash.prefab"
+  },
+  {
+    "name": "CFXR Water Fountain",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR Water Fountain.prefab"
+  },
+  {
+    "name": "CFXR Water Ripples",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR Water Ripples.prefab"
+  },
+  {
+    "name": "CFXR Water Splash (Small)",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR Water Splash (Small).prefab"
+  },
+  {
+    "name": "CFXR Water Splash (Smaller)",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR Water Splash (Smaller).prefab"
+  },
+  {
+    "name": "CFXR Water Splash",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR Water Splash.prefab"
+  },
+  {
+    "name": "CFXR Water Sprinkler",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR Water Sprinkler.prefab"
+  },
+  {
+    "name": "CFXR2 Blood (Directional, Heavy)",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR2 Blood (Directional, Heavy).prefab"
+  },
+  {
+    "name": "CFXR2 Blood (Directional)",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR2 Blood (Directional).prefab"
+  },
+  {
+    "name": "CFXR2 Blood (Fountain)",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR2 Blood (Fountain).prefab"
+  },
+  {
+    "name": "CFXR2 Blood Puddle",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR2 Blood Puddle.prefab"
+  },
+  {
+    "name": "CFXR2 Blood Shape Splash (Small)",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR2 Blood Shape Splash (Small).prefab"
+  },
+  {
+    "name": "CFXR2 Blood Shape Splash",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR2 Blood Shape Splash.prefab"
+  },
+  {
+    "name": "CFXR2 Blood Shape Straight",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR2 Blood Shape Straight.prefab"
+  },
+  {
+    "name": "CFXR2 Bubbles Burst",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR2 Bubbles Burst.prefab"
+  },
+  {
+    "name": "CFXR2 Potion Bubbles (Loop)",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR2 Potion Bubbles (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Potion Bubbles Alt (Loop)",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR2 Potion Bubbles Alt (Loop).prefab"
+  },
+  {
+    "name": "CFXR4 Bubbles Breath Underwater Loop",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR4 Bubbles Breath Underwater Loop.prefab"
+  },
+  {
+    "name": "CFXR4 Bubbles Hit",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR4 Bubbles Hit.prefab"
+  },
+  {
+    "name": "CFXR4 Bubbles Whirl Attraction (Loop)",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR4 Bubbles Whirl Attraction (Loop).prefab"
+  },
+  {
+    "name": "CFXR4 Bubbles Whirl",
+    "category": "Liquids",
+    "sourcePath": "CFXR Prefabs\\Liquids\\CFXR4 Bubbles Whirl.prefab"
+  },
+  {
+    "name": "CFXR Lava Splash (No drops)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Lava Splash (No drops).prefab"
+  },
+  {
+    "name": "CFXR Lava Splash (Small, No drops)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Lava Splash (Small, No drops).prefab"
+  },
+  {
+    "name": "CFXR Water Ripples (Arcs, Loop)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Water Ripples (Arcs, Loop).prefab"
+  },
+  {
+    "name": "CFXR Water Ripples (Arcs)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Water Ripples (Arcs).prefab"
+  },
+  {
+    "name": "CFXR Water Ripples (Loop)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Water Ripples (Loop).prefab"
+  },
+  {
+    "name": "CFXR Water Splash (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Water Splash (Green).prefab"
+  },
+  {
+    "name": "CFXR Water Splash (Light Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Water Splash (Light Blue).prefab"
+  },
+  {
+    "name": "CFXR Water Splash (No foam)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Water Splash (No foam).prefab"
+  },
+  {
+    "name": "CFXR Water Splash (Small, No drops)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Water Splash (Small, No drops).prefab"
+  },
+  {
+    "name": "CFXR Water Splash (Small, No foam)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Water Splash (Small, No foam).prefab"
+  },
+  {
+    "name": "CFXR Water Splash (Smaller, No drops)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Water Splash (Smaller, No drops).prefab"
+  },
+  {
+    "name": "CFXR Water Splash (Smaller, No foam)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Water Splash (Smaller, No foam).prefab"
+  },
+  {
+    "name": "CFXR Water Splash + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR Water Splash + Text.prefab"
+  },
+  {
+    "name": "CFXR2 Blood (Fountain, heavy)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR2 Blood (Fountain, heavy).prefab"
+  },
+  {
+    "name": "CFXR2 Blood (Spherical, heavy)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR2 Blood (Spherical, heavy).prefab"
+  },
+  {
+    "name": "CFXR2 Blood (Spherical)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR2 Blood (Spherical).prefab"
+  },
+  {
+    "name": "CFXR2 Blood Shape Gravity",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR2 Blood Shape Gravity.prefab"
+  },
+  {
+    "name": "CFXR2 Blood Shape Splash (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR2 Blood Shape Splash (Blue).prefab"
+  },
+  {
+    "name": "CFXR2 Blood Shape Splash (Cyan)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR2 Blood Shape Splash (Cyan).prefab"
+  },
+  {
+    "name": "CFXR2 Blood Shape Splash (Small, Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR2 Blood Shape Splash (Small, Blue).prefab"
+  },
+  {
+    "name": "CFXR2 Blood Shape Splash (Small, Cyan)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR2 Blood Shape Splash (Small, Cyan).prefab"
+  },
+  {
+    "name": "CFXR2 Bubbles Burst Alt (HDR, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR2 Bubbles Burst Alt (HDR, Green).prefab"
+  },
+  {
+    "name": "CFXR2 Bubbles Burst Alt (HDR, Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR2 Bubbles Burst Alt (HDR, Purple).prefab"
+  },
+  {
+    "name": "CFXR2 Potion Bubbles (Loop, HDR, Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR2 Potion Bubbles (Loop, HDR, Purple).prefab"
+  },
+  {
+    "name": "CFXR2 Potion Bubbles Alt (Loop, HDR, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR2 Potion Bubbles Alt (Loop, HDR, Green).prefab"
+  },
+  {
+    "name": "CFXR4 Bubbles Breath Underwater Loop (Fast)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR4 Bubbles Breath Underwater Loop (Fast).prefab"
+  },
+  {
+    "name": "CFXR4 Bubbles Breath Underwater Loop (Slow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR4 Bubbles Breath Underwater Loop (Slow).prefab"
+  },
+  {
+    "name": "CFXR4 Bubbles Whirl (Loop)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Liquids\\Variants\\CFXR4 Bubbles Whirl (Loop).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Magical Stars (Rainbow)",
+    "category": "Magic Misc",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\CFXR3 Hit Magical Stars (Rainbow).prefab"
+  },
+  {
+    "name": "CFXR3 Magic Aura A (Runic)",
+    "category": "Magic Misc",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\CFXR3 Magic Aura A (Runic).prefab"
+  },
+  {
+    "name": "CFXR3 Magic Aura A",
+    "category": "Magic Misc",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\CFXR3 Magic Aura A.prefab"
+  },
+  {
+    "name": "CFXR3 Magic Aura B (Runic)",
+    "category": "Magic Misc",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\CFXR3 Magic Aura B (Runic).prefab"
+  },
+  {
+    "name": "CFXR3 Magic Aura B",
+    "category": "Magic Misc",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\CFXR3 Magic Aura B.prefab"
+  },
+  {
+    "name": "CFXR3 Magic Fountain",
+    "category": "Magic Misc",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\CFXR3 Magic Fountain.prefab"
+  },
+  {
+    "name": "CFXR4 Bouncing Glows Bubble (Blue Purple)",
+    "category": "Magic Misc",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\CFXR4 Bouncing Glows Bubble (Blue Purple).prefab"
+  },
+  {
+    "name": "CFXR4 Disintegrate (HDR)",
+    "category": "Magic Misc",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\CFXR4 Disintegrate (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Falling Stars",
+    "category": "Magic Misc",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\CFXR4 Falling Stars.prefab"
+  },
+  {
+    "name": "CFXR4 Shiny Star Field",
+    "category": "Magic Misc",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\CFXR4 Shiny Star Field.prefab"
+  },
+  {
+    "name": "CFXR4 Shiny Treasure Content",
+    "category": "Magic Misc",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\CFXR4 Shiny Treasure Content.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Magical Stars (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\Variants\\CFXR3 Hit Magical Stars (Blue).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Magical Stars (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\Variants\\CFXR3 Hit Magical Stars (Green).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Magical Stars (Pink)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\Variants\\CFXR3 Hit Magical Stars (Pink).prefab"
+  },
+  {
+    "name": "CFXR3 Magic Fountain (Big)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\Variants\\CFXR3 Magic Fountain (Big).prefab"
+  },
+  {
+    "name": "CFXR4 Bouncing Glows Bubble (Yellow Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\Variants\\CFXR4 Bouncing Glows Bubble (Yellow Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Disintegrate Cyan (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\Variants\\CFXR4 Disintegrate Cyan (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Disintegrate Red Blue (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\Variants\\CFXR4 Disintegrate Red Blue (HDR).prefab"
+  },
+  {
+    "name": "CFXR4 Falling Stars (Circle)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\Variants\\CFXR4 Falling Stars (Circle).prefab"
+  },
+  {
+    "name": "CFXR4 Falling Stars (Edge)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Magic Misc\\Variants\\CFXR4 Falling Stars (Edge).prefab"
+  },
+  {
+    "name": "CFXR Flash",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Flash.prefab"
+  },
+  {
+    "name": "CFXR Gas Leak",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Gas Leak.prefab"
+  },
+  {
+    "name": "CFXR Lines Poof",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Lines Poof.prefab"
+  },
+  {
+    "name": "CFXR Magic Poof",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Magic Poof.prefab"
+  },
+  {
+    "name": "CFXR Magical Source",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Magical Source.prefab"
+  },
+  {
+    "name": "CFXR Portal",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Portal.prefab"
+  },
+  {
+    "name": "CFXR Smoke Poof Alt",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Smoke Poof Alt.prefab"
+  },
+  {
+    "name": "CFXR Smoke Poof Circle Flat",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Smoke Poof Circle Flat.prefab"
+  },
+  {
+    "name": "CFXR Smoke Poof Circle Screen",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Smoke Poof Circle Screen.prefab"
+  },
+  {
+    "name": "CFXR Smoke Poof",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Smoke Poof.prefab"
+  },
+  {
+    "name": "CFXR Smoke Source 3D",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Smoke Source 3D.prefab"
+  },
+  {
+    "name": "CFXR Smoke Source Spiral 3D",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Smoke Source Spiral 3D.prefab"
+  },
+  {
+    "name": "CFXR Smoke Source Spiral",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR Smoke Source Spiral.prefab"
+  },
+  {
+    "name": "CFXR2 Broken Heart",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR2 Broken Heart.prefab"
+  },
+  {
+    "name": "CFXR2 Cartoon Fight (Loop)",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR2 Cartoon Fight (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Cartoon Fight Ground (Loop)",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR2 Cartoon Fight Ground (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Disintegrate",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR2 Disintegrate.prefab"
+  },
+  {
+    "name": "CFXR2 Poison Cloud",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR2 Poison Cloud.prefab"
+  },
+  {
+    "name": "CFXR2 Potion Smoke",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR2 Potion Smoke.prefab"
+  },
+  {
+    "name": "CFXR2 Power Aura (Loop)",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR2 Power Aura (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Power Aura Alt (Loop)",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR2 Power Aura Alt (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Shiny Item (Loop)",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR2 Shiny Item (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Smoke Cloud (Loop, Lit Normal Map)",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR2 Smoke Cloud (Loop, Lit Normal Map).prefab"
+  },
+  {
+    "name": "CFXR2 Smoke Cloud (Loop, Lit)",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR2 Smoke Cloud (Loop, Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Ambient Glows",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR3 Ambient Glows.prefab"
+  },
+  {
+    "name": "CFXR3 Broken Machine Smoke (Black)",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR3 Broken Machine Smoke (Black).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Misc A",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR3 Hit Misc A.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Misc B",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR3 Hit Misc B.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Misc C",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR3 Hit Misc C.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Misc D",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR3 Hit Misc D.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Misc E Skull",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR3 Hit Misc E Skull.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Misc F Smoke Only",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR3 Hit Misc F Smoke Only.prefab"
+  },
+  {
+    "name": "CFXR3 Hit Misc F Smoke",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR3 Hit Misc F Smoke.prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Column (Black)",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR3 Smoke Column (Black).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Signals (Black)",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR3 Smoke Signals (Black).prefab"
+  },
+  {
+    "name": "CFXR3 Suspicious Cloud (Black)",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR3 Suspicious Cloud (Black).prefab"
+  },
+  {
+    "name": "CFXR4 Ambient Dust (Brown)",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR4 Ambient Dust (Brown).prefab"
+  },
+  {
+    "name": "CFXR4 Flies Cloud",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR4 Flies Cloud.prefab"
+  },
+  {
+    "name": "CFXR4 Hit Pow Cartoon Alt",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR4 Hit Pow Cartoon Alt.prefab"
+  },
+  {
+    "name": "CFXR4 Hit Pow Cartoon",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR4 Hit Pow Cartoon.prefab"
+  },
+  {
+    "name": "CFXR4 Lit Smoke Column",
+    "category": "Misc",
+    "sourcePath": "CFXR Prefabs\\Misc\\CFXR4 Lit Smoke Column.prefab"
+  },
+  {
+    "name": "CFXR Flash Alt",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR Flash Alt.prefab"
+  },
+  {
+    "name": "CFXR Lines Poof + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR Lines Poof + Text.prefab"
+  },
+  {
+    "name": "CFXR Magic Poof + Text Poof",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR Magic Poof + Text Poof.prefab"
+  },
+  {
+    "name": "CFXR Magic Poof + Text Pop",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR Magic Poof + Text Pop.prefab"
+  },
+  {
+    "name": "CFXR Magical Source (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR Magical Source (Blue).prefab"
+  },
+  {
+    "name": "CFXR Portal (Cyan)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR Portal (Cyan).prefab"
+  },
+  {
+    "name": "CFXR Portal (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR Portal (Green).prefab"
+  },
+  {
+    "name": "CFXR Smoke Poof (Dense)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR Smoke Poof (Dense).prefab"
+  },
+  {
+    "name": "CFXR Smoke Poof + Text",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR Smoke Poof + Text.prefab"
+  },
+  {
+    "name": "CFXR2 Cartoon Fight (Timed)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR2 Cartoon Fight (Timed).prefab"
+  },
+  {
+    "name": "CFXR2 Cartoon Fight Ground (Timed)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR2 Cartoon Fight Ground (Timed).prefab"
+  },
+  {
+    "name": "CFXR2 Poison Cloud (Loop, Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR2 Poison Cloud (Loop, Purple).prefab"
+  },
+  {
+    "name": "CFXR2 Poison Cloud (Loop)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR2 Poison Cloud (Loop).prefab"
+  },
+  {
+    "name": "CFXR2 Poison Cloud (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR2 Poison Cloud (Purple).prefab"
+  },
+  {
+    "name": "CFXR2 Potion Smoke + Light (Lit)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR2 Potion Smoke + Light (Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Misc A (HDR)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR3 Hit Misc A (HDR).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Misc B (Gravity)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR3 Hit Misc B (Gravity).prefab"
+  },
+  {
+    "name": "CFXR4 Ambient Dust (Black)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR4 Ambient Dust (Black).prefab"
+  },
+  {
+    "name": "CFXR4 Ambient Dust (White)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR4 Ambient Dust (White).prefab"
+  },
+  {
+    "name": "CFXR4 Flies Environment",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR4 Flies Environment.prefab"
+  },
+  {
+    "name": "CFXR4 Hit Pow Cartoon (Blue-Cyan)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR4 Hit Pow Cartoon (Blue-Cyan).prefab"
+  },
+  {
+    "name": "CFXR4 Hit Pow Cartoon (Rainbow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR4 Hit Pow Cartoon (Rainbow).prefab"
+  },
+  {
+    "name": "CFXR4 Hit Pow Cartoon Alt (Purple Pink)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR4 Hit Pow Cartoon Alt (Purple Pink).prefab"
+  },
+  {
+    "name": "CFXR4 Lit Smoke Column (Wind)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\CFXR4 Lit Smoke Column (Wind).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Column (Black, Lit, Straight)",
+    "category": "Smoke Black",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke Black\\CFXR3 Smoke Column (Black, Lit, Straight).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Column (Black, Lit)",
+    "category": "Smoke Black",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke Black\\CFXR3 Smoke Column (Black, Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Column (Black, Straight)",
+    "category": "Smoke Black",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke Black\\CFXR3 Smoke Column (Black, Straight).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Signals (Black, Lit)",
+    "category": "Smoke Black",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke Black\\CFXR3 Smoke Signals (Black, Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Broken Machine Smoke (Gray)",
+    "category": "Smoke Gray",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke Gray\\CFXR3 Broken Machine Smoke (Gray).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Column (Gray, Lit, Straight)",
+    "category": "Smoke Gray",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke Gray\\CFXR3 Smoke Column (Gray, Lit, Straight).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Column (Gray, Lit)",
+    "category": "Smoke Gray",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke Gray\\CFXR3 Smoke Column (Gray, Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Column (Gray, Straight)",
+    "category": "Smoke Gray",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke Gray\\CFXR3 Smoke Column (Gray, Straight).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Column (Gray)",
+    "category": "Smoke Gray",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke Gray\\CFXR3 Smoke Column (Gray).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Signals (Gray, Lit)",
+    "category": "Smoke Gray",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke Gray\\CFXR3 Smoke Signals (Gray, Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Signals (Gray)",
+    "category": "Smoke Gray",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke Gray\\CFXR3 Smoke Signals (Gray).prefab"
+  },
+  {
+    "name": "CFXR3 Suspicious Cloud (Gray)",
+    "category": "Smoke Gray",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke Gray\\CFXR3 Suspicious Cloud (Gray).prefab"
+  },
+  {
+    "name": "CFXR3 Broken Machine Smoke (White)",
+    "category": "Smoke White",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke White\\CFXR3 Broken Machine Smoke (White).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Column (White, Lit, Straight)",
+    "category": "Smoke White",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke White\\CFXR3 Smoke Column (White, Lit, Straight).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Column (White, Lit)",
+    "category": "Smoke White",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke White\\CFXR3 Smoke Column (White, Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Column (White, Straight)",
+    "category": "Smoke White",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke White\\CFXR3 Smoke Column (White, Straight).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Column (White)",
+    "category": "Smoke White",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke White\\CFXR3 Smoke Column (White).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Signals (White, Lit)",
+    "category": "Smoke White",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke White\\CFXR3 Smoke Signals (White, Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Smoke Signals (White)",
+    "category": "Smoke White",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke White\\CFXR3 Smoke Signals (White).prefab"
+  },
+  {
+    "name": "CFXR3 Suspicious Cloud (White)",
+    "category": "Smoke White",
+    "sourcePath": "CFXR Prefabs\\Misc\\Variants\\Smoke White\\CFXR3 Suspicious Cloud (White).prefab"
+  },
+  {
+    "name": "CFXR3 Falling Leaves A (Lit, Green)",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR3 Falling Leaves A (Lit, Green).prefab"
+  },
+  {
+    "name": "CFXR3 Falling Leaves B (Lit, Green)",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR3 Falling Leaves B (Lit, Green).prefab"
+  },
+  {
+    "name": "CFXR3 Falling Petals (Lit, Pink)",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR3 Falling Petals (Lit, Pink).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Leaves A (Lit)",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR3 Hit Leaves A (Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Leaves B (Lit)",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR3 Hit Leaves B (Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Petals (Lit)",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR3 Hit Petals (Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Shield Leaves A (Lit)",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR3 Shield Leaves A (Lit).prefab"
+  },
+  {
+    "name": "CFXR3 Shield Leaves B (Lit)",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR3 Shield Leaves B (Lit).prefab"
+  },
+  {
+    "name": "CFXR4 Rain Falling",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR4 Rain Falling.prefab"
+  },
+  {
+    "name": "CFXR4 Rain Splashes",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR4 Rain Splashes.prefab"
+  },
+  {
+    "name": "CFXR4 Snow 'Splashes'",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR4 Snow 'Splashes'.prefab"
+  },
+  {
+    "name": "CFXR4 Snow Falling",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR4 Snow Falling.prefab"
+  },
+  {
+    "name": "CFXR4 Wind Trails",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR4 Wind Trails.prefab"
+  },
+  {
+    "name": "CFXR4 Wind Zone Alt",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR4 Wind Zone Alt.prefab"
+  },
+  {
+    "name": "CFXR4 Wind Zone",
+    "category": "Nature",
+    "sourcePath": "CFXR Prefabs\\Nature\\CFXR4 Wind Zone.prefab"
+  },
+  {
+    "name": "CFXR3 Falling Leaves (Lit, Brown, Large)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Falling Leaves (Lit, Brown, Large).prefab"
+  },
+  {
+    "name": "CFXR3 Falling Leaves (Lit, Brown)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Falling Leaves (Lit, Brown).prefab"
+  },
+  {
+    "name": "CFXR3 Falling Leaves (Lit, Yellow-Orange, Large)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Falling Leaves (Lit, Yellow-Orange, Large).prefab"
+  },
+  {
+    "name": "CFXR3 Falling Leaves (Lit, Yellow-Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Falling Leaves (Lit, Yellow-Orange).prefab"
+  },
+  {
+    "name": "CFXR3 Falling Leaves A (Lit, Green, Large)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Falling Leaves A (Lit, Green, Large).prefab"
+  },
+  {
+    "name": "CFXR3 Falling Leaves B (Lit, Brown, Large)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Falling Leaves B (Lit, Brown, Large).prefab"
+  },
+  {
+    "name": "CFXR3 Falling Leaves B (Lit, Brown)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Falling Leaves B (Lit, Brown).prefab"
+  },
+  {
+    "name": "CFXR3 Falling Leaves B (Lit, Green, Large)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Falling Leaves B (Lit, Green, Large).prefab"
+  },
+  {
+    "name": "CFXR3 Falling Leaves B (Lit, Yellow-Orange, Large)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Falling Leaves B (Lit, Yellow-Orange, Large).prefab"
+  },
+  {
+    "name": "CFXR3 Falling Leaves B (Lit, Yellow-Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Falling Leaves B (Lit, Yellow-Orange).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Leaves A (Lit, Simple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Hit Leaves A (Lit, Simple).prefab"
+  },
+  {
+    "name": "CFXR3 Hit Leaves B (Lit, Simple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Hit Leaves B (Lit, Simple).prefab"
+  },
+  {
+    "name": "CFXR3 Shield Leaves A (Lit, Alt)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Shield Leaves A (Lit, Alt).prefab"
+  },
+  {
+    "name": "CFXR3 Shield Leaves B (Lit, Alt)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR3 Shield Leaves B (Lit, Alt).prefab"
+  },
+  {
+    "name": "CFXR4 Rain Falling (Intense)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR4 Rain Falling (Intense).prefab"
+  },
+  {
+    "name": "CFXR4 Rain Falling (Light)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR4 Rain Falling (Light).prefab"
+  },
+  {
+    "name": "CFXR4 Rain Splashes (Intense)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR4 Rain Splashes (Intense).prefab"
+  },
+  {
+    "name": "CFXR4 Snow 'Splashes' (Dense)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR4 Snow 'Splashes' (Dense).prefab"
+  },
+  {
+    "name": "CFXR4 Snow Falling (Dense)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR4 Snow Falling (Dense).prefab"
+  },
+  {
+    "name": "CFXR4 Snow Falling (Light)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Nature\\Variants\\CFXR4 Snow Falling (Light).prefab"
+  },
+  {
+    "name": "CFXR ScreenDistortion Noise Omni (Loop)",
+    "category": "Screen Distortion",
+    "sourcePath": "CFXR Prefabs\\Screen Distortion\\CFXR ScreenDistortion Noise Omni (Loop).prefab"
+  },
+  {
+    "name": "CFXR ScreenDistortion Noise Upward (Loop)",
+    "category": "Screen Distortion",
+    "sourcePath": "CFXR Prefabs\\Screen Distortion\\CFXR ScreenDistortion Noise Upward (Loop).prefab"
+  },
+  {
+    "name": "CFXR ScreenDistortion Ring",
+    "category": "Screen Distortion",
+    "sourcePath": "CFXR Prefabs\\Screen Distortion\\CFXR ScreenDistortion Ring.prefab"
+  },
+  {
+    "name": "CFXR ScreenDistortion Sphere",
+    "category": "Screen Distortion",
+    "sourcePath": "CFXR Prefabs\\Screen Distortion\\CFXR ScreenDistortion Sphere.prefab"
+  },
+  {
+    "name": "CFXR4 Laser (Orange)",
+    "category": "Space",
+    "sourcePath": "CFXR Prefabs\\Space\\CFXR4 Laser (Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Laser + Trail (Orange)",
+    "category": "Space",
+    "sourcePath": "CFXR Prefabs\\Space\\CFXR4 Laser + Trail (Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Donut (Green)",
+    "category": "Space",
+    "sourcePath": "CFXR Prefabs\\Space\\CFXR4 Laser Donut (Green).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Donut + Trail (Green)",
+    "category": "Space",
+    "sourcePath": "CFXR Prefabs\\Space\\CFXR4 Laser Donut + Trail (Green).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Donut Impact (Green)",
+    "category": "Space",
+    "sourcePath": "CFXR Prefabs\\Space\\CFXR4 Laser Donut Impact (Green).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Donut Trail (Green)",
+    "category": "Space",
+    "sourcePath": "CFXR Prefabs\\Space\\CFXR4 Laser Donut Trail (Green).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Impact (Orange)",
+    "category": "Space",
+    "sourcePath": "CFXR Prefabs\\Space\\CFXR4 Laser Impact (Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Trail (Orange)",
+    "category": "Space",
+    "sourcePath": "CFXR Prefabs\\Space\\CFXR4 Laser Trail (Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Plasma Shoot (Blue)",
+    "category": "Space",
+    "sourcePath": "CFXR Prefabs\\Space\\CFXR4 Plasma Shoot (Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Spaceship Thruster (Blue)",
+    "category": "Space",
+    "sourcePath": "CFXR Prefabs\\Space\\CFXR4 Spaceship Thruster (Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Teleporter Rings Downwards (HDR, Purple)",
+    "category": "Space",
+    "sourcePath": "CFXR Prefabs\\Space\\CFXR4 Teleporter Rings Downwards (HDR, Purple).prefab"
+  },
+  {
+    "name": "CFXR4 Teleporter Rings Upwards (HDR, Purple)",
+    "category": "Space",
+    "sourcePath": "CFXR Prefabs\\Space\\CFXR4 Teleporter Rings Upwards (HDR, Purple).prefab"
+  },
+  {
+    "name": "CFXR4 Laser (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser (Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Laser (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser (Green).prefab"
+  },
+  {
+    "name": "CFXR4 Laser (Yellow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser (Yellow).prefab"
+  },
+  {
+    "name": "CFXR4 Laser + Trail (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser + Trail (Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Laser + Trail (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser + Trail (Green).prefab"
+  },
+  {
+    "name": "CFXR4 Laser + Trail (Yellow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser + Trail (Yellow).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Donut (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Donut (Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Donut (Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Donut (Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Donut + Trail (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Donut + Trail (Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Donut + Trail (Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Donut + Trail (Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Donut Impact (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Donut Impact (Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Donut Impact (Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Donut Impact (Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Donut Trail (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Donut Trail (Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Donut Trail (Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Donut Trail (Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Impact (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Impact (Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Impact (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Impact (Green).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Impact (Yellow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Impact (Yellow).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Trail (Blue)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Trail (Blue).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Trail (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Trail (Green).prefab"
+  },
+  {
+    "name": "CFXR4 Laser Trail (Yellow)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Laser Trail (Yellow).prefab"
+  },
+  {
+    "name": "CFXR4 Plasma Shoot (Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Plasma Shoot (Green).prefab"
+  },
+  {
+    "name": "CFXR4 Plasma Shoot (Red)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Plasma Shoot (Red).prefab"
+  },
+  {
+    "name": "CFXR4 Spaceship Thruster (Blue) + Screen Distortion",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Spaceship Thruster (Blue) + Screen Distortion.prefab"
+  },
+  {
+    "name": "CFXR4 Spaceship Thruster (Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Spaceship Thruster (Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Spaceship Thruster (Purple)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Spaceship Thruster (Purple).prefab"
+  },
+  {
+    "name": "CFXR4 Teleporter Rings Downwards (HDR, Green)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Teleporter Rings Downwards (HDR, Green).prefab"
+  },
+  {
+    "name": "CFXR4 Teleporter Rings Downwards (HDR, Orange)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Teleporter Rings Downwards (HDR, Orange).prefab"
+  },
+  {
+    "name": "CFXR4 Teleporter Rings Downwards (HDR, Purple, Small)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Teleporter Rings Downwards (HDR, Purple, Small).prefab"
+  },
+  {
+    "name": "CFXR4 Teleporter Rings Upwards (HDR, Cyan)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Teleporter Rings Upwards (HDR, Cyan).prefab"
+  },
+  {
+    "name": "CFXR4 Teleporter Rings Upwards (HDR, Pink)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Teleporter Rings Upwards (HDR, Pink).prefab"
+  },
+  {
+    "name": "CFXR4 Teleporter Rings Upwards (HDR, Purple, Small)",
+    "category": "Variants",
+    "sourcePath": "CFXR Prefabs\\Space\\Variants\\CFXR4 Teleporter Rings Upwards (HDR, Purple, Small).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit FIRE (Cross) + Text",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Fire\\CFXR4 Sword Hit FIRE (Cross) + Text.prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit FIRE (Cross)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Fire\\CFXR4 Sword Hit FIRE (Cross).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit FIRE (Slash)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Fire\\CFXR4 Sword Hit FIRE (Slash).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail FIRE (180 Edge)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Fire\\CFXR4 Sword Trail FIRE (180 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail FIRE (180 Spiral)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Fire\\CFXR4 Sword Trail FIRE (180 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail FIRE (180 Thick)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Fire\\CFXR4 Sword Trail FIRE (180 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail FIRE (180 Thin Spiral)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Fire\\CFXR4 Sword Trail FIRE (180 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail FIRE (360 Edge)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Fire\\CFXR4 Sword Trail FIRE (360 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail FIRE (360 Spiral)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Fire\\CFXR4 Sword Trail FIRE (360 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail FIRE (360 Thick)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Fire\\CFXR4 Sword Trail FIRE (360 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail FIRE (360 Thin Spiral)",
+    "category": "Fire",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Fire\\CFXR4 Sword Trail FIRE (360 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit ICE (Cross) + Text",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Ice\\CFXR4 Sword Hit ICE (Cross) + Text.prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit ICE (Cross)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Ice\\CFXR4 Sword Hit ICE (Cross).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit ICE (Slash)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Ice\\CFXR4 Sword Hit ICE (Slash).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail ICE (180 Edge)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Ice\\CFXR4 Sword Trail ICE (180 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail ICE (180 Spiral)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Ice\\CFXR4 Sword Trail ICE (180 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail ICE (180 Thick)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Ice\\CFXR4 Sword Trail ICE (180 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail ICE (180 Thin Spiral)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Ice\\CFXR4 Sword Trail ICE (180 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail ICE (360 Edge)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Ice\\CFXR4 Sword Trail ICE (360 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail ICE (360 Spiral)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Ice\\CFXR4 Sword Trail ICE (360 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail ICE (360 Thick)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Ice\\CFXR4 Sword Trail ICE (360 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail ICE (360 Thin Spiral)",
+    "category": "Ice",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Ice\\CFXR4 Sword Trail ICE (360 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit GHOST (Cross) + Text",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Hit GHOST (Cross) + Text.prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit GHOST (Cross)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Hit GHOST (Cross).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit GHOST (Slash)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Hit GHOST (Slash).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit LIGHT (Cross) + Text",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Hit LIGHT (Cross) + Text.prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit LIGHT (Cross)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Hit LIGHT (Cross).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit LIGHT (Slash)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Hit LIGHT (Slash).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit POISON (Cross) + Text",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Hit POISON (Cross) + Text.prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit POISON (Cross)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Hit POISON (Cross).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit POISON (Slash)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Hit POISON (Slash).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Slash POISON (180 Edge)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Slash POISON (180 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Slash POISON (180 Spiral)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Slash POISON (180 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Slash POISON (180 Thick)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Slash POISON (180 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Slash POISON (180 Thin Spiral)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Slash POISON (180 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Slash POISON (360 Edge)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Slash POISON (360 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Slash POISON (360 Spiral)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Slash POISON (360 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Slash POISON (360 Thick)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Slash POISON (360 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Slash POISON (360 Thin Spiral)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Slash POISON (360 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail GHOST (180 Edge)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail GHOST (180 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail GHOST (180 Spiral)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail GHOST (180 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail GHOST (180 Thick)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail GHOST (180 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail GHOST (180 Thin Spiral)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail GHOST (180 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail GHOST (360 Edge)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail GHOST (360 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail GHOST (360 Spiral)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail GHOST (360 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail GHOST (360 Thick)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail GHOST (360 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail GHOST (360 Thin Spiral)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail GHOST (360 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail LIGHT (180 Edge)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail LIGHT (180 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail LIGHT (180 Spiral)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail LIGHT (180 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail LIGHT (180 Thick)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail LIGHT (180 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail LIGHT (180 Thin Spiral)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail LIGHT (180 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail LIGHT (360 Edge)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail LIGHT (360 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail LIGHT (360 Spiral)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail LIGHT (360 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail LIGHT (360 Thick)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail LIGHT (360 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail LIGHT (360 Thin Spiral)",
+    "category": "Magical",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Magical\\CFXR4 Sword Trail LIGHT (360 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit PLAIN (Cross)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Hit PLAIN (Cross).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit PLAIN (Slash)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Hit PLAIN (Slash).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit SLASH (Cross)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Hit SLASH (Cross).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit SLASH (Slash)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Hit SLASH (Slash).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail PLAIN (180 Edge)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail PLAIN (180 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail PLAIN (180 Spiral)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail PLAIN (180 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail PLAIN (180 Thick)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail PLAIN (180 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail PLAIN (180 Thin Spiral)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail PLAIN (180 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail PLAIN (360 Edge)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail PLAIN (360 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail PLAIN (360 Spiral)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail PLAIN (360 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail PLAIN (360 Thick)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail PLAIN (360 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail PLAIN (360 Thin Spiral)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail PLAIN (360 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail SLASH (180 Edge)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail SLASH (180 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail SLASH (180 Spiral)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail SLASH (180 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail SLASH (180 Thick)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail SLASH (180 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail SLASH (180 Thin Spiral)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail SLASH (180 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail SLASH (360 Edge)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail SLASH (360 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail SLASH (360 Spiral)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail SLASH (360 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail SLASH (360 Thick)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail SLASH (360 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail SLASH (360 Thin Spiral)",
+    "category": "Plain",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Plain\\CFXR4 Sword Trail SLASH (360 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit TECH (Cross) + Text",
+    "category": "Tech",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Tech\\CFXR4 Sword Hit TECH (Cross) + Text.prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit TECH (Cross)",
+    "category": "Tech",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Tech\\CFXR4 Sword Hit TECH (Cross).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Hit TECH (Slash)",
+    "category": "Tech",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Tech\\CFXR4 Sword Hit TECH (Slash).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail TECH (180 Edge)",
+    "category": "Tech",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Tech\\CFXR4 Sword Trail TECH (180 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail TECH (180 Spiral)",
+    "category": "Tech",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Tech\\CFXR4 Sword Trail TECH (180 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail TECH (180 Thick)",
+    "category": "Tech",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Tech\\CFXR4 Sword Trail TECH (180 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail TECH (180 Thin Spiral)",
+    "category": "Tech",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Tech\\CFXR4 Sword Trail TECH (180 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail TECH (360 Edge)",
+    "category": "Tech",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Tech\\CFXR4 Sword Trail TECH (360 Edge).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail TECH (360 Spiral)",
+    "category": "Tech",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Tech\\CFXR4 Sword Trail TECH (360 Spiral).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail TECH (360 Thick)",
+    "category": "Tech",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Tech\\CFXR4 Sword Trail TECH (360 Thick).prefab"
+  },
+  {
+    "name": "CFXR4 Sword Trail TECH (360 Thin Spiral)",
+    "category": "Tech",
+    "sourcePath": "CFXR Prefabs\\Sword Trails\\Tech\\CFXR4 Sword Trail TECH (360 Thin Spiral).prefab"
+  },
+  {
+    "name": "CFXR _BANG_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _BANG_.prefab"
+  },
+  {
+    "name": "CFXR _BOING_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _BOING_.prefab"
+  },
+  {
+    "name": "CFXR _BONK",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _BONK.prefab"
+  },
+  {
+    "name": "CFXR _BOOM_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _BOOM_.prefab"
+  },
+  {
+    "name": "CFXR _CLICK_ 2",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _CLICK_ 2.prefab"
+  },
+  {
+    "name": "CFXR _CLICK_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _CLICK_.prefab"
+  },
+  {
+    "name": "CFXR _POOF_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _POOF_.prefab"
+  },
+  {
+    "name": "CFXR _POP_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _POP_.prefab"
+  },
+  {
+    "name": "CFXR _POW_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _POW_.prefab"
+  },
+  {
+    "name": "CFXR _SLASH_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _SLASH_.prefab"
+  },
+  {
+    "name": "CFXR _SMASH_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _SMASH_.prefab"
+  },
+  {
+    "name": "CFXR _SPLASH_ 2",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _SPLASH_ 2.prefab"
+  },
+  {
+    "name": "CFXR _SPLASH_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _SPLASH_.prefab"
+  },
+  {
+    "name": "CFXR _WHAM_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _WHAM_.prefab"
+  },
+  {
+    "name": "CFXR _WHOOSH_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _WHOOSH_.prefab"
+  },
+  {
+    "name": "CFXR _ZAP_ (invert)",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _ZAP_ (invert).prefab"
+  },
+  {
+    "name": "CFXR _ZAP_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR _ZAP_.prefab"
+  },
+  {
+    "name": "CFXR Dynamic Text Example",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR Dynamic Text Example.prefab"
+  },
+  {
+    "name": "CFXR2 _BAM_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR2 _BAM_.prefab"
+  },
+  {
+    "name": "CFXR2 _BOOM_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR2 _BOOM_.prefab"
+  },
+  {
+    "name": "CFXR2 _CURSED_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR2 _CURSED_.prefab"
+  },
+  {
+    "name": "CFXR2 _DEAD_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR2 _DEAD_.prefab"
+  },
+  {
+    "name": "CFXR2 _WHAM_ 2",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR2 _WHAM_ 2.prefab"
+  },
+  {
+    "name": "CFXR2 _WHAM_ 3",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR2 _WHAM_ 3.prefab"
+  },
+  {
+    "name": "CFXR3 _INTERROGATION_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR3 _INTERROGATION_.prefab"
+  },
+  {
+    "name": "CFXR3 _KSHH_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR3 _KSHH_.prefab"
+  },
+  {
+    "name": "CFXR3 _SPLAT_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR3 _SPLAT_.prefab"
+  },
+  {
+    "name": "CFXR3 _WOW_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR3 _WOW_.prefab"
+  },
+  {
+    "name": "CFXR4 _BUG_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR4 _BUG_.prefab"
+  },
+  {
+    "name": "CFXR4 _CURSED_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR4 _CURSED_.prefab"
+  },
+  {
+    "name": "CFXR4 _FIRE_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR4 _FIRE_.prefab"
+  },
+  {
+    "name": "CFXR4 _FROZEN_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR4 _FROZEN_.prefab"
+  },
+  {
+    "name": "CFXR4 _HIT_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR4 _HIT_.prefab"
+  },
+  {
+    "name": "CFXR4 _POISONED_",
+    "category": "Texts",
+    "sourcePath": "CFXR Prefabs\\Texts\\CFXR4 _POISONED_.prefab"
+  },
+  {
+    "name": "CFXR _BANG_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _BANG_.prefab"
+  },
+  {
+    "name": "CFXR _BOING_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _BOING_.prefab"
+  },
+  {
+    "name": "CFXR _BOOM_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _BOOM_.prefab"
+  },
+  {
+    "name": "CFXR _CLICK_ 2",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _CLICK_ 2.prefab"
+  },
+  {
+    "name": "CFXR _CLICK_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _CLICK_.prefab"
+  },
+  {
+    "name": "CFXR _POOF_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _POOF_.prefab"
+  },
+  {
+    "name": "CFXR _POP_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _POP_.prefab"
+  },
+  {
+    "name": "CFXR _POW_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _POW_.prefab"
+  },
+  {
+    "name": "CFXR _SLASH_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _SLASH_.prefab"
+  },
+  {
+    "name": "CFXR _SMASH_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _SMASH_.prefab"
+  },
+  {
+    "name": "CFXR _SPLASH_ 2",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _SPLASH_ 2.prefab"
+  },
+  {
+    "name": "CFXR _SPLASH_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _SPLASH_.prefab"
+  },
+  {
+    "name": "CFXR _WHAM_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _WHAM_.prefab"
+  },
+  {
+    "name": "CFXR _WHOOSH_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _WHOOSH_.prefab"
+  },
+  {
+    "name": "CFXR _ZAP_ (invert)",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _ZAP_ (invert).prefab"
+  },
+  {
+    "name": "CFXR _ZAP_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR _ZAP_.prefab"
+  },
+  {
+    "name": "CFXR2 _BAM_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR2 _BAM_.prefab"
+  },
+  {
+    "name": "CFXR2 _BOOM_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR2 _BOOM_.prefab"
+  },
+  {
+    "name": "CFXR2 _CURSED_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR2 _CURSED_.prefab"
+  },
+  {
+    "name": "CFXR2 _DEAD_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR2 _DEAD_.prefab"
+  },
+  {
+    "name": "CFXR2 _WHAM_ 2",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR2 _WHAM_ 2.prefab"
+  },
+  {
+    "name": "CFXR2 _WHAM_ 3",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR2 _WHAM_ 3.prefab"
+  },
+  {
+    "name": "CFXR3 _INTERROGATION_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR3 _INTERROGATION_.prefab"
+  },
+  {
+    "name": "CFXR3 _KSHH_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR3 _KSHH_.prefab"
+  },
+  {
+    "name": "CFXR3 _SPLAT_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR3 _SPLAT_.prefab"
+  },
+  {
+    "name": "CFXR3 _WOW_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR3 _WOW_.prefab"
+  },
+  {
+    "name": "CFXR4 _BUG_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR4 _BUG_.prefab"
+  },
+  {
+    "name": "CFXR4 _CURSED_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR4 _CURSED_.prefab"
+  },
+  {
+    "name": "CFXR4 _FIRE_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR4 _FIRE_.prefab"
+  },
+  {
+    "name": "CFXR4 _FROZEN_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR4 _FROZEN_.prefab"
+  },
+  {
+    "name": "CFXR4 _HIT_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR4 _HIT_.prefab"
+  },
+  {
+    "name": "CFXR4 _POISONED_",
+    "category": "Variants Font WashYourHand",
+    "sourcePath": "CFXR Prefabs\\Texts\\Variants Font WashYourHand\\CFXR4 _POISONED_.prefab"
+  },
+  {
+    "name": "CFXR2 Magic Stars (Alt) Variant",
+    "category": "_Internal",
+    "sourcePath": "CFXR Prefabs\\_Internal\\CFXR2 Magic Stars (Alt) Variant.prefab"
+  },
+  {
+    "name": "CFXR2 Magic Stars (Loop) Variant",
+    "category": "_Internal",
+    "sourcePath": "CFXR Prefabs\\_Internal\\CFXR2 Magic Stars (Loop) Variant.prefab"
+  },
+  {
+    "name": "CFXR2 Magic Stars",
+    "category": "_Internal",
+    "sourcePath": "CFXR Prefabs\\_Internal\\CFXR2 Magic Stars.prefab"
+  },
+  {
+    "name": "CFXR2 Smoke Projection (Lit)",
+    "category": "_Internal",
+    "sourcePath": "CFXR Prefabs\\_Internal\\CFXR2 Smoke Projection (Lit).prefab"
+  },
+  {
+    "name": "CFXR2 WW Smoke Projection",
+    "category": "_Internal",
+    "sourcePath": "CFXR Prefabs\\_Internal\\CFXR2 WW Smoke Projection.prefab"
+  }
+]

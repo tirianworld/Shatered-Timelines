@@ -1,0 +1,47 @@
+[
+  {
+    "id": "shop_crystals_single",
+    "name": "Cristales de Invocación x100",
+    "type": "currency",
+    "amount": 100,
+    "costGold": 1000,
+    "icon": "/assets/items/amatista_app.png",
+    "description": "Permite realizar 1 tirada en cualquier estandarte."
+  },
+  {
+    "id": "shop_crystals_bundle",
+    "name": "Lote de Invocación x900",
+    "type": "currency",
+    "amount": 900,
+    "costGold": 8500,
+    "icon": "/assets/items/amatista_app.png",
+    "description": "Suficiente para una tirada múltiple de 10 héroes."
+  },
+  {
+    "id": "shop_potions_pack",
+    "name": "Pack de Pociones de EXP x5",
+    "type": "consumable",
+    "amount": 5,
+    "costGold": 600,
+    "icon": "/assets/items/POCION AZUL.png",
+    "description": "Para subir de nivel rápidamente a tus héroes."
+  },
+  {
+    "id": "shop_lingotes_pack",
+    "name": "Lote de Lingotes x10",
+    "type": "material",
+    "amount": 10,
+    "costGold": 1200,
+    "icon": "/assets/items/LINGOTE ACERO.png",
+    "description": "Materiales esenciales de forja para la herrería."
+  },
+  {
+    "id": "shop_beer",
+    "name": "Cerveza de Raíz Enana",
+    "type": "consumable",
+    "amount": 3,
+    "costGold": 450,
+    "icon": "/assets/items/Bebida.png",
+    "description": "Bebida espumosa favorita de los aventureros en la taberna."
+  }
+]

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="voidGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#18181b"/>
+      <stop offset="35%" stop-color="#4c1d95"/>
+      <stop offset="70%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+  </defs>
+  <!-- Swirling Void Tendril -->
+  <path d="M64 8 C80 28 92 48 88 74 C84 98 68 116 48 116 C30 116 22 98 28 80 C34 62 52 56 56 42 C48 48 42 58 40 68 C36 52 46 32 64 8 Z"
+        fill="url(#voidGrad)"
+        stroke="#09090b"
+        stroke-width="5"
+        stroke-linejoin="round"/>
+  <!-- Bright Magenta Inner Tendril -->
+  <path d="M64 26 C72 44 80 58 76 78 C74 94 62 106 50 106 C40 106 36 94 40 82 C44 70 56 64 58 54 C52 58 48 66 48 72 C46 62 52 44 64 26 Z"
+        fill="#e879f9"
+        opacity="0.85"/>
+  <!-- Mini orbiting soul orbs -->
+  <circle cx="86" cy="38" r="4.5" fill="#c084fc" stroke="#09090b" stroke-width="2"/>
+  <circle cx="28" cy="46" r="3" fill="#e879f9" stroke="#09090b" stroke-width="1.5"/>
+</svg>

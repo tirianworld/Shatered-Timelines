@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="zapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="35%" stop-color="#00e5ff"/>
+      <stop offset="70%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer Comic Stroke -->
+  <polygon points="68,6 36,54 58,54 44,88 64,88 48,122 92,62 70,62 88,32 72,32"
+           fill="url(#zapGrad)"
+           stroke="#0f172a"
+           stroke-width="5"
+           stroke-linejoin="round"/>
+  <!-- Inner White Electric Core -->
+  <polygon points="66,16 44,52 62,52 50,86 68,86 56,114 84,66 68,66 82,38 68,38"
+           fill="#ffffff"
+           opacity="0.9"/>
+  <!-- Detached spark -->
+  <circle cx="96" cy="40" r="3" fill="#fef08a" stroke="#0f172a" stroke-width="1.5"/>
+  <circle cx="32" cy="74" r="2.5" fill="#00e5ff" stroke="#0f172a" stroke-width="1.5"/>
+</svg>

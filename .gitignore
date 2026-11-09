@@ -1,0 +1,13 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+.aistudio/
+
+/cdd-gacha-v2.3.1.4.zip
+
+/cdd-gacha-v2.3.1.4.zip

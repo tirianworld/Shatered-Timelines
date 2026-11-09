@@ -1,0 +1,63 @@
+[
+  {
+    "id": "banner_icespear",
+    "name": "Estandarte de Icespear",
+    "subtitle": "La Vanguardia de la Luz Glacial",
+    "description": "Mayor probabilidad de invocar a Kairon (UR Paladín) y Edacorn (SSR Vanguardia).",
+    "featuredHeroIds": [
+      "kairon",
+      "edacorn",
+      "arthorius"
+    ],
+    "costSingle": 100,
+    "costMulti": 900,
+    "bannerImage": "/assets/backgrounds/icespear_banner.png",
+    "dropRates": {
+      "UR": 0.03,
+      "SSR": 0.12,
+      "SR": 0.35,
+      "R": 0.5
+    }
+  },
+  {
+    "id": "banner_mercado_negro",
+    "name": "Mercado Negro de las Sombras",
+    "subtitle": "El Pacto Secreto de los Bajos Fondos",
+    "description": "Probabilidad aumentada para El Barón (UR Hechicero) y Roxanne (SR Cazadora).",
+    "featuredHeroIds": [
+      "el_baron",
+      "roxanne",
+      "chispo_deez"
+    ],
+    "costSingle": 100,
+    "costMulti": 900,
+    "bannerImage": "/assets/backgrounds/fondo_baron.png",
+    "dropRates": {
+      "UR": 0.035,
+      "SSR": 0.115,
+      "SR": 0.35,
+      "R": 0.5
+    }
+  },
+  {
+    "id": "banner_loux_astral",
+    "name": "Invocación de la Mansión Loux",
+    "subtitle": "Linaje Ancestral y Arcanos",
+    "description": "Probabilidad aumentada para Pepe Loux (UR Guerrero), Aeliana (SSR Archimaga) y Prometeo (SSR Mago).",
+    "featuredHeroIds": [
+      "pepe_loux",
+      "aeliana",
+      "prometeo",
+      "smurph_draco"
+    ],
+    "costSingle": 100,
+    "costMulti": 900,
+    "bannerImage": "/assets/backgrounds/mansion_loux.png",
+    "dropRates": {
+      "UR": 0.03,
+      "SSR": 0.13,
+      "SR": 0.34,
+      "R": 0.5
+    }
+  }
+]

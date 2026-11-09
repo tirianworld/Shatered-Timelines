@@ -1,0 +1,56 @@
+[
+  {
+    "id": "xp_potion_small",
+    "name": "Poción de EXP Pequeña",
+    "type": "consumable",
+    "rarity": "R",
+    "count": 10,
+    "icon": "/assets/items/POCION ROJA.png",
+    "description": "Otorga 150 puntos de experiencia a un héroe seleccionado.",
+    "usable": true,
+    "effect": {
+      "xpAmount": 150
+    }
+  },
+  {
+    "id": "xp_potion_large",
+    "name": "Elixir de EXP Mayor",
+    "type": "consumable",
+    "rarity": "SR",
+    "count": 4,
+    "icon": "/assets/items/POCION AZUL.png",
+    "description": "Otorga 500 puntos de experiencia a un héroe seleccionado.",
+    "usable": true,
+    "effect": {
+      "xpAmount": 500
+    }
+  },
+  {
+    "id": "lingote_hierro",
+    "name": "Lingote de Hierro Gélido",
+    "type": "material",
+    "rarity": "R",
+    "count": 25,
+    "icon": "/assets/items/LINGOTE ACERO.png",
+    "description": "Material indispensable para forjar y reforzar armas en la herrería."
+  },
+  {
+    "id": "amatista_astral",
+    "name": "Cristal de Amatista Astral",
+    "type": "material",
+    "rarity": "SSR",
+    "count": 6,
+    "icon": "/assets/items/amatista_app.png",
+    "description": "Gema imbuida con resonancia cósmica, usada para ascender equipo legendario."
+  },
+  {
+    "id": "estofado_taverna",
+    "name": "Estofado de Magordito",
+    "type": "consumable",
+    "rarity": "SR",
+    "count": 3,
+    "icon": "/assets/items/Comida.png",
+    "description": "Delicioso plato preparado con tubérculos de Icespear. Fortalece al equipo.",
+    "usable": true
+  }
+]

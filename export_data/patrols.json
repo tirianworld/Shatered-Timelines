@@ -1,0 +1,74 @@
+[
+  {
+    "id": "patrol_1",
+    "name": "Murallas de Icespear",
+    "region": "Frontera Norte",
+    "durationSeconds": 30,
+    "description": "Vigilar los torreones de hielo frente a merodeadores orcos y lobos hambrientos.",
+    "bgImage": "/assets/backgrounds/fondo_icespear.png",
+    "recommendedPower": 400,
+    "rewards": {
+      "gold": 250,
+      "xp": 150,
+      "crystals": 15,
+      "materials": [
+        "Hierro Gélido",
+        "Ración de Viaje"
+      ]
+    }
+  },
+  {
+    "id": "patrol_2",
+    "name": "Cuevas de Icespear",
+    "region": "Grutas Profundas",
+    "durationSeconds": 60,
+    "description": "Adentrarse en las grutas subterráneas en busca de vetas de amatista y minerales preciosos.",
+    "bgImage": "/assets/backgrounds/cuevas_de_icespear.png",
+    "recommendedPower": 700,
+    "rewards": {
+      "gold": 500,
+      "xp": 320,
+      "crystals": 30,
+      "materials": [
+        "Cristal de Amatista",
+        "Lingote de Plata"
+      ]
+    }
+  },
+  {
+    "id": "patrol_3",
+    "name": "Mazmorra de la Taberna",
+    "region": "Sótanos Clandestinos",
+    "durationSeconds": 120,
+    "description": "Investigar los misteriosos ruidos y túneles ocultos bajo la bodega de la taberna.",
+    "bgImage": "/assets/backgrounds/mazmorra_taverna_icespear.png",
+    "recommendedPower": 1100,
+    "rewards": {
+      "gold": 900,
+      "xp": 600,
+      "crystals": 50,
+      "materials": [
+        "Llave Misteriosa",
+        "Esencia de Sombra"
+      ]
+    }
+  },
+  {
+    "id": "patrol_4",
+    "name": "Santuario de Cryovain",
+    "region": "Cumbre Helada",
+    "durationSeconds": 180,
+    "description": "Expedición de élite al altar del dragón de hielo para recuperar reliquias astrales.",
+    "bgImage": "/assets/backgrounds/icespear_combate_guardias.png",
+    "recommendedPower": 1600,
+    "rewards": {
+      "gold": 1600,
+      "xp": 1200,
+      "crystals": 100,
+      "materials": [
+        "Escama de Cryovain",
+        "Núcleo Astral"
+      ]
+    }
+  }
+]

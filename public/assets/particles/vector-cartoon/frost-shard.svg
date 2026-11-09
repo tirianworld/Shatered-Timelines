@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="shardLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#bae6fd"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="shardDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+  </defs>
+  <!-- Main Icicle Shard Outline -->
+  <polygon points="64,6 88,48 76,122 64,124 44,82 50,42"
+           fill="#0369a1"
+           stroke="#082f49"
+           stroke-width="5"
+           stroke-linejoin="round"/>
+  <!-- Light Facet -->
+  <polygon points="64,10 64,120 48,80 54,42"
+           fill="url(#shardLight)"/>
+  <!-- Shadow Facet -->
+  <polygon points="64,10 84,48 74,120 64,120"
+           fill="url(#shardDark)"/>
+  <!-- Edge Specular Highlight Line -->
+  <line x1="64" y1="12" x2="64" y2="116" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
