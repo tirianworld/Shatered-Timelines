@@ -401,36 +401,6 @@ export const SantuarioView: React.FC = () => {
             )}
           </button>
 
-          {/* Carved Wood Inventory Button */}
-          <button
-            onClick={() => {
-              sound.playSFX('click');
-              navigateTo('inventory');
-            }}
-            className="h-8 w-22 cursor-pointer hover:scale-106 active:scale-95 transition-transform"
-            title="Abrir Inventario & Mochila"
-          >
-            <img
-              src="/assets/items/Inventary_Button.png"
-              alt="Inventario"
-              className="w-full h-full object-contain filter drop-shadow-xl"
-            />
-          </button>
-          {/* Botica / Tienda de Pociones Button */}
-          <button
-            onClick={() => {
-              sound.playSFX('skill');
-              navigateTo('potions');
-            }}
-            className="w-10 h-10 rounded-full bg-gradient-to-b from-emerald-800 to-teal-950 border-2 border-emerald-500 shadow-xl flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition-transform"
-            title="Botica de Pociones & Alquimia"
-          >
-            <img
-              src="/assets/items/boton_pocion.png"
-              alt="Pociones"
-              className="w-7 h-7 object-contain filter drop-shadow"
-            />
-          </button>
         </div>
       </div>
 

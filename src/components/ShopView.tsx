@@ -340,7 +340,7 @@ const ROTATING_POOLS = {
       name: 'Sushi Dragón',
       category: 'comida' as const,
       cost: 300,
-      icon: '/assets/items/shushi.png',
+      icon: '/assets/items/Shushi.png',
       description: 'Rollos frescos de salmón de las profundidades árticas.',
     },
     {

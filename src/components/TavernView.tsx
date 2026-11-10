@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
 import { TavernKitchenView } from './TavernKitchenView';
-import { Beer, MessageCircle, Flame, Clock, Sparkles, X, UtensilsCrossed } from 'lucide-react';
+import { Beer, MessageCircle, Clock, Sparkles, X, UtensilsCrossed } from 'lucide-react';
 
 const MAGORDITO_LINES = [
   "¿'Magordito'? Un viejo apodo irónico para despistar a los incautos antes de que prueben mis artes oscuras.",
@@ -94,10 +94,7 @@ export const TavernView: React.FC = () => {
         {/* ============================================================== */}
         {/* HORNO / FOGÓN DE LA TABERNA (Interactive Hearth / Cooking Oven) */}
         {/* ============================================================== */}
-        <div className="absolute top-[40%] left-[2%] w-[42%] h-[35%] z-20 group">
-          {/* Pulsing Warm Hearth Flame Glow */}
-          <div className="absolute inset-0 rounded-2xl bg-orange-500/20 group-hover:bg-orange-500/40 transition-all blur-md pointer-events-none animate-hearth-flicker" />
-
+        <div className="absolute top-[40%] left-[2%] w-[42%] h-[35%] z-20">
           {/* Hotspot Button on the Chimney Hearth */}
           <button
             onClick={handleOpenKitchen}
@@ -105,14 +102,6 @@ export const TavernView: React.FC = () => {
             title="Horno de la Taberna • Toca para Cocinar Platos (Estilo 7DS Grand Cross)"
             aria-label="Abrir Menú de Cocina del Horno"
           >
-            {/* Authentic Carved Tavern Badge on the Oven */}
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-stone-950 via-amber-950 to-stone-950 border-2 border-amber-400 text-amber-200 text-[11px] font-black uppercase tracking-wider shadow-[0_0_15px_rgba(245,158,11,0.6)] group-hover:scale-110 active:scale-95 transition-all">
-              <Flame className="w-4 h-4 text-orange-400 animate-bounce" />
-              <span>Horno de Cocina</span>
-            </div>
-            <span className="text-[9px] font-bold text-amber-300 drop-shadow-[0_1px_3px_rgba(0,0,0,1)] bg-black/60 px-2 py-0.2 rounded-full mt-1 border border-amber-500/40 opacity-90 group-hover:opacity-100">
-              ¡Toca para Cocinar!
-            </span>
           </button>
         </div>
 

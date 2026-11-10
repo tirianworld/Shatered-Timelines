@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
 import { safeStorage } from '../utils/storage';
-import { X, Lock, CheckCircle2, Sparkles } from 'lucide-react';
+import { X, CheckCircle2, Sparkles } from 'lucide-react';
 import { AutoRepeatModal } from './AutoRepeatModal';
 
 interface QuestMission {
@@ -32,6 +32,12 @@ export const QuestView: React.FC = () => {
   const isChapter2Unlocked =
     questProgress.completedMissions.includes('m4_puertas_selladas') ||
     questProgress.chapter >= 2;
+
+  const isChapter3Unlocked =
+    questProgress.completedMissions.includes('m7_epilogo_aldea') ||
+    questProgress.completedMissions.includes('m6_puerta_laberinto') ||
+    questProgress.chapter >= 3;
+
 
   // Chapter 1 missions - Exclusively Icespear story & boss (no cave missions)
   const chapter1Missions: QuestMission[] = [
@@ -136,32 +142,84 @@ export const QuestView: React.FC = () => {
       isStory: true,
     },
     {
-      id: 'm6_cuevas_titan',
-      title: 'El Titán Melenudo',
-      iconType: 'boss',
-      difficulty: 'Dificil',
-      description:
-        '¡Semijefe! Un coloso subterráneo con salvaje melena de cerdas y demoledores aplastamientos sísmicos.',
-      portrait: '/assets/combat/semiboss_melenudo_clean.png',
-      portraitClass: 'scale-[1.65] origin-top translate-y-[6px]',
-      stageId: 'stage_cuevas_titan',
-    },
-    {
-      id: 'm7_cuevas_reina',
-      title: 'La Madre de Nidos',
+      id: 'm6_puerta_laberinto',
+      title: 'El Laberinto de Lloth',
       iconType: 'skull',
       difficulty: 'Pesadilla',
       description:
-        'El corazón abisal de la colonia: ¡Vence a la temible Madre de Nidos y su guardia del Underdark!',
-      portrait: '/assets/combat/medusa_clean.png',
-      portraitClass: 'scale-[1.7] origin-top translate-y-[6px]',
-      stageId: 'stage_cuevas_reina',
+        '¡Penúltima Cinemática de Capítulo! Ante las monumentales puertas arácnidas, Lord Vaelas revela la oscura verdad del artefacto y desata su traición.',
+      portrait: '/assets/portraits/drow_vaelas_llave_thumb.png',
+      portraitClass: 'scale-[1.25] translate-y-0.5 object-center',
+      stageId: 'stage_puerta_laberinto',
+      isStory: true,
+    },
+    {
+      id: 'm7_epilogo_aldea',
+      title: 'El Retorno a Glimmerstone',
+      iconType: 'boss',
+      difficulty: 'Pesadilla',
+      description:
+        '¡Cinemática Final y Epílogo del Capítulo 2! Caldo de Dragón llega a la aldea enana para anunciar la verdad y la apertura de las minas. Tras ello, en el laberinto, una misteriosa figura acecha...',
+      portrait: '/assets/portraits/drow_vaelas_despeinado_thumb.png',
+      portraitClass: 'scale-[1.25] translate-y-0.5 object-center',
+      stageId: 'stage_epilogo_aldea',
+      isStory: true,
+    },
+  ];
+
+  // Chapter 3 missions - The path through the snowy forest towards El Mercado Negro
+  const chapter3Missions: QuestMission[] = [
+    {
+      id: 'm8_intro_capitulo3',
+      title: 'El Campamento Orco',
+      iconType: 'boss',
+      difficulty: 'Facil',
+      description:
+        '¡Cinemática de Apertura del Capítulo 3! Caldo de Dragón sale de las minas al bosque nevado y divisa un campamento de orcos de élite. Arlem urde una desternillante estratagema con magia de ilusión...',
+      portrait: '/assets/portraits/arlem_orco_thumb.png',
+      portraitClass: 'scale-[1.25] translate-y-0.5 object-center',
+      stageId: 'stage_intro_capitulo3',
+      isStory: true,
+    },
+    {
+      id: 'm9_emboscada_ferton',
+      title: 'Los Guardias de Ferton',
+      iconType: 'skull',
+      difficulty: 'Pesadilla',
+      description:
+        '¡Combate en el Camino Nevado! Una comitiva clandestina con armaduras de ébano y oro carga suministros por orden de un Capataz Hobgoblin: "¡Cargadlas muchachos, Ferton no espera!". ¡Sobrevive a 3 oleadas de lanceros, ballesteros y caballeros acorazados!',
+      portrait: '/assets/portraits/guarda_negro_espada_thumb.png',
+      portraitClass: 'scale-[1.25] translate-y-0.5 object-center',
+      stageId: 'stage_camino_ferton',
+      isStory: true,
+    },
+    {
+      id: 'm10_hobgoblin_boss',
+      title: 'El Capataz de Ferton',
+      iconType: 'boss',
+      difficulty: 'Pesadilla',
+      description:
+        '¡Duelo a Muerte contra el Capataz Hobgoblin! Tras la caída de su guardia, el furioso comandante insulta a sus soldados y se encara con Caldo de Dragón. ¡Una encarnizada boss fight en 3 fases: cuerpo a cuerpo, granadas alquímicas y su letal arma de fuego!',
+      portrait: '/assets/portraits/hobgoblin_capataz_thumb.png',
+      portraitClass: 'scale-[1.25] translate-y-0.5 object-center',
+      stageId: 'stage_duelo_hobgoblin',
+      isStory: true,
     },
   ];
 
   // Active missions list based on selected chapter
-  const missions = activeQuestChapter === 2 && isChapter2Unlocked ? chapter2Missions : chapter1Missions;
-  const currentChapter = activeQuestChapter === 2 && isChapter2Unlocked ? 2 : 1;
+  const missions =
+    activeQuestChapter === 3 && isChapter3Unlocked
+      ? chapter3Missions
+      : activeQuestChapter === 2 && isChapter2Unlocked
+      ? chapter2Missions
+      : chapter1Missions;
+  const currentChapter =
+    activeQuestChapter === 3 && isChapter3Unlocked
+      ? 3
+      : activeQuestChapter === 2 && isChapter2Unlocked
+      ? 2
+      : 1;
 
   // Chest claimed states per chapter
   const [chestClaimedCh1, setChestClaimedCh1] = useState<boolean>(() => {
@@ -170,9 +228,12 @@ export const QuestView: React.FC = () => {
   const [chestClaimedCh2, setChestClaimedCh2] = useState<boolean>(() => {
     return safeStorage.getItem('cdd_quest_chest_ch2_claimed') === 'true';
   });
+  const [chestClaimedCh3, setChestClaimedCh3] = useState<boolean>(() => {
+    return safeStorage.getItem('cdd_quest_chest_ch3_claimed') === 'true';
+  });
   const [showChestModal, setShowChestModal] = useState(false);
-  const [lockedBannerText, setLockedBannerText] = useState<string | null>(null);
   const [autoRepeatMission, setAutoRepeatMission] = useState<QuestMission | null>(null);
+
 
   // Content scroll & drag interaction (no visible scrollbar, drag to scroll)
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -232,11 +293,18 @@ export const QuestView: React.FC = () => {
         mission.id === 'm3_bosque' ||
         mission.id === 'm4_puertas_selladas' ||
         mission.id === 'm5_minas_historia' ||
+        mission.id === 'm8_intro_capitulo3' ||
+        mission.id === 'm9_emboscada_ferton' ||
+        mission.id === 'm10_hobgoblin_boss' ||
         mission.isStory) &&
       (!questProgress.completedMissions.includes(mission.id) || forceStory || mission.isStory)
     ) {
       if (forceStory && questProgress.completedMissions.includes(mission.id)) {
-        if (mission.id === 'm2_robo') {
+        if (mission.id === 'm10_hobgoblin_boss') {
+          setSelectedCombatMissionId('m10_hobgoblin_boss_epilogo');
+        } else if (mission.id === 'm9_emboscada_ferton') {
+          setSelectedCombatMissionId('m9_emboscada_ferton_epilogo');
+        } else if (mission.id === 'm2_robo') {
           setSelectedCombatMissionId('m2_robo_epilogo');
         } else if (mission.id === 'm3_bosque') {
           setSelectedCombatMissionId('m3_bosque_epilogo');
@@ -270,7 +338,7 @@ export const QuestView: React.FC = () => {
         setChestClaimedCh1(true);
         safeStorage.setItem('cdd_quest_chest_ch1_claimed', 'true');
       }
-    } else {
+    } else if (currentChapter === 2) {
       if (!chestClaimedCh2 && isChapterFullyCompleted) {
         addGold(25000);
         addCrystals(800);
@@ -287,36 +355,33 @@ export const QuestView: React.FC = () => {
         setChestClaimedCh2(true);
         safeStorage.setItem('cdd_quest_chest_ch2_claimed', 'true');
       }
+    } else {
+      if (!chestClaimedCh3 && isChapterFullyCompleted) {
+        addGold(35000);
+        addCrystals(1200);
+        addShelfItem({
+          id: 'recompensa_bosque_orcos',
+          name: 'Estandarte del Clan Colmillo y Vino Especiado',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/gromock_icono.png',
+          rarity: 'UR',
+          priceGold: 10000,
+          description: 'Trofeos reclamados tras el despeje pacífico del campamento orco en los bosques de Icespear.',
+        });
+        setChestClaimedCh3(true);
+        safeStorage.setItem('cdd_quest_chest_ch3_claimed', 'true');
+      }
     }
     setShowChestModal(true);
   };
 
   const handleSelectChapter = (chapterNum: number) => {
+    // Capítulos bloqueados: pulsar no hace nada (ni sonido ni aviso).
+    if (chapterNum === 2 && !isChapter2Unlocked) return;
+    if (chapterNum === 3 && !isChapter3Unlocked) return;
+    if (chapterNum >= 4) return;
     sound.playSFX('click');
-    if (chapterNum === 2 && !isChapter2Unlocked) {
-      sound.playSFX('blip');
-      setLockedBannerText(
-        '¡Capítulo II Bloqueado! Derrota al Devorador Quitinoso en "Las Puertas Selladas" para entrar en Las Minas.'
-      );
-      setTimeout(() => setLockedBannerText(null), 3600);
-      return;
-    }
-    if (chapterNum === 3) {
-      sound.playSFX('blip');
-      setLockedBannerText(
-        '¡Capítulo III Bloqueado! Próximamente: El Mercado Negro de Icespear.'
-      );
-      setTimeout(() => setLockedBannerText(null), 3600);
-      return;
-    }
-    if (chapterNum === 4) {
-      sound.playSFX('blip');
-      setLockedBannerText(
-        '¡Capítulo IV Bloqueado! Próximamente: El Nido de Cryovain en Pico Icespear.'
-      );
-      setTimeout(() => setLockedBannerText(null), 3600);
-      return;
-    }
     setActiveQuestChapter(chapterNum);
   };
 
@@ -324,16 +389,26 @@ export const QuestView: React.FC = () => {
     <div className="relative w-full h-full flex flex-col justify-start bg-transparent select-none overflow-hidden">
       {/* 1. AUTHENTIC FULL-BLEED BACKGROUND:
           - Chapter 1: fondo_icespear_1.png
-          - Chapter 2: image_5518948d.png (User-provided ornate mine background with tracks and lantern) */}
+          - Chapter 2: image_5518948d.png (User-provided ornate mine background with tracks and lantern)
+          - Chapter 3: image_0fed218e.png (User-provided ornate Mercado Negro board with auction house and fortress) */}
       <img
         src={
-          currentChapter === 2
+          currentChapter === 3
+            ? '/assets/aistudio/image_0fed218e.png'
+            : currentChapter === 2
             ? '/assets/aistudio/image_5518948d.png'
             : '/assets/backgrounds/fondo_icespear_1.png'
         }
-        alt={currentChapter === 2 ? 'Las Minas de Glimmerstone' : 'Fondo Icespear'}
+        alt={
+          currentChapter === 3
+            ? 'Tablón de Misiones del Mercado Negro'
+            : currentChapter === 2
+            ? 'Las Minas de Glimmerstone'
+            : 'Fondo Icespear'
+        }
         className="absolute inset-0 w-full h-full object-cover object-top pointer-events-none select-none z-0"
       />
+
 
       {/* 2. TOP CHAPTER TABS (Positioned on the top wooden plank) */}
       <div className="relative z-20 w-full px-[4.5%] pt-[1.5%] pb-[1%] shrink-0">
@@ -410,31 +485,56 @@ export const QuestView: React.FC = () => {
             </button>
           )}
 
-          {/* TAB 3: CAPITULO III EL MERCADO NEGRO (Bloqueado) */}
-          <button
-            type="button"
-            onClick={() => handleSelectChapter(3)}
-            className="relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
-            title="Capítulo III: El Mercado Negro (Próximamente)"
-          >
-            <img
-              src="/assets/items/boton_historia.png"
-              alt="Capitulo III Bloqueado"
-              className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
-            />
-            <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-              CAPITULO III
-            </span>
-            <span className="relative z-10 text-[6.5px] sm:text-[7.5px] font-bold uppercase text-stone-400 leading-tight tracking-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-              MERCADO NEGRO
-            </span>
-            {/* Hanging Padlock */}
-            <img
-              src="/assets/items/CANDADO.png"
-              alt="Bloqueado"
-              className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
-            />
-          </button>
+          {/* TAB 3: CAPITULO III EL MERCADO NEGRO */}
+          {isChapter3Unlocked ? (
+            <button
+              type="button"
+              onClick={() => handleSelectChapter(3)}
+              className={`relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-transform ${
+                currentChapter === 3
+                  ? 'filter brightness-115 drop-shadow-[0_2px_8px_rgba(234,179,8,0.7)]'
+                  : 'opacity-85 hover:opacity-100'
+              }`}
+            >
+              <img
+                src="/assets/items/boton_historia.png"
+                alt="Capitulo III"
+                className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+              />
+              <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-amber-100 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                CAPITULO III
+              </span>
+              <span className="relative z-10 text-[6.5px] sm:text-[7.5px] font-bold uppercase text-yellow-300 leading-tight tracking-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                MERCADO NEGRO
+              </span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleSelectChapter(3)}
+              className="relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
+              title="Capítulo III: El Mercado Negro (Bloqueado)"
+            >
+              <img
+                src="/assets/items/boton_historia.png"
+                alt="Capitulo III Bloqueado"
+                className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+              />
+              <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                CAPITULO III
+              </span>
+              <span className="relative z-10 text-[6.5px] sm:text-[7.5px] font-bold uppercase text-stone-400 leading-tight tracking-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                MERCADO NEGRO
+              </span>
+              {/* Hanging Padlock */}
+              <img
+                src="/assets/items/CANDADO.png"
+                alt="Bloqueado"
+                className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
+              />
+            </button>
+          )}
+
 
           {/* TAB 4: CAPITULO IV PICO ICESPEAR (Bloqueado) */}
           <button
@@ -469,16 +569,6 @@ export const QuestView: React.FC = () => {
 
       {/* 4. MAIN CONTENT AREA ON WOODEN PLANKS */}
       <div className="relative z-10 w-full flex-1 flex flex-col px-[4%] sm:px-[4.5%] pb-2 overflow-hidden min-h-0">
-        {/* Toast / Notification Banner if tapped on locked chapter */}
-        {lockedBannerText && (
-          <div className="relative z-30 mb-1 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-950 via-red-900 to-amber-950 border border-red-500/80 shadow-[0_0_12px_rgba(239,68,68,0.6)] flex items-center gap-2 animate-bounce">
-            <Lock className="w-4 h-4 text-red-300 shrink-0" />
-            <span className="text-[10px] font-black text-amber-200 leading-tight">
-              {lockedBannerText}
-            </span>
-          </div>
-        )}
-
         {/* PROGRESO DEL CAPITULO */}
         <div className="relative w-full rounded-2xl p-2 sm:p-2.5 bg-[#170803]/90 border-2 border-[#4a1c0b] shadow-[inset_0_2px_6px_rgba(0,0,0,0.7),0_3px_8px_rgba(0,0,0,0.7)] flex items-center justify-between gap-2.5 shrink-0 my-1">
           <div className="flex-1 space-y-1">
@@ -547,16 +637,19 @@ export const QuestView: React.FC = () => {
             const isUnlocked =
               idx === 0 ||
               questProgress.completedMissions.includes(missions[idx - 1].id) ||
+              (missions[idx - 1].id === 'm6_puerta_laberinto' && questProgress.completedMissions.includes('m6_cuevas_titan')) ||
               isCompleted;
 
+            const isFertonMission = mission.id === 'm9_emboscada_ferton';
             const isStoryMission =
-              mission.isStory ||
+              (mission.isStory && !isFertonMission) ||
               mission.id === 'm1_tirano' ||
               mission.id === 'm5_minas_historia';
             const isRoboMission = mission.id === 'm2_robo';
             const isBosqueMission = mission.id === 'm3_bosque';
             const isPuertasMission = mission.id === 'm4_puertas_selladas';
-            const isReinaMission = mission.id === 'm7_cuevas_reina';
+            const isLaberintoMission = mission.id === 'm6_puerta_laberinto';
+            const isAldeaEpilogueMission = mission.id === 'm7_epilogo_aldea';
 
             if (isCompleted || isUnlocked) {
               return (
@@ -584,14 +677,24 @@ export const QuestView: React.FC = () => {
                       <h4 className="font-serif font-black text-xs sm:text-[13px] text-[#3d1908] truncate drop-shadow-[0_1px_0_rgba(255,255,255,0.4)]">
                         {mission.title}
                       </h4>
+                      {isFertonMission && (
+                        <span className="px-1.5 py-0.2 rounded-full bg-red-950/95 text-amber-300 border border-amber-500/50 font-sans font-black text-[7px] uppercase tracking-wide animate-pulse">
+                          3 OLEADAS DE ÉLITE
+                        </span>
+                      )}
                       {isPuertasMission && (
                         <span className="px-1.5 py-0.2 rounded-full bg-rose-700/90 text-rose-100 font-sans font-black text-[7px] uppercase tracking-wide animate-pulse">
                           JEFE • 2 FASES
                         </span>
                       )}
-                      {isReinaMission && (
+                      {isLaberintoMission && (
                         <span className="px-1.5 py-0.2 rounded-full bg-purple-700/90 text-purple-100 font-sans font-black text-[7px] uppercase tracking-wide animate-pulse">
-                          JEFE ABISAL
+                          CINEMÁTICA
+                        </span>
+                      )}
+                      {isAldeaEpilogueMission && (
+                        <span className="px-1.5 py-0.2 rounded-full bg-indigo-700/90 text-indigo-100 font-sans font-black text-[7px] uppercase tracking-wide animate-pulse">
+                          EPÍLOGO FINAL
                         </span>
                       )}
                       {isStoryMission && (
@@ -825,7 +928,9 @@ export const QuestView: React.FC = () => {
             </div>
 
             <h3 className="font-serif font-black text-base uppercase text-amber-300 drop-shadow">
-              {currentChapter === 2
+              {currentChapter === 3
+                ? '¡Cofre del Campamento Orco en el Bosque!'
+                : currentChapter === 2
                 ? '¡Cofre de Las Minas de Glimmerstone!'
                 : '¡Cofre de Icespear Reclamado!'}
             </h3>
@@ -833,31 +938,34 @@ export const QuestView: React.FC = () => {
             <p className="text-xs text-stone-300">
               {isChapterFullyCompleted
                 ? `¡Has completado con éxito todas las misiones del Capítulo ${
-                    currentChapter === 2 ? 'II' : 'I'
+                    currentChapter === 3 ? 'III' : currentChapter === 2 ? 'II' : 'I'
                   }! Recompensas entregadas a tu bastión:`
                 : `Avanza y supera las misiones del Capítulo ${
-                    currentChapter === 2 ? 'II' : 'I'
+                    currentChapter === 3 ? 'III' : currentChapter === 2 ? 'II' : 'I'
                   } para reclamar el botín completo (${completedCount}/${totalCount}).`}
             </p>
 
             {isChapterFullyCompleted ? (
               <div className="flex items-center justify-center gap-4 py-2 bg-[#140602] rounded-lg border border-amber-900/60">
                 <div className="flex items-center gap-1.5 text-xs font-black text-amber-400 font-mono">
-                  <span>+{currentChapter === 2 ? '25,000' : '15,000'}</span>
+                  <span>+{currentChapter === 3 ? '35,000' : currentChapter === 2 ? '25,000' : '15,000'}</span>
                   <span className="text-[10px] text-amber-200">ORO</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs font-black text-sky-400 font-mono">
-                  <span>+{currentChapter === 2 ? '800' : '500'}</span>
+                  <span>+{currentChapter === 3 ? '1,200' : currentChapter === 2 ? '800' : '500'}</span>
                   <span className="text-[10px] text-sky-200">GEMAS</span>
                 </div>
               </div>
             ) : (
               <div className="py-2 px-3 rounded-lg bg-black/50 border border-stone-800 text-[11px] text-amber-200/90 font-mono">
-                {currentChapter === 2
-                  ? 'Recompensa final: +25,000 Oro, +800 Gemas y Placas de Quitina'
+                {currentChapter === 3
+                  ? 'Recompensa final: +35,000 Oro, +1,200 Gemas y Estandarte Orco'
+                  : currentChapter === 2
+                  ? 'Recompensa final: +25,000 Oro, +800 Gemas y Veta de Plata'
                   : 'Recompensa final: +15,000 Oro y +500 Gemas'}
               </div>
             )}
+
 
             <button
               type="button"

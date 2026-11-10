@@ -1,3 +1,5 @@
+import { apiUrl } from '../utils/api';
+
 export interface GitHubRepoStatus {
   connected: boolean;
   repo: string;
@@ -41,7 +43,7 @@ class GitHubService {
    */
   async getStatus(): Promise<GitHubRepoStatus> {
     try {
-      const response = await fetch('/api/github/status');
+      const response = await fetch(apiUrl('/api/github/status'));
       if (!response.ok) {
         throw new Error(`Error HTTP: ${response.status}`);
       }
@@ -68,7 +70,7 @@ class GitHubService {
     shop?: any[];
   } | null> {
     try {
-      const response = await fetch('/api/github/data');
+      const response = await fetch(apiUrl('/api/github/data'));
       if (!response.ok) throw new Error('Error al consultar datos');
       return await response.json();
     } catch (err) {
@@ -82,7 +84,7 @@ class GitHubService {
    */
   async saveData(category: 'heroes' | 'banners' | 'patrols' | 'inventory' | 'equipment' | 'shop', payload: any, message?: string): Promise<{ success: boolean; sha?: string; error?: string }> {
     try {
-      const res = await fetch('/api/github/save-data', {
+      const res = await fetch(apiUrl('/api/github/save-data'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -112,7 +114,7 @@ class GitHubService {
     commitMessage?: string
   ): Promise<AssetUploadResult> {
     try {
-      const res = await fetch('/api/github/upload-asset', {
+      const res = await fetch(apiUrl('/api/github/upload-asset'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -141,7 +143,7 @@ class GitHubService {
    */
   async pullLatest(): Promise<{ success: boolean; message: string }> {
     try {
-      const res = await fetch('/api/github/sync', { method: 'POST' });
+      const res = await fetch(apiUrl('/api/github/sync'), { method: 'POST' });
       return await res.json();
     } catch (err: any) {
       return { success: false, message: err.message || 'Fallo de sincronización' };

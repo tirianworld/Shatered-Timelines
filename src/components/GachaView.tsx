@@ -180,7 +180,7 @@ export const GachaView: React.FC = () => {
                       alt={hero.name}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/assets/portraits/aeliana.png';
+                        (e.target as HTMLImageElement).src = '/assets/portraits/Aeliana.png';
                       }}
                     />
                     <span
@@ -334,7 +334,7 @@ export const GachaView: React.FC = () => {
                       alt={hero.name}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/assets/portraits/aeliana.png';
+                        (e.target as HTMLImageElement).src = '/assets/portraits/Aeliana.png';
                       }}
                     />
                   </div>
@@ -375,7 +375,7 @@ export const GachaView: React.FC = () => {
                   alt={inspectingHero.name}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/assets/portraits/aeliana.png';
+                    (e.target as HTMLImageElement).src = '/assets/portraits/Aeliana.png';
                   }}
                 />
               </div>

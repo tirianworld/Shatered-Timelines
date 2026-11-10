@@ -58,6 +58,7 @@ const GameContent: React.FC = () => {
     setIsGitHubManagerOpen,
     isPlayGamesOpen,
     setIsPlayGamesOpen,
+    selectedCombatMissionId,
     setSelectedCombatMissionId,
     navigateTo,
   } = useGame();
@@ -118,7 +119,7 @@ const GameContent: React.FC = () => {
           {currentTab === 'forge' && <ForgeView />}
           {currentTab === 'potions' && <PotionShopView />}
           {currentTab === 'tavern' && <TavernView />}
-          {currentTab === 'cooking' && <TavernKitchenView onClose={() => navigateTo('tavern')} />}
+          {currentTab === 'cooking' && <TavernKitchenView onClose={() => goBack()} />}
           {currentTab === 'world' && <WorldMapView />}
           {currentTab === 'combat' && <CombatView />}
           {currentTab === 'patrol' && <PatrolView />}
@@ -128,7 +129,23 @@ const GameContent: React.FC = () => {
           {currentTab === 'story' && (
             <StoryDialogueView
               onFinish={() => {
+                const fromKitchen = selectedCombatMissionId === 'cocina_paco';
+                const fromKitchenMonsters = selectedCombatMissionId === 'cocina_monstruos';
+                const fromForge = selectedCombatMissionId === 'forja_goryn';
+                const fromBotica = selectedCombatMissionId === 'botica_raxxar';
                 setSelectedCombatMissionId(null);
+                if (fromForge || fromBotica) {
+                  // Vuelve al taller deshaciendo la entrada de la cinemática,
+                  // para que "Volver" no reabra la historia de la misión 1.
+                  goBack();
+                  return;
+                }
+                if (fromKitchen || fromKitchenMonsters) {
+                  // Vuelve al Fogón deshaciendo la entrada de la cinemática, para no
+                  // dejar 'story' en el historial ("Volver" en la taberna debe ir al Santuario).
+                  goBack();
+                  return;
+                }
                 navigateTo('quest');
               }}
               onLaunchCombat={() => {
