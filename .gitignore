@@ -2,6 +2,8 @@ node_modules/
 build/
 dist/
 coverage/
+# Datos de órdenes generados en local: la base real vive en el repo de datos de GitHub
+/export_data/orders.json
 .DS_Store
 *.log
 .env*
@@ -11,3 +13,5 @@ coverage/
 /cdd-gacha-v2.3.1.4.zip
 
 /cdd-gacha-v2.3.1.4.zip
+
+.logs/

@@ -1,439 +1,224 @@
-import { ClanData, GitHubSyncConfig, GitHubSyncStatus } from '../types/clan';
+import { ClanData, ClanMember, GitHubSyncStatus } from '../types/clan';
 import { safeStorage } from '../utils/storage';
 
-const CONFIG_STORAGE_KEY = 'cdd_github_orders_sync_cfg_v1';
-const STATUS_STORAGE_KEY = 'cdd_github_orders_sync_status_v1';
+const STATUS_STORAGE_KEY = 'cdd_orders_sync_status_v2';
+const REQUEST_TIMEOUT_MS = 12000;
 
-const DEFAULT_CONFIG: GitHubSyncConfig = {
-  token: '',
-  owner: 'SUPERWEB-AYM-NANO',
-  repo: 'icespear-orders-data',
-  branch: 'main',
-  filePath: 'orders_database.json',
-  gistId: '',
-  useGist: false,
-  autoSync: true,
-};
+export interface OrdersSnapshot {
+  orders: ClanData[];
+  source: 'github' | 'local';
+  syncedAt: number | null;
+}
+
+export interface OrderMutationResult {
+  success: boolean;
+  synced: boolean;
+  order?: ClanData;
+  sha: string | null;
+  url: string | null;
+  message: string;
+}
+
+interface OrdersApiResponse {
+  success?: boolean;
+  orders?: ClanData[];
+  order?: ClanData;
+  source?: 'github' | 'local';
+  updatedAt?: number;
+  synced?: boolean;
+  sha?: string | null;
+  url?: string | null;
+  message?: string;
+  repo?: {
+    url?: string;
+    path?: string;
+    tokenConfigured?: boolean;
+  };
+}
+
+const REPO_URL = 'https://github.com/theworldoftirian/Cdd-Gacha-Datos';
 
 type StatusListener = (status: GitHubSyncStatus) => void;
 
+const fetchWithTimeout = async (input: string, init?: RequestInit): Promise<Response> => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
+const formatSyncTime = () =>
+  new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+/**
+ * Cliente de la base de órdenes alojada en GitHub.
+ * No guarda ningún token en el navegador: el servidor es quien comitea con sus credenciales.
+ */
 class GitHubClanService {
-  private config: GitHubSyncConfig = DEFAULT_CONFIG;
   private status: GitHubSyncStatus = {
     lastSyncTime: null,
     lastCommitSha: null,
     lastSyncStatus: 'idle',
     errorMessage: null,
-    remoteUrl: null,
-    authenticatedUser: null,
+    remoteUrl: REPO_URL,
+    source: null,
+    orderCount: 0,
   };
   private listeners: Set<StatusListener> = new Set();
 
   constructor() {
-    this.loadState();
-  }
-
-  private loadState() {
     try {
-      const rawCfg = safeStorage.getItem(CONFIG_STORAGE_KEY);
-      if (rawCfg) {
-        this.config = { ...DEFAULT_CONFIG, ...JSON.parse(rawCfg) };
+      const raw = safeStorage.getItem(STATUS_STORAGE_KEY);
+      if (raw) {
+        this.status = { ...this.status, ...JSON.parse(raw) };
       }
-      const rawStatus = safeStorage.getItem(STATUS_STORAGE_KEY);
-      if (rawStatus) {
-        this.status = { ...this.status, ...JSON.parse(rawStatus) };
-      }
-    } catch (e) {
-      console.warn('Error loading GitHub sync state:', e);
+    } catch {
+      // Estado por defecto si la caché está corrupta
     }
   }
 
-  private saveState() {
+  private saveStatus() {
     try {
-      safeStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(this.config));
       safeStorage.setItem(STATUS_STORAGE_KEY, JSON.stringify(this.status));
-    } catch (e) {
-      console.warn('Error saving GitHub sync state:', e);
+    } catch {
+      // Ignorado: la sincronización no depende de la caché
     }
     this.notify();
   }
 
   public subscribeStatus(cb: StatusListener): () => void {
     this.listeners.add(cb);
-    cb(this.status);
+    cb(this.getStatus());
     return () => this.listeners.delete(cb);
   }
 
   private notify() {
+    const snapshot = this.getStatus();
     this.listeners.forEach((cb) => {
       try {
-        cb(this.status);
+        cb(snapshot);
       } catch (err) {
         console.error(err);
       }
     });
   }
 
-  public getConfig(): GitHubSyncConfig {
-    return { ...this.config };
-  }
-
   public getStatus(): GitHubSyncStatus {
     return { ...this.status };
   }
 
-  public saveConfig(partial: Partial<GitHubSyncConfig>): void {
-    this.config = { ...this.config, ...partial };
-    this.saveState();
+  public getRepoUrl(): string {
+    return this.status.remoteUrl || REPO_URL;
   }
 
-  public async testConnection(customToken?: string): Promise<{
-    success: boolean;
-    username?: string;
-    avatarUrl?: string;
-    message: string;
-  }> {
-    const token = (customToken !== undefined ? customToken : this.config.token).trim();
-    if (!token) {
-      return { success: false, message: 'Ingresa un Personal Access Token (PAT) de GitHub para conectar.' };
-    }
-
-    try {
-      const res = await fetch('https://api.github.com/user', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github.v3+json',
-        },
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        return {
-          success: false,
-          message: err.message || `Error ${res.status}: Token inválido o permisos insuficientes.`,
-        };
-      }
-
-      const user = await res.json();
-      this.status.authenticatedUser = user.login;
-      if (!this.config.owner || this.config.owner === 'SUPERWEB-AYM-NANO') {
-        this.config.owner = user.login;
-      }
-      this.saveState();
-
-      return {
-        success: true,
-        username: user.login,
-        avatarUrl: user.avatar_url,
-        message: `¡Conexión exitosa con GitHub como @${user.login}!`,
-      };
-    } catch (e: any) {
-      return {
-        success: false,
-        message: e.message || 'Error de red al conectar con api.github.com',
-      };
-    }
-  }
-
-  public exportOrdersJson(allClans: ClanData[], currentClan: ClanData | null): string {
-    const payload = {
-      appletId: '5bd34417-4600-43a0-9f03-b2d58b50aec1',
-      version: '2.0.0',
-      syncedAt: new Date().toISOString(),
-      currentClanId: currentClan?.id || null,
-      totalOrders: allClans.length,
-      orders: allClans,
-      currentOrder: currentClan,
-    };
-    return JSON.stringify(payload, null, 2);
-  }
-
-  public downloadJsonFile(allClans: ClanData[], currentClan: ClanData | null): void {
-    const content = this.exportOrdersJson(allClans, currentClan);
-    const blob = new Blob([content], { type: 'application/json;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `icespear_ordenes_${Date.now()}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
-  public async pushOrdersToGitHub(
-    allClans: ClanData[],
-    currentClan: ClanData | null
-  ): Promise<{ success: boolean; message: string; sha?: string; url?: string }> {
-    const token = this.config.token.trim();
-    if (!token) {
-      return {
-        success: false,
-        message: 'Configura tu Token de GitHub para habilitar el guardado remoto de las órdenes.',
-      };
-    }
-
+  private beginSync() {
     this.status.lastSyncStatus = 'syncing';
     this.status.errorMessage = null;
     this.notify();
-
-    const jsonString = this.exportOrdersJson(allClans, currentClan);
-
-    try {
-      if (this.config.useGist) {
-        return await this.pushToGist(token, jsonString);
-      } else {
-        return await this.pushToRepository(token, jsonString);
-      }
-    } catch (e: any) {
-      const errMsg = e?.message || 'Error desconocido al guardar en GitHub';
-      this.status.lastSyncStatus = 'error';
-      this.status.errorMessage = errMsg;
-      this.saveState();
-      return { success: false, message: errMsg };
-    }
   }
 
-  private async pushToGist(
-    token: string,
-    content: string
-  ): Promise<{ success: boolean; message: string; sha?: string; url?: string }> {
-    const fileName = 'icespear_ordenes.json';
-
-    if (this.config.gistId?.trim()) {
-      const gistId = this.config.gistId.trim();
-      const res = await fetch(`https://api.github.com/gists/${gistId}`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          description: 'Base de datos de Órdenes y Hermandades de Icespear',
-          files: {
-            [fileName]: { content },
-          },
-        }),
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || `Error ${res.status} al actualizar Gist de GitHub`);
-      }
-
-      const gist = await res.json();
-      const sha = gist.history?.[0]?.version || gist.id.substring(0, 7);
-      this.status.lastSyncStatus = 'success';
-      this.status.lastSyncTime = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      this.status.lastCommitSha = sha;
-      this.status.remoteUrl = gist.html_url;
-      this.saveState();
-
-      return {
-        success: true,
-        message: '¡Datos de órdenes guardados exitosamente en GitHub Gist!',
-        sha,
-        url: gist.html_url,
-      };
-    } else {
-      // Create new Gist
-      const res = await fetch('https://api.github.com/gists', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          description: 'Base de datos de Órdenes y Hermandades de Icespear',
-          public: false,
-          files: {
-            [fileName]: { content },
-          },
-        }),
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || `Error ${res.status} al crear Gist en GitHub`);
-      }
-
-      const gist = await res.json();
-      this.config.gistId = gist.id;
-      this.status.lastSyncStatus = 'success';
-      this.status.lastSyncTime = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      this.status.lastCommitSha = gist.id.substring(0, 7);
-      this.status.remoteUrl = gist.html_url;
-      this.saveState();
-
-      return {
-        success: true,
-        message: `¡Gist de GitHub creado y sincronizado exitosamente! ID: ${gist.id}`,
-        sha: gist.id.substring(0, 7),
-        url: gist.html_url,
-      };
-    }
-  }
-
-  private async pushToRepository(
-    token: string,
-    content: string
-  ): Promise<{ success: boolean; message: string; sha?: string; url?: string }> {
-    const owner = this.config.owner.trim();
-    const repo = this.config.repo.trim();
-    const branch = this.config.branch.trim() || 'main';
-    const filePath = this.config.filePath.trim() || 'orders_database.json';
-
-    if (!owner || !repo) {
-      throw new Error('Debes especificar el propietario (owner) y repositorio (repo) de GitHub.');
-    }
-
-    // 1. Check if file already exists to get its SHA
-    let existingSha: string | undefined;
-    const checkRes = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}?ref=${branch}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github.v3+json',
-        },
-      }
-    );
-
-    if (checkRes.ok) {
-      const data = await checkRes.json();
-      existingSha = data.sha;
-    }
-
-    // Unicode safe Base64 encode
-    const base64Content = btoa(unescape(encodeURIComponent(content)));
-
-    const now = new Date().toISOString();
-    const commitMessage = existingSha
-      ? `Actualizar base de datos de Órdenes de Icespear [${now}]`
-      : `Crear base de datos de Órdenes de Icespear [${now}]`;
-
-    const putRes = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`,
-      {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: commitMessage,
-          content: base64Content,
-          branch,
-          ...(existingSha ? { sha: existingSha } : {}),
-        }),
-      }
-    );
-
-    if (!putRes.ok) {
-      const err = await putRes.json().catch(() => ({}));
-      throw new Error(err.message || `Error ${putRes.status} al guardar en GitHub ${owner}/${repo}`);
-    }
-
-    const result = await putRes.json();
-    const sha = result.commit?.sha?.substring(0, 7) || result.content?.sha?.substring(0, 7) || 'ok';
-    const remoteUrl = result.content?.html_url || `https://github.com/${owner}/${repo}/blob/${branch}/${filePath}`;
-
+  private applySuccess(repoUrl?: string, sha?: string | null, orderCount?: number, source?: 'github' | 'local') {
     this.status.lastSyncStatus = 'success';
-    this.status.lastSyncTime = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    this.status.lastCommitSha = sha;
-    this.status.remoteUrl = remoteUrl;
-    this.saveState();
-
-    return {
-      success: true,
-      message: `¡Órdenes guardadas con éxito en GitHub! Commit: ${sha}`,
-      sha,
-      url: remoteUrl,
-    };
+    this.status.lastSyncTime = formatSyncTime();
+    this.status.errorMessage = null;
+    if (sha) this.status.lastCommitSha = sha;
+    if (repoUrl) this.status.remoteUrl = repoUrl;
+    if (typeof orderCount === 'number') this.status.orderCount = orderCount;
+    if (source) this.status.source = source;
+    this.saveStatus();
   }
 
-  public async pullOrdersFromGitHub(): Promise<{
-    success: boolean;
-    allClans?: ClanData[];
-    currentClan?: ClanData | null;
-    message: string;
-  }> {
-    const token = this.config.token.trim();
-    if (!token) {
-      return { success: false, message: 'Configura tu Token de GitHub para descargar las órdenes.' };
-    }
+  private applyLocalOnly(message: string, orderCount?: number) {
+    this.status.lastSyncStatus = 'local';
+    this.status.lastSyncTime = formatSyncTime();
+    this.status.errorMessage = message;
+    if (typeof orderCount === 'number') this.status.orderCount = orderCount;
+    this.saveStatus();
+  }
 
-    this.status.lastSyncStatus = 'syncing';
-    this.notify();
+  private applyError(message: string) {
+    this.status.lastSyncStatus = 'error';
+    this.status.errorMessage = message;
+    this.saveStatus();
+  }
 
+  /** Descarga todas las órdenes (y sus jugadores) desde la base de GitHub. */
+  public async loadOrders(): Promise<OrdersSnapshot | null> {
+    this.beginSync();
     try {
-      let rawJson: string;
-
-      if (this.config.useGist) {
-        const gistId = (this.config.gistId || '').trim();
-        if (!gistId) throw new Error('No hay ID de Gist configurado para descargar.');
-        const res = await fetch(`https://api.github.com/gists/${gistId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/vnd.github.v3+json',
-          },
-        });
-        if (!res.ok) throw new Error(`Error ${res.status} al consultar el Gist de GitHub.`);
-        const gist = await res.json();
-        const file = Object.values(gist.files)[0] as any;
-        if (!file || !file.content) throw new Error('No se encontró archivo de órdenes en el Gist.');
-        rawJson = file.content;
-      } else {
-        const owner = this.config.owner.trim();
-        const repo = this.config.repo.trim();
-        const branch = this.config.branch.trim() || 'main';
-        const filePath = this.config.filePath.trim() || 'orders_database.json';
-
-        const res = await fetch(
-          `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}?ref=${branch}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: 'application/vnd.github.v3+json',
-            },
-          }
-        );
-        if (!res.ok) {
-          throw new Error(`Error ${res.status}: El archivo ${filePath} no existe aún en ${owner}/${repo}`);
-        }
-        const data = await res.json();
-        // Decode base64
-        const cleanContent = data.content.replace(/\s/g, '');
-        rawJson = decodeURIComponent(escape(atob(cleanContent)));
+      const res = await fetchWithTimeout('/api/orders', { cache: 'no-store' });
+      const data = (await res.json()) as OrdersApiResponse;
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || `El servidor respondió ${res.status}`);
       }
 
-      const parsed = JSON.parse(rawJson);
-      const orders = Array.isArray(parsed.orders)
-        ? parsed.orders
-        : Array.isArray(parsed.clans)
-        ? parsed.clans
-        : [];
-      const currentOrder = parsed.currentOrder || parsed.currentClan || null;
+      const orders = Array.isArray(data.orders) ? data.orders : [];
+      this.applySuccess(data.repo?.url, null, orders.length, data.source);
+      return { orders, source: data.source || 'local', syncedAt: data.updatedAt ?? null };
+    } catch (err: any) {
+      this.applyError(
+        err?.name === 'AbortError'
+          ? 'La sede tardó demasiado en responder.'
+          : err?.message || 'No se pudo conectar con la sede remota.'
+      );
+      return null;
+    }
+  }
 
-      this.status.lastSyncStatus = 'success';
-      this.status.lastSyncTime = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      this.saveState();
+  /** Crea o actualiza una orden completa, incluida su plantilla de jugadores. */
+  public async saveOrder(order: ClanData, message?: string): Promise<OrderMutationResult> {
+    return this.mutate('/api/orders/save', { order, message });
+  }
+
+  /** Añade o actualiza un jugador dentro de una orden existente. */
+  public async joinOrder(orderId: string, member: ClanMember): Promise<OrderMutationResult> {
+    return this.mutate('/api/orders/join', { orderId, member });
+  }
+
+  /** Elimina a un jugador de una orden existente. */
+  public async leaveOrder(orderId: string, playerId: string, gamerTag?: string): Promise<OrderMutationResult> {
+    return this.mutate('/api/orders/leave', { orderId, playerId, gamerTag });
+  }
+
+  private async mutate(path: string, body: Record<string, unknown>): Promise<OrderMutationResult> {
+    this.beginSync();
+    try {
+      const res = await fetchWithTimeout(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = (await res.json()) as OrdersApiResponse;
+
+      if (!res.ok || !data.success) {
+        const message = data.message || `El servidor respondió ${res.status}`;
+        this.applyError(message);
+        return { success: false, synced: false, sha: null, url: null, message };
+      }
+
+      const synced = Boolean(data.synced);
+      if (synced) {
+        this.applySuccess(data.url || undefined, data.sha ?? null, data.repo ? undefined : this.status.orderCount);
+      } else {
+        this.applyLocalOnly(data.message || 'Guardado en el servidor, pendiente de GitHub.');
+      }
 
       return {
         success: true,
-        allClans: orders,
-        currentClan: currentOrder,
-        message: `¡Se cargaron ${orders.length} órdenes correctamente desde GitHub!`,
+        synced,
+        order: data.order,
+        sha: data.sha ?? null,
+        url: data.url ?? data.repo?.url ?? null,
+        message: data.message || 'Orden guardada.',
       };
-    } catch (e: any) {
-      const errMsg = e?.message || 'Error al descargar datos de GitHub';
-      this.status.lastSyncStatus = 'error';
-      this.status.errorMessage = errMsg;
-      this.saveState();
-      return { success: false, message: errMsg };
+    } catch (err: any) {
+      const message =
+        err?.name === 'AbortError' ? 'La sede tardó demasiado en responder.' : err?.message || 'Error de red.';
+      this.applyError(message);
+      return { success: false, synced: false, sha: null, url: null, message };
     }
   }
 }

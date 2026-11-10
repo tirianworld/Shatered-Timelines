@@ -119,7 +119,7 @@ export const OptionsModal: React.FC = () => {
 
           <p className="text-[11px] text-stone-300 leading-snug">
             {playGames.getProfile().isSignedIn
-              ? `Conectado como ${playGames.getProfile().gamerTag}. Nivel ${playGames.getProfile().level} con ${playGames.getProfile().unlockedAchievementsCount} logros conseguidos.`
+              ? `Sesión de Play Games verificada: ${playGames.getProfile().gamerTag} (${playGames.getProfile().playerId}), ${playGames.getProfile().unlockedAchievementsCount} logros.`
               : 'Inicia sesión con tu cuenta de Google Play para sincronizar en la nube, registrar tus logros y competir en marcadores.'}
           </p>
 

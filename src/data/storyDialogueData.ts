@@ -19,7 +19,10 @@ export type CharacterId =
   | 'araknoide'
   | 'enano_infectado'
   | 'zancudo'
-  | 'titan';
+  | 'titan'
+  | 'paco'
+  | 'goryn'
+  | 'raxxar';
 
 export type EmotionType =
   | 'angry'
@@ -112,7 +115,7 @@ export const CHARACTER_PROFILES: Record<CharacterId, CharacterProfile> = {
     characterClass: 'Nigromante',
     race: 'Humano',
     accentColor: '#06b6d4',
-    avatar: '/assets/portraits/magordito.png',
+    avatar: '/assets/portraits/Magordito.png',
     poses: {
       cruado: '/assets/items/magordito_arms_crossed.png',
       cara_destapada: '/assets/items/magordito idl cara destapada.png',
@@ -457,6 +460,54 @@ export const CHARACTER_PROFILES: Record<CharacterId, CharacterProfile> = {
     framing: {
       height: 'h-[520px] sm:h-[580px]',
       translateY: '-translate-y-[8%]',
+    },
+  },
+  paco: {
+    id: 'paco',
+    name: 'Paco',
+    title: 'Cocinero de Icespear',
+    characterClass: 'Cocinero',
+    race: 'Mediano',
+    accentColor: '#f59e0b',
+    avatar: '/assets/portraits/paco.png',
+    poses: {
+      default: '/assets/portraits/paco.png',
+    },
+    framing: {
+      height: 'h-[500px] sm:h-[550px]',
+      translateY: '-translate-y-[12%]',
+    },
+  },
+  goryn: {
+    id: 'goryn',
+    name: 'Goryn',
+    title: 'Herrero de Icespear',
+    characterClass: 'Herrero',
+    race: 'Enano',
+    accentColor: '#d97706',
+    avatar: '/assets/portraits/goryn.png',
+    poses: {
+      default: '/assets/portraits/goryn.png',
+    },
+    framing: {
+      height: 'h-[500px] sm:h-[550px]',
+      translateY: '-translate-y-[10%]',
+    },
+  },
+  raxxar: {
+    id: 'raxxar',
+    name: 'Raxxar',
+    title: 'Boticario de Icespear',
+    characterClass: 'Boticario',
+    race: 'Tiefling',
+    accentColor: '#7c3aed',
+    avatar: '/assets/portraits/Raxxar.png',
+    poses: {
+      default: '/assets/portraits/Raxxar.png',
+    },
+    framing: {
+      height: 'h-[500px] sm:h-[550px]',
+      translateY: '-translate-y-[10%]',
     },
   },
 };

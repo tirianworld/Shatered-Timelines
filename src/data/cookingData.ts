@@ -13,6 +13,8 @@ export interface CookingIngredient {
   id: string;
   name: string;
   category: IngredientCategory;
+  /** Familia dentro de la categoría (los monstruos usan las mismas que el resto). */
+  subCategory?: IngredientCategory;
   icon: string;
   rarity: 'R' | 'SR' | 'SSR';
   description: string;
@@ -323,6 +325,7 @@ export const COOKING_INGREDIENTS: CookingIngredient[] = [
     id: 'ing_carne_devorador',
     name: 'Carne de Devorador',
     category: 'monstruos',
+    subCategory: 'carnes',
     icon: '/assets/items/ing_carne_devorador.png',
     rarity: 'SSR',
     description: 'Carne densa y marmolada protegida por la coraza quitinosa del Devorador. Jugosa, potente y digna de un banquete colosal.',
@@ -332,6 +335,7 @@ export const COOKING_INGREDIENTS: CookingIngredient[] = [
     id: 'ing_larvas_araknoide',
     name: 'Larvas de Araknoide',
     category: 'monstruos',
+    subCategory: 'carnes',
     icon: '/assets/items/ing_larvas_araknoide.png',
     rarity: 'SR',
     description: 'Larvas cavernícolas ricas en proteínas y maná residual. Crujientes al saltear y de gran valor culinario.',
@@ -341,6 +345,7 @@ export const COOKING_INGREDIENTS: CookingIngredient[] = [
     id: 'ing_huevos_araknoide',
     name: 'Huevos de Araknoide',
     category: 'monstruos',
+    subCategory: 'lacteos',
     icon: '/assets/items/ing_huevos_araknoide.png',
     rarity: 'SR',
     description: 'Huevos translúcidos recolectados en los nidos carmesíes de la colonia. Ingrediente exótico con suave luminiscencia nutritiva.',
@@ -352,6 +357,11 @@ import { generateAllCookingRecipes } from './cookingRecipesList';
 
 export const COOKING_RECIPES: CookingRecipe[] = generateAllCookingRecipes(COOKING_INGREDIENTS);
 export const COMPLETE_COOKING_RECIPES: CookingRecipe[] = COOKING_RECIPES;
+
+/** Materiales de monstruo: no se siembran en la despensa, se consiguen de los monstruos. */
+export const MONSTER_INGREDIENT_IDS = COOKING_INGREDIENTS.filter(
+  (ing) => ing.category === 'monstruos'
+).map((ing) => ing.id);
 
 export const SURPRISE_DISH: CookingRecipe = {
   id: 'rec_sorpresa',
@@ -373,6 +383,11 @@ export interface TavernCookingStock {
   [ingredientId: string]: number;
 }
 
+/** ¿El jugador ya tiene algún componente de monstruo? */
+export function hasMonsterMaterial(stock: TavernCookingStock): boolean {
+  return MONSTER_INGREDIENT_IDS.some((id) => (stock[id] || 0) > 0);
+}
+
 export interface ChefAffectionData {
   points: number;
   level: number;
@@ -385,7 +400,7 @@ export function loadTavernCookingStock(): TavernCookingStock {
     const merged = { ...saved };
     COOKING_INGREDIENTS.forEach((ing) => {
       if (typeof merged[ing.id] !== 'number') {
-        merged[ing.id] = ing.rarity === 'SSR' ? 3 : 5;
+        merged[ing.id] = ing.category === 'monstruos' ? 0 : ing.rarity === 'SSR' ? 3 : 5;
       }
     });
     return merged;
@@ -393,7 +408,8 @@ export function loadTavernCookingStock(): TavernCookingStock {
 
   const initialStock: TavernCookingStock = {};
   COOKING_INGREDIENTS.forEach((ing) => {
-    initialStock[ing.id] = ing.rarity === 'SSR' ? 2 : ing.rarity === 'SR' ? 4 : 6;
+    initialStock[ing.id] =
+      ing.category === 'monstruos' ? 0 : ing.rarity === 'SSR' ? 2 : ing.rarity === 'SR' ? 4 : 6;
   });
   saveTavernCookingStock(initialStock);
   return initialStock;

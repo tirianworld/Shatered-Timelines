@@ -99,7 +99,7 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Nigromante Oscuro',
     rarity: 'SR',
     attribute: 'Profano',
-    portrait: '/assets/portraits/magordito.png',
+    portrait: '/assets/portraits/Magordito.png',
     frame: '/assets/ui/marco_sr.png',
     orb: '/assets/items/atributo OSCURO.png',
     level: 1,
@@ -199,7 +199,7 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Mago Ígneo Tiefling',
     rarity: 'SR',
     attribute: 'Profano',
-    portrait: '/assets/portraits/prometeo.png',
+    portrait: '/assets/portraits/Prometeo.png',
     frame: '/assets/ui/marco_sr.png',
     orb: '/assets/items/atributo OSCURO.png',
     level: 1,
@@ -344,10 +344,10 @@ export const HeroesView: React.FC = () => {
   // 5 Authentic top filter cards: CC, Vida, Damage, Bond, Defense
   const allFilterCards = [
     { id: 'cc', label: 'CC', img: '/assets/items/Combat Class.png' },
-    { id: 'vida', label: 'Vida', img: '/assets/items/Vida.png' },
-    { id: 'damage', label: 'Damage', img: '/assets/items/Daño.png' },
-    { id: 'bond', label: 'Bond', img: '/assets/items/recurso_18_4x.png' },
-    { id: 'defense', label: 'Defense', img: '/assets/items/Defense.png' },
+    { id: 'vida', label: 'Vida', img: '/assets/items/vida_ui.png' },
+    { id: 'damage', label: 'Damage', img: '/assets/items/dano_ui.png' },
+    { id: 'bond', label: 'Bond', img: '/assets/items/recurso_18_4x_ui.png' },
+    { id: 'defense', label: 'Defense', img: '/assets/items/defense_ui.png' },
   ];
 
   // Exactly 4 filter cards visible on the wooden plaque at a time

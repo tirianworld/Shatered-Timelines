@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
 import confetti from 'canvas-confetti';
@@ -12,6 +12,7 @@ import {
   matchRecipe,
   loadTavernCookingStock,
   saveTavernCookingStock,
+  hasMonsterMaterial,
   loadChefAffection,
   saveChefAffection,
   loadDiscoveredRecipes,
@@ -20,6 +21,18 @@ import {
   ChefAffectionData,
 } from '../data/cookingData';
 import { CookingIngredientIcon } from './CookingIngredientIcon';
+import { safeStorage } from '../utils/storage';
+import {
+  KITCHEN_INTRO_MISSION_ID,
+  KITCHEN_INTRO_SEEN_KEY,
+  KITCHEN_MONSTERS_INTRO_MISSION_ID,
+  KITCHEN_MONSTERS_INTRO_PENDING_KEY,
+  KITCHEN_MONSTERS_INTRO_SEEN_KEY,
+  KITCHEN_MONSTERS_UNLOCK_KEY,
+  KITCHEN_TUTORIAL_DONE_KEY,
+  KITCHEN_TUTORIAL_INGREDIENT_IDS,
+  KITCHEN_TUTORIAL_STEPS,
+} from '../data/kitchenIntroData';
 import {
   ChevronLeft,
   Heart,
@@ -34,38 +47,61 @@ import {
   Coins,
   ArrowLeft,
   Utensils,
+  Lock,
 } from 'lucide-react';
 
 interface TavernKitchenViewProps {
   onClose: () => void;
 }
 
+// Radio del anillo en píxeles: así la órbita es un círculo perfecto
+// independientemente de lo ancha o alta que sea la pantalla.
+const ORBIT_RADIUS_PX = 150;
+const ORBIT_CENTER_Y = 48;
+
+// Primer paso del tutorial de Paco que se puede tocar: el inicial ("volver") solo
+// tiene sentido cuando ya estás dentro de una categoría.
+const FIRST_KITCHEN_TUTORIAL_STEP = KITCHEN_TUTORIAL_STEPS.findIndex((s) => s.kind !== 'back');
+
+// Los monstruos se agrupan en las familias de siempre, pero solo se muestran
+// las que tienen materiales de monstruo.
+const MONSTER_SUBCATEGORIES = INGREDIENT_CATEGORIES.filter(
+  (cat) =>
+    cat.id !== 'monstruos' &&
+    COOKING_INGREDIENTS.some(
+      (ing) => ing.category === 'monstruos' && ing.subCategory === cat.id
+    )
+);
+
 // Computes uniform orbital coordinates around the central hub without overlapping
 const getOrbitalPositionStyle = (
   index: number,
   total: number,
-  radiusX = 36,
-  radiusY = 32,
-  centerY = 48
+  radiusPx = ORBIT_RADIUS_PX,
+  centerY = ORBIT_CENTER_Y
 ) => {
   if (total <= 0) return { left: '50%', top: '50%', transform: 'translate(-50%, -50%)' };
   // Start at -90 deg (-Math.PI / 2) so first item is at 12 o'clock (top center)
   const angle = (2 * Math.PI * index) / total - Math.PI / 2;
-  const left = 50 + radiusX * Math.cos(angle);
-  const top = centerY + radiusY * Math.sin(angle);
+  const offsetX = radiusPx * Math.cos(angle);
+  const offsetY = radiusPx * Math.sin(angle);
   return {
-    left: `${left.toFixed(2)}%`,
-    top: `${top.toFixed(2)}%`,
+    left: `calc(50% + ${offsetX.toFixed(2)}px)`,
+    top: `calc(${centerY}% + ${offsetY.toFixed(2)}px)`,
     transform: 'translate(-50%, -50%)',
   };
 };
 
 export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose }) => {
-  const { gold, addGold, addShelfItem } = useGame();
+  const { gold, addGold, addShelfItem, navigateTo, setSelectedCombatMissionId } = useGame();
 
-  // Navigation mode within the circle: 'categories' (select a category) or 'ingredients' (view ingredients of selected category)
-  const [viewMode, setViewMode] = useState<'categories' | 'ingredients'>('categories');
+  // Navigation within the circle: categorías → subcategorías (solo Monstruos) → ingredientes.
+  const [viewMode, setViewMode] = useState<'categories' | 'subcategories' | 'ingredients'>(
+    'categories'
+  );
   const [selectedCategory, setSelectedCategory] = useState<IngredientCategory>('carnes');
+  // Familia elegida dentro de Monstruos (carnes, verduras, harinas…).
+  const [selectedSubcategory, setSelectedSubcategory] = useState<IngredientCategory>('carnes');
 
   // Cutting board: 3 slots for ingredients
   const [slots, setSlots] = useState<[CookingIngredient | null, CookingIngredient | null, CookingIngredient | null]>([
@@ -89,6 +125,35 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
   const [recipePageLimit, setRecipePageLimit] = useState<number>(50);
   const [isPantryOpen, setIsPantryOpen] = useState(false);
   const [isAffectionModalOpen, setIsAffectionModalOpen] = useState(false);
+
+  // Primera visita al fogón: cinemática de Paco (una sola vez).
+  const kitchenIntroLaunched = useRef(false);
+
+  useEffect(() => {
+    if (kitchenIntroLaunched.current) return;
+    if (safeStorage.getItem(KITCHEN_INTRO_SEEN_KEY) === 'seen') return;
+    kitchenIntroLaunched.current = true;
+    safeStorage.setItem(KITCHEN_INTRO_SEEN_KEY, 'seen');
+    setViewMode('categories');
+    setSelectedCombatMissionId(KITCHEN_INTRO_MISSION_ID);
+    navigateTo('story');
+  }, [navigateTo, setSelectedCombatMissionId]);
+
+  // Al volver de la cinemática de Monstruos se abre directamente su rueda.
+  useEffect(() => {
+    if (safeStorage.getItem(KITCHEN_MONSTERS_INTRO_PENDING_KEY) !== '1') return;
+    safeStorage.removeItem(KITCHEN_MONSTERS_INTRO_PENDING_KEY);
+    setSelectedCategory('monstruos');
+    setViewMode('subcategories');
+  }, []);
+
+  // La cocina de monstruos arranca cerrada: se abre al conseguir el primer componente.
+  const monstersUnlocked =
+    safeStorage.getItem(KITCHEN_MONSTERS_UNLOCK_KEY) === '1' || hasMonsterMaterial(stock);
+
+  useEffect(() => {
+    if (monstersUnlocked) safeStorage.setItem(KITCHEN_MONSTERS_UNLOCK_KEY, '1');
+  }, [monstersUnlocked]);
 
   // Filtered recipes memoized for the Recipe Book modal
   const filteredRecipes = useMemo(() => {
@@ -128,9 +193,122 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
   // Feedback notice banner
   const [kitchenNotice, setKitchenNotice] = useState<string | null>(null);
 
+  const kitchenNoticeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const showNotice = (msg: string) => {
+    if (kitchenNoticeTimer.current) clearTimeout(kitchenNoticeTimer.current);
     setKitchenNotice(msg);
-    setTimeout(() => setKitchenNotice(null), 2500);
+    kitchenNoticeTimer.current = setTimeout(() => setKitchenNotice(null), 2500);
+  };
+
+  // -------------------------------------------------------------------------
+  // Tutorial guiado de Paco: volver → categoría → ingrediente, tres veces.
+  // Se muestra una sola vez y se reanuda si quedó a medias.
+  // -------------------------------------------------------------------------
+  const [kitchenTutorialStep, setKitchenTutorialStep] = useState<number>(() => {
+    const introSeen = safeStorage.getItem(KITCHEN_INTRO_SEEN_KEY) === 'seen';
+    const tutorialDone = safeStorage.getItem(KITCHEN_TUTORIAL_DONE_KEY) === 'done';
+    return introSeen && !tutorialDone ? FIRST_KITCHEN_TUTORIAL_STEP : -1;
+  });
+  const kitchenTutorialKitGranted = useRef(false);
+
+  const tutorialStage =
+    kitchenTutorialStep >= 0 ? KITCHEN_TUTORIAL_STEPS[kitchenTutorialStep] : null;
+  const tutorialCategoryTarget =
+    tutorialStage?.kind === 'category' ? tutorialStage.category : null;
+  const tutorialIngredientTarget =
+    tutorialStage?.kind === 'ingredient' ? tutorialStage.ingredientId : null;
+  const isTutorialBackStep = tutorialStage?.kind === 'back';
+  const tutorialTargetName = tutorialCategoryTarget
+    ? INGREDIENT_CATEGORIES.find((c) => c.id === tutorialCategoryTarget)?.name ?? ''
+    : tutorialIngredientTarget
+    ? COOKING_INGREDIENTS.find((i) => i.id === tutorialIngredientTarget)?.name ?? ''
+    : '';
+
+  // Durante el tutorial, lo que no hay que tocar se apaga en blanco y negro y se queda quieto.
+  const tutorialIsActive = kitchenTutorialStep >= 0;
+  const tutorialDimClass = (isTarget: boolean) =>
+    tutorialIsActive && !isTarget
+      ? 'grayscale opacity-60 transition-none! [&_*]:animate-none!'
+      : '';
+  const tutorialInertClass = (isTarget: boolean) =>
+    tutorialIsActive && !isTarget
+      ? 'grayscale opacity-60 transition-none! [&_*]:animate-none! pointer-events-none'
+      : '';
+
+  // Paco deja apartado lo necesario para el asado del día antes de empezar.
+  useEffect(() => {
+    if (kitchenTutorialStep < 0 || kitchenTutorialKitGranted.current) return;
+    kitchenTutorialKitGranted.current = true;
+    setStock((prev) => {
+      const next = { ...prev };
+      let changed = false;
+      KITCHEN_TUTORIAL_INGREDIENT_IDS.forEach((id) => {
+        if ((next[id] || 0) < 1) {
+          next[id] = 1;
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+  }, [kitchenTutorialStep]);
+
+  const finishKitchenTutorial = () => {
+    setKitchenTutorialStep(-1);
+    safeStorage.setItem(KITCHEN_TUTORIAL_DONE_KEY, 'done');
+  };
+
+  const advanceKitchenTutorial = (
+    currentView: 'categories' | 'subcategories' | 'ingredients' = viewMode
+  ) => {
+    if (kitchenTutorialStep < 0) return;
+    let next = kitchenTutorialStep + 1;
+    // El paso de "volver" solo tiene sentido si estamos viendo ingredientes.
+    while (
+      next < KITCHEN_TUTORIAL_STEPS.length &&
+      KITCHEN_TUTORIAL_STEPS[next].kind === 'back' &&
+      currentView !== 'ingredients'
+    ) {
+      next += 1;
+    }
+    if (next >= KITCHEN_TUTORIAL_STEPS.length) {
+      finishKitchenTutorial();
+      sound.playSFX('victory');
+      try {
+        confetti({
+          particleCount: 60,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#f59e0b', '#fbbf24', '#ef4444', '#10b981'],
+        });
+      } catch {
+        // Safe fallback
+      }
+      showNotice('¡Tutorial completado! El asado del día está listo en la tabla.');
+      return;
+    }
+    setKitchenTutorialStep(next);
+  };
+
+
+  // La flecha del header vuelve a categorías y, si toca, avanza el tutorial.
+  const handleHeaderBack = () => {
+    sound.playSFX('click');
+    if (viewMode === 'subcategories') {
+      setViewMode('categories');
+      return;
+    }
+    if (viewMode === 'ingredients') {
+      setViewMode(selectedCategory === 'monstruos' ? 'subcategories' : 'categories');
+      if (isTutorialBackStep) {
+        advanceKitchenTutorial('categories');
+        return;
+      }
+      // Si se vuelve a medias de un ingrediente, el tutorial retrocede a su
+      // categoría para no quedarse bloqueado.
+      if (tutorialIngredientTarget) setKitchenTutorialStep(kitchenTutorialStep - 1);
+      return;
+    }
+    onClose();
   };
 
   // Check if 3 slots are filled
@@ -152,26 +330,55 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
     saveDiscoveredRecipes(discoveredRecipes);
   }, [discoveredRecipes]);
 
-  // Total ingredients count per category
-  const getCategoryCount = (catId: IngredientCategory) => {
-    const ings = COOKING_INGREDIENTS.filter((i) => i.category === catId);
-    return ings.reduce((sum, item) => sum + (stock[item.id] || 0), 0);
-  };
-
   // Filter ingredients for current active category
-  const categoryIngredients = COOKING_INGREDIENTS.filter(
-    (ing) => ing.category === selectedCategory
+  const categoryIngredients = COOKING_INGREDIENTS.filter((ing) =>
+    selectedCategory === 'monstruos'
+      ? ing.category === 'monstruos' && ing.subCategory === selectedSubcategory
+      : ing.category === selectedCategory
   );
 
   // Switch to ingredients view for a clicked category
   const handleSelectCategory = (catId: IngredientCategory) => {
+    if (tutorialCategoryTarget && catId !== tutorialCategoryTarget) {
+      sound.playSFX('hurt');
+      return;
+    }
+    // Bloqueada: la placa no responde hasta conseguir un componente de monstruo.
+    if (catId === 'monstruos' && !monstersUnlocked) return;
+
+    // La primera vez que se abre Monstruos, Paco explica la cocina exótica.
+    if (
+      catId === 'monstruos' &&
+      safeStorage.getItem(KITCHEN_MONSTERS_INTRO_SEEN_KEY) !== 'seen'
+    ) {
+      safeStorage.setItem(KITCHEN_MONSTERS_INTRO_SEEN_KEY, 'seen');
+      safeStorage.setItem(KITCHEN_MONSTERS_INTRO_PENDING_KEY, '1');
+      setSelectedCombatMissionId(KITCHEN_MONSTERS_INTRO_MISSION_ID);
+      navigateTo('story');
+      return;
+    }
+
     sound.playSFX('click');
     setSelectedCategory(catId);
+    // Monstruos abre primero sus familias antes de enseñar los materiales.
+    setViewMode(catId === 'monstruos' ? 'subcategories' : 'ingredients');
+    if (tutorialCategoryTarget) advanceKitchenTutorial('ingredients');
+  };
+
+  // Familia de Monstruos: mismos nombres que las categorías normales.
+  const handleSelectSubcategory = (catId: IngredientCategory) => {
+    sound.playSFX('click');
+    setSelectedSubcategory(catId);
     setViewMode('ingredients');
   };
 
   // Place ingredient onto current active slot on cutting board
   const handleSelectIngredient = (ingredient: CookingIngredient) => {
+    if (tutorialIngredientTarget && ingredient.id !== tutorialIngredientTarget) {
+      sound.playSFX('hurt');
+      return;
+    }
+
     const currentCount = stock[ingredient.id] || 0;
     if (currentCount <= 0) {
       sound.playSFX('hurt');
@@ -193,6 +400,7 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
     }
 
     showNotice(`¡${ingredient.name} colocado en la tabla!`);
+    if (tutorialIngredientTarget) advanceKitchenTutorial();
   };
 
   // Remove ingredient from a slot
@@ -373,9 +581,6 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
     showNotice('¡Raciones frescas añadidas a la despensa!');
   };
 
-  // Find active category object
-  const activeCategoryObj = INGREDIENT_CATEGORIES.find((c) => c.id === selectedCategory);
-
   return (
     <div className="absolute inset-0 w-full h-full bg-[#140602] text-stone-100 flex flex-col justify-between overflow-hidden select-none z-50 animate-fade-in font-sans">
       {/* Background: Authentic Tavern Kitchen Interior */}
@@ -385,14 +590,25 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
         className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none z-0"
       />
 
-      {/* Warm Ambient Hearth Glow */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/75 pointer-events-none z-0" />
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-orange-600/15 blur-3xl pointer-events-none z-0 animate-hearth-flicker" />
 
       {/* Notice Banner */}
       {kitchenNotice && (
         <div className="absolute top-14 left-1/2 -translate-x-1/2 z-40 bg-[#3b170c]/95 border-2 border-amber-400 text-amber-200 px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-2xl animate-fade-in text-center max-w-xs">
           {kitchenNotice}
+        </div>
+      )}
+
+      {/* Tutorial de Paco: indicación del paso */}
+      {kitchenTutorialStep >= 0 && (
+        <div className="absolute top-[54px] left-1/2 -translate-x-1/2 z-40 flex flex-col items-center pointer-events-none max-w-[92%]">
+          <p className="px-3 py-1 rounded-lg bg-[#2a0e05]/95 border border-amber-600/60 text-[10px] font-bold text-amber-100 text-center shadow-lg">
+            {tutorialStage?.kind === 'back'
+              ? 'Toca la flecha de arriba para volver a las categorías.'
+              : tutorialStage?.kind === 'category'
+              ? `Toca la categoría ${tutorialTargetName}.`
+              : `Toca ${tutorialTargetName} para ponerlo en la tabla.`}
+          </p>
         </div>
       )}
 
@@ -402,14 +618,23 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
       <header className="relative z-20 w-full pt-2.5 pb-2 px-3 bg-gradient-to-b from-[#2a0e05] via-[#1a0803]/90 to-transparent border-b border-amber-600/40 shadow-xl flex items-center justify-between">
         {/* Back Button (Golden Arrow) */}
         <button
-          onClick={() => {
-            sound.playSFX('click');
-            onClose();
-          }}
-          className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-b from-amber-700 to-amber-950 border border-amber-400 text-amber-200 shadow-lg cursor-pointer hover:scale-105 active:scale-95 transition-all"
-          title="Volver a la Taberna"
+          onClick={handleHeaderBack}
+          className={`flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-b from-amber-700 to-amber-950 border border-amber-400 text-amber-200 shadow-lg cursor-pointer hover:scale-105 active:scale-95 transition-all ${
+            isTutorialBackStep ? 'ring-2 ring-yellow-300 ring-offset-2 ring-offset-black animate-pulse' : ''
+          } ${tutorialDimClass(!!isTutorialBackStep)}`}
+          title={
+            viewMode === 'categories'
+              ? 'Salir del menú de cocina'
+              : viewMode === 'ingredients' && selectedCategory === 'monstruos'
+              ? 'Volver a Subcategorías'
+              : 'Volver a Categorías'
+          }
         >
-          <ChevronLeft className="w-5 h-5 text-amber-300" />
+          {viewMode === 'categories' ? (
+            <ChevronLeft className="w-5 h-5 text-amber-300" />
+          ) : (
+            <ArrowLeft className="w-5 h-5 text-amber-300" />
+          )}
         </button>
 
         {/* Center Title & Affection */}
@@ -418,7 +643,7 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
             sound.playSFX('click');
             setIsAffectionModalOpen(true);
           }}
-          className="flex flex-col items-center cursor-pointer group"
+          className={`flex flex-col items-center cursor-pointer group transition-all ${tutorialInertClass(false)}`}
           title="Ver Nivel del Fogón"
         >
           <span className="text-[11px] uppercase tracking-widest font-black text-amber-300 drop-shadow">
@@ -441,7 +666,7 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
             sound.playSFX('click');
             setIsPantryOpen(true);
           }}
-          className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gradient-to-b from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-amber-100 font-bold text-[11px] border border-amber-400/80 shadow-md active:scale-95 transition-all cursor-pointer"
+          className={`flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gradient-to-b from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-amber-100 font-bold text-[11px] border border-amber-400/80 shadow-md active:scale-95 transition-all cursor-pointer ${tutorialInertClass(false)}`}
           title="Despensa de Ingredientes"
         >
           <ShoppingBag className="w-3.5 h-3.5 text-amber-200" />
@@ -455,11 +680,10 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
       <section className="relative z-10 flex-1 w-full flex flex-col items-center justify-center overflow-hidden">
         {/* Responsive Celestial Dashed Orbit Ring */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30">
-          <ellipse
+          <circle
             cx="50%"
             cy="48%"
-            rx="36%"
-            ry="32%"
+            r={ORBIT_RADIUS_PX}
             fill="none"
             stroke="#fbbf24"
             strokeWidth="1.5"
@@ -479,37 +703,28 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
         {/* VIEW 1: CATEGORIES CIRCLE (Primero salen las categorías)  */}
         {/* ========================================================= */}
         {viewMode === 'categories' && (
-          <div className="relative w-full h-full flex items-center justify-center animate-fade-in">
-            {/* Center Cauldron / Hearth Hub */}
-            <div className="relative z-10 flex flex-col items-center justify-center pointer-events-none text-center px-4">
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-stone-900 via-stone-950 to-black border-3 border-amber-400/90 shadow-[0_0_20px_rgba(245,158,11,0.5)] flex flex-col items-center justify-center p-2">
-                <Flame className="w-7 h-7 sm:w-8 sm:h-8 text-orange-400 animate-hearth-flicker" />
-                <span className="text-[8.5px] sm:text-[9px] font-black uppercase text-amber-300 tracking-wider">
-                  Fogón
-                </span>
-              </div>
-              <span className="mt-1.5 text-xs font-black font-serif text-amber-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                Selecciona Categoría
-              </span>
-              <span className="text-[9.5px] text-stone-300/80 max-w-[170px] leading-tight">
-                Toca una para ver sus ingredientes
-              </span>
-            </div>
-
+          <div className="relative w-full h-full flex items-center justify-center animate-wheel-orbit-in">
             {/* Category Circular Plates around Orbit (Dynamically Spaced) */}
             {INGREDIENT_CATEGORIES.map((cat, idx) => {
-              const pos = getOrbitalPositionStyle(idx, INGREDIENT_CATEGORIES.length, 36, 32, 48);
-              const totalCount = getCategoryCount(cat.id);
+              const pos = getOrbitalPositionStyle(idx, INGREDIENT_CATEGORIES.length);
 
               return (
                 <div
                   key={cat.id}
-                  style={pos}
+                  style={{ ...pos, animationDelay: `${idx * 45}ms` }}
                   onClick={() => handleSelectCategory(cat.id)}
-                  className="absolute flex flex-col items-center group cursor-pointer active:scale-95 transition-all z-20"
+                  className={`absolute flex flex-col items-center group cursor-pointer active:scale-95 transition-all z-20 animate-wheel-plate-in ${tutorialInertClass(
+                    tutorialCategoryTarget === cat.id
+                  )} ${cat.id === 'monstruos' && !monstersUnlocked ? 'grayscale opacity-60 pointer-events-none' : ''}`}
                 >
                   {/* Category Circle Plate */}
-                  <div className="relative w-15 h-15 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-stone-800 via-stone-900 to-black border-2 border-amber-400/90 shadow-[0_0_15px_rgba(0,0,0,0.9)] flex items-center justify-center p-1.5 group-hover:scale-110 group-hover:border-yellow-300 transition-all">
+                  <div
+                    className={`relative w-15 h-15 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-stone-800 via-stone-900 to-black border-2 border-amber-400/90 shadow-[0_0_15px_rgba(0,0,0,0.9)] flex items-center justify-center p-1.5 group-hover:scale-110 group-hover:border-yellow-300 transition-all ${
+                      tutorialCategoryTarget === cat.id
+                        ? 'ring-2 ring-yellow-300 ring-offset-2 ring-offset-black animate-pulse'
+                        : ''
+                    }`}
+                  >
                     {/* Inner Plate Dish */}
                     <div className="w-full h-full rounded-full bg-gradient-to-b from-slate-200/90 to-slate-400/80 flex items-center justify-center p-1 shadow-inner">
                       <div className="w-full h-full rounded-full bg-stone-950 flex items-center justify-center overflow-hidden">
@@ -521,10 +736,15 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
                       </div>
                     </div>
 
-                    {/* Available count badge */}
-                    <span className="absolute -bottom-1 -right-1 text-[10px] font-black font-mono px-1.5 py-0.2 rounded-full bg-amber-500 text-stone-950 border border-amber-200 shadow-md">
-                      {totalCount}
-                    </span>
+                    {/* Candado: sin componentes de monstruo no se abre */}
+                    {cat.id === 'monstruos' && !monstersUnlocked && (
+                      <div className="absolute inset-0 rounded-full bg-black/60 flex items-center justify-center">
+                        <Lock
+                          className="w-6 h-6 text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]"
+                          strokeWidth={2.6}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   {/* Category Name */}
@@ -538,43 +758,69 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
         )}
 
         {/* ========================================================= */}
+        {/* VIEW 1.5: SUBFAMILIAS DE MONSTRUOS                        */}
+        {/* Mismas familias que las categorías, con materiales de      */}
+        {/* monstruo dentro de cada una.                               */}
+        {/* ========================================================= */}
+        {viewMode === 'subcategories' && (
+          <div className="relative w-full h-full flex items-center justify-center animate-wheel-orbit-in">
+            {MONSTER_SUBCATEGORIES.map((cat, idx) => {
+              const pos = getOrbitalPositionStyle(idx, MONSTER_SUBCATEGORIES.length);
+              // Cada familia enseña el material de monstruo que contiene.
+              const subcategoryIcon =
+                COOKING_INGREDIENTS.find(
+                  (ing) => ing.category === 'monstruos' && ing.subCategory === cat.id
+                )?.icon ?? cat.imageIcon;
+
+              return (
+                <div
+                  key={cat.id}
+                  style={{ ...pos, animationDelay: `${idx * 45}ms` }}
+                  onClick={() => handleSelectSubcategory(cat.id)}
+                  className="absolute flex flex-col items-center group cursor-pointer active:scale-95 transition-all z-20 animate-wheel-plate-in"
+                >
+                  {/* Subcategory plate, same finish as the normal categories */}
+                  <div className="relative w-15 h-15 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-stone-800 via-stone-900 to-black border-2 border-amber-400/90 shadow-[0_0_15px_rgba(0,0,0,0.9)] flex items-center justify-center p-1.5 group-hover:scale-110 group-hover:border-yellow-300 transition-all">
+                    <div className="w-full h-full rounded-full bg-gradient-to-b from-slate-200/90 to-slate-400/80 flex items-center justify-center p-1 shadow-inner">
+                      <div className="w-full h-full rounded-full bg-stone-950 flex items-center justify-center overflow-hidden">
+                        <img
+                          src={subcategoryIcon}
+                          alt={cat.name}
+                          className="w-9 h-9 sm:w-10 sm:h-10 object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Subcategory Name */}
+                  <span className="mt-1 text-[10px] sm:text-[11px] font-black text-center text-amber-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] max-w-[70px] truncate">
+                    {cat.name}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ========================================================= */}
         {/* VIEW 2: INGREDIENTS CIRCLE (Ingredientes de la categoría)  */}
         {/* ========================================================= */}
         {viewMode === 'ingredients' && (
-          <div className="relative w-full h-full flex items-center justify-center animate-fade-in">
-            {/* Center "Volver a Categorías" Hub */}
-            <div className="relative z-10 flex flex-col items-center justify-center text-center">
-              <button
-                onClick={() => {
-                  sound.playSFX('click');
-                  setViewMode('categories');
-                }}
-                className="group flex flex-col items-center justify-center w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-gradient-to-b from-stone-900 via-stone-950 to-black border-3 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.6)] cursor-pointer hover:scale-105 active:scale-95 transition-all p-2"
-                title="Volver a Categorías"
-              >
-                <div className="flex items-center gap-1 text-[10.5px] sm:text-[11px] font-black text-amber-300">
-                  <ArrowLeft className="w-3.5 h-3.5 text-amber-300 group-hover:-translate-x-0.5 transition-transform" />
-                  <span>Volver</span>
-                </div>
-                <span className="text-[9.5px] sm:text-[10px] font-serif font-bold text-stone-300 mt-0.5 truncate max-w-[65px]">
-                  {activeCategoryObj?.name}
-                </span>
-                <span className="text-[8px] text-amber-400/80">Categorías</span>
-              </button>
-            </div>
-
+          <div className="relative w-full h-full flex items-center justify-center animate-wheel-orbit-in">
             {/* Ingredients Plates around the Orbit (Dynamically Spaced) */}
             {categoryIngredients.map((ing, idx) => {
-              const pos = getOrbitalPositionStyle(idx, categoryIngredients.length, 36, 32, 48);
+              const pos = getOrbitalPositionStyle(idx, categoryIngredients.length);
               const count = stock[ing.id] || 0;
               const isSelected = slots.some((s) => s?.id === ing.id);
 
               return (
                 <div
                   key={ing.id}
-                  style={pos}
+                  style={{ ...pos, animationDelay: `${idx * 45}ms` }}
                   onClick={() => handleSelectIngredient(ing)}
-                  className="absolute flex flex-col items-center group cursor-pointer active:scale-95 transition-all z-20"
+                  className={`absolute flex flex-col items-center group cursor-pointer active:scale-95 transition-all z-20 animate-wheel-plate-in ${tutorialInertClass(
+                    tutorialIngredientTarget === ing.id
+                  )}`}
                 >
                   {/* Plate */}
                   <div
@@ -582,7 +828,11 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
                       count > 0
                         ? 'bg-gradient-to-b from-stone-800 via-stone-900 to-black border-2 border-amber-400 shadow-amber-900/40'
                         : 'bg-stone-900/80 border border-stone-600 opacity-60 grayscale'
-                    } ${isSelected ? 'ring-2 ring-yellow-400 ring-offset-2 ring-offset-black scale-105' : ''}`}
+                    } ${isSelected ? 'ring-2 ring-yellow-400 ring-offset-2 ring-offset-black scale-105' : ''} ${
+                      tutorialIngredientTarget === ing.id
+                        ? 'ring-2 ring-yellow-300 ring-offset-2 ring-offset-black animate-pulse'
+                        : ''
+                    }`}
                   >
                     {/* Inner Silver Dish Rim */}
                     <div className="w-full h-full rounded-full bg-gradient-to-b from-slate-200/90 to-slate-400/80 flex items-center justify-center p-1 shadow-inner">
@@ -747,7 +997,7 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
               isBoardFull && !isCookingAnimation
                 ? 'bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 hover:from-amber-500 hover:to-orange-500 text-white border-amber-300 shadow-[0_0_20px_rgba(249,115,22,0.6)] active:scale-95 animate-pulse'
                 : 'bg-stone-900/80 text-stone-500 border-stone-700 cursor-not-allowed opacity-60'
-            }`}
+            } ${tutorialInertClass(false)}`}
           >
             <Flame className={`w-5 h-5 ${isBoardFull ? 'text-yellow-300 animate-spin' : 'text-stone-500'}`} />
             <span>{isCookingAnimation ? 'Cocinando...' : 'Cocinar Plato'}</span>
@@ -759,7 +1009,9 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
               sound.playSFX('click');
               setIsRecipeBookOpen(true);
             }}
-            className="relative w-12 h-12 rounded-full bg-gradient-to-b from-amber-700 via-amber-900 to-black border-2 border-amber-400 p-1 flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 cursor-pointer transition-all shrink-0"
+            className={`relative w-12 h-12 rounded-full bg-gradient-to-b from-amber-700 via-amber-900 to-black border-2 border-amber-400 p-1 flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 cursor-pointer transition-all shrink-0 ${tutorialInertClass(
+              false
+            )}`}
             title="Libro de Recetas de la Taberna"
           >
             <div className="w-full h-full rounded-full bg-stone-900/90 flex items-center justify-center overflow-hidden">

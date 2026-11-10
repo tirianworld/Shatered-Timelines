@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
 import { safeStorage } from '../utils/storage';
-import { X, Lock, CheckCircle2, Sparkles } from 'lucide-react';
+import { X, CheckCircle2, Sparkles } from 'lucide-react';
 import { AutoRepeatModal } from './AutoRepeatModal';
 
 interface QuestMission {
@@ -171,7 +171,6 @@ export const QuestView: React.FC = () => {
     return safeStorage.getItem('cdd_quest_chest_ch2_claimed') === 'true';
   });
   const [showChestModal, setShowChestModal] = useState(false);
-  const [lockedBannerText, setLockedBannerText] = useState<string | null>(null);
   const [autoRepeatMission, setAutoRepeatMission] = useState<QuestMission | null>(null);
 
   // Content scroll & drag interaction (no visible scrollbar, drag to scroll)
@@ -292,31 +291,10 @@ export const QuestView: React.FC = () => {
   };
 
   const handleSelectChapter = (chapterNum: number) => {
+    // Capítulos bloqueados: pulsar no hace nada (ni sonido ni aviso).
+    if (chapterNum === 2 && !isChapter2Unlocked) return;
+    if (chapterNum >= 3) return;
     sound.playSFX('click');
-    if (chapterNum === 2 && !isChapter2Unlocked) {
-      sound.playSFX('blip');
-      setLockedBannerText(
-        '¡Capítulo II Bloqueado! Derrota al Devorador Quitinoso en "Las Puertas Selladas" para entrar en Las Minas.'
-      );
-      setTimeout(() => setLockedBannerText(null), 3600);
-      return;
-    }
-    if (chapterNum === 3) {
-      sound.playSFX('blip');
-      setLockedBannerText(
-        '¡Capítulo III Bloqueado! Próximamente: El Mercado Negro de Icespear.'
-      );
-      setTimeout(() => setLockedBannerText(null), 3600);
-      return;
-    }
-    if (chapterNum === 4) {
-      sound.playSFX('blip');
-      setLockedBannerText(
-        '¡Capítulo IV Bloqueado! Próximamente: El Nido de Cryovain en Pico Icespear.'
-      );
-      setTimeout(() => setLockedBannerText(null), 3600);
-      return;
-    }
     setActiveQuestChapter(chapterNum);
   };
 
@@ -469,16 +447,6 @@ export const QuestView: React.FC = () => {
 
       {/* 4. MAIN CONTENT AREA ON WOODEN PLANKS */}
       <div className="relative z-10 w-full flex-1 flex flex-col px-[4%] sm:px-[4.5%] pb-2 overflow-hidden min-h-0">
-        {/* Toast / Notification Banner if tapped on locked chapter */}
-        {lockedBannerText && (
-          <div className="relative z-30 mb-1 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-950 via-red-900 to-amber-950 border border-red-500/80 shadow-[0_0_12px_rgba(239,68,68,0.6)] flex items-center gap-2 animate-bounce">
-            <Lock className="w-4 h-4 text-red-300 shrink-0" />
-            <span className="text-[10px] font-black text-amber-200 leading-tight">
-              {lockedBannerText}
-            </span>
-          </div>
-        )}
-
         {/* PROGRESO DEL CAPITULO */}
         <div className="relative w-full rounded-2xl p-2 sm:p-2.5 bg-[#170803]/90 border-2 border-[#4a1c0b] shadow-[inset_0_2px_6px_rgba(0,0,0,0.7),0_3px_8px_rgba(0,0,0,0.7)] flex items-center justify-between gap-2.5 shrink-0 my-1">
           <div className="flex-1 space-y-1">

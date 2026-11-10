@@ -58,6 +58,7 @@ const GameContent: React.FC = () => {
     setIsGitHubManagerOpen,
     isPlayGamesOpen,
     setIsPlayGamesOpen,
+    selectedCombatMissionId,
     setSelectedCombatMissionId,
     navigateTo,
   } = useGame();
@@ -128,8 +129,18 @@ const GameContent: React.FC = () => {
           {currentTab === 'story' && (
             <StoryDialogueView
               onFinish={() => {
+                const fromKitchen = selectedCombatMissionId === 'cocina_paco';
+                const fromKitchenMonsters = selectedCombatMissionId === 'cocina_monstruos';
+                const fromForge = selectedCombatMissionId === 'forja_goryn';
+                const fromBotica = selectedCombatMissionId === 'botica_raxxar';
                 setSelectedCombatMissionId(null);
-                navigateTo('quest');
+                if (fromForge || fromBotica) {
+                  // Vuelve al taller deshaciendo la entrada de la cinemática,
+                  // para que "Volver" no reabra la historia de la misión 1.
+                  goBack();
+                  return;
+                }
+                navigateTo(fromKitchen || fromKitchenMonsters ? 'cooking' : 'quest');
               }}
               onLaunchCombat={() => {
                 navigateTo('combat');

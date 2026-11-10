@@ -30,6 +30,13 @@ import {
 } from '../data/storyDialogueData';
 import { loadTavernCookingStock, saveTavernCookingStock } from '../data/cookingData';
 import {
+  KITCHEN_MONSTERS_INTRO_MISSION_ID,
+  PACO_FOGON_DIALOGUE,
+  PACO_MONSTERS_DIALOGUE,
+} from '../data/kitchenIntroData';
+import { FORGE_INTRO_MISSION_ID, GORYN_FORGE_DIALOGUE } from '../data/forgeIntroData';
+import { BOTICA_INTRO_MISSION_ID, RAXXAR_BOTICA_DIALOGUE } from '../data/boticaIntroData';
+import {
   Volume2,
   VolumeX,
   Play,
@@ -170,8 +177,20 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
   const isBosqueMission = selectedCombatMissionId === 'm3_bosque';
   const isPuertasMission = selectedCombatMissionId === 'm4_puertas_selladas';
   const isMinasHistoriaMission = selectedCombatMissionId === 'm5_minas_historia';
+  const isKitchenIntro = selectedCombatMissionId === 'cocina_paco';
+  const isKitchenMonstersIntro = selectedCombatMissionId === KITCHEN_MONSTERS_INTRO_MISSION_ID;
+  const isForgeIntro = selectedCombatMissionId === FORGE_INTRO_MISSION_ID;
+  const isBoticaIntro = selectedCombatMissionId === BOTICA_INTRO_MISSION_ID;
 
-  const rawDialogueLines = isTitanEpilogue
+  const rawDialogueLines = isKitchenMonstersIntro
+    ? PACO_MONSTERS_DIALOGUE
+    : isBoticaIntro
+    ? RAXXAR_BOTICA_DIALOGUE
+    : isForgeIntro
+    ? GORYN_FORGE_DIALOGUE
+    : isKitchenIntro
+    ? PACO_FOGON_DIALOGUE
+    : isTitanEpilogue
     ? STORY_TITAN_MELENUDO_EPILOGUE_DIALOGUE
     : isTitanMission
     ? STORY_TITAN_MELENUDO_DIALOGUE
@@ -439,6 +458,14 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         setTimeout(() => {
           handleStartCombatAfterStory();
         }, 1200);
+      } else if (isKitchenMonstersIntro) {
+        finishKitchenMonstersIntro();
+      } else if (isKitchenIntro) {
+        finishKitchenIntro();
+      } else if (isForgeIntro) {
+        finishForgeIntro();
+      } else if (isBoticaIntro) {
+        finishBoticaIntro();
       } else {
         handleCompleteStory();
       }
@@ -446,6 +473,21 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
   }, [isTyping, currentLine.text, currentLineIndex, dialogueLines.length, isTitanMission, isTitanEpilogue, isZancudoMission, isZancudoEpilogue, isRoboMission, isRoboEpilogue, isBosqueMission, isBosqueEpilogue, isPuertasMission, isPuertasEpilogue, isEmboscadaMission, isEmboscadaEpilogue, isAsaltoOrcoMission, isAsaltoOrcoEpilogue, isMinasHistoriaMission, isFuriaCarmesiMission, isFuriaCarmesiEpilogue, isCavernaAzulMission, isCavernaAzulEpilogue]);
 
   const handleCompleteStory = () => {
+    // Las bienvenidas del fogón y de la forja no son misiones: nunca deben
+    // completar la misión 1 ni repartir sus recompensas.
+    if (isForgeIntro) {
+      finishForgeIntro();
+      return;
+    }
+    if (isKitchenIntro) {
+      finishKitchenIntro();
+      return;
+    }
+    if (isKitchenMonstersIntro) {
+      finishKitchenMonstersIntro();
+      return;
+    }
+
     sound.playSFX('victory');
     launchConfetti();
     setIsStoryCompleted(true);
@@ -663,6 +705,22 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
   const handleSkipStory = () => {
     setIsSkipConfirmOpen(false);
+    if (isKitchenIntro) {
+      finishKitchenIntro();
+      return;
+    }
+    if (isKitchenMonstersIntro) {
+      finishKitchenMonstersIntro();
+      return;
+    }
+    if (isForgeIntro) {
+      finishForgeIntro();
+      return;
+    }
+    if (isBoticaIntro) {
+      finishBoticaIntro();
+      return;
+    }
     if (isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isMinasHistoriaMission || isEmboscadaEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isAsaltoOrcoEpilogue) {
       handleCompleteStory();
     } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isEmboscadaMission || isRoboMission || isBosqueMission || isPuertasMission || isFuriaCarmesiMission) {
@@ -719,6 +777,46 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       onLaunchCombat();
     } else {
       navigateTo('combat');
+    }
+  };
+
+  // La bienvenida de Paco no es una misión: al terminar se vuelve directo al fogón.
+  const finishKitchenIntro = () => {
+    sound.playSFX('click');
+    if (onFinish) {
+      onFinish();
+    } else {
+      navigateTo('cooking');
+    }
+  };
+
+  // La charla de la cocina exótica tampoco es una misión: vuelve al Fogón.
+  const finishKitchenMonstersIntro = () => {
+    sound.playSFX('click');
+    if (onFinish) {
+      onFinish();
+    } else {
+      navigateTo('cooking');
+    }
+  };
+
+  // La bienvenida de Goryn tampoco es una misión: al terminar se vuelve a la forja.
+  const finishForgeIntro = () => {
+    sound.playSFX('click');
+    if (onFinish) {
+      onFinish();
+    } else {
+      navigateTo('forge');
+    }
+  };
+
+  // La bienvenida de Raxxar tampoco es una misión: al terminar se vuelve a la botica.
+  const finishBoticaIntro = () => {
+    sound.playSFX('click');
+    if (onFinish) {
+      onFinish();
+    } else {
+      navigateTo('potions');
     }
   };
 
@@ -866,6 +964,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               <img
                 src={exitPoseUrl}
                 alt={exitProf.name}
+                onError={(event) => {
+                  event.currentTarget.style.visibility = 'hidden';
+                }}
                 className={`${exitProf.framing.height} w-auto max-w-none object-contain brightness-90 transition-all ${exitProf.framing.translateY}`}
               />
             </div>
@@ -907,6 +1008,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               <img
                 src={activePoseUrl}
                 alt={activeProf.name}
+                onError={(event) => {
+                  event.currentTarget.style.visibility = 'hidden';
+                }}
                 className={`${activeProf.framing.height} w-auto max-w-none object-contain brightness-110 drop-shadow-[0_0_24px_rgba(251,191,36,0.35)] transition-all ${activeProf.framing.translateY}`}
               />
             </div>
@@ -1050,10 +1154,28 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
             className="relative w-full max-w-xs p-4 bg-[#210c04] border-3 border-[#78350f] rounded-2xl text-center space-y-3 shadow-2xl"
           >
             <h4 className="font-serif font-black text-sm uppercase text-amber-300">
-              {isRoboMission ? '¿Saltar Diálogo e Iniciar Combate?' : '¿Saltar Prólogo de Historia?'}
+              {isKitchenMonstersIntro
+                ? '¿Saltar la charla de Paco?'
+                : isKitchenIntro
+                ? '¿Saltar la bienvenida de Paco?'
+                : isForgeIntro
+                ? '¿Saltar la bienvenida de Goryn?'
+                : isBoticaIntro
+                ? '¿Saltar la bienvenida de Raxxar?'
+                : isRoboMission
+                ? '¿Saltar Diálogo e Iniciar Combate?'
+                : '¿Saltar Prólogo de Historia?'}
             </h4>
             <p className="text-[11px] text-stone-300 leading-relaxed">
-              {isRoboMission
+              {isKitchenMonstersIntro
+                ? 'Pasarás directamente a la rueda de Monstruos, con los componentes exóticos que se pueden cocinar.'
+                : isKitchenIntro
+                ? 'Pasarás directamente al tutorial de cocina: Paco te dejará los ingredientes del asado del día y te señalará cuál tocar.'
+                : isForgeIntro
+                ? 'Pasarás directamente al tutorial de forja: Goryn te dejará el material y el oro para la Espada de Hierro y te señalará qué tocar.'
+                : isBoticaIntro
+                ? 'Pasarás directamente al tutorial de la botica: Raxxar te dejará los materiales y el oro para la Poción de Vida Menor y te señalará qué tocar.'
+                : isRoboMission
                 ? 'Saltarás la escena cómica del asalto a la mansión y comenzarás de inmediato el combate contra las 4 oleadas de la guardia urbana en el callejón.'
                 : 'Completarás la escena narrativa, firmarás el contrato del Capitán Gabriel y desbloquearás la batalla contra Cryovain.'}
             </p>
@@ -1070,7 +1192,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 onClick={handleSkipStory}
                 className="flex-1 py-1.5 rounded-lg bg-gradient-to-r from-red-600 to-amber-600 text-white text-[10px] font-black uppercase tracking-wider cursor-pointer shadow hover:brightness-110"
               >
-                {isRoboMission ? '¡A las Armas!' : 'Saltar'}
+                {isKitchenMonstersIntro ? 'Ver Monstruos' : isKitchenIntro ? 'Al Tutorial' : isForgeIntro ? 'Al Yunque' : isBoticaIntro ? 'Al Alambique' : isRoboMission ? '¡A las Armas!' : 'Saltar'}
               </button>
             </div>
           </div>

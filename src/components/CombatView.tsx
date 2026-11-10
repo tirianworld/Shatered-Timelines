@@ -4304,7 +4304,7 @@ export const CombatView: React.FC = () => {
           name: 'Mapa de la Colonia de Plata de Glimmerstone',
           category: 'materials' as const,
           count: 1,
-          icon: '/assets/items/mapa_icespear_clean_nobtn.png',
+          icon: '/assets/backgrounds/mapa_icespear_clean_nobtn.png',
           rarity: 'SSR' as const,
           priceGold: 4000,
           description: 'Pergamino antiguo recuperado del chamán goblin con runas enanas. Revela la entrada a la histórica colonia minera de Glimmerstone en Icespear, célebre por sus ricas vetas de plata.',
