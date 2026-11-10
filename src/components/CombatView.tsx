@@ -40,6 +40,7 @@ import {
   CombatConsumableDefinition,
 } from '../types/combatConsumables';
 import { loadTavernCookingStock, saveTavernCookingStock } from '../data/cookingData';
+import { SPRITE_POSE_SCALE } from '../data/spriteContentRatio';
 
 export interface GachaSkillEffectApplication {
   type: GachaEffectType;
@@ -1090,9 +1091,9 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     hurtSpriteUrl: '/assets/combat/semiboss_zancudo_hurt.png',
     thumbUrl: '/assets/combat/semiboss_zancudo_thumb.png',
     maxHp: 125,
-    width: 146,
-    height: 206,
-    scaleClass: 'w-[146px] h-[206px] -translate-y-1.5',
+    width: 292,
+    height: 412,
+    scaleClass: 'w-[292px] h-[412px] -translate-y-1.5',
     isBoss: true,
     isSemiboss: false,
     normalSkill: {
@@ -2503,6 +2504,15 @@ export interface LootSackDrop {
   item?: { name: string; icon: string };
   dissolving: boolean;
 }
+
+/** Escala la pose actual del enemigo para que el personaje mida lo mismo que en su idle.
+ *  El factor viene medido del arte (radio de giro de la silueta), asi que no depende de si
+ *  la pose es agachada, de pie o esta cayendo. */
+const getEnemyStateSpriteScale = (baseUrl?: string | null, currentUrl?: string | null): number => {
+  if (!currentUrl) return 1;
+  if (baseUrl === currentUrl) return 1;
+  return SPRITE_POSE_SCALE[currentUrl] ?? 1;
+};
 
 const LootSackIcon: React.FC<{ className?: string }> = ({ className }) => (
   <img
@@ -7263,38 +7273,48 @@ export const CombatView: React.FC = () => {
                   {!targetEnemy.isAshDissolving && (
                     <div className="absolute -bottom-2 w-32 h-8 rounded-full bg-cyan-400/25 blur-md pointer-events-none z-0" />
                   )}
-                  <img
-                    key={`enemy-medusa-img-${targetEnemy.uid}`}
-                    src={getEnemySpriteUrl(targetEnemy)}
-                    alt="Medusa Abisal"
-                    className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
-                      targetEnemy.isAshDissolving
-                        ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
-                        : isEnemyHitShaking
-                        ? getDndImpactAnimationClass(enemyImpactDamageType)
-                        : 'filter drop-shadow-[0_0_18px_rgba(34,211,238,0.7)]'
-                    }`}
-                  />
+                  <span
+                    className="relative flex h-full shrink-0 items-end justify-center"
+                    style={{ transform: `scale(${getEnemyStateSpriteScale(targetEnemy.spriteUrl, getEnemySpriteUrl(targetEnemy))})`, transformOrigin: 'bottom center' }}
+                  >
+                    <img
+                      key={`enemy-medusa-img-${targetEnemy.uid}`}
+                      src={getEnemySpriteUrl(targetEnemy)}
+                      alt="Medusa Abisal"
+                      className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
+                        targetEnemy.isAshDissolving
+                          ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                          : isEnemyHitShaking
+                          ? getDndImpactAnimationClass(enemyImpactDamageType)
+                          : 'filter drop-shadow-[0_0_18px_rgba(34,211,238,0.7)]'
+                      }`}
+                    />
+                  </span>
                 </div>
               ) : (
                 <div className="relative w-full h-full flex items-end justify-center">
                   <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={targetEnemy.width || 135} height={targetEnemy.height || 192} />
-                  <img
-                    key={`enemy-sprite-img-${targetEnemy.uid}`}
-                    src={getEnemySpriteUrl(targetEnemy)}
-                    alt={targetEnemy.name}
-                    className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
-                      targetEnemy.isAshDissolving
-                        ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
-                        : isEnemyHitShaking
-                        ? getDndImpactAnimationClass(enemyImpactDamageType)
-                        : targetEnemy.isSemiboss
-                        ? 'filter drop-shadow-[0_0_14px_rgba(249,115,22,0.5)]'
-                        : targetEnemy.isBoss
-                        ? 'filter drop-shadow-[0_0_18px_rgba(220,38,38,0.6)]'
-                        : ''
-                    }`}
-                  />
+                  <span
+                    className="relative flex h-full shrink-0 items-end justify-center"
+                    style={{ transform: `scale(${getEnemyStateSpriteScale(targetEnemy.spriteUrl, getEnemySpriteUrl(targetEnemy))})`, transformOrigin: 'bottom center' }}
+                  >
+                    <img
+                      key={`enemy-sprite-img-${targetEnemy.uid}`}
+                      src={getEnemySpriteUrl(targetEnemy)}
+                      alt={targetEnemy.name}
+                      className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
+                        targetEnemy.isAshDissolving
+                          ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                          : isEnemyHitShaking
+                          ? getDndImpactAnimationClass(enemyImpactDamageType)
+                          : targetEnemy.isSemiboss
+                          ? 'filter drop-shadow-[0_0_14px_rgba(249,115,22,0.5)]'
+                          : targetEnemy.isBoss
+                          ? 'filter drop-shadow-[0_0_18px_rgba(220,38,38,0.6)]'
+                          : ''
+                      }`}
+                    />
+                  </span>
                 </div>
               )}
             </div>
