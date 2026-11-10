@@ -2505,14 +2505,12 @@ export interface LootSackDrop {
 }
 
 const LootSackIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg viewBox="0 0 64 64" className={className} aria-hidden="true">
-    <path d="M22 25c-5.5 3.4-13 9.6-13 19.2C9 54 18.4 60 32 60s23-6 23-15.8C55 34.6 47.5 28.4 42 25Z" fill="#f6e0c6" stroke="#5b2a10" strokeWidth="2.6" strokeLinejoin="round" />
-    <path d="M15 41c4.6 3.8 10.4 5.6 17 5.6s12.4-1.8 17-5.6" stroke="#e2bd99" strokeWidth="2.4" fill="none" strokeLinecap="round" />
-    <path d="M20 25c-1.4-5.2-5-8.7-9.6-9.8 4.6-3.2 9.6-4.2 14-2.6 2.6-3 6.6-4.4 10.6-4.4s8 1.4 10.6 4.4c4.4-1.6 9.4-.6 14 2.6-4.6 1.1-8.2 4.6-9.6 9.8Z" fill="#fcefdd" stroke="#5b2a10" strokeWidth="2.6" strokeLinejoin="round" />
-    <rect x="18.5" y="22.5" width="27" height="6.5" rx="3.2" fill="#c31d2b" stroke="#5b2a10" strokeWidth="2.2" />
-    <path d="M31 29c2 3 3 6 3 9M36 29c6 3 10 6 12 11M30 29c-2 4-4 7-4 10" stroke="#c31d2b" strokeWidth="3.2" fill="none" strokeLinecap="round" />
-    <path d="M26 39h7l-3.5 8ZM40 40h7l-3.5 8Z" fill="#f5b93a" stroke="#5b2a10" strokeWidth="2" strokeLinejoin="round" />
-  </svg>
+  <img
+    src="/assets/items/saco%20de%20loot.png"
+    alt=""
+    aria-hidden="true"
+    className={`${className ?? ''} object-contain pointer-events-none select-none`}
+  />
 );
 
 export interface ChamberEnemyState {
