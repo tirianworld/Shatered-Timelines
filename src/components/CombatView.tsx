@@ -2792,12 +2792,13 @@ export const CombatView: React.FC = () => {
 
         const key = `${enemy.uid}_${Date.now()}`;
         setLootSacks((prev) => [...prev.slice(-5), { key, left, top, fall, gold, item: droppedItem, dissolving: false }]);
+        // Se desintegra en cuanto toca el suelo (la caida dura 0,62 s).
         window.setTimeout(() => {
           setLootSacks((prev) => prev.map((it) => (it.key === key ? { ...it, dissolving: true } : it)));
-        }, 1600);
+        }, 620);
         window.setTimeout(() => {
           setLootSacks((prev) => prev.filter((it) => it.key !== key));
-        }, 1900);
+        }, 900);
       });
     }, 0);
 
