@@ -13,10 +13,10 @@ export const GameFooter: React.FC = () => {
 
   const navButtons: NavButtonConfig[] = [
     { id: 'quest', label: 'QUEST', imageSrc: '/assets/items/quest tarot.png' },
-    { id: 'heroes', label: 'HEROES', imageSrc: '/assets/items/Recurso 2@4x.png' },
+    { id: 'heroes', label: 'HEROES', imageSrc: '/assets/items/recurso_2_4x_ui.png' },
     { id: 'santuario', label: 'SANTUARIO', imageSrc: '/assets/items/santuario.png' },
     { id: 'draw', label: 'DRAW', imageSrc: '/assets/items/DRAW BUTTON.png' },
-    { id: 'shop', label: 'SHOP', imageSrc: '/assets/items/Recurso 3@4x.png' },
+    { id: 'shop', label: 'SHOP', imageSrc: '/assets/items/recurso_3_4x_ui.png' },
     { id: 'options', label: 'OPTIONS', imageSrc: '/assets/items/Options Idl.png' },
   ];
 

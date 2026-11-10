@@ -1,11 +1,15 @@
 // 1-to-1 unique mapping for every single 3-ingredient combination in the tavern
 // Generates all 3,276 unique dishes with zero collisions and 100% accurate ingredient representation
 import type { CookingIngredient, CookingRecipe, IngredientCategory } from './cookingData';
+import dishDuplicatesMap from './dishDuplicatesMap.json';
+
+const DUP_MAP = dishDuplicatesMap as Record<string, string>;
+const resolveCanonicalDishIcon = (path: string): string => DUP_MAP[path] || path;
 
 const INGREDIENT_NAMES: Record<string, string> = {
   ing_pollo_calidad: 'Pollo de Corral',
   ing_carne_roja: 'Ternera Glacial',
-  ing_carne_ahumada: 'Carne Ahumada',
+  ing_carne_ahumada: 'Carne Seca Curada',
   ing_lomo_jabali: 'Chuletón de Jabalí',
   ing_ajo_silvestre: 'Ajo Silvestre',
   ing_patata_montana: 'Patatas de Icespear',
@@ -372,105 +376,99 @@ function getDishPreparation(ings: CookingIngredient[]): string {
   const cats = ings.map((i) => i.category);
 
   if (ids.has('ing_arroz_grano')) {
-    if (cats.includes('pescados')) return 'Paella Marina';
-    if (cats.includes('monstruos') || cats.includes('carnes')) return 'Wok de Arroz';
+    if (cats.includes('pescados')) return 'Paella';
+    if (cats.includes('monstruos') || cats.includes('carnes')) return 'Wok';
     return 'Risotto';
   }
-  if (ids.has('ing_masa_madre')) return 'Pizza Artesana';
+  if (ids.has('ing_masa_madre')) return 'Pizza';
   if (
     ids.has('ing_harina_trigo') &&
     (ids.has('ing_huevos_corral') || ids.has('ing_queso_cabra') || ids.has('ing_leche_fresca'))
   ) {
-    return 'Quiche Salada';
+    return 'Quiche';
   }
-  if (ids.has('ing_harina_trigo')) return 'Empanada Hojaldrada';
-  if (ids.has('ing_pan_rustico')) return 'Tosta Rústica';
-  if (ids.has('ing_huevos_corral') || ids.has('ing_huevos_araknoide')) return 'Tortilla Dorada';
-  if (ids.has('ing_patata_montana') && (cats.includes('carnes') || cats.includes('pescados'))) {
-    return 'Asado con Patatas';
-  }
-  if (cats.includes('monstruos')) return 'Cazuela Abisal';
-  if (cats.includes('pescados')) return 'Caldereta Marina';
-  if (cats.includes('carnes')) return 'Guiso Tradicional';
-  if (cats.includes('lacteos')) return 'Gratén Fundido';
-  if (cats.includes('verduras')) return 'Salteado de Huerta';
-  return 'Adobo Especiado';
+  if (ids.has('ing_harina_trigo')) return 'Empanada';
+  if (ids.has('ing_pan_rustico')) return 'Tosta';
+  if (ids.has('ing_huevos_corral') || ids.has('ing_huevos_araknoide')) return 'Tortilla';
+  if (ids.has('ing_patata_montana') && cats.includes('carnes')) return 'Asado';
+  if (ids.has('ing_patata_montana') && cats.includes('pescados')) return 'Parrillada';
+  if (cats.includes('monstruos')) return 'Cazuela';
+  if (cats.includes('pescados')) return 'Caldereta';
+  if (cats.includes('carnes')) return 'Guiso';
+  if (cats.includes('lacteos')) return 'Gratén';
+  if (cats.includes('verduras')) return 'Salteado';
+  return 'Adobo';
 }
 
 function getDishIcon(ings: CookingIngredient[]): string {
   const ids = new Set(ings.map((i) => i.id));
   const cats = ings.map((i) => i.category);
 
-  // Cada combinación individual de Cangrejo de Cueva tiene su propio sprite único e irrepetible
+  let rawIcon = '';
+  // Cada combinación individual de Cangrejo de Cueva tiene su propio sprite único
   if (ids.has('ing_cangrejo_cueva')) {
     const sorted = ings.map((i) => i.id).sort().join('__');
-    return `/assets/items/crab_dishes/crab_${sorted}.png`;
-  }
-
-  // Cada combinación individual de Trucha Plateada tiene su propio sprite único e irrepetible
-  if (ids.has('ing_trucha_arroyo')) {
+    rawIcon = `/assets/items/crab_dishes/crab_${sorted}.png`;
+  } else if (ids.has('ing_trucha_arroyo')) {
     const sorted = ings.map((i) => i.id).sort().join('__');
-    return `/assets/items/trout_dishes/trout_${sorted}.png`;
-  }
-
-  // Cada combinación individual de Salmón del Río Helado tiene su propio sprite único e irrepetible
-  if (ids.has('ing_salmon_helado')) {
+    rawIcon = `/assets/items/trout_dishes/trout_${sorted}.png`;
+  } else if (ids.has('ing_salmon_helado')) {
     const sorted = ings.map((i) => i.id).sort().join('__');
-    return `/assets/items/salmon_dishes/salmon_${sorted}.png`;
-  }
-
-  // Cada combinación individual de Pollo de Corral tiene su propio sprite único e irrepetible
-  if (ids.has('ing_pollo_calidad')) {
+    rawIcon = `/assets/items/salmon_dishes/salmon_${sorted}.png`;
+  } else if (ids.has('ing_pollo_calidad')) {
     const sorted = ings.map((i) => i.id).sort().join('__');
-    return `/assets/items/chicken_dishes/chicken_${sorted}.png`;
+    rawIcon = `/assets/items/chicken_dishes/chicken_${sorted}.png`;
+  } else if (ids.has('ing_huevos_araknoide')) {
+    rawIcon = '/assets/items/food_tortilla_araknoide.png';
+  } else if (ids.has('ing_larvas_araknoide')) {
+    rawIcon = '/assets/items/food_larvas_crujientes.png';
+  } else if (ids.has('ing_carne_devorador')) {
+    rawIcon = '/assets/items/food_devorador_empanada.png';
+  } else if (ids.has('ing_masa_madre')) {
+    rawIcon = '/assets/items/pizza.png';
+  } else if (ids.has('ing_arroz_grano')) {
+    rawIcon = cats.includes('pescados') ? '/assets/items/food_sushi_salmon.png' : '/assets/items/ramen.png';
+  } else if (ids.has('ing_harina_trigo') && ids.has('ing_leche_fresca')) {
+    rawIcon = '/assets/items/tortitas.png';
+  } else if (ids.has('ing_pan_rustico') && ids.has('ing_ajo_silvestre')) {
+    rawIcon = '/assets/items/panes_de_ajo.png';
+  } else if (ids.has('ing_queso_cabra') && ids.has('ing_harina_trigo')) {
+    rawIcon = '/assets/items/arepas.png';
+  } else if (ids.has('ing_carne_ahumada')) {
+    // Comidas preparadas con Carne Seca Curada
+    if (ids.has('ing_harina_trigo') && ids.has('ing_hortalizas_huerto')) rawIcon = '/assets/items/ramen.png';
+    else if (ids.has('ing_pan_rustico') || ids.has('ing_harina_trigo')) rawIcon = '/assets/items/hamburguesa.png';
+    else if (ids.has('ing_queso_cabra')) rawIcon = '/assets/items/food_lasana.png';
+    else if (ids.has('ing_patata_montana')) rawIcon = '/assets/items/food_steak_chips.png';
+    else if (ids.has('ing_especias_dragon')) rawIcon = '/assets/items/kebab.png';
+    else rawIcon = '/assets/items/plato_de_carne_app.png';
+  } else if (ids.has('ing_patata_montana')) {
+    if (cats.includes('carnes')) rawIcon = '/assets/items/food_steak_chips.png';
+    else if (cats.includes('pescados')) rawIcon = '/assets/items/food_fish_chips.png';
+    else if (ids.has('ing_huevos_corral')) rawIcon = '/assets/items/food_eggs_chips.png';
+    else rawIcon = '/assets/items/tortilla_patata.png';
+  } else if (ids.has('ing_salmon_helado') && ids.has('ing_arroz_grano')) {
+    rawIcon = '/assets/items/food_sushi_salmon.png';
+  } else if (cats.includes('pescados')) {
+    rawIcon = ids.has('ing_especias_dragon') || ids.has('ing_sal_glacial') ? '/assets/items/food_ceviche.png' : '/assets/items/food_fish_chips.png';
+  } else if (cats.includes('carnes')) {
+    if (ids.has('ing_lomo_jabali')) rawIcon = '/assets/items/food_bourguignon.png';
+    else if (ids.has('ing_especias_dragon')) rawIcon = '/assets/items/kebab.png';
+    else if (ids.has('ing_pan_rustico') || ids.has('ing_harina_trigo')) rawIcon = '/assets/items/hamburguesa.png';
+    else rawIcon = '/assets/items/food_bourguignon.png';
+  } else if (cats.includes('lacteos')) {
+    if (ids.has('ing_queso_cabra') && ids.has('ing_leche_fresca')) rawIcon = '/assets/items/food_fondue.png';
+    else if (ids.has('ing_huevos_corral')) rawIcon = '/assets/items/tortilla_patata.png';
+    else rawIcon = '/assets/items/quesarito.png';
+  } else if (cats.every((c) => c === 'verduras')) {
+    rawIcon = '/assets/items/food_ratatouille.png';
+  } else if (cats.includes('especias')) {
+    rawIcon = '/assets/items/doritos.png';
+  } else {
+    rawIcon = '/assets/items/castillo_sopa.png';
   }
 
-  if (ids.has('ing_huevos_araknoide')) return '/assets/items/food_tortilla_araknoide.png';
-  if (ids.has('ing_larvas_araknoide')) return '/assets/items/food_larvas_crujientes.png';
-  if (ids.has('ing_carne_devorador')) return '/assets/items/food_devorador_empanada.png';
-
-  if (ids.has('ing_masa_madre')) return '/assets/items/pizza.png';
-  if (ids.has('ing_arroz_grano')) {
-    if (cats.includes('pescados')) return '/assets/items/shushi.png';
-    return '/assets/items/ramen.png';
-  }
-  if (ids.has('ing_harina_trigo') && ids.has('ing_leche_fresca')) return '/assets/items/tortitas.png';
-  if (ids.has('ing_pan_rustico') && ids.has('ing_ajo_silvestre')) return '/assets/items/panes_de_ajo.png';
-  if (ids.has('ing_queso_cabra') && ids.has('ing_harina_trigo')) return '/assets/items/arepas.png';
-
-  if (ids.has('ing_patata_montana')) {
-    if (cats.includes('carnes')) return '/assets/items/food_steak_chips.png';
-    if (cats.includes('pescados')) return '/assets/items/food_fish_chips.png';
-    if (ids.has('ing_huevos_corral')) return '/assets/items/food_eggs_chips.png';
-    return '/assets/items/tortilla_patata.png';
-  }
-
-  if (ids.has('ing_salmon_helado') && ids.has('ing_arroz_grano')) {
-    return '/assets/items/food_sushi_salmon.png';
-  }
-
-  if (cats.includes('pescados')) {
-    if (ids.has('ing_especias_dragon') || ids.has('ing_sal_glacial')) return '/assets/items/food_ceviche.png';
-    return '/assets/items/food_fish_chips.png';
-  }
-
-  if (cats.includes('carnes')) {
-    if (ids.has('ing_lomo_jabali')) return '/assets/items/food_bourguignon.png';
-    if (ids.has('ing_especias_dragon')) return '/assets/items/kebab.png';
-    if (ids.has('ing_pan_rustico') || ids.has('ing_harina_trigo')) return '/assets/items/hamburguesa.png';
-    return '/assets/items/food_bourguignon.png';
-  }
-
-  if (cats.includes('lacteos')) {
-    if (ids.has('ing_queso_cabra') && ids.has('ing_leche_fresca')) return '/assets/items/food_fondue.png';
-    if (ids.has('ing_huevos_corral')) return '/assets/items/tortilla_patata.png';
-    return '/assets/items/quesarito.png';
-  }
-
-  if (cats.every((c) => c === 'verduras')) return '/assets/items/food_ratatouille.png';
-  if (cats.includes('especias')) return '/assets/items/doritos.png';
-
-  return '/assets/items/castillo_sopa.png';
+  return resolveCanonicalDishIcon(rawIcon);
 }
 
 function calculateBuff(ings: CookingIngredient[]): {
@@ -577,38 +575,201 @@ function calculateBuff(ings: CookingIngredient[]): {
   };
 }
 
-function generateDishName(ings: CookingIngredient[]): string {
-  // Sort by priority so star ingredient is first
-  const sorted = [...ings].sort((a, b) => {
-    const pA = CATEGORY_PRIORITY[a.category] || 99;
-    const pB = CATEGORY_PRIORITY[b.category] || 99;
-    if (pA !== pB) return pA - pB;
-    return a.id.localeCompare(b.id);
-  });
+// Ingredientes de despensa: no dan nombre al plato por sí solos (harina, sal, arroz...)
+const PANTRY_INGREDIENT_IDS = new Set([
+  'ing_harina_trigo',
+  'ing_sal_glacial',
+  'ing_arroz_grano',
+  'ing_masa_madre',
+  'ing_pan_rustico',
+  'ing_mantequilla_salada',
+  'ing_leche_fresca',
+]);
 
+interface DishIngredientName {
+  label: string;
+  feminine: boolean;
+  plural: boolean;
+}
+
+// Nombre corto (una palabra) de cada ingrediente para que el plato quepa en 4 palabras
+const SHORT_INGREDIENT_NAMES: Record<string, DishIngredientName> = {
+  ing_pollo_calidad: { label: 'Pollo', feminine: false, plural: false },
+  ing_carne_roja: { label: 'Ternera', feminine: true, plural: false },
+  ing_carne_ahumada: { label: 'Costilla', feminine: true, plural: false },
+  ing_lomo_jabali: { label: 'Jabalí', feminine: false, plural: false },
+  ing_ajo_silvestre: { label: 'Ajo', feminine: false, plural: false },
+  ing_patata_montana: { label: 'Patata', feminine: true, plural: false },
+  ing_hortalizas_huerto: { label: 'Huerta', feminine: true, plural: false },
+  ing_setas_cueva: { label: 'Setas', feminine: true, plural: true },
+  ing_harina_trigo: { label: 'Harina', feminine: true, plural: false },
+  ing_pan_rustico: { label: 'Pan', feminine: false, plural: false },
+  ing_arroz_grano: { label: 'Arroz', feminine: false, plural: false },
+  ing_masa_madre: { label: 'Masa', feminine: true, plural: false },
+  ing_queso_cabra: { label: 'Queso', feminine: false, plural: false },
+  ing_leche_fresca: { label: 'Leche', feminine: true, plural: false },
+  ing_mantequilla_salada: { label: 'Mantequilla', feminine: true, plural: false },
+  ing_huevos_corral: { label: 'Huevo', feminine: false, plural: false },
+  ing_especias_dragon: { label: 'Dragón', feminine: false, plural: false },
+  ing_sal_glacial: { label: 'Sal', feminine: true, plural: false },
+  ing_hierbas_bosque: { label: 'Hierbas', feminine: true, plural: true },
+  ing_pimienta_negra: { label: 'Pimienta', feminine: true, plural: false },
+  ing_salmon_helado: { label: 'Salmón', feminine: false, plural: false },
+  ing_trucha_arroyo: { label: 'Trucha', feminine: true, plural: false },
+  ing_cangrejo_cueva: { label: 'Cangrejo', feminine: false, plural: false },
+  ing_carne_devorador: { label: 'Devorador', feminine: false, plural: false },
+  ing_larvas_araknoide: { label: 'Larvas', feminine: true, plural: true },
+  ing_huevos_araknoide: { label: 'Arácnido', feminine: false, plural: false },
+};
+
+// Adjetivos de la casa (con género) para distinguir recetas del mismo plato base
+const DISH_ADJECTIVES: { m: string; f: string }[] = [
+  { m: 'Rústico', f: 'Rústica' },
+  { m: 'Picante', f: 'Picante' },
+  { m: 'Crujiente', f: 'Crujiente' },
+  { m: 'Dorado', f: 'Dorada' },
+  { m: 'Ahumado', f: 'Ahumada' },
+  { m: 'Cremoso', f: 'Cremosa' },
+  { m: 'Especiado', f: 'Especiada' },
+  { m: 'Tradicional', f: 'Tradicional' },
+  { m: 'Salvaje', f: 'Salvaje' },
+  { m: 'Glacial', f: 'Glacial' },
+  { m: 'Suave', f: 'Suave' },
+  { m: 'Fuerte', f: 'Fuerte' },
+  { m: 'Fresco', f: 'Fresca' },
+  { m: 'Secreto', f: 'Secreta' },
+  { m: 'Ancestral', f: 'Ancestral' },
+  { m: 'Montaraz', f: 'Montaraz' },
+  { m: 'Marino', f: 'Marina' },
+  { m: 'Campestre', f: 'Campestre' },
+  { m: 'Tostado', f: 'Tostada' },
+  { m: 'Curado', f: 'Curada' },
+  { m: 'Intenso', f: 'Intensa' },
+  { m: 'Ligero', f: 'Ligera' },
+  { m: 'Profundo', f: 'Profunda' },
+  { m: 'Delicado', f: 'Delicada' },
+  { m: 'Generoso', f: 'Generosa' },
+  { m: 'Sedoso', f: 'Sedosa' },
+  { m: 'Fragante', f: 'Fragante' },
+  { m: 'Templado', f: 'Templada' },
+  { m: 'Casero', f: 'Casera' },
+  { m: 'Familiar', f: 'Familiar' },
+  { m: 'Artesano', f: 'Artesana' },
+  { m: 'Bravío', f: 'Bravía' },
+  { m: 'Montuno', f: 'Montuna' },
+  { m: 'Alpino', f: 'Alpina' },
+  { m: 'Nórdico', f: 'Nórdica' },
+  { m: 'Sureño', f: 'Sureña' },
+  { m: 'Espléndido', f: 'Espléndida' },
+  { m: 'Rotundo', f: 'Rotunda' },
+  { m: 'Sencillo', f: 'Sencilla' },
+  { m: 'Esmerado', f: 'Esmerada' },
+  { m: 'Popular', f: 'Popular' },
+  { m: 'Elegante', f: 'Elegante' },
+  { m: 'Brillante', f: 'Brillante' },
+  { m: 'Ardiente', f: 'Ardiente' },
+  { m: 'Humoso', f: 'Humosa' },
+  { m: 'Oloroso', f: 'Olorosa' },
+  { m: 'Dulce', f: 'Dulce' },
+  { m: 'Fino', f: 'Fina' },
+  { m: 'Señorial', f: 'Señorial' },
+  { m: 'Cortesano', f: 'Cortesana' },
+  { m: 'Tabernero', f: 'Tabernera' },
+  { m: 'Cazador', f: 'Cazadora' },
+  { m: 'Minero', f: 'Minera' },
+  { m: 'Peregrino', f: 'Peregrina' },
+  { m: 'Errante', f: 'Errante' },
+  { m: 'Viajero', f: 'Viajera' },
+  { m: 'Nómada', f: 'Nómada' },
+  { m: 'Fronterizo', f: 'Fronteriza' },
+  { m: 'Invernal', f: 'Invernal' },
+  { m: 'Otoñal', f: 'Otoñal' },
+  { m: 'Exquisito', f: 'Exquisita' },
+  { m: 'Selecto', f: 'Selecta' },
+  { m: 'Refinado', f: 'Refinada' },
+  { m: 'Famoso', f: 'Famosa' },
+  { m: 'Legendario', f: 'Legendaria' },
+  { m: 'Heroico', f: 'Heroica' },
+  { m: 'Vigoroso', f: 'Vigorosa' },
+  { m: 'Robusto', f: 'Robusta' },
+  { m: 'Sabroso', f: 'Sabrosa' },
+  { m: 'Aromático', f: 'Aromática' },
+  { m: 'Jugoso', f: 'Jugosa' },
+  { m: 'Tierno', f: 'Tierna' },
+];
+
+// El protagonista del nombre debe ser algo comestible de verdad: proteína primero,
+// luego verdura o lácteo. Nunca especias ni ingredientes de despensa.
+const PROTEIN_CATEGORIES = new Set<IngredientCategory>(['monstruos', 'pescados', 'carnes']);
+const SUPPORT_CATEGORIES = new Set<IngredientCategory>(['verduras', 'lacteos']);
+
+interface DishNameCandidate {
+  prefix: string;
+  feminine: boolean;
+  plural: boolean;
+}
+
+function getDishNameStars(ings: CookingIngredient[]): DishNameCandidate[] {
+  const pick = (categories: Set<IngredientCategory>) => {
+    const seen = new Set<string>();
+    const stars: DishNameCandidate[] = [];
+    for (const ing of ings) {
+      if (!categories.has(ing.category) || PANTRY_INGREDIENT_IDS.has(ing.id)) continue;
+      const info = SHORT_INGREDIENT_NAMES[ing.id];
+      if (!info || seen.has(info.label)) continue;
+      seen.add(info.label);
+      stars.push({ prefix: info.label, feminine: info.feminine, plural: info.plural });
+    }
+    return stars;
+  };
+
+  const proteins = pick(PROTEIN_CATEGORIES);
+  if (proteins.length > 0) return proteins;
+  const support = pick(SUPPORT_CATEGORIES);
+  if (support.length > 0) return support;
+  return [{ prefix: 'Despensa', feminine: true, plural: false }];
+}
+
+/** El adjetivo concuerda con el protagonista ("Guiso de Larvas Rústicas"). */
+function pluralizeAdjective(word: string): string {
+  if (/[aeiouáéíóú]$/.test(word)) return `${word}s`;
+  if (word.endsWith('z')) return `${word.slice(0, -1)}ces`;
+  return `${word}es`;
+}
+
+/**
+ * Nombres base posibles: "Asado de Pollo", "Asado con Pollo", "Asado de Ternera"...
+ */
+function getDishNameCandidates(ings: CookingIngredient[]): DishNameCandidate[] {
   const prep = getDishPreparation(ings);
-  const n0 = INGREDIENT_NAMES[sorted[0].id] || sorted[0].name;
-  const n1 = INGREDIENT_NAMES[sorted[1].id] || sorted[1].name;
-  const n2 = INGREDIENT_NAMES[sorted[2].id] || sorted[2].name;
+  const candidates: DishNameCandidate[] = [];
+  for (const star of getDishNameStars(ings)) {
+    for (const connector of ['de', 'con']) {
+      candidates.push({
+        prefix: `${prep} ${connector} ${star.prefix}`,
+        feminine: star.feminine,
+        plural: star.plural,
+      });
+    }
+  }
+  return candidates;
+}
 
-  if (sorted[0].id === sorted[1].id && sorted[1].id === sorted[2].id) {
-    return `Festín Tríptico de ${n0}`;
-  }
-  if (sorted[0].id === sorted[1].id) {
-    return `${prep} Doble de ${n0} con ${n2}`;
-  }
-  if (sorted[1].id === sorted[2].id) {
-    return `${prep} de ${n0} con Doble ${n1}`;
-  }
-  if (sorted[0].id === sorted[2].id) {
-    return `${prep} Doble de ${n0} con ${n1}`;
-  }
-  return `${prep} de ${n0} con ${n1} y ${n2}`;
+/**
+ * Nombre de plato de 4 palabras: "Asado de Pollo Rústico", "Quiche con Queso Picante".
+ * `adjectiveIndex` reparte adjetivos distintos entre recetas del mismo nombre base.
+ */
+function generateDishName(candidate: DishNameCandidate, adjectiveIndex = 0): string {
+  const adjective = DISH_ADJECTIVES[adjectiveIndex % DISH_ADJECTIVES.length];
+  let word = candidate.feminine ? adjective.f : adjective.m;
+  if (candidate.plural) word = pluralizeAdjective(word);
+  return `${candidate.prefix} ${word}`;
 }
 
 export function generateAllCookingRecipes(ingredients: CookingIngredient[]): CookingRecipe[] {
   const recipes: CookingRecipe[] = [];
-  const usedNames = new Map<string, string>();
+  // Cuántas variantes de adjetivo lleva ya cada plato base (preparación + protagonista)
+  const nameStyleCounters = new Map<string, number>();
 
   for (let i = 0; i < ingredients.length; i++) {
     for (let j = i; j < ingredients.length; j++) {
@@ -622,7 +783,29 @@ export function generateAllCookingRecipes(ingredients: CookingIngredient[]): Coo
         const canonicalKey = sortedIds.join('__');
         const sig = SIGNATURES[canonicalKey];
 
-        let dishName = sig ? sig.name : generateDishName(ings);
+        let dishName: string;
+        if (sig) {
+          dishName = sig.name;
+        } else {
+          // Elige el nombre base menos usado para repartir los 3.276 platos
+          const candidates = getDishNameCandidates(ings);
+          let chosen = candidates[0];
+          let bestScore = Number.POSITIVE_INFINITY;
+          for (const candidate of candidates) {
+            const used = nameStyleCounters.get(candidate.prefix) || 0;
+            // "de" manda hasta agotar su cupo de adjetivos; "con" es la válvula de escape
+            const full = used >= DISH_ADJECTIVES.length;
+            const score = (full ? 10000 : used) + (candidate.prefix.includes(' con ') ? 500 : 0);
+            if (score < bestScore) {
+              bestScore = score;
+              chosen = candidate;
+            }
+          }
+          // El contador real del nombre elegido, no la puntuación
+          const chosenCount = nameStyleCounters.get(chosen.prefix) || 0;
+          nameStyleCounters.set(chosen.prefix, chosenCount + 1);
+          dishName = generateDishName(chosen, chosenCount);
+        }
         const icon = sig ? sig.icon : getDishIcon(ings);
         const buff = sig
           ? { buffBadge: sig.buffBadge, buffDescription: sig.buffDescription, rarity: sig.rarity }
@@ -632,12 +815,6 @@ export function generateAllCookingRecipes(ingredients: CookingIngredient[]): Coo
           : `Plato único cocinado al fuego del bastión con ${INGREDIENT_NAMES[ing0.id] || ing0.name}, ${
               INGREDIENT_NAMES[ing1.id] || ing1.name
             } y ${INGREDIENT_NAMES[ing2.id] || ing2.name}. Receta exclusiva de Icespear.`;
-
-        // Guarantee zero name collisions across all 3,276 recipes
-        if (usedNames.has(dishName) && usedNames.get(dishName) !== canonicalKey) {
-          dishName = `${dishName} (${INGREDIENT_NAMES[ing2.id] || ing2.name})`;
-        }
-        usedNames.set(dishName, canonicalKey);
 
         recipes.push({
           id: `rec_${canonicalKey}`,

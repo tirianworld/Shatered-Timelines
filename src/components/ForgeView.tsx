@@ -1,10 +1,28 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
 import { ArrowLeft, Shield, Heart, Coins } from 'lucide-react';
 import { ForgeMaskedSlider } from './ForgeMaskedSlider';
 import { ForgeMilestonesModal, FORGE_MILESTONES, ForgeMilestoneStats } from './ForgeMilestonesModal';
 import { safeStorage } from '../utils/storage';
+import {
+  FORGE_INTRO_MISSION_ID,
+  FORGE_INTRO_SEEN_KEY,
+  FORGE_TUTORIAL_DONE_KEY,
+  FORGE_TUTORIAL_GOLD,
+  FORGE_TUTORIAL_ITEM_ID,
+  FORGE_TUTORIAL_MATERIALS,
+  FORGE_TUTORIAL_STEPS,
+} from '../data/forgeIntroData';
+import {
+  BOTICA_INTRO_MISSION_ID,
+  BOTICA_INTRO_SEEN_KEY,
+  BOTICA_TUTORIAL_DONE_KEY,
+  BOTICA_TUTORIAL_GOLD,
+  BOTICA_TUTORIAL_ITEM_ID,
+  BOTICA_TUTORIAL_MATERIALS,
+  BOTICA_TUTORIAL_STEPS,
+} from '../data/boticaIntroData';
 
 interface CraftItemData {
   id: string;
@@ -57,6 +75,8 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
     setForgeCategory,
     forgeSubcategory,
     setForgeSubcategory,
+    navigateTo,
+    setSelectedCombatMissionId,
   } = useGame();
 
   const tier1Category = forgeCategory || null;
@@ -68,6 +88,90 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
   const [craftModalItem, setCraftModalItem] = useState<CraftItemData | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showMilestonesModal, setShowMilestonesModal] = useState<boolean>(false);
+
+  // Bienvenida y tutorial guiado de cada taller: Goryn en la forja y Raxxar en la botica.
+  const workshopIntroSeenKey = isPotionShop ? BOTICA_INTRO_SEEN_KEY : FORGE_INTRO_SEEN_KEY;
+  const workshopTutorialDoneKey = isPotionShop
+    ? BOTICA_TUTORIAL_DONE_KEY
+    : FORGE_TUTORIAL_DONE_KEY;
+  const workshopIntroMissionId = isPotionShop ? BOTICA_INTRO_MISSION_ID : FORGE_INTRO_MISSION_ID;
+  const workshopTutorialSteps: ReadonlyArray<{ kind: string; id: string }> = isPotionShop
+    ? BOTICA_TUTORIAL_STEPS
+    : FORGE_TUTORIAL_STEPS;
+  const workshopTutorialItemId = isPotionShop ? BOTICA_TUTORIAL_ITEM_ID : FORGE_TUTORIAL_ITEM_ID;
+  const workshopTutorialGold = isPotionShop ? BOTICA_TUTORIAL_GOLD : FORGE_TUTORIAL_GOLD;
+  const workshopTutorialMaterials: ReadonlyArray<{ name: string; icon: string; count: number }> =
+    isPotionShop ? BOTICA_TUTORIAL_MATERIALS : FORGE_TUTORIAL_MATERIALS;
+  const workshopNpcName = isPotionShop ? 'Raxxar' : 'Goryn';
+  const workshopTutorialHint = isPotionShop
+    ? 'Primero elige Pociones → Poción de Vida Menor.'
+    : 'Primero elige Armas → Espadas → Espada de Hierro.';
+
+  // Cinemática de la primera visita y tutorial guiado (una sola vez; se reanuda si quedó a medias).
+  const workshopIntroAlreadySeen = safeStorage.getItem(workshopIntroSeenKey) === 'seen';
+  const workshopTutorialAlreadyDone = safeStorage.getItem(workshopTutorialDoneKey) === 'done';
+  const [forgeTutorialStep, setForgeTutorialStep] = useState<number>(
+    workshopIntroAlreadySeen && !workshopTutorialAlreadyDone ? 0 : -1
+  );
+  const forgeIntroLaunched = useRef(false);
+  const forgeTutorialKitGranted = useRef(false);
+
+  useEffect(() => {
+    if (forgeIntroLaunched.current) return;
+    if (safeStorage.getItem(workshopIntroSeenKey) === 'seen') return;
+    forgeIntroLaunched.current = true;
+    safeStorage.setItem(workshopIntroSeenKey, 'seen');
+    setForgeCategory('');
+    setForgeSubcategory(null);
+    setSelectedCombatMissionId(workshopIntroMissionId);
+    navigateTo('story');
+  }, [
+    workshopIntroSeenKey,
+    workshopIntroMissionId,
+    navigateTo,
+    setSelectedCombatMissionId,
+    setForgeCategory,
+    setForgeSubcategory,
+  ]);
+
+  // Si el tutorial quedó a medias, se reanuda desde las categorías del taller.
+  useEffect(() => {
+    if (forgeTutorialStep < 0) return;
+    setForgeCategory('');
+    setForgeSubcategory(null);
+    // Solo al montar el taller
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // El maestro del taller deja el material y el oro de la primera pieza en la mesa.
+  useEffect(() => {
+    if (forgeTutorialStep < 0 || forgeTutorialKitGranted.current) return;
+    forgeTutorialKitGranted.current = true;
+    if (gold < workshopTutorialGold) addGold(workshopTutorialGold - gold);
+    workshopTutorialMaterials.forEach((material) => {
+      const missing = material.count - getMaterialCount(material.icon, material.name);
+      if (missing > 0) {
+        addShelfItem({
+          name: material.name,
+          category: 'materials',
+          count: missing,
+          icon: material.icon,
+          rarity: 'R',
+          priceGold: 0,
+          description: `Material de aprendizaje que ${workshopNpcName} dejó apartado en el taller.`,
+        });
+      }
+    });
+  }, [
+    forgeTutorialStep,
+    gold,
+    addGold,
+    getMaterialCount,
+    addShelfItem,
+    workshopTutorialGold,
+    workshopTutorialMaterials,
+    workshopNpcName,
+  ]);
 
   // Persistent Milestone stats and claimed achievements
   const [milestoneStats, setMilestoneStats] = useState<ForgeMilestoneStats>(() => {
@@ -1891,8 +1995,8 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
       maxAtk: 250,
       element: 'Natural',
       elementOrb: '/assets/items/atributo_natural.png',
-      portrait: '/assets/items/vida.png',
-      icon: '/assets/items/vida.png',
+      portrait: '/assets/items/vida_ui.png',
+      icon: '/assets/items/vida_ui.png',
       costGold: 200,
       ingredients: {
         ingotIcon: '/assets/items/shop_herb.png',
@@ -1916,8 +2020,8 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
       maxAtk: 550,
       element: 'Natural',
       elementOrb: '/assets/items/atributo_natural.png',
-      portrait: '/assets/items/vida.png',
-      icon: '/assets/items/vida.png',
+      portrait: '/assets/items/vida_ui.png',
+      icon: '/assets/items/vida_ui.png',
       costGold: 450,
       ingredients: {
         ingotIcon: '/assets/items/shop_herb.png',
@@ -2444,9 +2548,74 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
       return updated;
     });
 
-    setToastMessage(`¡${item.name} forjada con éxito! Guardada en el inventario.`);
+    setToastMessage(
+      `¡${item.name} ${isPotionShop ? 'destilada' : 'forjada'} con éxito! Guardada en el inventario.`
+    );
     setTimeout(() => setToastMessage(null), 2800);
     setCraftModalItem(null);
+
+    // El tutorial del taller se cierra al crear su pieza de aprendizaje.
+    if (forgeTutorialStep >= 0 && item.id === workshopTutorialItemId) {
+      setForgeTutorialStep(-1);
+      safeStorage.setItem(workshopTutorialDoneKey, 'done');
+    }
+  };
+
+  // Tutorial del taller: categoría → (subcategoría) → pieza → crear.
+  const forgeTutorialStage =
+    forgeTutorialStep >= 0 ? workshopTutorialSteps[forgeTutorialStep] : null;
+  const tutorialCategoryTarget = forgeTutorialStage?.kind === 'category' ? forgeTutorialStage.id : null;
+  const tutorialSubcategoryTarget =
+    forgeTutorialStage?.kind === 'subcategory' ? forgeTutorialStage.id : null;
+  const tutorialItemTarget =
+    forgeTutorialStage?.kind === 'item' || forgeTutorialStage?.kind === 'craft'
+      ? forgeTutorialStage.id
+      : null;
+  const isForgeCraftStep = forgeTutorialStage?.kind === 'craft';
+
+  const finishForgeTutorial = () => {
+    setForgeTutorialStep(-1);
+    safeStorage.setItem(workshopTutorialDoneKey, 'done');
+  };
+
+  const skipForgeTutorial = () => {
+    finishForgeTutorial();
+    setToastMessage(
+      `Tutorial omitido. ${isPotionShop ? 'La botica' : 'La forja'} es toda tuya.`
+    );
+    setTimeout(() => setToastMessage(null), 2800);
+  };
+
+  const advanceForgeTutorial = () => {
+    if (forgeTutorialStep < 0) return;
+    const next = forgeTutorialStep + 1;
+    if (next >= workshopTutorialSteps.length) {
+      finishForgeTutorial();
+      return;
+    }
+    setForgeTutorialStep(next);
+  };
+
+  const handleTutorialCategoryPick = (categoryId: string) => {
+    setTier1Category(categoryId);
+    setTier2Subcategory(null);
+    advanceForgeTutorial();
+  };
+
+  const handleTutorialSubcategoryPick = (subcategoryId: string) => {
+    setTier2Subcategory(subcategoryId);
+    advanceForgeTutorial();
+  };
+
+  const handleItemPick = (item: CraftItemData) => {
+    if (forgeTutorialStep >= 0) {
+      if (tutorialCategoryTarget || tutorialSubcategoryTarget) return;
+      if (item.id !== workshopTutorialItemId) return;
+      setCraftModalItem(item);
+      if (forgeTutorialStage?.kind === 'item') advanceForgeTutorial();
+      return;
+    }
+    setCraftModalItem(item);
   };
 
   // =========================================================================
@@ -2476,6 +2645,24 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
       {toastMessage && (
         <div className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-[#3b170c]/95 border-2 border-amber-400 text-amber-200 px-4 py-1.5 rounded-xl text-xs font-bold text-center shadow-2xl animate-fade-in pointer-events-none max-w-[90%]">
           {toastMessage}
+        </div>
+      )}
+
+      {/* Tutorial de Goryn: progreso y salida */}
+      {forgeTutorialStep >= 0 && (
+        <div className="absolute top-[54px] left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-3 py-1 rounded-full bg-black/80 border border-amber-400/70 text-[10px] font-bold text-amber-200 shadow-lg whitespace-nowrap">
+          <span>
+            Tutorial de {workshopNpcName} · {forgeTutorialStep + 1}/{workshopTutorialSteps.length}
+          </span>
+          <button
+            onClick={() => {
+              sound.playSFX('click');
+              skipForgeTutorial();
+            }}
+            className="underline text-amber-300 hover:text-amber-100 cursor-pointer uppercase tracking-wider"
+          >
+            Saltar
+          </button>
         </div>
       )}
 
@@ -2601,26 +2788,44 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
                 : 'space-y-1.5 justify-between'
             }`}
           >
-            {mainCategories.map((cat) => (
+            {mainCategories.map((cat) => {
+              const isTutorialTarget = tutorialCategoryTarget === cat.id;
+              const isTutorialLocked = Boolean(tutorialCategoryTarget) && !isTutorialTarget;
+              return (
               <button
                 key={cat.id}
                 onClick={() => {
                   sound.playSFX('click');
+                  if (isTutorialLocked) return;
+                  if (tutorialCategoryTarget) {
+                    handleTutorialCategoryPick(cat.id);
+                    return;
+                  }
                   setTier1Category(cat.id);
                   setTier2Subcategory(null);
                 }}
                 className={`group relative w-full max-w-[355px] flex items-center justify-center cursor-pointer transition-all duration-150 transform hover:scale-[1.02] active:scale-[0.98] drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] hover:drop-shadow-[0_6px_14px_rgba(217,119,6,0.65)] focus:outline-none ${
                   isPotionShop ? 'aspect-[2084/630]' : 'aspect-[978/291]'
+                } ${isTutorialLocked ? 'opacity-25 grayscale cursor-not-allowed' : ''} ${
+                  isTutorialTarget ? 'animate-pulse' : ''
                 }`}
                 title={cat.name}
               >
+                {isTutorialTarget && (
+                  <span className="absolute -top-3 z-30 px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 text-[9px] font-black uppercase tracking-wide shadow-[0_0_15px_rgba(251,191,36,0.8)] whitespace-nowrap animate-bounce">
+                    Toca aquí
+                  </span>
+                )}
                 <img
                   src={cat.imageSrc}
                   alt={cat.name}
-                  className="w-full h-full object-contain pointer-events-none select-none"
+                  className={`w-full h-full object-contain pointer-events-none select-none ${
+                    isTutorialTarget ? 'drop-shadow-[0_0_18px_rgba(251,191,36,0.95)]' : ''
+                  }`}
                 />
               </button>
-            ))}
+              );
+            })}
           </ForgeMaskedSlider>
         )}
 
@@ -2628,23 +2833,41 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
         {tier1Category === 'Armas' && !tier2Subcategory && (
           <div className="relative w-full h-full flex flex-col min-h-0 overflow-hidden">
             <ForgeMaskedSlider contentClassName="space-y-2 py-1 flex flex-col items-center">
-              {weaponSubcategories.map((sub) => (
+              {weaponSubcategories.map((sub) => {
+                const isTutorialTarget = tutorialSubcategoryTarget === sub.id;
+                const isTutorialLocked = Boolean(tutorialSubcategoryTarget) && !isTutorialTarget;
+                return (
                 <button
                   key={sub.id}
                   onClick={() => {
                     sound.playSFX('click');
+                    if (isTutorialLocked) return;
+                    if (tutorialSubcategoryTarget) {
+                      handleTutorialSubcategoryPick(sub.id);
+                      return;
+                    }
                     setTier2Subcategory(sub.id);
                   }}
-                  className="group relative w-full aspect-[870/261] max-w-[355px] flex items-center justify-center cursor-pointer transition-all duration-150 transform hover:scale-[1.015] active:scale-[0.98] drop-shadow-[0_4px_8px_rgba(0,0,0,0.85)] hover:drop-shadow-[0_6px_14px_rgba(217,119,6,0.55)] focus:outline-none"
+                  className={`group relative w-full aspect-[870/261] max-w-[355px] flex items-center justify-center cursor-pointer transition-all duration-150 transform hover:scale-[1.015] active:scale-[0.98] drop-shadow-[0_4px_8px_rgba(0,0,0,0.85)] hover:drop-shadow-[0_6px_14px_rgba(217,119,6,0.55)] focus:outline-none ${
+                    isTutorialLocked ? 'opacity-25 grayscale cursor-not-allowed' : ''
+                  } ${isTutorialTarget ? 'animate-pulse' : ''}`}
                   title={sub.name}
                 >
+                  {isTutorialTarget && (
+                    <span className="absolute -top-3 z-30 px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 text-[9px] font-black uppercase tracking-wide shadow-[0_0_15px_rgba(251,191,36,0.8)] whitespace-nowrap animate-bounce">
+                      Toca aquí
+                    </span>
+                  )}
                   <img
                     src={sub.imageSrc}
                     alt={sub.name}
-                    className="w-full h-full object-contain pointer-events-none select-none"
+                    className={`w-full h-full object-contain pointer-events-none select-none ${
+                      isTutorialTarget ? 'drop-shadow-[0_0_18px_rgba(251,191,36,0.95)]' : ''
+                    }`}
                   />
                 </button>
-              ))}
+                );
+              })}
             </ForgeMaskedSlider>
           </div>
         )}
@@ -2656,6 +2879,8 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
             <div className="relative flex-1 min-h-0 w-full overflow-hidden">
               <ForgeMaskedSlider contentClassName="space-y-1.5 py-1 flex flex-col items-center">
                 {currentCategoryItems.map((item) => {
+                  const isTutorialItemTarget = tutorialItemTarget === item.id;
+                  const isTutorialItemLocked = Boolean(tutorialItemTarget) && !isTutorialItemTarget;
                   const isSwordOrWeapon =
                     item.subCategory === 'Espadas' ||
                     item.category === 'Armas' ||
@@ -2682,11 +2907,18 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
                         type="button"
                         onClick={() => {
                           sound.playSFX('click');
-                          setCraftModalItem(item);
+                          handleItemPick(item);
                         }}
-                        className="group relative w-full aspect-[1843/649] max-w-[355px] flex items-center cursor-pointer transition-all duration-150 transform hover:scale-[1.012] active:scale-[0.98] drop-shadow-[0_4px_8px_rgba(0,0,0,0.85)] hover:drop-shadow-[0_6px_14px_rgba(217,119,6,0.45)] focus:outline-none"
+                        className={`group relative w-full aspect-[1843/649] max-w-[355px] flex items-center cursor-pointer transition-all duration-150 transform hover:scale-[1.012] active:scale-[0.98] drop-shadow-[0_4px_8px_rgba(0,0,0,0.85)] hover:drop-shadow-[0_6px_14px_rgba(217,119,6,0.45)] focus:outline-none ${
+                          isTutorialItemLocked ? 'opacity-25 grayscale cursor-not-allowed' : ''
+                        } ${isTutorialItemTarget ? 'animate-pulse' : ''}`}
                         title={`${item.name} (Click para forjar)`}
                       >
+                        {isTutorialItemTarget && (
+                          <span className="absolute -top-2 left-1/2 -translate-x-1/2 z-40 px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 text-[9px] font-black uppercase tracking-wide shadow-[0_0_15px_rgba(251,191,36,0.8)] whitespace-nowrap animate-bounce">
+                            Toca aquí
+                          </span>
+                        )}
                         {/* 1. Authentic Card Background: Lance for Lanzas, Berserker for Hachas/Martillos, Sword for Espadas */}
                         <img
                           src={cardBg}
@@ -2799,7 +3031,7 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
                       key={item.id}
                       onClick={() => {
                         sound.playSFX('click');
-                        setCraftModalItem(item);
+                        handleItemPick(item);
                       }}
                       className="group relative w-full max-w-[355px] h-20 rounded-xl overflow-hidden border-2 border-[#b45309] p-2 flex items-center justify-between shadow-xl cursor-pointer active:scale-98 transition-all bg-[#071922]/95 hover:border-amber-400 hover:bg-[#0b2432]/95"
                     >
@@ -3090,8 +3322,17 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
             {/* FABRICAR Button: x2 más ancho (w-[276px] sm:w-[286px]) using clean trimmed asset */}
             <div className="absolute bottom-[6.5%] left-1/2 -translate-x-1/2 w-[276px] sm:w-[286px] h-[48px] sm:h-[52px] z-20">
               <button
-                onClick={() => handleFabricate(craftModalItem)}
-                className="relative w-full h-full flex items-center justify-center cursor-pointer active:scale-95 transition-transform group"
+                onClick={() => {
+                  if (forgeTutorialStep >= 0 && !isForgeCraftStep) {
+                    setToastMessage(workshopTutorialHint);
+                    setTimeout(() => setToastMessage(null), 2200);
+                    return;
+                  }
+                  handleFabricate(craftModalItem);
+                }}
+                className={`relative w-full h-full flex items-center justify-center cursor-pointer active:scale-95 transition-transform group ${
+                  isForgeCraftStep ? 'animate-pulse drop-shadow-[0_0_16px_rgba(251,191,36,0.85)]' : ''
+                }`}
               >
                 <img
                   src="/assets/forge/btn_fabricar_clean.png"

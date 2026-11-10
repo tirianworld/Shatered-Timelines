@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
+import { realtime } from '../services/realtimeService';
+import { apiUrl } from '../utils/api';
 import { launchConfetti } from '../utils/confetti';
 import {
   RefreshCw,
@@ -72,7 +74,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
   const fetchAuctions = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/auctions');
+      const res = await fetch(apiUrl('/api/auctions'));
       const data = await res.json();
       if (data.success && Array.isArray(data.auctions)) {
         setAuctions(data.auctions);
@@ -84,25 +86,26 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
     }
   }, []);
 
-  // Real-time synchronization
+  // Sincronización en tiempo real: el servidor avisa en cuanto cambia un lote.
   useEffect(() => {
     if (!isOpen) return;
 
-    fetchAuctions();
+    void fetchAuctions();
     setStatusMessage(null);
 
-    const pollInterval = setInterval(() => {
-      fetch('/api/auctions')
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && data.success && Array.isArray(data.auctions)) {
-            setAuctions(data.auctions);
-          }
-        })
-        .catch(() => {});
-    }, 3000);
+    const unsubscribe = realtime.subscribe('auctions', () => {
+      void fetchAuctions();
+    });
 
-    return () => clearInterval(pollInterval);
+    // Respaldo por si el flujo en tiempo real se cae (red, proxy o navegador antiguo).
+    const pollInterval = setInterval(() => {
+      void fetchAuctions();
+    }, 20000);
+
+    return () => {
+      unsubscribe();
+      clearInterval(pollInterval);
+    };
   }, [isOpen, fetchAuctions]);
 
   if (!isOpen) return null;
@@ -129,7 +132,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
     sound.playSFX('click');
 
     try {
-      const res = await fetch('/api/auctions/buy', {
+      const res = await fetch(apiUrl('/api/auctions/buy'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -211,7 +214,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
     }
 
     try {
-      const res = await fetch('/api/auctions/list', {
+      const res = await fetch(apiUrl('/api/auctions/list'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -285,7 +288,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
     sound.playSFX('click');
 
     try {
-      const res = await fetch('/api/auctions/cancel', {
+      const res = await fetch(apiUrl('/api/auctions/cancel'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -330,7 +333,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
     sound.playSFX('click');
 
     try {
-      const res = await fetch('/api/auctions/claim', {
+      const res = await fetch(apiUrl('/api/auctions/claim'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

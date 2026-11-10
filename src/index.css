@@ -99,29 +99,6 @@
   }
 }
 
-@keyframes hearthFlicker {
-  0%, 100% {
-    opacity: 0.9;
-    filter: drop-shadow(0 0 14px rgba(249, 115, 22, 0.9)) drop-shadow(0 0 28px rgba(234, 88, 12, 0.6));
-    transform: scale(1);
-  }
-  30% {
-    opacity: 0.75;
-    filter: drop-shadow(0 0 9px rgba(249, 115, 22, 0.7)) drop-shadow(0 0 18px rgba(234, 88, 12, 0.4));
-    transform: scale(0.95);
-  }
-  60% {
-    opacity: 1;
-    filter: drop-shadow(0 0 18px rgba(251, 146, 60, 1)) drop-shadow(0 0 34px rgba(234, 88, 12, 0.8));
-    transform: scale(1.06);
-  }
-  85% {
-    opacity: 0.82;
-    filter: drop-shadow(0 0 11px rgba(249, 115, 22, 0.8)) drop-shadow(0 0 22px rgba(234, 88, 12, 0.5));
-    transform: scale(0.98);
-  }
-}
-
 @keyframes windowGlowPulse {
   0%, 100% {
     opacity: 0.75;
@@ -152,10 +129,6 @@
 
 .animate-lantern-flicker {
   animation: lanternFlicker 2.2s ease-in-out infinite;
-}
-
-.animate-hearth-flicker {
-  animation: hearthFlicker 1.8s ease-in-out infinite;
 }
 
 .animate-window-glow {
@@ -478,3 +451,77 @@
   animation: fgoSlideOutOffscreenCenter 0.35s cubic-bezier(0.7, 0, 0.84, 0) forwards;
 }
 
+
+/* Rueda del Fogón: aparición con un giro y una escala sutiles. */
+@keyframes wheelOrbitIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.84) rotate(-12deg);
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes wheelPlateIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6) rotate(-14deg);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+}
+
+.animate-wheel-orbit-in {
+  animation: wheelOrbitIn 620ms cubic-bezier(0.22, 0.9, 0.3, 1) backwards;
+}
+
+.animate-wheel-plate-in {
+  animation: wheelPlateIn 520ms cubic-bezier(0.22, 0.9, 0.3, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-wheel-orbit-in,
+  .animate-wheel-plate-in {
+    animation: none;
+  }
+}
+
+/* Botin de combate: el saquito nace sobre el enemigo, cae a su sombra y se vuelve ceniza */
+@keyframes lootSackFall {
+  0% { opacity: 0; transform: translateY(calc(var(--loot-fall, 90px) * -1)) scale(0.5) rotate(-8deg); }
+  15% { opacity: 1; }
+  55% { opacity: 1; transform: translateY(0) scale(1.08) rotate(3deg); }
+  70% { transform: translateY(-5px) scale(1) rotate(0deg); }
+  80%, 100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+}
+
+.animate-loot-fall {
+  animation: lootSackFall 0.62s cubic-bezier(0.33, 1.3, 0.62, 1) forwards;
+}
+
+@keyframes lootSackAsh {
+  0% { opacity: 1; filter: none; transform: translateY(0) scale(1); }
+  35% { opacity: 0.85; filter: grayscale(1) brightness(1.35); transform: translateY(-2px) scale(0.98); }
+  100% { opacity: 0; filter: grayscale(1) brightness(0.65) blur(2px); transform: translateY(8px) scale(0.9); }
+}
+
+.animate-loot-ash {
+  animation: lootSackAsh 0.25s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-loot-fall,
+  .animate-loot-ash {
+    animation-duration: 0.01s;
+  }
+}

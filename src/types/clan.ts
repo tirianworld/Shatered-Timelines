@@ -65,8 +65,12 @@ export interface GitHubSyncConfig {
 export interface GitHubSyncStatus {
   lastSyncTime: string | null;
   lastCommitSha: string | null;
-  lastSyncStatus: 'success' | 'error' | 'idle' | 'syncing';
+  lastSyncStatus: 'success' | 'local' | 'error' | 'idle' | 'syncing';
   errorMessage: string | null;
   remoteUrl: string | null;
   authenticatedUser?: string | null;
+  /** Número de órdenes conocidas en la última sincronización. */
+  orderCount?: number;
+  /** Origen de la última lectura: GitHub o la caché local del servidor. */
+  source?: 'github' | 'local' | null;
 }

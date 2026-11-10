@@ -150,7 +150,7 @@ export const CampView: React.FC = () => {
                           alt={hero.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-all"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/assets/portraits/aeliana.png';
+                            (e.target as HTMLImageElement).src = '/assets/portraits/Aeliana.png';
                           }}
                         />
                         <span

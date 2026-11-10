@@ -40,6 +40,7 @@ import {
   CombatConsumableDefinition,
 } from '../types/combatConsumables';
 import { loadTavernCookingStock, saveTavernCookingStock } from '../data/cookingData';
+import { SPRITE_POSE_SCALE } from '../data/spriteContentRatio';
 
 export interface GachaSkillEffectApplication {
   type: GachaEffectType;
@@ -562,7 +563,12 @@ export type CombatEnemyId =
   | 'bandido_lider'
   | 'orco_lanza'
   | 'orco_hacha'
-  | 'orco_caudillo';
+  | 'orco_caudillo'
+  | 'mineral_descarga'
+  | 'guarda_negro_espada'
+  | 'guarda_negro_alabarda'
+  | 'guarda_negro_ballesta'
+  | 'guarda_negro_pesado';
 
 export interface EnemyConfig {
   id: CombatEnemyId;
@@ -581,6 +587,7 @@ export interface EnemyConfig {
   scaleClass: string;
   isBoss: boolean;
   isSemiboss: boolean;
+  isMineral?: boolean;
   hasPhaseTwo?: boolean;
   normalSkill: {
     name: string;
@@ -636,7 +643,7 @@ export interface EnemyConfig {
     damage: number;
     sfx?: string;
     dndDamageType: DndDamageType;
-    condition: {
+    condition?: {
       type: GachaEffectType;
       duration: number;
       stacks: number;
@@ -1090,9 +1097,9 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     hurtSpriteUrl: '/assets/combat/semiboss_zancudo_hurt.png',
     thumbUrl: '/assets/combat/semiboss_zancudo_thumb.png',
     maxHp: 125,
-    width: 146,
-    height: 206,
-    scaleClass: 'w-[146px] h-[206px] -translate-y-1.5',
+    width: 292,
+    height: 412,
+    scaleClass: 'w-[292px] h-[412px] -translate-y-1.5',
     isBoss: true,
     isSemiboss: false,
     normalSkill: {
@@ -1194,15 +1201,15 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       },
     },
     ultimateSkill: {
-      name: 'Furia del Behemoth Terrestre',
-      desc: 'Salto demoledor tipo Hulk que hace temblar la montaña entera.',
+      name: 'Cataclismo Voltaico de Melena',
+      desc: 'Descarga devastadora de la energía electrostática acumulada en sus cerdas. Aturde según sus orbes: 2 orbes = 1T, 4 orbes = 2T, 6 orbes = 3T.',
       damage: 34,
-      dndDamageType: 'bludgeoning',
+      dndDamageType: 'thunder',
       condition: {
         type: 'stun',
         duration: 1,
         stacks: 1,
-        title: 'Colapso de Caverna',
+        title: 'Electrocución Sísmica',
       },
     },
     rewards: {
@@ -1215,6 +1222,59 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         count: 1,
         icon: '/assets/items/cuero.png',
         description: 'Tupida melena de pelos defensivos del Titán Araknoide. Irradia fuerza bruta colosal.',
+      },
+    },
+  },
+  mineral_descarga: {
+    id: 'mineral_descarga',
+    missionId: 'm6_cuevas_titan',
+    name: 'Mineral Conductor',
+    title: 'Objetivo Táctico • Cristal Disipador de Rayos',
+    chamberName: 'Foso del Behemoth',
+    chamberNumber: 4,
+    spriteUrl: '/assets/items/arcano_gema_app.png',
+    attackSpriteUrl: '/assets/items/arcano_gema_app.png',
+    hurtSpriteUrl: '/assets/items/arcano_gema_app.png',
+    thumbUrl: '/assets/items/arcano_gema_app.png',
+    maxHp: 220,
+    width: 95,
+    height: 140,
+    scaleClass: 'w-[95px] h-[140px] scale-100',
+    isBoss: false,
+    isSemiboss: false,
+    isMineral: true,
+    normalSkill: {
+      name: 'Disipación de Estática',
+      desc: 'El mineral vibra en silencio absorbiendo la corriente ambiental sin causar daño.',
+      damage: [0, 0],
+      vfx: 'gorgon_lightning',
+      sfx: 'drain',
+      dndDamageType: 'thunder',
+    },
+    specialSkill: {
+      name: 'Disipación de Estática',
+      desc: 'El mineral vibra en silencio absorbiendo la corriente ambiental sin causar daño.',
+      damage: [0, 0],
+      vfx: 'gorgon_lightning',
+      sfx: 'drain',
+      dndDamageType: 'thunder',
+    },
+    ultimateSkill: {
+      name: 'Descarga Inerte al Suelo',
+      desc: 'Canaliza los excedentes hacia las grietas subterráneas de las cavernas.',
+      damage: 0,
+      dndDamageType: 'thunder',
+    },
+    rewards: {
+      gold: 500,
+      crystals: 50,
+      item: {
+        id: 'cristal_resonante_underdark',
+        name: 'Fragmento de Cristal Conductor',
+        rarity: 'SR',
+        count: 1,
+        icon: '/assets/items/arcano_gema_app.png',
+        description: 'Piedra conductora de alto voltaje que absorbe las descargas del Titán Melenudo.',
       },
     },
   },
@@ -2435,7 +2495,293 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         },
       },
     },
+    guarda_negro_espada: {
+      id: 'guarda_negro_espada',
+      missionId: 'm9_emboscada_ferton',
+      name: 'Guardia Negro con Espada',
+      title: 'Infantería de Élite • Ébano, Oro y Escudo Rúnico',
+      chamberName: 'Oleada 1: Patrulla de Avanzada de Ferton',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/guarda_negro_espada_clean.png',
+      attackSpriteUrl: '/assets/combat/guarda_negro_espada_attack.png',
+      hurtSpriteUrl: '/assets/combat/guarda_negro_espada_hurt.png',
+      thumbUrl: '/assets/portraits/guarda_negro_espada_thumb.png',
+      maxHp: 88,
+      width: 140,
+      height: 195,
+      scaleClass: 'w-[140px] h-[195px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Tajo de Obsidiana',
+        desc: 'Corte frontal implacable con espada de acero negro y oro.',
+        damage: [16, 22],
+        vfx: 'crimson_claw',
+        sfx: 'attack',
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'laceration',
+          duration: 2,
+          stacks: 1,
+          title: 'Laceración de Acero Negro',
+        },
+      },
+      specialSkill: {
+        name: 'Guardia de Ébano y Oro',
+        desc: 'Golpe de escudo que desestabiliza las defensas y aplasta la armadura rival.',
+        damage: [18, 25],
+        vfx: 'crimson_claw',
+        sfx: 'skill',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 2,
+          title: 'Defensa Rota',
+        },
+      },
+      ultimateSkill: {
+        name: 'Ejecución Marcial de Ferton',
+        desc: 'Embestida demoledora a dos manos para no dejar testigos vivos.',
+        damage: 34,
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'stun',
+          duration: 1,
+          stacks: 1,
+          title: 'Golpe Paralizante',
+        },
+      },
+      rewards: {
+        gold: 2400,
+        crystals: 90,
+        item: {
+          id: 'insignia_guardia_ferton',
+          name: 'Insignia de Ébano y Oro de Ferton',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/guarda_negro_espada_thumb.png',
+          description: 'Medallón de infantería con el blasón de oro y ébano de Ferton.',
+        },
+      },
+    },
+    guarda_negro_alabarda: {
+      id: 'guarda_negro_alabarda',
+      missionId: 'm9_emboscada_ferton',
+      name: 'Lancero Negro de Ferton',
+      title: 'Sargento Frontal • Pica Pesada de Ébano y Oro',
+      chamberName: 'Oleada 1: Patrulla de Avanzada de Ferton',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/guarda_negro_alabarda_clean.png',
+      attackSpriteUrl: '/assets/combat/guarda_negro_alabarda_attack.png',
+      hurtSpriteUrl: '/assets/combat/guarda_negro_alabarda_hurt.png',
+      thumbUrl: '/assets/portraits/guarda_negro_alabarda_thumb.png',
+      maxHp: 98,
+      width: 142,
+      height: 205,
+      scaleClass: 'w-[142px] h-[205px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Estocada de Pica de Asalto',
+        desc: 'Golpe en arco y penetración frontal con lanza reforzada en oro.',
+        damage: [17, 24],
+        vfx: 'crimson_claw',
+        sfx: 'attack',
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Coraza Rajada',
+        },
+      },
+      specialSkill: {
+        name: 'Barrido con Asta de Ébano',
+        desc: 'Giro circular con el asta de roble negro provocando conmoción frontal.',
+        damage: [19, 26],
+        vfx: 'crimson_claw',
+        sfx: 'skill',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'stun',
+          duration: 1,
+          stacks: 1,
+          title: 'Desorientación',
+        },
+      },
+      ultimateSkill: {
+        name: 'Pica Perforante de Élite',
+        desc: 'Estocada recta brutal capaz de atravesar cualquier escudo o montura.',
+        damage: 36,
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 2,
+          title: 'Punción Crítica',
+        },
+      },
+      rewards: {
+        gold: 2600,
+        crystals: 95,
+        item: {
+          id: 'lanza_guardia_ferton',
+          name: 'Punta de Lanza de Ébano y Oro',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/guarda_negro_alabarda_thumb.png',
+          description: 'Punta de lanza afilada forjada en aleación negra enriquecida con láminas de oro puro.',
+        },
+      },
+    },
+    guarda_negro_ballesta: {
+      id: 'guarda_negro_ballesta',
+      missionId: 'm9_emboscada_ferton',
+      name: 'Ballestero Negro de Ferton',
+      title: 'Tirador de Élite • Virotes de Alta Potencia',
+      chamberName: 'Oleada 1: Patrulla de Avanzada de Ferton',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/guarda_negro_ballesta_clean.png',
+      attackSpriteUrl: '/assets/combat/guarda_negro_ballesta_attack.png',
+      hurtSpriteUrl: '/assets/combat/guarda_negro_ballesta_hurt.png',
+      thumbUrl: '/assets/portraits/guarda_negro_ballesta_thumb.png',
+      maxHp: 80,
+      width: 142,
+      height: 195,
+      scaleClass: 'w-[142px] h-[195px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Virote Envenenado',
+        desc: 'Disparo certero cargado con saetas de ébano y ponzoña de contrabando.',
+        damage: [18, 24],
+        vfx: 'shadow_needle',
+        sfx: 'laser',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'poison',
+          duration: 2,
+          stacks: 2,
+          title: 'Veneno de Contrabando',
+        },
+      },
+      specialSkill: {
+        name: 'Disparo de Carga Mecánica',
+        desc: 'Traba la manivela dorada para soltar un proyectil de punta perforante pesada.',
+        damage: [20, 27],
+        vfx: 'shadow_needle',
+        sfx: 'laser2',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 2,
+          title: 'Blindaje Quebrado',
+        },
+      },
+      ultimateSkill: {
+        name: 'Salva Letal de Tres Virotes',
+        desc: 'Descarga simultánea de tres proyectiles que diezman la salud del blanco.',
+        damage: 36,
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 2,
+          title: 'Hemorragia Severa',
+        },
+      },
+      rewards: {
+        gold: 2500,
+        crystals: 90,
+        item: {
+          id: 'caja_virotes_ferton',
+          name: 'Carcaj de Virotes Negros de Ferton',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/guarda_negro_ballesta_thumb.png',
+          description: 'Carcaj de cuero oscuro con saetas con plumas negras y remates dorados.',
+        },
+      },
+    },
+    guarda_negro_pesado: {
+      id: 'guarda_negro_pesado',
+      missionId: 'm9_emboscada_ferton',
+      name: 'Caballero Acorazado de Ferton',
+      title: 'Comandante Pretoriano • Coloso de Ébano, Oro y Maza Devastadora',
+      chamberName: 'Oleada 3: Guardia Pretoriana de Ferton',
+      chamberNumber: 3,
+      spriteUrl: '/assets/combat/guarda_negro_pesado_clean.png',
+      attackSpriteUrl: '/assets/combat/guarda_negro_pesado_attack.png',
+      hurtSpriteUrl: '/assets/combat/guarda_negro_pesado_hurt.png',
+      thumbUrl: '/assets/portraits/guarda_negro_pesado_thumb.png',
+      maxHp: 180,
+      width: 154,
+      height: 210,
+      scaleClass: 'w-[154px] h-[210px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Martillazo Sísmico de Ébano',
+        desc: 'Golpea el suelo con su colosal maza de púas y oro creando una onda de choque.',
+        damage: [20, 28],
+        vfx: 'earth_titan',
+        sfx: 'critical',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 2,
+          title: 'Armadura Triturada',
+        },
+      },
+      specialSkill: {
+        name: 'Rugido Acorazado de Ferton',
+        desc: 'Clamor de guerra aterrador que desmoraliza al grupo y acelera a sus subordinados.',
+        damage: [22, 30],
+        vfx: 'medusa_electric',
+        sfx: 'powerup',
+        dndDamageType: 'thunder',
+        condition: {
+          type: 'frightened',
+          duration: 2,
+          stacks: 1,
+          title: 'Terror a Ferton',
+        },
+      },
+      ultimateSkill: {
+        name: 'Aplastamiento de la Orden Oscura',
+        desc: 'Salto devastador descargando todo el peso de su armadura de ébano y maza dorada.',
+        damage: 44,
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'stun',
+          duration: 1,
+          stacks: 1,
+          title: 'Conmoción Masiva',
+        },
+      },
+      rewards: {
+        gold: 8000,
+        crystals: 300,
+        item: {
+          id: 'gran_escudo_guardia_ferton',
+          name: 'Gran Escudo de Ébano del León Dorado',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/guarda_negro_pesado_thumb.png',
+          description: 'Pabellón de infantería reforzado con láminas de acero negro templado y el león dorado de Ferton.',
+        },
+      },
+    },
   };
+
+export const FERTON_GUARD_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Oleada 1: Patrulla Negra de Avanzada', isBoss: false, enemyConfigIds: ['guarda_negro_espada', 'guarda_negro_alabarda', 'guarda_negro_ballesta'], missionId: 'm9_emboscada_ferton' },
+  { floor: 2, name: 'Oleada 2: Escuadrón Acorazado de Choque', isBoss: false, enemyConfigIds: ['guarda_negro_alabarda', 'guarda_negro_espada', 'guarda_negro_ballesta', 'guarda_negro_espada'], missionId: 'm9_emboscada_ferton' },
+  { floor: 3, name: 'Oleada 3: Guardia Pretoriana de Ferton', isBoss: true, enemyConfigIds: ['guarda_negro_pesado', 'guarda_negro_alabarda', 'guarda_negro_ballesta', 'guarda_negro_espada'], missionId: 'm9_emboscada_ferton' },
+];
 
 export const DEVORADOR_CHAMBERS: BaseChamber[] = [
   { floor: 1, name: 'Confrontación en las Puertas de Glimmerstone', isBoss: true, enemyConfigIds: ['devorador_quitinoso'], missionId: 'm4_puertas_selladas' },
@@ -2467,10 +2813,10 @@ export const BASE_CHAMBERS: BaseChamber[] = [
   { floor: 3, name: 'Sala 3: Emboscada Bicolor', isBoss: false, enemyConfigIds: ['araknoide_rojo', 'araknoide_azul', 'araknoide_rojo', 'araknoide_azul'], missionId: 'm3_cuevas_rojo' },
   { floor: 4, name: 'Sala 4: Galería de las Agujas', isBoss: false, enemyConfigIds: ['semiboss_zancudo', 'araknoide_azul', 'araknoide_rojo'], missionId: 'm5_cuevas_zancudo' },
   { floor: 5, name: 'Sala 5: Redes Heladas y Espinas', isBoss: false, enemyConfigIds: ['semiboss_zancudo', 'araknoide_azul', 'araknoide_azul', 'araknoide_rojo'], missionId: 'm5_cuevas_zancudo' },
-  { floor: 6, name: 'Sala 6: Foso del Behemoth', isBoss: false, enemyConfigIds: ['semiboss_melenudo', 'araknoide_rojo', 'araknoide_azul'], missionId: 'm6_cuevas_titan' },
+  { floor: 6, name: 'Sala 6: Foso del Behemoth', isBoss: false, enemyConfigIds: ['semiboss_melenudo', 'mineral_descarga', 'araknoide_azul'], missionId: 'm6_cuevas_titan' },
   { floor: 7, name: 'Sala 7: Enjambre de Sangre y Hielo', isBoss: false, enemyConfigIds: ['araknoide_rojo', 'araknoide_azul', 'araknoide_rojo', 'araknoide_azul'], missionId: 'm4_cuevas_azul' },
-  { floor: 8, name: 'Sala 8: Dúo de Semijefes', isBoss: false, enemyConfigIds: ['semiboss_zancudo', 'semiboss_melenudo', 'araknoide_rojo', 'araknoide_azul'], missionId: 'm6_cuevas_titan' },
-  { floor: 9, name: 'Sala 9: Asedio de la Bestia Melenuda', isBoss: false, enemyConfigIds: ['semiboss_melenudo', 'semiboss_zancudo', 'araknoide_azul', 'araknoide_rojo'], missionId: 'm6_cuevas_titan' },
+  { floor: 8, name: 'Sala 8: Dúo de Semijefes', isBoss: false, enemyConfigIds: ['semiboss_zancudo', 'semiboss_melenudo', 'mineral_descarga'], missionId: 'm6_cuevas_titan' },
+  { floor: 9, name: 'Sala 9: Asedio de la Bestia Melenuda', isBoss: false, enemyConfigIds: ['semiboss_melenudo', 'mineral_descarga', 'araknoide_azul'], missionId: 'm6_cuevas_titan' },
   { floor: 10, name: 'Sala 10: El Nido Ancestral de la Reina', isBoss: true, enemyConfigIds: ['araknoide', 'semiboss_zancudo', 'semiboss_melenudo'], missionId: 'm7_cuevas_reina' },
 ];
 
@@ -2492,6 +2838,35 @@ export const getInfiniteChamberEnemies = (floor: number): CombatEnemyId[] => {
   }
   return chosen;
 };
+
+// Saquito de botin que cae al derrotar a un enemigo (estilo 7DS Grand Cross).
+export interface LootSackDrop {
+  key: string;
+  left: number;
+  top: number;
+  fall: number;
+  gold: number;
+  item?: { name: string; icon: string };
+  dissolving: boolean;
+}
+
+/** Escala la pose actual del enemigo para que el personaje mida lo mismo que en su idle.
+ *  El factor viene medido del arte (radio de giro de la silueta), asi que no depende de si
+ *  la pose es agachada, de pie o esta cayendo. */
+const getEnemyStateSpriteScale = (baseUrl?: string | null, currentUrl?: string | null): number => {
+  if (!currentUrl) return 1;
+  if (baseUrl === currentUrl) return 1;
+  return SPRITE_POSE_SCALE[currentUrl] ?? 1;
+};
+
+const LootSackIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <img
+    src="/assets/items/saco%20de%20loot.png"
+    alt=""
+    aria-hidden="true"
+    className={`${className ?? ''} object-contain pointer-events-none select-none`}
+  />
+);
 
 export interface ChamberEnemyState {
   uid: string;
@@ -2559,6 +2934,13 @@ export const createChamberEnemies = (floor: number, missionId?: string | null): 
       chosen.push(pool[Math.floor(Math.random() * pool.length)]);
     }
     configIds = chosen;
+  } else if (missionId === 'm9_emboscada_ferton') {
+    if (floor <= 3) {
+      const chamber = FERTON_GUARD_CHAMBERS[floor - 1] || FERTON_GUARD_CHAMBERS[0];
+      configIds = chamber.enemyConfigIds;
+    } else {
+      configIds = ['guarda_negro_espada', 'guarda_negro_alabarda', 'guarda_negro_ballesta'];
+    }
   } else if (missionId === 'm4_puertas_selladas') {
     const chamber = DEVORADOR_CHAMBERS[0];
     configIds = chamber.enemyConfigIds;
@@ -2604,7 +2986,7 @@ export const createChamberEnemies = (floor: number, missionId?: string | null): 
       title: cfg.title,
       hp: scaledMaxHp,
       maxHp: scaledMaxHp,
-      ultimateOrbs: 0,
+      ultimateOrbs: cfgId === 'semiboss_melenudo' ? 2 : 0,
       conditions: [],
       isAshDissolving: false,
       isHitShaking: false,
@@ -2657,6 +3039,7 @@ export const CombatView: React.FC = () => {
   // Determine starting floor based on selected mission
   const getInitialFloor = (): number => {
     if (
+      selectedCombatMissionId === 'm9_emboscada_ferton' ||
       selectedCombatMissionId === 'evento_asalto_orco' ||
       selectedCombatMissionId === 'evento_emboscada_bandidos' ||
       selectedCombatMissionId === 'm1_tirano' ||
@@ -2704,6 +3087,89 @@ export const CombatView: React.FC = () => {
 
   const [selectedEnemyIdx, setSelectedEnemyIdx] = useState<number>(0);
   const aliveEnemies = activeEnemies.filter((e) => e.hp > 0 && !e.isAshDissolving);
+
+  // -- Botin al derrotar enemigos (estilo 7DS Grand Cross) --------------------
+  // Cada enemigo que cae suelta un saquito en el campo y su botin entra en el
+  // inventario al instante: oro siempre y, a veces, un material de su tabla.
+  const [lootSacks, setLootSacks] = useState<LootSackDrop[]>([]);
+  const droppedUidsRef = useRef<Set<string>>(new Set());
+  const lootLayerRef = useRef<HTMLDivElement | null>(null);
+  const grantGoldRef = useRef(addGold);
+  grantGoldRef.current = addGold;
+  const grantItemRef = useRef(addShelfItem);
+  grantItemRef.current = addShelfItem;
+
+  useEffect(() => {
+    let cancelled = false;
+    // El botin se procesa fuera del commit del combate para no encadenar
+    // actualizaciones del provider mientras se resuelve la muerte.
+    const timer = window.setTimeout(() => {
+      if (cancelled) return;
+      activeEnemies.forEach((enemy) => {
+        if (enemy.hp > 0 || droppedUidsRef.current.has(enemy.uid)) return;
+        droppedUidsRef.current.add(enemy.uid);
+
+        const cfg = DUNGEON_ENEMIES[enemy.configId];
+        const goldMultiplier = enemy.isBoss ? 6 : enemy.isSemiboss ? 3 : 1;
+        const gold = Math.round((10 + Math.random() * 14) * goldMultiplier);
+        grantGoldRef.current(gold);
+
+        let droppedItem: { name: string; icon: string } | undefined;
+        if (cfg?.rewards?.item && Math.random() < 0.45) {
+          const loot = cfg.rewards.item;
+          droppedItem = { name: loot.name, icon: loot.icon };
+          grantItemRef.current({
+            id: `${loot.id}_${enemy.uid}_${Date.now()}`,
+            name: loot.name,
+            category: 'materials',
+            rarity: loot.rarity as any,
+            count: 1,
+            icon: loot.icon,
+            description: loot.description,
+          });
+        }
+
+        // Nace sobre la cabeza del enemigo derrotado y cae hasta el centro de su sombra.
+        const layer = lootLayerRef.current;
+        let left = 0;
+        let top = 0;
+        let fall = 96;
+        if (layer) {
+          const lr = layer.getBoundingClientRect();
+          const shadow = document.querySelector('[data-enemy-shadow]') as HTMLElement | null;
+          const sprite = document.querySelector('[data-enemy-sprite]') as HTMLElement | null;
+          const sr = shadow ? shadow.getBoundingClientRect() : null;
+          const pr = sprite ? sprite.getBoundingClientRect() : null;
+          if (sr) {
+            left = sr.left + sr.width / 2 - lr.left;
+            top = sr.top + sr.height / 2 - lr.top;
+          } else if (pr) {
+            left = pr.left + pr.width / 2 - lr.left;
+            top = pr.bottom - lr.top - 4;
+          } else {
+            left = lr.width * 0.78;
+            top = lr.height * 0.8;
+          }
+          if (pr) fall = Math.max(70, top - (pr.top - lr.top) + 6);
+        }
+
+        const key = `${enemy.uid}_${Date.now()}`;
+        setLootSacks((prev) => [...prev.slice(-5), { key, left, top, fall, gold, item: droppedItem, dissolving: false }]);
+        // Se desintegra en cuanto toca el suelo (la caida dura 0,62 s).
+        window.setTimeout(() => {
+          setLootSacks((prev) => prev.map((it) => (it.key === key ? { ...it, dissolving: true } : it)));
+        }, 620);
+        window.setTimeout(() => {
+          setLootSacks((prev) => prev.filter((it) => it.key !== key));
+        }, 900);
+      });
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [activeEnemies]);
 
   const targetEnemy: ChamberEnemyState =
     activeEnemies[selectedEnemyIdx]?.hp > 0 && !activeEnemies[selectedEnemyIdx]?.isAshDissolving
@@ -4185,6 +4651,91 @@ export const CombatView: React.FC = () => {
       return;
     }
 
+    // Specialized Wave Progression for Los Guardias de Ferton (m9_emboscada_ferton)
+    if (selectedCombatMissionId === 'm9_emboscada_ferton') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      const waveGold = 2500 + currentFloor * 1200;
+      const waveCrystals = 100 + currentFloor * 50;
+
+      const firstEnemyCfg =
+        DUNGEON_ENEMIES[activeEnemiesRef.current[0]?.configId] || DUNGEON_ENEMIES['guarda_negro_espada'];
+      const itemDrop = {
+        id: `${firstEnemyCfg.rewards.item.id}_w${currentFloor}`,
+        name: firstEnemyCfg.rewards.item.name,
+        count: 1,
+        icon: firstEnemyCfg.rewards.item.icon,
+        rarity: firstEnemyCfg.rewards.item.rarity,
+        description: firstEnemyCfg.rewards.item.description,
+      };
+
+      setAccumulatedLoot((prev) => ({
+        gold: prev.gold + waveGold,
+        crystals: prev.crystals + waveCrystals,
+        items: [...prev.items, itemDrop],
+      }));
+
+      // Check if all 3 waves of Ferton's elite guard are completed
+      if (currentFloor >= 3) {
+        completeQuestMission('m9_emboscada_ferton', 3);
+        addGold(15000);
+        addCrystals(500);
+        const cofreItem = {
+          id: 'cofre_contrabando_ferton',
+          name: 'Cofre Blindado de Contrabando de Ferton',
+          category: 'materials' as const,
+          count: 1,
+          icon: '/assets/portraits/guarda_negro_pesado_thumb.png',
+          rarity: 'UR' as const,
+          priceGold: 30000,
+          description: 'Cofre de roble reforzado con placas de ébano y runas doradas abandonado por el Capataz Hobgoblin tras ser interceptado por Caldo de Dragón.',
+        };
+        addShelfItem(cofreItem);
+
+        if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+        if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+        accumulatedLoot.items.forEach((it) =>
+          addShelfItem({
+            id: `${it.id}_${Date.now()}`,
+            name: it.name,
+            category: 'materials',
+            rarity: it.rarity as any,
+            count: it.count,
+            icon: it.icon,
+            description: it.description,
+          })
+        );
+        setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+        setWaveClearBanner({
+          floor: 3,
+          gold: 15000,
+          crystals: 500,
+          nextFloor: 3,
+        });
+
+        // Launch epilogue dialogue seamlessly
+        setSelectedCombatMissionId('m9_emboscada_ferton_epilogo');
+        setTimeout(() => {
+          navigateTo('story');
+        }, 1500);
+        return;
+      }
+
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold: waveGold,
+        crystals: waveCrystals,
+        nextFloor: currentFloor + 1,
+      });
+
+      setTimeout(() => {
+        startChamber(currentFloor + 1);
+      }, 1800);
+      return;
+    }
+
     // Specialized Wave Progression for Robo no tan Justo (m2_robo)
     if (selectedCombatMissionId === 'm2_robo') {
       sound.playSFX('victory');
@@ -4304,7 +4855,7 @@ export const CombatView: React.FC = () => {
           name: 'Mapa de la Colonia de Plata de Glimmerstone',
           category: 'materials' as const,
           count: 1,
-          icon: '/assets/items/mapa_icespear_clean_nobtn.png',
+          icon: '/assets/backgrounds/mapa_icespear_clean_nobtn.png',
           rarity: 'SSR' as const,
           priceGold: 4000,
           description: 'Pergamino antiguo recuperado del chamán goblin con runas enanas. Revela la entrada a la histórica colonia minera de Glimmerstone en Icespear, célebre por sus ricas vetas de plata.',
@@ -4578,9 +5129,34 @@ export const CombatView: React.FC = () => {
       return;
     }
 
+    // El Mineral Conductor de Rayos es un objetivo táctico inerte que disipa estática sin herir a los héroes
+    if (actingEnemy.configId === 'mineral_descarga') {
+      sound.playSFX('drain');
+      const minSlot = activeEnemiesRef.current.findIndex((e) => e.uid === actingEnemy.uid);
+      spawnFloating(
+        '⚡ Disipando estática...',
+        true,
+        false,
+        1,
+        false,
+        minSlot >= 0 ? minSlot : undefined,
+        'thunder',
+        '⚡ MINERAL INERTE',
+        '#38bdf8'
+      );
+      setTimeout(finalizeEnemyPhase, 600);
+      return;
+    }
+
     // Enemy Attack or Ultimate
     const enemyCfg = DUNGEON_ENEMIES[actingEnemy.configId] || DUNGEON_ENEMIES['araknoide_rojo'];
-    const isUlt = actingEnemy.ultimateOrbs >= 5;
+    const isMelenudo = actingEnemy.configId === 'semiboss_melenudo';
+    // Titán Melenudo: Carga hasta 6 orbes. A los 6 orbes descarga obligatoria, a los 4 orbes alta probabilidad, a los 2 orbes cada 3 turnos
+    const isUlt = isMelenudo
+      ? actingEnemy.ultimateOrbs >= 6 ||
+        (actingEnemy.ultimateOrbs >= 4 && (turnCounter % 2 === 0 || Math.random() < 0.65)) ||
+        (actingEnemy.ultimateOrbs >= 2 && turnCounter % 3 === 0)
+      : actingEnemy.ultimateOrbs >= 5;
 
     // Strike animation for this active enemy
     setActiveEnemies((prev) =>
@@ -4630,9 +5206,9 @@ export const CombatView: React.FC = () => {
         attackSfx = isUlt ? 'dark_god' : 'necrotic';
         break;
       case 'semiboss_melenudo':
-        vfxType = 'earth_titan';
-        themeColor = '#f59e0b';
-        attackSfx = isUlt ? 'critical' : 'hurt1';
+        vfxType = 'gorgon_lightning';
+        themeColor = '#38bdf8';
+        attackSfx = isUlt ? 'powerup' : 'critical';
         break;
       case 'araknoide':
         vfxType = 'void_miasma';
@@ -4663,6 +5239,26 @@ export const CombatView: React.FC = () => {
         vfxType = 'earth_titan';
         themeColor = '#ef4444';
         attackSfx = isUlt ? 'critical' : 'attack';
+        break;
+      case 'guarda_negro_espada':
+        vfxType = 'crimson_claw';
+        themeColor = '#fbbf24';
+        attackSfx = isUlt ? 'critical' : 'attack';
+        break;
+      case 'guarda_negro_alabarda':
+        vfxType = 'crimson_claw';
+        themeColor = '#f59e0b';
+        attackSfx = isUlt ? 'critical' : 'attack';
+        break;
+      case 'guarda_negro_ballesta':
+        vfxType = 'shadow_needle';
+        themeColor = '#fbbf24';
+        attackSfx = isUlt ? 'laser' : 'laser2';
+        break;
+      case 'guarda_negro_pesado':
+        vfxType = 'earth_titan';
+        themeColor = '#d97706';
+        attackSfx = isUlt ? 'dark_god' : 'critical';
         break;
       case 'devorador_quitinoso':
         vfxType = 'earth_titan';
@@ -4761,7 +5357,9 @@ export const CombatView: React.FC = () => {
       // Damage calculation
       const dmgMult = currentFloor <= 10 ? 1 : 1 + (currentFloor - 10) * 0.06;
       let dmg = 0;
-      if ('damage' in skill && Array.isArray(skill.damage)) {
+      if (actingEnemy.configId === 'semiboss_melenudo' && isUlt) {
+        dmg = Math.round((22 + actingEnemy.ultimateOrbs * 4) * dmgMult);
+      } else if ('damage' in skill && Array.isArray(skill.damage)) {
         const [minD, maxD] = skill.damage;
         dmg = Math.round((minD + Math.floor(Math.random() * (maxD - minD + 1))) * dmgMult);
       } else if ('damage' in skill && typeof skill.damage === 'number') {
@@ -5008,8 +5606,42 @@ export const CombatView: React.FC = () => {
         });
       }
 
-      // Apply skill condition
-      if (skill.condition) {
+      // Titán Melenudo Special Mechanics:
+      // Cuando lanza la definitiva electrocuta y aturde a quien se cruce en su camino:
+      // Con 2 orbes: 1 turno stun. Con 4 orbes: 2 turnos stun. Con 6 orbes: 3 turnos stun.
+      if (actingEnemy.configId === 'semiboss_melenudo' && isUlt) {
+        const chargedOrbs = actingEnemy.ultimateOrbs;
+        const stunTurns = chargedOrbs >= 6 ? 3 : chargedOrbs >= 4 ? 2 : chargedOrbs >= 2 ? 1 : 0;
+        if (stunTurns > 0) {
+          setHeroConditions((prev) => {
+            const res = stackGachaEffect(
+              prev,
+              'stun',
+              stunTurns,
+              1,
+              1,
+              `Electrocución de Melena (${stunTurns}T)`
+            );
+            return res.updatedEffects;
+          });
+          setHeroStatusTrigger((prev) => prev + 1);
+
+          setDndProcBanner({
+            text: `⚡ DESCARGA VOLTAICA: ${chargedOrbs} ORBES → ¡${stunTurns} TURNO${stunTurns > 1 ? 'S' : ''} ATURDIDO!`,
+            color: '#38bdf8',
+            icon: '⚡',
+          });
+          setTimeout(() => setDndProcBanner(null), 3000);
+
+          queueStatusNotification({
+            icon: '⚡',
+            title: '¡Electrocución Titánica!',
+            detail: `¡El Titán descarga ${chargedOrbs} orbes voltaicos! ¡Aturdido por ${stunTurns} turno${stunTurns > 1 ? 's' : ''}!`,
+            target: 'hero',
+            isBuff: false,
+          });
+        }
+      } else if (skill.condition) {
         const cond = skill.condition;
         setHeroConditions((prev) => {
           const res = stackGachaEffect(prev, cond.type, cond.duration, cond.stacks, 1, cond.title);
@@ -5018,16 +5650,25 @@ export const CombatView: React.FC = () => {
         setHeroStatusTrigger((prev) => prev + 1);
       }
 
-      // Update acting enemy orbs
+      // Update acting enemy orbs (Titán Melenudo scales up to 6 orbs)
+      const maxEnemyOrbs = actingEnemy.configId === 'semiboss_melenudo' ? 6 : 5;
       setActiveEnemies((prev) =>
         prev.map((e) =>
           e.uid === actingEnemy.uid
             ? {
                 ...e,
-                ultimateOrbs: isUlt ? 0 : Math.min(5, e.ultimateOrbs + 1),
+                ultimateOrbs: isUlt ? 0 : Math.min(maxEnemyOrbs, e.ultimateOrbs + 1),
               }
             : e
         )
+      );
+      activeEnemiesRef.current = activeEnemiesRef.current.map((e) =>
+        e.uid === actingEnemy.uid
+          ? {
+              ...e,
+              ultimateOrbs: isUlt ? 0 : Math.min(maxEnemyOrbs, e.ultimateOrbs + 1),
+            }
+          : e
       );
 
       setTimeout(() => {
@@ -5549,6 +6190,61 @@ export const CombatView: React.FC = () => {
           '⚡ DRENAJE ASTRAL',
           '#f59e0b'
         );
+      }
+
+      // Special Objective Mechanic: Atacar el Mineral Conductor baja orbes de definitiva al Titán Melenudo
+      if (target.configId === 'mineral_descarga') {
+        const mineralDrain = card.tier >= 3 || isCriticalHit ? 2 : 1;
+        setActiveEnemies((prev) =>
+          prev.map((e) =>
+            e.configId === 'semiboss_melenudo' && e.hp > 0 && !e.isAshDissolving
+              ? { ...e, ultimateOrbs: Math.max(0, e.ultimateOrbs - mineralDrain) }
+              : e
+          )
+        );
+        activeEnemiesRef.current = activeEnemiesRef.current.map((e) =>
+          e.configId === 'semiboss_melenudo' && e.hp > 0 && !e.isAshDissolving
+            ? { ...e, ultimateOrbs: Math.max(0, e.ultimateOrbs - mineralDrain) }
+            : e
+        );
+
+        sound.playSFX('drain');
+        spawnFloating(
+          '⚡ ¡DESCARGA DISIPADA!',
+          true,
+          false,
+          2,
+          false,
+          targetSlot >= 0 ? targetSlot : undefined,
+          'thunder',
+          '⚡ PARARRAYOS',
+          '#38bdf8'
+        );
+
+        const titanSlot = activeEnemiesRef.current.findIndex(
+          (e) => e.configId === 'semiboss_melenudo' && e.hp > 0 && !e.isAshDissolving
+        );
+        setTimeout(() => {
+          spawnFloating(
+            `-${mineralDrain} Orbe${mineralDrain > 1 ? 's' : ''} Ulti`,
+            true,
+            false,
+            2,
+            false,
+            titanSlot >= 0 ? titanSlot : undefined,
+            'thunder',
+            '⚡ VOLTAJE DRENADO',
+            '#f59e0b'
+          );
+        }, 180);
+
+        queueStatusNotification({
+          icon: '⚡',
+          title: '¡Descarga Conducida!',
+          detail: `¡Golpeaste el Mineral Conductor! El Titán Melenudo pierde ${mineralDrain} orbe(s) de definitiva.`,
+          target: 'enemy',
+          isBuff: false,
+        });
       }
 
       // Handle hero cleanse (Radiant Divine Cleanse)
@@ -6744,11 +7440,12 @@ export const CombatView: React.FC = () => {
           <div className="relative flex-1 flex flex-col justify-center mr-3 gap-1 z-20">
             {/* Boss Info Bar: Break Bar + Intent Preview + 5-Orb Gauge */}
             <div className="flex items-center justify-between px-1">
-              {/* Boss 5-Orb Gauge */}
+              {/* Boss 5-Orb / 6-Orb Gauge */}
               <div className="flex items-center gap-1.5">
-                {[0, 1, 2, 3, 4].map((slotIdx) => {
+                {Array.from({ length: targetEnemy.configId === 'semiboss_melenudo' ? 6 : 5 }, (_, i) => i).map((slotIdx) => {
                   const isFilled = slotIdx < enemyUltimateOrbs;
                   const isGaining = newlyGainedEnemyOrbIdx === slotIdx;
+                  const isMelenudo = targetEnemy.configId === 'semiboss_melenudo';
                   return (
                     <div
                       key={slotIdx}
@@ -6756,18 +7453,38 @@ export const CombatView: React.FC = () => {
                         isGaining ? 'animate-[enemyOrbChargePop_0.85s_cubic-bezier(0.175,0.885,0.32,1.275)_forwards]' : ''
                       } ${
                         isFilled
-                          ? enemyUltimateOrbs >= 5
+                          ? isMelenudo
+                            ? enemyUltimateOrbs >= 6
+                              ? 'border-2 border-cyan-100 bg-gradient-to-tr from-amber-400 via-cyan-400 to-white shadow-[0_0_16px_#38bdf8] animate-pulse scale-110'
+                              : 'border border-cyan-300 bg-gradient-to-tr from-amber-500 via-yellow-400 to-cyan-300 shadow-[0_0_10px_#38bdf8]'
+                            : enemyUltimateOrbs >= 5
                             ? 'border border-rose-200 bg-gradient-to-tr from-rose-700 via-red-500 to-rose-300 shadow-[0_0_14px_#f43f5e] animate-pulse scale-105'
                             : 'border border-rose-300 bg-gradient-to-tr from-rose-700 via-red-500 to-rose-300 shadow-[0_0_9px_#ef4444]'
+                          : isMelenudo
+                          ? 'border border-cyan-950/60 bg-black/65 shadow-[inset_0_2px_4px_rgba(0,0,0,0.95)]'
                           : 'border border-red-900/40 bg-black/55 shadow-[inset_0_2px_4px_rgba(0,0,0,0.95)]'
                       }`}
                     >
                       {isGaining && (
-                        <div className="absolute -inset-2 rounded-full border-2 border-rose-400 animate-ping pointer-events-none" />
+                        <div className={`absolute -inset-2 rounded-full border-2 ${isMelenudo ? 'border-cyan-400' : 'border-rose-400'} animate-ping pointer-events-none`} />
                       )}
                     </div>
                   );
                 })}
+                {targetEnemy.configId === 'semiboss_melenudo' && (
+                  <div className="flex items-center gap-1 ml-1 px-1.5 py-0.5 rounded bg-slate-950/80 border border-cyan-500/60 shadow-[0_0_8px_rgba(56,189,248,0.5)]">
+                    <span className="text-[10px] animate-pulse text-yellow-300">⚡</span>
+                    <span className="text-[9px] font-black tracking-wide text-cyan-200 font-mono">
+                      {enemyUltimateOrbs >= 6
+                        ? '¡SOBRECARGA (3T)!'
+                        : enemyUltimateOrbs >= 4
+                        ? 'CARGA ALTA (2T)'
+                        : enemyUltimateOrbs >= 2
+                        ? 'CARGA MEDIA (1T)'
+                        : 'ESTÁTICA'}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Boss Mechanics Badge: Break Bar */}
@@ -6838,7 +7555,9 @@ export const CombatView: React.FC = () => {
         {/* Arena Cave / Mansion / Forest / Sealed Gates / Bandits Ambush Background */}
         <img
           src={
-            selectedCombatMissionId === 'm5_cuevas_zancudo'
+            selectedCombatMissionId === 'm9_emboscada_ferton'
+              ? '/assets/backgrounds/camino_bosque_carromatos.png'
+              : selectedCombatMissionId === 'm5_cuevas_zancudo'
               ? '/assets/backgrounds/mina_underdark_telaranas.png'
               : selectedCombatMissionId === 'm4_cuevas_azul'
               ? '/assets/backgrounds/cueva_congelada.png'
@@ -6857,7 +7576,9 @@ export const CombatView: React.FC = () => {
               : '/assets/aistudio/image_4daa80e0.png'
           }
           alt={
-            selectedCombatMissionId === 'm5_cuevas_zancudo'
+            selectedCombatMissionId === 'm9_emboscada_ferton'
+              ? 'Paso Nevado con Carromatos y Guardia Negra de Ferton'
+              : selectedCombatMissionId === 'm5_cuevas_zancudo'
               ? 'Mina Enana en Ruinas con Telarañas en el Underdark'
               : selectedCombatMissionId === 'm4_cuevas_azul'
               ? 'Caverna Congelada de los Acechadores Gélidos'
@@ -6888,24 +7609,29 @@ export const CombatView: React.FC = () => {
         </button>
 
 
-        {/* Tactical Multi-Enemy Formation Roster (Turn Markers, Non-Interactive) */}
+        {/* Tactical Multi-Enemy Formation Roster (Interactive Switch) */}
         {activeEnemies.length > 1 && (
-          <div className="absolute top-2 right-2 z-30 flex items-center gap-1.5 p-1 rounded-xl bg-slate-950/85 border border-amber-900/60 shadow-lg backdrop-blur-xs pointer-events-none select-none">
+          <div className="absolute top-2 right-2 z-30 flex items-center gap-1.5 p-1 rounded-xl bg-slate-950/90 border border-amber-900/70 shadow-xl backdrop-blur-xs select-none">
             {activeEnemies.map((enemy, idx) => {
               const isSelected = idx === selectedEnemyIdx;
               const isDead = enemy.hp <= 0 || enemy.isAshDissolving;
               const hpPct = Math.max(0, Math.min(100, (enemy.hp / enemy.maxHp) * 100));
+              const isMineral = enemy.configId === 'mineral_descarga';
               return (
-                <div
+                <button
                   key={enemy.uid}
-                  className={`relative w-8 h-8 rounded-lg overflow-hidden border transition-all duration-200 ${
+                  type="button"
+                  onClick={() => !isDead && switchActiveEnemy(idx)}
+                  className={`relative w-8 h-8 rounded-lg overflow-hidden border transition-all duration-200 cursor-pointer ${
                     isSelected
-                      ? 'border-yellow-400 ring-2 ring-yellow-400/80 scale-105 shadow-[0_0_12px_#f59e0b] bg-amber-950/40'
+                      ? isMineral
+                        ? 'border-cyan-300 ring-2 ring-cyan-400/80 scale-110 shadow-[0_0_14px_#38bdf8] bg-cyan-950/60'
+                        : 'border-yellow-400 ring-2 ring-yellow-400/80 scale-105 shadow-[0_0_12px_#f59e0b] bg-amber-950/40'
                       : isDead
-                      ? 'border-stone-800 opacity-35 grayscale bg-black/80'
-                      : 'border-stone-700/80 bg-stone-900/85'
+                      ? 'border-stone-800 opacity-35 grayscale bg-black/80 cursor-not-allowed'
+                      : 'border-stone-700/80 bg-stone-900/85 hover:scale-105'
                   }`}
-                  title={`${enemy.name} (${enemy.hp}/${enemy.maxHp} PV)`}
+                  title={`${enemy.name} (${enemy.hp}/${enemy.maxHp} PV) ${isMineral ? '• Golpea para drenar ulti al Titán' : ''}`}
                 >
                   <img src={enemy.thumbUrl} alt={enemy.name} className="w-full h-full object-contain p-0.5 pointer-events-none" />
                   {/* HP Mini Bar */}
@@ -6920,16 +7646,40 @@ export const CombatView: React.FC = () => {
                       ★
                     </span>
                   )}
+                  {isMineral && (
+                    <span className="absolute top-0 right-0 px-0.5 text-[8px] font-black bg-cyan-500 text-slate-950 rounded-bl leading-none pointer-events-none">
+                      ⚡
+                    </span>
+                  )}
                   {isDead && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-[10px] pointer-events-none">
                       ☠️
                     </div>
                   )}
-                </div>
+                </button>
               );
             })}
           </div>
         )}
+
+        {/* Saquitos de botin: nacen sobre el enemigo derrotado, caen a su sombra y se vuelven ceniza */}
+        <div ref={lootLayerRef} className="absolute inset-0 pointer-events-none z-40">
+          {lootSacks.map((sack) => (
+            <div
+              key={sack.key}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: sack.left, top: sack.top }}
+            >
+              <div
+                className={`relative flex flex-col items-center ${sack.dissolving ? 'animate-loot-ash' : 'animate-loot-fall'}`}
+                style={{ '--loot-fall': `${sack.fall}px` } as React.CSSProperties}
+              >
+                <LootSackIcon className="w-10 h-10 drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
+                {sack.dissolving && <AshDisintegrationEffect active width={44} height={44} />}
+              </div>
+            </div>
+          ))}
+        </div>
 
         {/* ARAKNOIDE GACHA ACTIVE STATUS TRAY (CLEAN COMPACT STATUS TOKENS) */}
         {enemyConditions.length > 0 && (
@@ -7098,6 +7848,7 @@ export const CombatView: React.FC = () => {
         {targetEnemy && (
           <div
             key={`active-enemy-${targetEnemy.uid}`}
+            data-enemy-sprite={targetEnemy.uid}
             style={{
               transform:
                 targetEnemy.animation === 'strike'
@@ -7126,6 +7877,7 @@ export const CombatView: React.FC = () => {
             <img
               src="/assets/aistudio/sombra_6ce1cba3.png"
               alt="Sombra"
+              data-enemy-shadow=""
               className={`absolute -bottom-2.5 left-1/2 transform -translate-x-1/2 w-[140px] h-[18px] object-fill pointer-events-none z-0 transition-opacity duration-1000 ${
                 targetEnemy.isAshDissolving || targetEnemy.hp <= 0 ? 'opacity-0' : 'opacity-50'
               }`}
@@ -7139,43 +7891,190 @@ export const CombatView: React.FC = () => {
                   {!targetEnemy.isAshDissolving && (
                     <div className="absolute -bottom-2 w-32 h-8 rounded-full bg-cyan-400/25 blur-md pointer-events-none z-0" />
                   )}
-                  <img
-                    key={`enemy-medusa-img-${targetEnemy.uid}`}
-                    src={getEnemySpriteUrl(targetEnemy)}
-                    alt="Medusa Abisal"
-                    className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
-                      targetEnemy.isAshDissolving
-                        ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
-                        : isEnemyHitShaking
-                        ? getDndImpactAnimationClass(enemyImpactDamageType)
-                        : 'filter drop-shadow-[0_0_18px_rgba(34,211,238,0.7)]'
-                    }`}
-                  />
+                  <span
+                    className="relative flex h-full shrink-0 items-end justify-center"
+                    style={{ transform: `scale(${getEnemyStateSpriteScale(targetEnemy.spriteUrl, getEnemySpriteUrl(targetEnemy))})`, transformOrigin: 'bottom center' }}
+                  >
+                    <img
+                      key={`enemy-medusa-img-${targetEnemy.uid}`}
+                      src={getEnemySpriteUrl(targetEnemy)}
+                      alt="Medusa Abisal"
+                      className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
+                        targetEnemy.isAshDissolving
+                          ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                          : isEnemyHitShaking
+                          ? getDndImpactAnimationClass(enemyImpactDamageType)
+                          : 'filter drop-shadow-[0_0_18px_rgba(34,211,238,0.7)]'
+                      }`}
+                    />
+                  </span>
                 </div>
               ) : (
                 <div className="relative w-full h-full flex items-end justify-center">
                   <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={targetEnemy.width || 135} height={targetEnemy.height || 192} />
-                  <img
-                    key={`enemy-sprite-img-${targetEnemy.uid}`}
-                    src={getEnemySpriteUrl(targetEnemy)}
-                    alt={targetEnemy.name}
-                    className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
-                      targetEnemy.isAshDissolving
-                        ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
-                        : isEnemyHitShaking
-                        ? getDndImpactAnimationClass(enemyImpactDamageType)
-                        : targetEnemy.isSemiboss
-                        ? 'filter drop-shadow-[0_0_14px_rgba(249,115,22,0.5)]'
-                        : targetEnemy.isBoss
-                        ? 'filter drop-shadow-[0_0_18px_rgba(220,38,38,0.6)]'
-                        : ''
-                    }`}
-                  />
+
+                  {/* Aura eléctrica del Titán Melenudo que escala con sus orbes de definitiva */}
+                  {targetEnemy.configId === 'semiboss_melenudo' && !targetEnemy.isAshDissolving && (
+                    <div className="absolute inset-0 pointer-events-none z-15 flex items-center justify-center">
+                      <div
+                        className={`absolute inset-[-14%] rounded-full pointer-events-none transition-all duration-500 ${
+                          targetEnemy.ultimateOrbs >= 6
+                            ? 'border-2 border-cyan-200 bg-cyan-400/25 shadow-[0_0_45px_#38bdf8] animate-ping'
+                            : targetEnemy.ultimateOrbs >= 4
+                            ? 'border border-amber-300 bg-amber-400/20 shadow-[0_0_28px_#f59e0b] animate-pulse'
+                            : targetEnemy.ultimateOrbs >= 2
+                            ? 'border border-yellow-400/60 bg-yellow-400/10 shadow-[0_0_16px_#eab308]'
+                            : 'opacity-0'
+                        }`}
+                      />
+                      {targetEnemy.ultimateOrbs >= 2 && (
+                        <div className="absolute -top-7 inset-x-0 flex justify-center items-center gap-1.5 animate-bounce z-30 pointer-events-none">
+                          <span className="text-xl animate-pulse drop-shadow-[0_0_8px_#38bdf8]">⚡</span>
+                          <span
+                            className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border shadow-md font-mono ${
+                              targetEnemy.ultimateOrbs >= 6
+                                ? 'bg-rose-950/95 text-cyan-200 border-cyan-300 shadow-[0_0_18px_#38bdf8]'
+                                : targetEnemy.ultimateOrbs >= 4
+                                ? 'bg-amber-950/95 text-amber-200 border-amber-400 shadow-[0_0_12px_#f59e0b]'
+                                : 'bg-slate-950/95 text-yellow-300 border-yellow-500 shadow-[0_0_8px_#eab308]'
+                            }`}
+                          >
+                            {targetEnemy.ultimateOrbs >= 6
+                              ? '¡SOBRECARGA MÁXIMA (3T STUN)!'
+                              : targetEnemy.ultimateOrbs >= 4
+                              ? '¡CARGA ALTA (2T STUN)!'
+                              : '¡CARGA MEDIA (1T STUN)!'}
+                          </span>
+                          <span className="text-xl animate-pulse drop-shadow-[0_0_8px_#38bdf8]">⚡</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <span
+                    className="relative flex h-full shrink-0 items-end justify-center"
+                    style={{ transform: `scale(${getEnemyStateSpriteScale(targetEnemy.spriteUrl, getEnemySpriteUrl(targetEnemy))})`, transformOrigin: 'bottom center' }}
+                  >
+                    <img
+                      key={`enemy-sprite-img-${targetEnemy.uid}`}
+                      src={getEnemySpriteUrl(targetEnemy)}
+                      alt={targetEnemy.name}
+                      className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
+                        targetEnemy.isAshDissolving
+                          ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                          : isEnemyHitShaking
+                          ? getDndImpactAnimationClass(enemyImpactDamageType)
+                          : targetEnemy.configId === 'semiboss_melenudo'
+                          ? targetEnemy.ultimateOrbs >= 6
+                            ? 'filter drop-shadow-[0_0_25px_#38bdf8] brightness-110'
+                            : targetEnemy.ultimateOrbs >= 4
+                            ? 'filter drop-shadow-[0_0_18px_#f59e0b]'
+                            : 'filter drop-shadow-[0_0_14px_rgba(249,115,22,0.6)]'
+                          : targetEnemy.isSemiboss
+                          ? 'filter drop-shadow-[0_0_14px_rgba(249,115,22,0.5)]'
+                          : targetEnemy.isBoss
+                          ? 'filter drop-shadow-[0_0_18px_rgba(220,38,38,0.6)]'
+                          : ''
+                      }`}
+                    />
+                  </span>
                 </div>
               )}
             </div>
           </div>
         )}
+
+        {/* TITÁN MELENUDO: MINERAL CONDUCTOR DE DESCARGA AL LADO DEL JEFE */}
+        {(() => {
+          const mineralEnemy = activeEnemies.find((e) => e.configId === 'mineral_descarga');
+          const isMelenudoActive = targetEnemy?.configId === 'semiboss_melenudo';
+          if (!mineralEnemy || mineralEnemy.hp <= 0 || mineralEnemy.isAshDissolving) return null;
+          if (!isMelenudoActive && targetEnemy?.configId !== 'mineral_descarga') return null;
+
+          const mineralIdx = activeEnemies.findIndex((e) => e.uid === mineralEnemy.uid);
+          const isMineralSelected = selectedEnemyIdx === mineralIdx;
+
+          // Si el mineral es el objetivo activo, mostrar al Titán Melenudo al lado para poder reenfocarlo
+          if (isMineralSelected) {
+            const titanEnemy = activeEnemies.find((e) => e.configId === 'semiboss_melenudo');
+            if (!titanEnemy || titanEnemy.hp <= 0 || titanEnemy.isAshDissolving) return null;
+            const titanIdx = activeEnemies.findIndex((e) => e.uid === titanEnemy.uid);
+            return (
+              <div className="absolute right-[28%] sm:right-[26%] bottom-[22%] z-25 flex flex-col items-center animate-[pokemonSlideIn_0.35s_ease-out]">
+                <button
+                  type="button"
+                  onClick={() => switchActiveEnemy(titanIdx)}
+                  className="group relative flex flex-col items-center cursor-pointer transition-transform hover:scale-105 active:scale-95 focus:outline-none"
+                  title="Fijar objetivo en el Titán Melenudo"
+                >
+                  <div className="relative w-16 h-20 flex items-center justify-center opacity-85 group-hover:opacity-100">
+                    <img
+                      src={titanEnemy.thumbUrl}
+                      alt={titanEnemy.name}
+                      className="w-full h-full object-contain filter drop-shadow-[0_0_12px_rgba(245,158,11,0.7)]"
+                    />
+                  </div>
+                  <div className="mt-1 px-2.5 py-0.5 rounded-full bg-slate-950/95 border-2 border-yellow-400 shadow-[0_0_12px_#f59e0b] flex items-center gap-1">
+                    <span>🎯</span>
+                    <span className="text-[9px] font-black uppercase tracking-wider text-yellow-300 font-mono whitespace-nowrap">
+                      OBJETIVO: TITÁN
+                    </span>
+                  </div>
+                </button>
+              </div>
+            );
+          }
+
+          // Si el Titán es el objetivo activo, mostrar el Mineral Conductor al lado con botón de ataque
+          return (
+            <div className="absolute right-[28%] sm:right-[26%] bottom-[22%] z-25 flex flex-col items-center animate-[pokemonSlideIn_0.35s_ease-out]">
+              {/* Arco eléctrico que conecta al Titán con el Mineral */}
+              <div className="absolute -right-10 top-1/2 w-16 h-1 pointer-events-none overflow-hidden opacity-85">
+                <div className="w-full h-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-pulse shadow-[0_0_10px_#38bdf8]" />
+              </div>
+
+              {/* Botón táctico para golpear el mineral conductor */}
+              <button
+                type="button"
+                onClick={() => switchActiveEnemy(mineralIdx)}
+                className="group relative flex flex-col items-center cursor-pointer transition-transform hover:scale-110 active:scale-95 focus:outline-none"
+                title="Mineral Conductor: Golpéalo para disipar energía y bajar orbes de definitiva al Titán"
+              >
+                {/* Sombra de la gema */}
+                <div className="absolute -bottom-2 w-14 h-3 rounded-full bg-cyan-950/80 blur-xs pointer-events-none" />
+
+                {/* Cristal animado */}
+                <div className="relative w-14 h-24 sm:w-16 sm:h-26 flex items-center justify-center animate-[medusaHoverFloat_2.6s_ease-in-out_infinite]">
+                  <img
+                    src="/assets/items/arcano_gema_app.png"
+                    alt="Mineral Conductor"
+                    className="w-full h-full object-contain filter drop-shadow-[0_0_18px_rgba(56,189,248,0.85)] transition-all duration-300 group-hover:brightness-125"
+                  />
+                  <div className="absolute inset-0 border border-cyan-400/40 rounded-full animate-ping pointer-events-none" />
+                </div>
+
+                {/* Botón retícula táctica */}
+                <div className="mt-1 px-2 py-0.5 rounded-full bg-slate-950/95 border-2 border-cyan-400 shadow-[0_0_14px_rgba(56,189,248,0.85)] flex items-center gap-1">
+                  <span className="text-xs animate-spin">⚡</span>
+                  <span className="text-[9px] font-black uppercase tracking-wider text-cyan-200 font-mono whitespace-nowrap">
+                    ATACAR MINERAL
+                  </span>
+                </div>
+                <div className="text-[7.5px] font-bold text-yellow-300 font-mono mt-0.5 whitespace-nowrap bg-black/75 px-1.5 py-0.2 rounded border border-yellow-500/40">
+                  ⚡ Drena -1 Orbe al Titán
+                </div>
+
+                {/* Barra de PV del Mineral */}
+                <div className="w-16 h-1.5 bg-black/90 rounded-full overflow-hidden mt-1 border border-cyan-700/60">
+                  <div
+                    className="h-full bg-cyan-400 shadow-[0_0_6px_#38bdf8] transition-all duration-200"
+                    style={{ width: `${Math.max(0, Math.min(100, (mineralEnemy.hp / mineralEnemy.maxHp) * 100))}%` }}
+                  />
+                </div>
+              </button>
+            </div>
+          );
+        })()}
 
 
 
@@ -7184,21 +8083,33 @@ export const CombatView: React.FC = () => {
           <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/65 backdrop-blur-xs pointer-events-none animate-in fade-in zoom-in-95 duration-200">
             <div className="px-6 py-4 rounded-2xl bg-gradient-to-r from-amber-950 via-yellow-900 to-amber-950 border-2 border-yellow-400 shadow-[0_0_40px_rgba(245,158,11,0.9)] text-center animate-bounce">
               <div className="text-[11px] uppercase tracking-widest text-amber-300 font-black mb-1">
-                {selectedCombatMissionId === 'm2_robo'
+                {selectedCombatMissionId === 'm9_emboscada_ferton'
+                  ? waveClearBanner.floor >= 3
+                    ? '¡GUARDIA NEGRA DE FERTON DERROTADA!'
+                    : `¡OLEADA ${waveClearBanner.floor} DE 3 SUPERADA!`
+                  : selectedCombatMissionId === 'm2_robo'
                   ? waveClearBanner.floor >= 4
                     ? '¡ASALTO A LA MANSIÓN COMPLETADO!'
                     : `¡OLEADA ${waveClearBanner.floor} DE 4 SUPERADA!`
                   : `¡VICTORIA EN SALA ${waveClearBanner.floor}!`}
               </div>
               <div className="text-xl font-black text-white flex items-center gap-2 justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
-                {selectedCombatMissionId === 'm2_robo'
+                {selectedCombatMissionId === 'm9_emboscada_ferton'
+                  ? waveClearBanner.floor >= 3
+                    ? '¡CARAVANA INTERCEPTADA!'
+                    : '¡LÍNEA ENEMIGA ROTURA!'
+                  : selectedCombatMissionId === 'm2_robo'
                   ? waveClearBanner.floor >= 4
                     ? '¡VICTORIA TOTAL!'
                     : '¡GUARDIAS REPELIDOS!'
                   : '¡SALA SUPERADA!'}
               </div>
               <div className="text-xs text-yellow-200 mt-2 font-mono font-bold">
-                {selectedCombatMissionId === 'm2_robo'
+                {selectedCombatMissionId === 'm9_emboscada_ferton'
+                  ? waveClearBanner.floor >= 3
+                    ? 'Cargando epílogo y misterios de Ferton...'
+                    : `Siguiente: Oleada ${waveClearBanner.nextFloor} de 3 (${FERTON_GUARD_CHAMBERS[waveClearBanner.nextFloor - 1]?.name?.split(': ')[1] || 'Guardia de Élite'})...`
+                  : selectedCombatMissionId === 'm2_robo'
                   ? waveClearBanner.floor >= 4
                     ? 'Cargando diálogo final automáticamente...'
                     : `Siguiente: Oleada ${waveClearBanner.nextFloor} de 4 (${GUARD_CHAMBERS[waveClearBanner.nextFloor - 1]?.name?.split(': ')[1] || 'Refuerzos'})...`
@@ -7842,14 +8753,18 @@ export const CombatView: React.FC = () => {
         <div className="absolute inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="relative w-full max-w-[340px] bg-[#1a0604] border-2 border-red-700 rounded-2xl p-5 shadow-[0_0_30px_rgba(220,38,38,0.6)] flex flex-col items-center text-center animate-in fade-in zoom-in-95">
             <h3 className="text-xl font-serif font-black text-red-400 tracking-wider mb-1">
-              {selectedCombatMissionId === 'm3_bosque'
+              {selectedCombatMissionId === 'm9_emboscada_ferton'
+                ? 'EMBOSCADA DE FERTON FALLIDA'
+                : selectedCombatMissionId === 'm3_bosque'
                 ? 'EMBOSCADA FALLIDA'
                 : selectedCombatMissionId === 'm2_robo'
                 ? 'ASALTO FALLIDO'
                 : 'EXPEDICIÓN FINALIZADA'}
             </h3>
             <p className="text-xs text-stone-300 mb-1">
-              {selectedCombatMissionId === 'm3_bosque' ? (
+              {selectedCombatMissionId === 'm9_emboscada_ferton' ? (
+                <>Has caído ante la Guardia Negra de Ferton en la <b className="text-amber-300">Oleada {currentFloor} de 3</b>.</>
+              ) : selectedCombatMissionId === 'm3_bosque' ? (
                 <>Has caído ante los goblins en la <b className="text-amber-300">Oleada {currentFloor} de 2</b>.</>
               ) : selectedCombatMissionId === 'm2_robo' ? (
                 <>Has caído ante la guardia en la <b className="text-amber-300">Oleada {currentFloor} de 4</b>.</>
@@ -7857,7 +8772,7 @@ export const CombatView: React.FC = () => {
                 <>Has caído en combate en la <b className="text-amber-300">Sala {currentFloor}</b>.</>
               )}
             </p>
-            {selectedCombatMissionId !== 'm2_robo' && selectedCombatMissionId !== 'm3_bosque' && (
+            {selectedCombatMissionId !== 'm2_robo' && selectedCombatMissionId !== 'm3_bosque' && selectedCombatMissionId !== 'm9_emboscada_ferton' && (
               <div className="text-[10px] text-stone-400 font-mono mb-3">
                 Récord alcanzado: <b className="text-amber-400 font-bold">Sala {bestFloor}</b>
               </div>
@@ -7866,7 +8781,9 @@ export const CombatView: React.FC = () => {
             {/* Accumulated Loot to bank */}
             <div className="w-full bg-black/60 border border-red-950 rounded-xl p-3 mb-4 flex flex-col gap-1.5 text-left">
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 text-center">
-                {selectedCombatMissionId === 'm3_bosque'
+                {selectedCombatMissionId === 'm9_emboscada_ferton'
+                  ? 'Botín Rescatado del Convoy'
+                  : selectedCombatMissionId === 'm3_bosque'
                   ? 'Botín Rescatado del Bosque'
                   : selectedCombatMissionId === 'm2_robo'
                   ? 'Botín Rescatado'
@@ -7894,14 +8811,18 @@ export const CombatView: React.FC = () => {
                 onClick={handleRetreatAndClaim}
                 className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-lg"
               >
-                {selectedCombatMissionId === 'm2_robo' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
+                {selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
               </button>
 
               <button
                 onClick={handleRestartBattle}
                 className="w-full py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs rounded-xl cursor-pointer"
               >
-                {selectedCombatMissionId === 'm2_robo' ? 'Reintentar Asalto (Oleada 1)' : 'Reintentar desde Sala 1'}
+                {selectedCombatMissionId === 'm9_emboscada_ferton'
+                  ? 'Reintentar Combate de Ferton (Oleada 1)'
+                  : selectedCombatMissionId === 'm2_robo'
+                  ? 'Reintentar Asalto (Oleada 1)'
+                  : 'Reintentar desde Sala 1'}
               </button>
             </div>
           </div>

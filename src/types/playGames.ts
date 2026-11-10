@@ -1,30 +1,36 @@
+/** Estado real de la conexión con Google Play Games Services (API v1). */
 export interface PlayGamesProfile {
+  /** Sesión validada contra games.googleapis.com. */
   isSignedIn: boolean;
+  /** El servidor tiene configurado el cliente OAuth de Play Games. */
+  isConfigured: boolean;
+  /** Identidad local (sin cuenta de Play Games). */
+  isGuest: boolean;
   playerId: string;
   gamerTag: string;
-  email?: string;
   avatarUrl: string;
-  level: number;
-  currentXp: number;
-  xpToNextLevel: number;
-  totalPlayGamesXp: number;
+  /** Título/nivel que devuelve Play Games (p. ej. "Nivel 12"). */
+  title?: string;
   unlockedAchievementsCount: number;
   totalAchievementsCount: number;
   lastLogin: number;
-  isGoogleAccountLinked?: boolean;
+  error?: string | null;
 }
+
+export type AchievementSyncState = 'local' | 'pending' | 'synced' | 'error';
 
 export interface PlayGamesAchievement {
   id: string;
   title: string;
   description: string;
-  xpReward: number; // Google Play Games XP (e.g. 500, 1000, 2500)
   icon: string;
   unlocked: boolean;
   unlockedAt?: number;
   progress?: number;
   maxProgress?: number;
   category: 'summon' | 'combat' | 'collection' | 'forge' | 'progression';
+  syncState: AchievementSyncState;
+  syncMessage?: string;
 }
 
 export interface PlayGamesLeaderboardEntry {
@@ -59,5 +65,5 @@ export interface PlayGamesCloudSave {
   astralShards: number;
   chapter: number;
   squadPower: number;
-  data: string; // JSON serialized state
+  data: string;
 }
