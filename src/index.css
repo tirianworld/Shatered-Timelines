@@ -495,3 +495,33 @@
     animation: none;
   }
 }
+
+/* Botin de combate: el saquito nace sobre el enemigo, cae a su sombra y se vuelve ceniza */
+@keyframes lootSackFall {
+  0% { opacity: 0; transform: translateY(calc(var(--loot-fall, 90px) * -1)) scale(0.5) rotate(-8deg); }
+  15% { opacity: 1; }
+  55% { opacity: 1; transform: translateY(0) scale(1.08) rotate(3deg); }
+  70% { transform: translateY(-5px) scale(1) rotate(0deg); }
+  80%, 100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+}
+
+.animate-loot-fall {
+  animation: lootSackFall 0.62s cubic-bezier(0.33, 1.3, 0.62, 1) forwards;
+}
+
+@keyframes lootSackAsh {
+  0% { opacity: 1; filter: none; transform: translateY(0) scale(1); }
+  35% { opacity: 0.85; filter: grayscale(1) brightness(1.35); transform: translateY(-2px) scale(0.98); }
+  100% { opacity: 0; filter: grayscale(1) brightness(0.65) blur(2px); transform: translateY(8px) scale(0.9); }
+}
+
+.animate-loot-ash {
+  animation: lootSackAsh 0.25s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-loot-fall,
+  .animate-loot-ash {
+    animation-duration: 0.01s;
+  }
+}

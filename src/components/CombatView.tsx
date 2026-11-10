@@ -2493,6 +2493,28 @@ export const getInfiniteChamberEnemies = (floor: number): CombatEnemyId[] => {
   return chosen;
 };
 
+// Saquito de botin que cae al derrotar a un enemigo (estilo 7DS Grand Cross).
+export interface LootSackDrop {
+  key: string;
+  left: number;
+  top: number;
+  fall: number;
+  gold: number;
+  item?: { name: string; icon: string };
+  dissolving: boolean;
+}
+
+const LootSackIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg viewBox="0 0 64 64" className={className} aria-hidden="true">
+    <path d="M22 25c-5.5 3.4-13 9.6-13 19.2C9 54 18.4 60 32 60s23-6 23-15.8C55 34.6 47.5 28.4 42 25Z" fill="#f6e0c6" stroke="#5b2a10" strokeWidth="2.6" strokeLinejoin="round" />
+    <path d="M15 41c4.6 3.8 10.4 5.6 17 5.6s12.4-1.8 17-5.6" stroke="#e2bd99" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+    <path d="M20 25c-1.4-5.2-5-8.7-9.6-9.8 4.6-3.2 9.6-4.2 14-2.6 2.6-3 6.6-4.4 10.6-4.4s8 1.4 10.6 4.4c4.4-1.6 9.4-.6 14 2.6-4.6 1.1-8.2 4.6-9.6 9.8Z" fill="#fcefdd" stroke="#5b2a10" strokeWidth="2.6" strokeLinejoin="round" />
+    <rect x="18.5" y="22.5" width="27" height="6.5" rx="3.2" fill="#c31d2b" stroke="#5b2a10" strokeWidth="2.2" />
+    <path d="M31 29c2 3 3 6 3 9M36 29c6 3 10 6 12 11M30 29c-2 4-4 7-4 10" stroke="#c31d2b" strokeWidth="3.2" fill="none" strokeLinecap="round" />
+    <path d="M26 39h7l-3.5 8ZM40 40h7l-3.5 8Z" fill="#f5b93a" stroke="#5b2a10" strokeWidth="2" strokeLinejoin="round" />
+  </svg>
+);
+
 export interface ChamberEnemyState {
   uid: string;
   configId: CombatEnemyId;
@@ -2704,6 +2726,88 @@ export const CombatView: React.FC = () => {
 
   const [selectedEnemyIdx, setSelectedEnemyIdx] = useState<number>(0);
   const aliveEnemies = activeEnemies.filter((e) => e.hp > 0 && !e.isAshDissolving);
+
+  // -- Botin al derrotar enemigos (estilo 7DS Grand Cross) --------------------
+  // Cada enemigo que cae suelta un saquito en el campo y su botin entra en el
+  // inventario al instante: oro siempre y, a veces, un material de su tabla.
+  const [lootSacks, setLootSacks] = useState<LootSackDrop[]>([]);
+  const droppedUidsRef = useRef<Set<string>>(new Set());
+  const lootLayerRef = useRef<HTMLDivElement | null>(null);
+  const grantGoldRef = useRef(addGold);
+  grantGoldRef.current = addGold;
+  const grantItemRef = useRef(addShelfItem);
+  grantItemRef.current = addShelfItem;
+
+  useEffect(() => {
+    let cancelled = false;
+    // El botin se procesa fuera del commit del combate para no encadenar
+    // actualizaciones del provider mientras se resuelve la muerte.
+    const timer = window.setTimeout(() => {
+      if (cancelled) return;
+      activeEnemies.forEach((enemy) => {
+        if (enemy.hp > 0 || droppedUidsRef.current.has(enemy.uid)) return;
+        droppedUidsRef.current.add(enemy.uid);
+
+        const cfg = DUNGEON_ENEMIES[enemy.configId];
+        const goldMultiplier = enemy.isBoss ? 6 : enemy.isSemiboss ? 3 : 1;
+        const gold = Math.round((10 + Math.random() * 14) * goldMultiplier);
+        grantGoldRef.current(gold);
+
+        let droppedItem: { name: string; icon: string } | undefined;
+        if (cfg?.rewards?.item && Math.random() < 0.45) {
+          const loot = cfg.rewards.item;
+          droppedItem = { name: loot.name, icon: loot.icon };
+          grantItemRef.current({
+            id: `${loot.id}_${enemy.uid}_${Date.now()}`,
+            name: loot.name,
+            category: 'materials',
+            rarity: loot.rarity as any,
+            count: 1,
+            icon: loot.icon,
+            description: loot.description,
+          });
+        }
+
+        // Nace sobre la cabeza del enemigo derrotado y cae hasta el centro de su sombra.
+        const layer = lootLayerRef.current;
+        let left = 0;
+        let top = 0;
+        let fall = 96;
+        if (layer) {
+          const lr = layer.getBoundingClientRect();
+          const shadow = document.querySelector('[data-enemy-shadow]') as HTMLElement | null;
+          const sprite = document.querySelector('[data-enemy-sprite]') as HTMLElement | null;
+          const sr = shadow ? shadow.getBoundingClientRect() : null;
+          const pr = sprite ? sprite.getBoundingClientRect() : null;
+          if (sr) {
+            left = sr.left + sr.width / 2 - lr.left;
+            top = sr.top + sr.height / 2 - lr.top;
+          } else if (pr) {
+            left = pr.left + pr.width / 2 - lr.left;
+            top = pr.bottom - lr.top - 4;
+          } else {
+            left = lr.width * 0.78;
+            top = lr.height * 0.8;
+          }
+          if (pr) fall = Math.max(70, top - (pr.top - lr.top) + 6);
+        }
+
+        const key = `${enemy.uid}_${Date.now()}`;
+        setLootSacks((prev) => [...prev.slice(-5), { key, left, top, fall, gold, item: droppedItem, dissolving: false }]);
+        window.setTimeout(() => {
+          setLootSacks((prev) => prev.map((it) => (it.key === key ? { ...it, dissolving: true } : it)));
+        }, 1600);
+        window.setTimeout(() => {
+          setLootSacks((prev) => prev.filter((it) => it.key !== key));
+        }, 1900);
+      });
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [activeEnemies]);
 
   const targetEnemy: ChamberEnemyState =
     activeEnemies[selectedEnemyIdx]?.hp > 0 && !activeEnemies[selectedEnemyIdx]?.isAshDissolving
@@ -6931,6 +7035,25 @@ export const CombatView: React.FC = () => {
           </div>
         )}
 
+        {/* Saquitos de botin: nacen sobre el enemigo derrotado, caen a su sombra y se vuelven ceniza */}
+        <div ref={lootLayerRef} className="absolute inset-0 pointer-events-none z-40">
+          {lootSacks.map((sack) => (
+            <div
+              key={sack.key}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: sack.left, top: sack.top }}
+            >
+              <div
+                className={`relative flex flex-col items-center ${sack.dissolving ? 'animate-loot-ash' : 'animate-loot-fall'}`}
+                style={{ '--loot-fall': `${sack.fall}px` } as React.CSSProperties}
+              >
+                <LootSackIcon className="w-10 h-10 drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
+                {sack.dissolving && <AshDisintegrationEffect active width={44} height={44} />}
+              </div>
+            </div>
+          ))}
+        </div>
+
         {/* ARAKNOIDE GACHA ACTIVE STATUS TRAY (CLEAN COMPACT STATUS TOKENS) */}
         {enemyConditions.length > 0 && (
           <div className="absolute top-1.5 right-20 z-30 flex items-center gap-1.5 justify-end">
@@ -7098,6 +7221,7 @@ export const CombatView: React.FC = () => {
         {targetEnemy && (
           <div
             key={`active-enemy-${targetEnemy.uid}`}
+            data-enemy-sprite={targetEnemy.uid}
             style={{
               transform:
                 targetEnemy.animation === 'strike'
@@ -7126,6 +7250,7 @@ export const CombatView: React.FC = () => {
             <img
               src="/assets/aistudio/sombra_6ce1cba3.png"
               alt="Sombra"
+              data-enemy-shadow=""
               className={`absolute -bottom-2.5 left-1/2 transform -translate-x-1/2 w-[140px] h-[18px] object-fill pointer-events-none z-0 transition-opacity duration-1000 ${
                 targetEnemy.isAshDissolving || targetEnemy.hp <= 0 ? 'opacity-0' : 'opacity-50'
               }`}
