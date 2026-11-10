@@ -119,7 +119,7 @@ const GameContent: React.FC = () => {
           {currentTab === 'forge' && <ForgeView />}
           {currentTab === 'potions' && <PotionShopView />}
           {currentTab === 'tavern' && <TavernView />}
-          {currentTab === 'cooking' && <TavernKitchenView onClose={() => navigateTo('tavern')} />}
+          {currentTab === 'cooking' && <TavernKitchenView onClose={() => goBack()} />}
           {currentTab === 'world' && <WorldMapView />}
           {currentTab === 'combat' && <CombatView />}
           {currentTab === 'patrol' && <PatrolView />}
@@ -140,7 +140,13 @@ const GameContent: React.FC = () => {
                   goBack();
                   return;
                 }
-                navigateTo(fromKitchen || fromKitchenMonsters ? 'cooking' : 'quest');
+                if (fromKitchen || fromKitchenMonsters) {
+                  // Vuelve al Fogón deshaciendo la entrada de la cinemática, para no
+                  // dejar 'story' en el historial ("Volver" en la taberna debe ir al Santuario).
+                  goBack();
+                  return;
+                }
+                navigateTo('quest');
               }}
               onLaunchCombat={() => {
                 navigateTo('combat');

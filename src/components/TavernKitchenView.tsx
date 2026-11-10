@@ -912,33 +912,25 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
         {/* 7DS Wooden Cutting Board */}
         <div className="relative w-[340px] h-[95px] flex items-center justify-center">
           {/* Wooden Board Shape with right handle */}
-          <div
-            className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#4a210f] via-[#321307] to-[#1c0a04] border-4 border-[#6d3215] shadow-[0_10px_25px_rgba(0,0,0,0.9),inset_0_2px_4px_rgba(255,200,100,0.2)] flex items-center justify-between px-5"
-            style={{
-              clipPath: 'polygon(0% 0%, 92% 0%, 92% 35%, 100% 35%, 100% 65%, 92% 65%, 92% 100%, 0% 100%)',
-            }}
-          >
-            <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-100 via-transparent to-black" />
+          <div className="absolute inset-0 rounded-[16px] bg-gradient-to-b from-[#3d1b0c] via-[#2f1308] to-[#240d05] border border-[#74361a] shadow-[0_10px_22px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,190,120,0.18),inset_0_-8px_16px_rgba(0,0,0,0.45)]">
+            <div className="absolute inset-0 rounded-[16px] opacity-20 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-200/70 via-transparent to-black" />
           </div>
 
-          {/* Right Handle Hole */}
-          <div className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-[#140602] border-2 border-[#522510] shadow-inner pointer-events-none" />
-
           {/* 3 Circular Sockets on the Cutting Board */}
-          <div className="relative z-10 w-full flex items-center justify-center gap-7 pr-4">
+          <div className="relative z-10 w-full flex items-center justify-center gap-9">
             {[0, 1, 2].map((slotIdx) => {
               const item = slots[slotIdx];
               const isActive = activeSlotIndex === slotIdx;
 
               return (
                 <div key={slotIdx} className="relative flex flex-col items-center">
-                  {/* Golden Sun / Arrow Pointer above Active Slot */}
+                  {/* Golden Pin above Active Slot */}
                   {isActive && (
-                    <div className="absolute -top-4.5 flex flex-col items-center animate-bounce z-20 pointer-events-none">
-                      <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-b from-yellow-300 to-amber-500 border border-amber-100 shadow-[0_0_8px_#f59e0b] flex items-center justify-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-amber-950" />
+                    <div className="absolute -top-[15px] flex flex-col items-center z-20 pointer-events-none">
+                      <div className="w-4 h-4 rounded-full bg-gradient-to-b from-amber-200 via-amber-400 to-amber-600 border border-amber-200/90 shadow-[0_0_10px_rgba(251,191,36,0.95)] flex items-center justify-center">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#3a1a08]" />
                       </div>
-                      <div className="w-0 h-0 border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-t-[5px] border-t-amber-400 -mt-0.5" />
+                      <div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[6px] border-t-amber-400 -mt-[3px] drop-shadow-[0_0_3px_rgba(251,191,36,0.9)]" />
                     </div>
                   )}
 
@@ -948,11 +940,15 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
                       sound.playSFX('click');
                       setActiveSlotIndex(slotIdx);
                     }}
-                    className={`relative w-15 h-15 rounded-full flex items-center justify-center transition-all cursor-pointer ${
+                    className={`relative w-15 h-15 rounded-full flex items-center justify-center transition-all cursor-pointer bg-[#1f0a03] shadow-[inset_0_3px_8px_rgba(0,0,0,0.85)] ${
                       item
-                        ? 'bg-gradient-to-b from-stone-800 to-black border-2 border-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.3)]'
-                        : 'bg-black/70 border-2 border-dashed border-amber-600/50 hover:border-amber-400'
-                    } ${isActive ? 'ring-2 ring-amber-400 ring-offset-2 ring-offset-[#260e05]' : ''}`}
+                        ? 'border-2 border-amber-500/90'
+                        : 'border-2 border-dashed border-amber-600/60 hover:border-amber-400/80'
+                    } ${
+                      isActive
+                        ? 'border-solid border-amber-400 shadow-[0_0_0_1px_rgba(251,191,36,0.35),0_0_16px_rgba(245,158,11,0.45),inset_0_3px_8px_rgba(0,0,0,0.85)]'
+                        : ''
+                    }`}
                   >
                     {item ? (
                       <>
@@ -969,9 +965,9 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
                         </button>
                       </>
                     ) : (
-                      <div className="flex flex-col items-center justify-center text-amber-600/60">
-                        <Plus className="w-5 h-5" />
-                        <span className="text-[9px] font-black font-mono">
+                      <div className="flex flex-col items-center justify-center text-amber-500/90 leading-none">
+                        <Plus className="w-6 h-6 stroke-[2.5]" />
+                        <span className="mt-0.5 text-[10px] font-black font-mono text-amber-600/80">
                           {slotIdx + 1}
                         </span>
                       </div>
