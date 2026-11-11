@@ -2,18 +2,18 @@
   {
     "id": "chispo_deez",
     "name": "Chispo Deez",
-    "title": "Guerrero Enano Alado",
+    "title": "Paladín Enano Alado",
     "rarity": "SR",
     "attribute": "Divino",
     "portrait": "/assets/portraits/chispo_deez_icono.png",
     "frame": "/assets/ui/marco_sr.png",
     "orb": "/assets/items/atributo fe.png",
     "level": 1,
-    "hp": 1320,
-    "attack": 270,
-    "defense": 220,
-    "cc": 1395,
-    "bio": "Veterano guerrero del clan forjador, porta el yelmo alado ceremonial bendecido por la llama celestial."
+    "hp": 1450,
+    "attack": 275,
+    "defense": 250,
+    "cc": 1420,
+    "bio": "Noble Paladín enano bendecido por la llama celestial. Empuña su imponente martillo de guerra y yelmo alado ceremonial para proteger a sus aliados y purgar a los impíos."
   },
   {
     "id": "kurogame",
@@ -162,18 +162,18 @@
   {
     "id": "prometeo",
     "name": "Prometeo",
-    "title": "Mago Ígneo Tiefling",
-    "rarity": "SR",
+    "title": "Cazador de Sangre Ígneo",
+    "rarity": "SSR",
     "attribute": "Profano",
     "portrait": "/assets/portraits/prometeo.png",
     "frame": "/assets/ui/marco_sr.png",
     "orb": "/assets/items/atributo OSCURO.png",
     "level": 1,
-    "hp": 1050,
-    "attack": 320,
-    "defense": 170,
-    "cc": 1330,
-    "bio": "Tiefling con corona de fuego perpetuo, conjura las llamas del abismo para purificar a sus adversarios."
+    "hp": 1180,
+    "attack": 350,
+    "defense": 180,
+    "cc": 1410,
+    "bio": "Tiefling Cazador de Sangre (Blood Hunter) y piromante. Empuña una espada de fuego verde; causa 10% de daño adicional contra enemigos sangrantes."
   },
   {
     "id": "barled",
@@ -194,18 +194,18 @@
   {
     "id": "kairon",
     "name": "Kairon",
-    "title": "Elegido de los Cuernos",
-    "rarity": "SR",
-    "attribute": "Arcano",
+    "title": "Pistolero Errante",
+    "rarity": "UR",
+    "attribute": "Natural",
     "portrait": "/assets/portraits/kairon.png",
-    "frame": "/assets/ui/marco_sr.png",
-    "orb": "/assets/items/atributo arcano.png",
+    "frame": "/assets/ui/marco_ur.png",
+    "orb": "/assets/items/atributo natural.png",
     "level": 1,
-    "hp": 1120,
+    "hp": 1200,
     "attack": 310,
-    "defense": 175,
-    "cc": 1315,
-    "bio": "Joven hechicero con cuernos de carnero y mirada dorada, canaliza el flujo astral con pasmosa naturalidad."
+    "defense": 185,
+    "cc": 1420,
+    "bio": "Pistolero con dos pistolas duales de tiro rápido y una espada larga a dos manos, letal a cualquier distancia."
   },
   {
     "id": "ragnavaldr",

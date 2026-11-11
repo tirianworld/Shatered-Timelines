@@ -24,6 +24,7 @@ import { AuctionHouseModal } from './components/AuctionHouseModal';
 import { OrderClanView } from './components/OrderClanView';
 import { StoryDialogueView } from './components/StoryDialogueView';
 import { TavernKitchenView } from './components/TavernKitchenView';
+import { PartySelectionView } from './components/PartySelectionView';
 import { sound } from './services/soundService';
 
 const useResponsiveGameScale = () => {
@@ -126,6 +127,7 @@ const GameContent: React.FC = () => {
           {currentTab === 'inventory' && <InventoryView />}
           {currentTab === 'auction' && <AuctionHouseModal isOpen={true} onClose={() => goBack()} />}
           {(currentTab === 'order' || currentTab === 'clan') && <OrderClanView />}
+          {currentTab === 'party' && <PartySelectionView onClose={() => goBack()} />}
           {currentTab === 'story' && (
             <StoryDialogueView
               onFinish={() => {
@@ -153,13 +155,13 @@ const GameContent: React.FC = () => {
               }}
             />
           )}
-          {!['santuario', 'camp', 'quest', 'heroes', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'cooking', 'world', 'combat', 'patrol', 'inventory', 'auction', 'order', 'clan', 'story'].includes(currentTab) && (
+          {!['santuario', 'camp', 'quest', 'heroes', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'cooking', 'world', 'combat', 'patrol', 'inventory', 'auction', 'order', 'clan', 'story', 'party'].includes(currentTab) && (
             <QuestView />
           )}
         </main>
 
-        {/* Bottom Wood Footer Bar with 6 Circular Emblems - Hidden on full-screen immersion views */}
-        {!['combat', 'forge', 'potions', 'auction', 'order', 'clan', 'story', 'cooking'].includes(currentTab) && <GameFooter />}
+        {/* Bottom Wood Footer Bar with 6 Circular Emblems - Hidden on full-screen immersion views (including party) */}
+        {!['combat', 'forge', 'potions', 'auction', 'order', 'clan', 'story', 'cooking', 'party'].includes(currentTab) && <GameFooter />}
 
         {/* Global Modals */}
         <MailboxModal />

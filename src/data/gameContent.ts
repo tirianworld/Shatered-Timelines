@@ -5,7 +5,7 @@ export const BANNERS: SummonBanner[] = [
     id: 'banner_icespear',
     name: 'Estandarte de Icespear',
     subtitle: 'La Vanguardia de la Luz Glacial',
-    description: 'Mayor probabilidad de invocar a Kairon (UR Paladín) y Edacorn (SSR Vanguardia).',
+    description: 'Mayor probabilidad de invocar a Kairon (UR Gunslinger) y Edacorn (SSR Vanguardia).',
     featuredHeroIds: ['kairon', 'edacorn', 'arthorius'],
     costSingle: 100,
     costMulti: 900,

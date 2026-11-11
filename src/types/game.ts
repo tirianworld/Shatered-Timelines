@@ -13,7 +13,10 @@ export type HeroClass =
   | 'Monje'
   | 'Pícaro'
   | 'Cazador'
-  | 'Caballero';
+  | 'Caballero'
+  | 'Bardo'
+  | 'Cazador de Sangre'
+  | 'Gunslinger';
 
 export type Alianza =
   | 'Guardia de Icespear'

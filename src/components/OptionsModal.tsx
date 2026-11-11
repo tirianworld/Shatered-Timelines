@@ -277,13 +277,13 @@ export const OptionsModal: React.FC = () => {
               <span>Progreso de Misiones</span>
             </span>
             <span className="text-[10px] text-amber-200/90 font-bold bg-[#2e1207] px-2 py-0.5 rounded border border-[#6d280d]">
-              {questProgress.completedMissions.length >= 9
-                ? '⭐ 9/9 Todas Completas'
-                : `${questProgress.completedMissions.length}/9 Superadas`}
+              {questProgress.allMissionsCompleted
+                ? '⭐ 100% Todas Superadas (Presentes y Futuras)'
+                : `${questProgress.completedMissions.length} Misiones Superadas`}
             </span>
           </div>
           <p className="text-[11px] text-stone-300 leading-snug">
-            Desbloquea instantáneamente todos los capítulos y marca todas las misiones como superadas con 3 estrellas.
+            Desbloquea instantáneamente todos los capítulos y marca todas las misiones (presentes y futuras que aún no existen) como superadas con 3 estrellas.
           </p>
           <button
             onClick={() => {
@@ -297,6 +297,8 @@ export const OptionsModal: React.FC = () => {
             <span>
               {allMissionsDoneFeedback
                 ? '¡Todas las Misiones Completadas (3⭐)!'
+                : questProgress.allMissionsCompleted
+                ? '✓ Misiones 100% Superadas (Reaplicar 3⭐)'
                 : 'Completar Todas las Misiones'}
             </span>
           </button>
