@@ -1,3 +1,5 @@
+import { apiUrl } from '../utils/api';
+
 type RealtimeChannel = 'orders' | 'auctions';
 type RealtimeHandler = (payload: Record<string, unknown>) => void;
 
@@ -16,7 +18,7 @@ class RealtimeService {
     if (this.source || typeof window === 'undefined' || typeof EventSource === 'undefined') return;
 
     try {
-      const source = new EventSource('/api/realtime/stream');
+      const source = new EventSource(apiUrl('/api/realtime/stream'));
       (['orders', 'auctions'] as RealtimeChannel[]).forEach((channel) => {
         source.addEventListener(channel, (event) => {
           let payload: Record<string, unknown> = {};
