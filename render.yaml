@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: cdd-gacha-backend
+    runtime: node
+    plan: free
+    region: frankfurt
+    branch: main-nuevo
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: PLAY_GAMES_CLIENT_ID
+        sync: false
+      - key: PLAY_GAMES_CLIENT_SECRET
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: https://localhost,capacitor://localhost
