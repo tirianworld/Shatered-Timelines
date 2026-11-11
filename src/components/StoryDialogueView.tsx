@@ -23,6 +23,13 @@ import {
   STORY_ZANCUDO_ESPECTRAL_EPILOGUE_DIALOGUE,
   STORY_TITAN_MELENUDO_DIALOGUE,
   STORY_TITAN_MELENUDO_EPILOGUE_DIALOGUE,
+  STORY_PUERTA_LABERINTO_DIALOGUE,
+  STORY_ALDEA_EPILOGO_DIALOGUE,
+  STORY_CAPITULO3_INTRO_DIALOGUE,
+  STORY_CAPITULO3_M9_DIALOGUE,
+  STORY_CAPITULO3_M9_EPILOGUE_DIALOGUE,
+  STORY_CAPITULO3_M10_DIALOGUE,
+  STORY_CAPITULO3_M10_EPILOGUE_DIALOGUE,
   CHARACTER_PROFILES,
   DialogueLine,
   EmotionType,
@@ -140,6 +147,27 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     setActiveQuestChapter,
   } = useGame();
 
+  const isHobgoblinBossMission =
+    selectedCombatMissionId === 'm10_hobgoblin_boss' ||
+    selectedCombatMissionId === 'm10_hobgoblin_boss_epilogo';
+  const isHobgoblinBossEpilogue =
+    selectedCombatMissionId === 'm10_hobgoblin_boss_epilogo';
+  const isFertonMission =
+    selectedCombatMissionId === 'm9_emboscada_ferton' ||
+    selectedCombatMissionId === 'm9_emboscada_ferton_epilogo';
+  const isFertonEpilogue =
+    selectedCombatMissionId === 'm9_emboscada_ferton_epilogo';
+  const isCapitulo3IntroMission =
+    selectedCombatMissionId === 'm8_intro_capitulo3' ||
+    selectedCombatMissionId === 'm8_intro_capitulo3_epilogo' ||
+    selectedCombatMissionId === 'm8_campamento_orco';
+  const isAldeaEpilogue =
+    selectedCombatMissionId === 'm7_epilogo_aldea' ||
+    selectedCombatMissionId === 'm7_epilogo_aldea_epilogo';
+  const isLaberintoMission =
+    selectedCombatMissionId === 'm6_puerta_laberinto' ||
+    selectedCombatMissionId === 'm6_puerta_laberinto_epilogo' ||
+    selectedCombatMissionId === 'm6_cuevas_titan';
   const isTitanEpilogue =
     selectedCombatMissionId === 'm6_cuevas_titan_epilogo' ||
     selectedCombatMissionId === 'm6_cuevas_titan_epilogue';
@@ -190,6 +218,21 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     ? GORYN_FORGE_DIALOGUE
     : isKitchenIntro
     ? PACO_FOGON_DIALOGUE
+    : isHobgoblinBossEpilogue
+    ? STORY_CAPITULO3_M10_EPILOGUE_DIALOGUE
+    : isHobgoblinBossMission
+    ? STORY_CAPITULO3_M10_DIALOGUE
+    : isFertonEpilogue
+    ? STORY_CAPITULO3_M9_EPILOGUE_DIALOGUE
+    : isFertonMission
+    ? STORY_CAPITULO3_M9_DIALOGUE
+    : isCapitulo3IntroMission
+    ? STORY_CAPITULO3_INTRO_DIALOGUE
+    : isAldeaEpilogue
+    ? STORY_ALDEA_EPILOGO_DIALOGUE
+
+    : isLaberintoMission
+    ? STORY_PUERTA_LABERINTO_DIALOGUE
     : isTitanEpilogue
     ? STORY_TITAN_MELENUDO_EPILOGUE_DIALOGUE
     : isTitanMission
@@ -388,6 +431,15 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         case 'whisper':
           sound.playSFX('merge');
           break;
+        case 'critical':
+          sound.playSFX('critical');
+          break;
+        case 'attack':
+          sound.playSFX('attack');
+          break;
+        case 'victory':
+          sound.playSFX('victory');
+          break;
         default:
           sound.playSFX('click');
           break;
@@ -449,11 +501,11 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       sound.playSFX('click');
       setCurrentLineIndex((prev) => prev + 1);
     } else {
-      if (isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue) {
+      if (isAldeaEpilogue || isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue || isFertonEpilogue) {
         handleCompleteStory();
-      } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isRoboMission || isBosqueMission || isPuertasMission || isEmboscadaMission || isAsaltoOrcoMission || isFuriaCarmesiMission) {
+      } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isRoboMission || isBosqueMission || isPuertasMission || isEmboscadaMission || isAsaltoOrcoMission || isFuriaCarmesiMission || (isFertonMission && !isFertonEpilogue)) {
         sound.playSFX('critical');
-        setScreenFlash(isTitanMission ? 'gold' : isZancudoMission ? 'purple' : isCavernaAzulMission ? 'cyan' : isFuriaCarmesiMission ? 'cyan' : 'red');
+        setScreenFlash(isFertonMission ? 'gold' : isTitanMission ? 'gold' : isZancudoMission ? 'purple' : isCavernaAzulMission ? 'cyan' : isFuriaCarmesiMission ? 'cyan' : 'red');
         setBattleTransitionAlert(true);
         setTimeout(() => {
           handleStartCombatAfterStory();
@@ -470,7 +522,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         handleCompleteStory();
       }
     }
-  }, [isTyping, currentLine.text, currentLineIndex, dialogueLines.length, isTitanMission, isTitanEpilogue, isZancudoMission, isZancudoEpilogue, isRoboMission, isRoboEpilogue, isBosqueMission, isBosqueEpilogue, isPuertasMission, isPuertasEpilogue, isEmboscadaMission, isEmboscadaEpilogue, isAsaltoOrcoMission, isAsaltoOrcoEpilogue, isMinasHistoriaMission, isFuriaCarmesiMission, isFuriaCarmesiEpilogue, isCavernaAzulMission, isCavernaAzulEpilogue]);
+  }, [isTyping, currentLine.text, currentLineIndex, dialogueLines.length, isAldeaEpilogue, isLaberintoMission, isTitanMission, isTitanEpilogue, isZancudoMission, isZancudoEpilogue, isRoboMission, isRoboEpilogue, isBosqueMission, isBosqueEpilogue, isPuertasMission, isPuertasEpilogue, isEmboscadaMission, isEmboscadaEpilogue, isAsaltoOrcoMission, isAsaltoOrcoEpilogue, isMinasHistoriaMission, isFuriaCarmesiMission, isFuriaCarmesiEpilogue, isCavernaAzulMission, isCavernaAzulEpilogue, isFertonMission, isFertonEpilogue, isHobgoblinBossMission, isHobgoblinBossEpilogue]);
 
   const handleCompleteStory = () => {
     // Las bienvenidas del fogón y de la forja no son misiones: nunca deben
@@ -492,6 +544,101 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     launchConfetti();
     setIsStoryCompleted(true);
     setIsAutoPlay(false);
+
+    if (isHobgoblinBossEpilogue) {
+      completeQuestMission('m10_hobgoblin_boss', 3);
+      addGold(60000);
+      addCrystals(2500);
+      addShelfItem({
+        id: `trabuco_oro_capataz_${Date.now()}`,
+        name: 'Trabuco de Fuego de Ébano y Oro de Ferton',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/portraits/hobgoblin_capataz_thumb.png',
+        rarity: 'UR',
+        priceGold: 45000,
+        description: 'Arma de fuego artesanal con boca de bronce acampanada y recámara de oro requisada al Capataz de Ferton.',
+      });
+      addShelfItem({
+        id: `salvoconducto_mercado_negro_${Date.now()}`,
+        name: 'Salvoconducto Real del Mercado Negro',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/portraits/hobgoblin_capataz_thumb.png',
+        rarity: 'UR',
+        priceGold: 50000,
+        description: 'Pase maestro con el sello del halcón y la cadena de oro de Ferton para comerciar sin restricciones en el Mercado Negro.',
+      });
+      return;
+    }
+
+    if (isFertonEpilogue) {
+      completeQuestMission('m9_emboscada_ferton', 3);
+      addGold(40000);
+      addCrystals(1500);
+      addShelfItem({
+        id: `manuscrito_ordenes_ferton_${Date.now()}`,
+        name: 'Órdenes Selladas y Blasón de Ferton',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/portraits/guarda_negro_espada_thumb.png',
+        rarity: 'UR',
+        priceGold: 35000,
+        description: 'Manifiesto confidencial requisado del carromato con la firma de Ferton y la ruta secreta hacia los puestos de avanzada del Mercado Negro.',
+      });
+      return;
+    }
+
+    if (isCapitulo3IntroMission) {
+      completeQuestMission('m8_intro_capitulo3', 3);
+      addGold(25000);
+      addCrystals(1000);
+      addShelfItem({
+        id: `efigie_ilusion_arlem_${Date.now()}`,
+        name: 'Efigie Ilusoria de Arlem Orco',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/portraits/arlem_orco_thumb.png',
+        rarity: 'UR',
+        priceGold: 25000,
+        description: 'Tótem arcano imbuido con magia de alteración e ilusión menor. Conmemora el brillante engaño que desalojó el campamento orco del bosque sin derramar una sola gota de sangre.',
+      });
+      return;
+    }
+
+    if (isAldeaEpilogue) {
+      completeQuestMission('m7_epilogo_aldea', 3);
+      addGold(20000);
+      addCrystals(800);
+      addShelfItem({
+        id: `emblema_glimmerstone_${Date.now()}`,
+        name: 'Emblema de Glimmerstone y Sombra del Laberinto',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/items/llave_laberinto_desactivada.png',
+        rarity: 'UR',
+        priceGold: 20000,
+        description: 'Insignia de gratitud del clan enano de Glimmerstone y vestigio sombrío del titiritero que selló el destino de Lord Vaelas.',
+      });
+      return;
+    }
+
+    if (isLaberintoMission) {
+      completeQuestMission('m6_puerta_laberinto', 3);
+      addGold(15000);
+      addCrystals(500);
+      addShelfItem({
+        id: `llave_desactivada_lloth_${Date.now()}`,
+        name: 'Llave Inerte del Laberinto de Lloth',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/items/llave_laberinto_desactivada.png',
+        rarity: 'UR',
+        priceGold: 15000,
+        description: 'Llave de obsidiana con forma de araña arrojada tras el sellado del laberinto. Su amatista central está apagada y sus runas inertes: símbolo de la traición y perdición eterna de Lord Vaelas.',
+      });
+      return;
+    }
 
     if (isTitanEpilogue) {
       completeQuestMission('m6_cuevas_titan', 3);
@@ -721,7 +868,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       finishBoticaIntro();
       return;
     }
-    if (isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isMinasHistoriaMission || isEmboscadaEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isAsaltoOrcoEpilogue) {
+    if (isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isMinasHistoriaMission || isEmboscadaEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isAsaltoOrcoEpilogue) {
       handleCompleteStory();
     } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isEmboscadaMission || isRoboMission || isBosqueMission || isPuertasMission || isFuriaCarmesiMission) {
       handleStartCombatAfterStory();
@@ -768,6 +915,10 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       setSelectedCombatMissionId('m4_puertas_selladas');
     } else if (isBosqueMission) {
       setSelectedCombatMissionId('m3_bosque');
+    } else if (isHobgoblinBossMission) {
+      setSelectedCombatMissionId('m10_hobgoblin_boss');
+    } else if (isFertonMission) {
+      setSelectedCombatMissionId('m9_emboscada_ferton');
     } else if (isRoboMission) {
       setSelectedCombatMissionId('m2_robo');
     } else {
@@ -980,6 +1131,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
             activeProf.poses[activeSpeaker.pose] ||
             Object.values(activeProf.poses)[0] ||
             activeProf.avatar;
+          const isTitanSleeping =
+            activeSpeaker.characterId === 'titan' && activeSpeaker.pose === 'durmiendo';
           const enterAnim =
             activeSpeaker.side === 'left'
               ? activeSpeaker.animType === 'enter'
@@ -1002,16 +1155,29 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
           return (
             <div
               key={activeSpeaker.id}
-              className={`absolute bottom-0 ${activePos} ${enterAnim} z-20 flex flex-col items-center pointer-events-none select-none`}
+              className={`absolute bottom-0 ${isTitanSleeping ? 'left-1/2 -translate-x-1/2' : activePos} ${enterAnim} z-20 flex flex-col items-center pointer-events-none select-none`}
             >
-              {/* Character Standing Sprite: Waist-up clearly visible, waist-down 100% concealed behind dialogue box */}
+              {isTitanSleeping && (
+                <div className="absolute top-[20%] left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 bg-slate-950/90 px-3.5 py-1.5 rounded-full border border-cyan-400 shadow-[0_0_24px_rgba(56,189,248,0.7)] animate-bounce">
+                  <span className="text-xl">💤</span>
+                  <span className="text-xs font-black uppercase tracking-wider text-cyan-200 font-mono">
+                    ROOOOOONC... ZZZ... (Tumbado en el suelo)
+                  </span>
+                  <span className="text-sm animate-pulse text-yellow-300">⚡</span>
+                </div>
+              )}
+              {/* Character Standing / Sleeping Sprite */}
               <img
                 src={activePoseUrl}
                 alt={activeProf.name}
                 onError={(event) => {
                   event.currentTarget.style.visibility = 'hidden';
                 }}
-                className={`${activeProf.framing.height} w-auto max-w-none object-contain brightness-110 drop-shadow-[0_0_24px_rgba(251,191,36,0.35)] transition-all ${activeProf.framing.translateY}`}
+                className={`${activeProf.framing.height} w-auto max-w-none object-contain brightness-110 drop-shadow-[0_0_24px_rgba(251,191,36,0.35)] transition-all ${
+                  isTitanSleeping
+                    ? 'rotate-[-85deg] translate-y-[28%] scale-[0.80] filter saturate-80'
+                    : activeProf.framing.translateY
+                }`}
               />
             </div>
           );
@@ -1266,7 +1432,13 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
             {/* Mission Clear Banner */}
             <div>
               <span className="px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/60 text-[9px] font-black uppercase tracking-widest text-amber-300 inline-block mb-1">
-                {isZancudoEpilogue
+                {isCapitulo3IntroMission
+                  ? 'HISTORIA: CAPÍTULO III • EL CAMPAMENTO ORCO'
+                  : isAldeaEpilogue
+                  ? '¡CAPÍTULO II: LAS MINAS DE GLIMMERSTONE COMPLETADO!'
+                  : isLaberintoMission
+                  ? '¡EL LABERINTO DE LLOTH SELLADO PARA SIEMPRE!'
+                  : isZancudoEpilogue
                   ? '¡EL ZANCUDO ESPECTRAL PURGADO!'
                   : isCavernaAzulEpilogue
                   ? '¡INFECCIÓN GLACIAL PURIFICADA!'
@@ -1293,7 +1465,13 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   : 'PRÓLOGO DE HISTORIA SUPERADO'}
               </span>
               <h3 className="font-serif font-black text-lg sm:text-xl uppercase text-amber-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                {isZancudoEpilogue
+                {isCapitulo3IntroMission
+                  ? '¡LA GRAN FARSA DEL BARDO ILUSIONISTA!'
+                  : isAldeaEpilogue
+                  ? '¡LA ALDEA ENANA A SALVO Y EL PEÓN ENCADENADO!'
+                  : isLaberintoMission
+                  ? '¡LA TRAICIÓN DEL DROW CASTIGADA Y MINAS A SALVO!'
+                  : isZancudoEpilogue
                   ? '¡LA CAÍDA DE LA TEJEDORA DE AGUJAS!'
                   : isCavernaAzulEpilogue
                   ? '¡LA CAÍDA DE LOS ACECHADORES GÉLIDOS!'
@@ -1320,7 +1498,13 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   : '¡Contrato de Cryovain Aceptado!'}
               </h3>
               <p className="text-[11px] text-stone-300 leading-snug mt-1">
-                {isZancudoEpilogue
+                {isCapitulo3IntroMission
+                  ? '¡Arlem Díaz ha embaucado a los orcos de élite haciéndose pasar por uno de ellos con magia de ilusión! Convencidos de que las minas están calientes y vacías de enanos, los orcos han trasladado todo su campamento al interior mientras esperan a Gromock, dejando libre el paso hacia el Mercado Negro.'
+                  : isAldeaEpilogue
+                  ? '¡Caldo de Dragón ha devuelto la paz a la aldea subterránea! Las familias enanas eligen quedarse en su verdadero hogar bajo la montaña con las puertas abiertas. Mientras tanto, en las tinieblas del laberinto, la figura encapuchada ha cobrado a su nuevo peón... ¡El engranaje del destino avanza!'
+                  : isLaberintoMission
+                  ? '¡Lord Vaelas ha quedado sepultado en su propio laberinto de pruebas por la eternidad! Las compuertas de Lloth se cerraron de golpe tras él, la plaga de araknoides ha cesado y cada miembro de Caldo de Dragón porta una llave inerte. ¡Descended a la aldea para presenciar el epílogo!'
+                  : isZancudoEpilogue
                   ? '¡Caldo de Dragón y Lord Vaelas han aniquilado al Zancudo Espectral! La entrada al corazón más profundo de la colonia queda abierta y el descenso final hacia la Reina y el artefacto drow os aguarda.'
                   : isCavernaAzulEpilogue
                   ? '¡Pepe Loux ha erradicado la plaga parasitaria de los cuatro acechadores gélidos en la caverna congelada! El sacrificio de Durnik ha sido honrado y la galería queda libre del virus arácnido.'
@@ -1346,6 +1530,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   ? '¡El anciano vagabundo os reveló la entrada secreta a la colonia minera de plata de Glimmerstone! Pero una jauría de goblins salta de los pinos para cortar vuestro paso.'
                   : 'El Capitán Gabriel se ha tragado su odio hacia los aventureros ante la desesperación de la masacre de su guardia. ¡Caldo de Dragón marcha hacia el glaciar!'}
               </p>
+
             </div>
 
             {/* Mission Rewards Container */}
@@ -1357,7 +1542,13 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 {/* Reward 1: Oro */}
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <span className="font-mono text-xs font-black text-amber-400">
-                    {isZancudoEpilogue
+                    {isCapitulo3IntroMission
+                      ? '+25,000'
+                      : isAldeaEpilogue
+                      ? '+20,000'
+                      : isLaberintoMission
+                      ? '+15,000'
+                      : isZancudoEpilogue
                       ? '+10,000'
                       : isCavernaAzulEpilogue
                       ? '+8,000'
@@ -1388,7 +1579,13 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 {/* Reward 2: Gemas */}
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <span className="font-mono text-xs font-black text-sky-400">
-                    {isZancudoEpilogue
+                    {isCapitulo3IntroMission
+                      ? '+1,000'
+                      : isAldeaEpilogue
+                      ? '+800'
+                      : isLaberintoMission
+                      ? '+500'
+                      : isZancudoEpilogue
                       ? '+350'
                       : isCavernaAzulEpilogue
                       ? '+250'
@@ -1420,7 +1617,11 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <img
                     src={
-                      isZancudoEpilogue
+                      isCapitulo3IntroMission
+                        ? '/assets/portraits/arlem_orco_thumb.png'
+                        : isAldeaEpilogue || isLaberintoMission
+                        ? '/assets/items/llave_laberinto_desactivada.png'
+                        : isZancudoEpilogue
                         ? '/assets/combat/semiboss_zancudo_thumb.png'
                         : isCavernaAzulEpilogue
                         ? '/assets/portraits/enano_infectado_thumb.png'
@@ -1446,7 +1647,13 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                     className="w-5 h-5 object-contain"
                   />
                   <span className="text-[8px] font-bold uppercase text-amber-300 mt-0.5 truncate max-w-[80px]">
-                    {isZancudoEpilogue
+                    {isCapitulo3IntroMission
+                      ? 'EFIGIE UR'
+                      : isAldeaEpilogue
+                      ? 'EMBLEMA UR'
+                      : isLaberintoMission
+                      ? 'LLAVE INERTE'
+                      : isZancudoEpilogue
                       ? 'AGUJA ZANCUDO'
                       : isCavernaAzulEpilogue
                       ? 'AGUJA VIRAL'
@@ -1478,7 +1685,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
             {/* Action Buttons */}
             <div className="space-y-2 pt-1">
-              {!isRoboEpilogue && !isBosqueEpilogue && !isPuertasEpilogue && !isEmboscadaEpilogue && !isAsaltoOrcoEpilogue && !isFuriaCarmesiEpilogue && !isCavernaAzulEpilogue && !isZancudoEpilogue && (
+              {!isFertonEpilogue && !isCapitulo3IntroMission && !isAldeaEpilogue && !isLaberintoMission && !isRoboEpilogue && !isBosqueEpilogue && !isPuertasEpilogue && !isEmboscadaEpilogue && !isAsaltoOrcoEpilogue && !isFuriaCarmesiEpilogue && !isCavernaAzulEpilogue && !isZancudoEpilogue && (
                 <button
                   type="button"
                   onClick={handleStartCombatAfterStory}
@@ -1486,7 +1693,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 >
                   <Swords className="w-4 h-4" />
                   <span>
-                    {isMinasHistoriaMission
+                    {isFertonMission
+                      ? '¡Enfrentar a la Guardia Negra! (3 Oleadas)'
+                      : isMinasHistoriaMission
                       ? '¡Iniciar Exterminio: Araknoide Carmesí!'
                       : isAsaltoOrcoMission
                       ? '¡Enfrentar al Caudillo Gorrak y sus Orcos!'
@@ -1503,10 +1712,32 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 </button>
               )}
 
+              {isLaberintoMission && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedCombatMissionId('m7_epilogo_aldea');
+                    setCurrentLineIndex(0);
+                    setIsStoryCompleted(false);
+                    setIsAutoPlay(false);
+                  }}
+                  className="w-full py-2.5 bg-gradient-to-r from-purple-700 via-indigo-700 to-amber-600 hover:brightness-110 text-white font-black rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-[0_0_15px_rgba(168,85,247,0.6)] flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                >
+                  <Trophy className="w-4 h-4 text-amber-300" />
+                  <span>¡Ver Epílogo: El Retorno a Glimmerstone!</span>
+                </button>
+              )}
+
               <button
                 type="button"
                 onClick={() => {
-                  if (isBosqueEpilogue) {
+                  if (isCapitulo3IntroMission || isFertonMission) {
+                    setActiveQuestChapter(3);
+                    handleReturnToQuests();
+                  } else if (isAldeaEpilogue) {
+                    setActiveQuestChapter(3);
+                    handleReturnToQuests();
+                  } else if (isBosqueEpilogue) {
                     setSelectedCombatMissionId('m4_puertas_selladas');
                   } else if (isPuertasEpilogue) {
                     setActiveQuestChapter(2);
@@ -1516,12 +1747,18 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   }
                 }}
                 className={`w-full py-2.5 bg-gradient-to-r ${
-                  isFuriaCarmesiEpilogue || isPuertasEpilogue
+                  isCapitulo3IntroMission || isAldeaEpilogue || isLaberintoMission || isFuriaCarmesiEpilogue || isPuertasEpilogue
                     ? 'from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.7)] ring-2 ring-yellow-400/60'
                     : 'from-amber-700 via-amber-600 to-yellow-600 text-stone-950 font-black shadow-md'
                 } hover:brightness-110 rounded-xl text-xs uppercase tracking-wider cursor-pointer transition-all active:scale-95`}
               >
-                {isFuriaCarmesiEpilogue
+                {isCapitulo3IntroMission
+                  ? '¡Capítulo III Desbloqueado! Volver a Misiones'
+                  : isAldeaEpilogue
+                  ? '¡Capítulo II Finalizado! Volver a Misiones'
+                  : isLaberintoMission
+                  ? 'Volver al Menú de Misiones'
+                  : isFuriaCarmesiEpilogue
                   ? '¡Galería Oeste Purgada! Volver al Nexo'
                   : isMinasHistoriaMission
                   ? '¡Pacto Sellado! Volver al Mapa'
@@ -1540,6 +1777,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
             </div>
           </div>
         </div>
+
       )}
     </div>
   );

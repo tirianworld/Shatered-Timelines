@@ -1417,6 +1417,82 @@ app.get('/sw.js', (_req: Request, res: Response) => {
   );
 });
 
+const REMOTE_ASSETS_BASE = 'https://raw.githubusercontent.com/tirianworld/Shatered-Timelines/main-nuevo/public';
+
+function findCaseInsensitiveFile(dir: string, filename: string): string | null {
+  try {
+    if (!fs.existsSync(dir)) return null;
+    const lowerName = filename.toLowerCase();
+    const normalized = lowerName.replace(/[\s_-]+/g, '');
+    const files = fs.readdirSync(dir);
+    for (const f of files) {
+      if (f.toLowerCase() === lowerName) return path.join(dir, f);
+      if (f.toLowerCase().replace(/[\s_-]+/g, '') === normalized) return path.join(dir, f);
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+let dishDuplicatesMap: Record<string, string> = {};
+try {
+  const mapPath = path.join(__dirname, 'src', 'data', 'dishDuplicatesMap.json');
+  if (fs.existsSync(mapPath)) {
+    dishDuplicatesMap = JSON.parse(fs.readFileSync(mapPath, 'utf8'));
+  }
+} catch {
+  // ignore
+}
+
+app.use(async (req: Request, res: Response, next) => {
+  let reqPath = decodeURI(req.path);
+  if (dishDuplicatesMap[reqPath]) {
+    reqPath = dishDuplicatesMap[reqPath];
+  }
+  if (reqPath.startsWith('/assets/') || reqPath.startsWith('/items/')) {
+    const targetSubPath = reqPath.startsWith('/items/') ? `/assets${reqPath}` : reqPath;
+    const localFile = path.join(__dirname, 'public', targetSubPath);
+    if (fs.existsSync(localFile) && fs.statSync(localFile).isFile()) {
+      return res.sendFile(localFile);
+    }
+
+    // Check case-insensitive locally in the same directory
+    const parentDir = path.dirname(localFile);
+    const baseName = path.basename(localFile);
+    const fuzzyMatch = findCaseInsensitiveFile(parentDir, baseName);
+    if (fuzzyMatch && fs.statSync(fuzzyMatch).isFile()) {
+      return res.sendFile(fuzzyMatch);
+    }
+
+    // Fallback: fetch from GitHub repo
+    try {
+      const remoteUrl = `${REMOTE_ASSETS_BASE}${targetSubPath}`;
+      const remoteRes = await fetch(remoteUrl);
+      if (remoteRes.ok) {
+        const buffer = Buffer.from(await remoteRes.arrayBuffer());
+        fs.mkdirSync(path.dirname(localFile), { recursive: true });
+        fs.writeFileSync(localFile, buffer);
+        const contentType = remoteRes.headers.get('content-type') || 'application/octet-stream';
+        res.setHeader('Content-Type', contentType);
+        return res.send(buffer);
+      }
+    } catch {
+      // ignore
+    }
+
+    // Cross-folder fallback in public/assets/*
+    for (const sub of ['items', 'backgrounds', 'ui', 'aistudio', 'portraits', 'combat', 'forge']) {
+      const altDir = path.join(__dirname, 'public', 'assets', sub);
+      const match = findCaseInsensitiveFile(altDir, baseName);
+      if (match && fs.statSync(match).isFile()) {
+        return res.sendFile(match);
+      }
+    }
+  }
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- ANDROID APP LINKS (TWA / PLAY STORE) ---

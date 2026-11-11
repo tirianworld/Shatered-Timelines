@@ -1443,8 +1443,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       'm3_cuevas_rojo',
       'm4_cuevas_azul',
       'm5_cuevas_zancudo',
-      'm6_cuevas_titan',
-      'm7_cuevas_reina',
+      'm6_puerta_laberinto',
+      'm7_epilogo_aldea',
     ];
     const allStars: Record<string, number> = {};
     allMissionIds.forEach((id) => {

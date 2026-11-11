@@ -1,11 +1,15 @@
 // 1-to-1 unique mapping for every single 3-ingredient combination in the tavern
 // Generates all 3,276 unique dishes with zero collisions and 100% accurate ingredient representation
 import type { CookingIngredient, CookingRecipe, IngredientCategory } from './cookingData';
+import dishDuplicatesMap from './dishDuplicatesMap.json';
+
+const DUP_MAP = dishDuplicatesMap as Record<string, string>;
+const resolveCanonicalDishIcon = (path: string): string => DUP_MAP[path] || path;
 
 const INGREDIENT_NAMES: Record<string, string> = {
   ing_pollo_calidad: 'Pollo de Corral',
   ing_carne_roja: 'Ternera Glacial',
-  ing_carne_ahumada: 'Carne Ahumada',
+  ing_carne_ahumada: 'Carne Seca Curada',
   ing_lomo_jabali: 'Chuletón de Jabalí',
   ing_ajo_silvestre: 'Ajo Silvestre',
   ing_patata_montana: 'Patatas de Icespear',
@@ -400,28 +404,68 @@ function getDishIcon(ings: CookingIngredient[]): string {
   const ids = new Set(ings.map((i) => i.id));
   const cats = ings.map((i) => i.category);
 
-  // Cada combinación individual de Cangrejo de Cueva tiene su propio sprite único e irrepetible
+  let rawIcon = '';
+  // Cada combinación individual de Cangrejo de Cueva tiene su propio sprite único
   if (ids.has('ing_cangrejo_cueva')) {
     const sorted = ings.map((i) => i.id).sort().join('__');
-    return `/assets/items/crab_dishes/crab_${sorted}.png`;
-  }
-
-  // Cada combinación individual de Trucha Plateada tiene su propio sprite único e irrepetible
-  if (ids.has('ing_trucha_arroyo')) {
+    rawIcon = `/assets/items/crab_dishes/crab_${sorted}.png`;
+  } else if (ids.has('ing_trucha_arroyo')) {
     const sorted = ings.map((i) => i.id).sort().join('__');
-    return `/assets/items/trout_dishes/trout_${sorted}.png`;
-  }
-
-  // Cada combinación individual de Salmón del Río Helado tiene su propio sprite único e irrepetible
-  if (ids.has('ing_salmon_helado')) {
+    rawIcon = `/assets/items/trout_dishes/trout_${sorted}.png`;
+  } else if (ids.has('ing_salmon_helado')) {
     const sorted = ings.map((i) => i.id).sort().join('__');
-    return `/assets/items/salmon_dishes/salmon_${sorted}.png`;
-  }
-
-  // Cada combinación individual de Pollo de Corral tiene su propio sprite único e irrepetible
-  if (ids.has('ing_pollo_calidad')) {
+    rawIcon = `/assets/items/salmon_dishes/salmon_${sorted}.png`;
+  } else if (ids.has('ing_pollo_calidad')) {
     const sorted = ings.map((i) => i.id).sort().join('__');
-    return `/assets/items/chicken_dishes/chicken_${sorted}.png`;
+    rawIcon = `/assets/items/chicken_dishes/chicken_${sorted}.png`;
+  } else if (ids.has('ing_huevos_araknoide')) {
+    rawIcon = '/assets/items/food_tortilla_araknoide.png';
+  } else if (ids.has('ing_larvas_araknoide')) {
+    rawIcon = '/assets/items/food_larvas_crujientes.png';
+  } else if (ids.has('ing_carne_devorador')) {
+    rawIcon = '/assets/items/food_devorador_empanada.png';
+  } else if (ids.has('ing_masa_madre')) {
+    rawIcon = '/assets/items/pizza.png';
+  } else if (ids.has('ing_arroz_grano')) {
+    rawIcon = cats.includes('pescados') ? '/assets/items/food_sushi_salmon.png' : '/assets/items/ramen.png';
+  } else if (ids.has('ing_harina_trigo') && ids.has('ing_leche_fresca')) {
+    rawIcon = '/assets/items/tortitas.png';
+  } else if (ids.has('ing_pan_rustico') && ids.has('ing_ajo_silvestre')) {
+    rawIcon = '/assets/items/panes_de_ajo.png';
+  } else if (ids.has('ing_queso_cabra') && ids.has('ing_harina_trigo')) {
+    rawIcon = '/assets/items/arepas.png';
+  } else if (ids.has('ing_carne_ahumada')) {
+    // Comidas preparadas con Carne Seca Curada
+    if (ids.has('ing_harina_trigo') && ids.has('ing_hortalizas_huerto')) rawIcon = '/assets/items/ramen.png';
+    else if (ids.has('ing_pan_rustico') || ids.has('ing_harina_trigo')) rawIcon = '/assets/items/hamburguesa.png';
+    else if (ids.has('ing_queso_cabra')) rawIcon = '/assets/items/food_lasana.png';
+    else if (ids.has('ing_patata_montana')) rawIcon = '/assets/items/food_steak_chips.png';
+    else if (ids.has('ing_especias_dragon')) rawIcon = '/assets/items/kebab.png';
+    else rawIcon = '/assets/items/plato_de_carne_app.png';
+  } else if (ids.has('ing_patata_montana')) {
+    if (cats.includes('carnes')) rawIcon = '/assets/items/food_steak_chips.png';
+    else if (cats.includes('pescados')) rawIcon = '/assets/items/food_fish_chips.png';
+    else if (ids.has('ing_huevos_corral')) rawIcon = '/assets/items/food_eggs_chips.png';
+    else rawIcon = '/assets/items/tortilla_patata.png';
+  } else if (ids.has('ing_salmon_helado') && ids.has('ing_arroz_grano')) {
+    rawIcon = '/assets/items/food_sushi_salmon.png';
+  } else if (cats.includes('pescados')) {
+    rawIcon = ids.has('ing_especias_dragon') || ids.has('ing_sal_glacial') ? '/assets/items/food_ceviche.png' : '/assets/items/food_fish_chips.png';
+  } else if (cats.includes('carnes')) {
+    if (ids.has('ing_lomo_jabali')) rawIcon = '/assets/items/food_bourguignon.png';
+    else if (ids.has('ing_especias_dragon')) rawIcon = '/assets/items/kebab.png';
+    else if (ids.has('ing_pan_rustico') || ids.has('ing_harina_trigo')) rawIcon = '/assets/items/hamburguesa.png';
+    else rawIcon = '/assets/items/food_bourguignon.png';
+  } else if (cats.includes('lacteos')) {
+    if (ids.has('ing_queso_cabra') && ids.has('ing_leche_fresca')) rawIcon = '/assets/items/food_fondue.png';
+    else if (ids.has('ing_huevos_corral')) rawIcon = '/assets/items/tortilla_patata.png';
+    else rawIcon = '/assets/items/quesarito.png';
+  } else if (cats.every((c) => c === 'verduras')) {
+    rawIcon = '/assets/items/food_ratatouille.png';
+  } else if (cats.includes('especias')) {
+    rawIcon = '/assets/items/doritos.png';
+  } else {
+    rawIcon = '/assets/items/castillo_sopa.png';
   }
 
   if (ids.has('ing_huevos_araknoide')) return '/assets/items/food_tortilla_araknoide.png';
@@ -469,7 +513,7 @@ function getDishIcon(ings: CookingIngredient[]): string {
   if (cats.every((c) => c === 'verduras')) return '/assets/items/food_ratatouille.png';
   if (cats.includes('especias')) return '/assets/items/doritos.png';
 
-  return '/assets/items/castillo_sopa.png';
+  return resolveCanonicalDishIcon(rawIcon);
 }
 
 function calculateBuff(ings: CookingIngredient[]): {
