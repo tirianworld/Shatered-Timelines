@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
+import { MaterialSourcesModal } from './MaterialSourcesModal';
 import confetti from 'canvas-confetti';
 import {
   COOKING_INGREDIENTS,
@@ -115,6 +116,7 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
 
   // Stock of ingredients and chef affection
   const [stock, setStock] = useState<TavernCookingStock>(() => loadTavernCookingStock());
+  const [materialHint, setMaterialHint] = useState<{ name: string; icon: string; have?: number; need?: number } | null>(null);
   const [affection, setAffection] = useState<ChefAffectionData>(() => loadChefAffection());
   const [discoveredRecipes, setDiscoveredRecipes] = useState<string[]>(() => loadDiscoveredRecipes());
 
@@ -382,7 +384,7 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
     const currentCount = stock[ingredient.id] || 0;
     if (currentCount <= 0) {
       sound.playSFX('hurt');
-      showNotice(`¡Agotado! Compra más ${ingredient.name} en la Despensa.`);
+      setMaterialHint({ name: ingredient.name, icon: ingredient.icon, have: 0, need: 1 });
       return;
     }
 
@@ -1306,7 +1308,9 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
                 return (
                   <div
                     key={ing.id}
-                    className="p-2 rounded-xl bg-stone-900/80 border border-stone-700/60 flex items-center justify-between"
+                    onClick={() => setMaterialHint({ name: ing.name, icon: ing.icon, have: count, need: 1 })}
+                    className="p-2 rounded-xl bg-stone-900/80 border border-stone-700/60 flex items-center justify-between cursor-pointer hover:border-amber-500/60 transition-colors"
+                    title={count > 0 ? 'Ver dónde se consigue' : 'No lo tienes: ver dónde conseguirlo'}
                   >
                     <div className="flex items-center gap-2">
                       <div className="w-10 h-10 rounded-full bg-stone-950 border border-amber-500/40 flex items-center justify-center p-1">
@@ -1323,7 +1327,10 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
                     </div>
 
                     <button
-                      onClick={() => handleBuyIngredient(ing)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBuyIngredient(ing);
+                      }}
                       className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 text-white font-bold text-[11px] border border-amber-400 flex items-center gap-1 shadow cursor-pointer active:scale-95"
                     >
                       <Coins className="w-3 h-3 text-amber-300" />
@@ -1340,6 +1347,10 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
       {/* ------------------------------------------------------------- */}
       {/* 9. REPUTACIÓN DEL FOGÓN MODAL                                 */}
       {/* ------------------------------------------------------------- */}
+      {materialHint && (
+        <MaterialSourcesModal material={materialHint} onClose={() => setMaterialHint(null)} />
+      )}
+
       {isAffectionModalOpen && (
         <div className="absolute inset-0 z-50 bg-black/85 flex items-center justify-center p-3 animate-fade-in">
           <div className="relative w-full max-w-sm rounded-2xl bg-gradient-to-b from-[#2a0e05] to-[#120502] border-3 border-amber-500 shadow-2xl p-4 flex flex-col items-center text-center">

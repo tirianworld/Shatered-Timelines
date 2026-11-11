@@ -25,6 +25,7 @@ import { OrderClanView } from './components/OrderClanView';
 import { StoryDialogueView } from './components/StoryDialogueView';
 import { TavernKitchenView } from './components/TavernKitchenView';
 import { PartySelectionView } from './components/PartySelectionView';
+import { LabyrinthView } from './components/LabyrinthView';
 import { sound } from './services/soundService';
 
 const useResponsiveGameScale = () => {
@@ -128,6 +129,7 @@ const GameContent: React.FC = () => {
           {currentTab === 'auction' && <AuctionHouseModal isOpen={true} onClose={() => goBack()} />}
           {(currentTab === 'order' || currentTab === 'clan') && <OrderClanView />}
           {currentTab === 'party' && <PartySelectionView onClose={() => goBack()} />}
+          {currentTab === 'labyrinth' && <LabyrinthView />}
           {currentTab === 'story' && (
             <StoryDialogueView
               onFinish={() => {
@@ -155,7 +157,7 @@ const GameContent: React.FC = () => {
               }}
             />
           )}
-          {!['santuario', 'camp', 'quest', 'heroes', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'cooking', 'world', 'combat', 'patrol', 'inventory', 'auction', 'order', 'clan', 'story', 'party'].includes(currentTab) && (
+          {!['santuario', 'camp', 'quest', 'heroes', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'cooking', 'world', 'combat', 'patrol', 'inventory', 'auction', 'order', 'clan', 'story', 'party', 'labyrinth'].includes(currentTab) && (
             <QuestView />
           )}
         </main>
