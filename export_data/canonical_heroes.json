@@ -208,6 +208,22 @@
     "bio": "Pistolero con dos pistolas duales de tiro rápido y una espada larga a dos manos, letal a cualquier distancia."
   },
   {
+    "id": "arlem_diaz",
+    "name": "Arlem Díaz",
+    "title": "Bardo Aventurero",
+    "rarity": "SR",
+    "attribute": "Natural",
+    "portrait": "/assets/portraits/arlem_diaz_icono.png",
+    "frame": "/assets/ui/marco_sr.png",
+    "orb": "/assets/items/atributo natural.png",
+    "level": 1,
+    "hp": 1180,
+    "attack": 285,
+    "defense": 190,
+    "cc": 1325,
+    "bio": "Bardo aventurero que combina destreza marcial, ingenio y magia musical para apoyar a sus compañeros."
+  },
+  {
     "id": "ragnavaldr",
     "name": "Ragnavaldr",
     "title": "Furia de las Nieves",
