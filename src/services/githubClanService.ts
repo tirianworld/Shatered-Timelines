@@ -1,6 +1,5 @@
 import { ClanData, ClanMember, GitHubSyncStatus } from '../types/clan';
 import { safeStorage } from '../utils/storage';
-import { apiUrl } from '../utils/api';
 
 const STATUS_STORAGE_KEY = 'cdd_orders_sync_status_v2';
 const REQUEST_TIMEOUT_MS = 12000;
@@ -150,7 +149,7 @@ class GitHubClanService {
   public async loadOrders(): Promise<OrdersSnapshot | null> {
     this.beginSync();
     try {
-      const res = await fetchWithTimeout(apiUrl('/api/orders'), { cache: 'no-store' });
+      const res = await fetchWithTimeout('/api/orders', { cache: 'no-store' });
       const data = (await res.json()) as OrdersApiResponse;
       if (!res.ok || !data.success) {
         throw new Error(data.message || `El servidor respondió ${res.status}`);
@@ -187,7 +186,7 @@ class GitHubClanService {
   private async mutate(path: string, body: Record<string, unknown>): Promise<OrderMutationResult> {
     this.beginSync();
     try {
-      const res = await fetchWithTimeout(apiUrl(path), {
+      const res = await fetchWithTimeout(path, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
