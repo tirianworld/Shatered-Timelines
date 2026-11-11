@@ -4,7 +4,9 @@ import { sound } from '../services/soundService';
 import { Check, X } from 'lucide-react';
 import { CANONICAL_HEROES_LIST, CanonicalHeroItem } from './HeroesView';
 
-const STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v3';
+const STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v4';
+const LEGACY_STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v3';
+const REFERENCE_PARTY = ['kairon', 'prometeo', 'arlem_diaz', 'magordito'];
 
 interface PartySelectionViewProps {
   onClose?: () => void;
@@ -16,30 +18,50 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
   // 5 Party Presets (each with 4 slots)
   const [parties, setParties] = useState<(string | null)[][]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_PARTIES_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
+      const current = localStorage.getItem(STORAGE_PARTIES_KEY);
+      if (current) {
+        const parsed = JSON.parse(current);
+        if (Array.isArray(parsed) && parsed.length === 5) return parsed;
+      }
+
+      // Migración: conserva los otros cuatro equipos, pero aplica la formación
+      // de referencia al primer preset una sola vez.
+      const legacy = localStorage.getItem(LEGACY_STORAGE_PARTIES_KEY);
+      if (legacy) {
+        const parsed = JSON.parse(legacy);
         if (Array.isArray(parsed) && parsed.length === 5) {
-          return parsed;
+          const migrated = parsed.map((party) => Array.isArray(party) ? [...party] : [null, null, null, null]);
+          migrated[0] = [...REFERENCE_PARTY];
+          localStorage.setItem(STORAGE_PARTIES_KEY, JSON.stringify(migrated));
+          return migrated;
         }
       }
     } catch {
-      // Ignore JSON error
+      // Ignore storage or JSON errors and use the reference formation.
     }
 
-    // Default: Party 1 initialized with current team (or Gromock if empty), others empty
-    const defaultParty1 = team.length === 4 ? [...team] : ['gromock', null, null, null];
-    return [
-      defaultParty1,
+    const defaults = [
+      [...REFERENCE_PARTY],
       [null, null, null, null],
       [null, null, null, null],
       [null, null, null, null],
       [null, null, null, null],
     ];
+    try {
+      localStorage.setItem(STORAGE_PARTIES_KEY, JSON.stringify(defaults));
+    } catch {
+      // Ignore storage errors.
+    }
+    return defaults;
   });
 
   const [activePreset, setActivePreset] = useState<number>(0);
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
+
+  // Al abrir la pestaña, sincroniza el equipo de combate con el preset inicial.
+  useEffect(() => {
+    setEntireTeam(parties[0] || [...REFERENCE_PARTY]);
+  }, []);
 
   // Current active 4-hero slots
   const currentSlots = parties[activePreset] || [null, null, null, null];
