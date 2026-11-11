@@ -14,6 +14,7 @@ import { TavernView } from './components/TavernView';
 import { WorldMapView } from './components/WorldMapView';
 import { CombatView } from './components/CombatView';
 import { PatrolView } from './components/PatrolView';
+import { LabyrinthView } from './components/LabyrinthView';
 import { InventoryView } from './components/InventoryView';
 import { MailboxModal } from './components/MailboxModal';
 import { OptionsModal } from './components/OptionsModal';
@@ -123,6 +124,7 @@ const GameContent: React.FC = () => {
           {currentTab === 'world' && <WorldMapView />}
           {currentTab === 'combat' && <CombatView />}
           {currentTab === 'patrol' && <PatrolView />}
+          {currentTab === 'labyrinth' && <LabyrinthView />}
           {currentTab === 'inventory' && <InventoryView />}
           {currentTab === 'auction' && <AuctionHouseModal isOpen={true} onClose={() => goBack()} />}
           {(currentTab === 'order' || currentTab === 'clan') && <OrderClanView />}
@@ -153,7 +155,7 @@ const GameContent: React.FC = () => {
               }}
             />
           )}
-          {!['santuario', 'camp', 'quest', 'heroes', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'cooking', 'world', 'combat', 'patrol', 'inventory', 'auction', 'order', 'clan', 'story'].includes(currentTab) && (
+          {!['santuario', 'camp', 'quest', 'heroes', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'cooking', 'world', 'combat', 'patrol', 'labyrinth', 'inventory', 'auction', 'order', 'clan', 'story'].includes(currentTab) && (
             <QuestView />
           )}
         </main>

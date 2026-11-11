@@ -102,6 +102,15 @@ export interface SummonBanner {
   };
 }
 
+export interface PatrolRewardItem {
+  id: string;
+  name: string;
+  count: number;
+  icon: string;
+  rarity?: HeroRarity;
+  description?: string;
+}
+
 export interface PatrolMission {
   id: string;
   name: string;
@@ -115,6 +124,7 @@ export interface PatrolMission {
     xp: number;
     crystals: number;
     materials?: string[];
+    items?: PatrolRewardItem[];
   };
   activeHeroes?: string[];
   startTime?: number; // timestamp

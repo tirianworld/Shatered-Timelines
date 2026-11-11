@@ -3,6 +3,8 @@ import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
 import { Heart, Sparkles, X, Shield, Swords, FlaskConical, Castle } from 'lucide-react';
 import { AuctionHouseModal } from './AuctionHouseModal';
+import { safeStorage } from '../utils/storage';
+import { MINES_TUTORIAL_DONE_KEY } from '../data/minesIntroData';
 
 export const SantuarioView: React.FC = () => {
   const {
@@ -23,6 +25,12 @@ export const SantuarioView: React.FC = () => {
     desc: string;
     iconType: 'swords' | 'potion' | 'castle';
   } | null>(null);
+
+  // Mientras el tutorial de patrullas siga pendiente, las galerías avisan:
+  // Boran y Thora esperan abajo, en el tablón, no en la entrada.
+  const minesTutorialPending =
+    activeSanctuary === 'silverpeack' &&
+    safeStorage.getItem(MINES_TUTORIAL_DONE_KEY) !== 'done';
 
   const handleClaimTribute = () => {
     if (idleEarningsAvailable > 0) {
@@ -329,6 +337,118 @@ export const SantuarioView: React.FC = () => {
           isOpen={showAuctionHouseModal}
           onClose={() => setShowAuctionHouseModal(false)}
         />
+      </div>
+    );
+  }
+
+  // ----------------------------------------------------------------------
+  // SILVERPEACK SANCTUARY VIEW (Pico de Plata, colonia minera)
+  // ----------------------------------------------------------------------
+  if (activeSanctuary === 'silverpeack') {
+    return (
+      <div className="relative w-full h-full min-h-[580px] flex-1 flex flex-col justify-between overflow-hidden select-none bg-[#0b0710]">
+        <img
+          src="/assets/backgrounds/silverpeack.png"
+          alt="Santuario de Silverpeack, la antigua colonia minera de Glimmerstone"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
+        />
+
+        {/* Placa con el nombre del santuario + inventario */}
+        <div className="relative z-10 p-2.5 sm:p-3 flex items-start justify-between gap-2">
+          <div className="px-3 py-1.5 rounded-lg bg-[#160d22]/85 border border-violet-500/60 shadow-2xl">
+            <div className="font-serif font-black text-sm text-violet-100 tracking-wide">Silverpeack</div>
+            <div className="text-[9px] uppercase tracking-wider text-violet-300/90">
+              Pico de Plata · Colonia Minera de Glimmerstone
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              sound.playSFX('click');
+              navigateTo('inventory');
+            }}
+            className="h-8 w-22 cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+            title="Inventario"
+          >
+            <img
+              src="/assets/items/Inventary_Button.png"
+              alt="Inventario"
+              className="w-full h-full object-contain filter drop-shadow-xl"
+            />
+          </button>
+        </div>
+
+        {/* Puntos interactivos sobre el arte del santuario */}
+        <div className="relative z-10 flex-1 w-full pointer-events-auto">
+          {/* Puerta sellada de los cristales (arriba, centro) */}
+          <button
+            onClick={() => {
+              sound.playSFX('click');
+              navigateTo('labyrinth');
+            }}
+            className="absolute top-[7%] left-[30%] w-[44%] h-[32%] cursor-pointer focus:outline-none"
+            title="Laberinto de Lloth · Puerta Sellada de los Cristales"
+            aria-label="Laberinto de Lloth"
+          />
+
+          {/* Taberna del Pico (casa de madera, izquierda) */}
+          <button
+            onClick={() => {
+              sound.playSFX('click');
+              navigateTo('tavern');
+            }}
+            className="absolute top-[45%] left-[0%] w-[44%] h-[36%] cursor-pointer focus:outline-none"
+            title="Taberna del Pico"
+            aria-label="Taberna del Pico"
+          />
+
+          {/* Herrería de la colonia (derecha, escudo de martillos) */}
+          <button
+            onClick={() => {
+              sound.playSFX('click');
+              navigateTo('forge');
+            }}
+            className="absolute top-[52%] right-[0%] w-[46%] h-[28%] cursor-pointer focus:outline-none"
+            title="Herrería de Silverpeack"
+            aria-label="Herrería de Silverpeack"
+          />
+
+          {/* Galerías de la mina: abren el tablón de patrullas para asignar héroes */}
+          {minesTutorialPending && (
+            <div className="absolute top-[66%] left-[52%] z-20 -translate-x-1 px-2.5 py-1 rounded-md bg-[#2a1a0b]/95 border border-amber-400/80 text-amber-100 text-[10px] font-bold uppercase tracking-wide shadow-xl pointer-events-none animate-pulse text-center">
+              ¡Boran y Thora te esperan en las galerías!
+            </div>
+          )}
+          <button
+            onClick={() => {
+              sound.playSFX('click');
+              navigateTo('patrol');
+            }}
+            className={`absolute top-[74%] left-[52%] w-[48%] h-[24%] cursor-pointer focus:outline-none ${
+              minesTutorialPending ? 'rounded-xl ring-2 ring-amber-300/80 animate-pulse' : ''
+            }`}
+            title="Patrullas de la Mina de Plata"
+            aria-label="Patrullas de la Mina de Plata"
+          />
+        </div>
+
+        {/* Bottom Right: botón WORLD, igual que en el Santuario de Icespear */}
+        <div className="relative z-20 self-end mb-20 mr-2 sm:mb-22 sm:mr-3 pointer-events-auto">
+          <button
+            onClick={() => {
+              sound.playSFX('click');
+              navigateTo('world');
+            }}
+            className="group relative flex flex-col items-center cursor-pointer hover:scale-106 active:scale-95 transition-transform"
+            title="Abrir Mapa del Mundo"
+          >
+            <img
+              src="/assets/items/WORLD BUTTON.png"
+              alt="WORLD"
+              className="w-16 h-16 sm:w-18 sm:h-18 object-contain filter drop-shadow-2xl"
+            />
+          </button>
+        </div>
       </div>
     );
   }

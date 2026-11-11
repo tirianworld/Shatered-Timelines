@@ -72,8 +72,9 @@ interface GameContextType {
   setCurrentTab: (tab: string) => void;
   navigateTo: (tab: string) => void;
   goBack: () => void;
-  activeSanctuary: 'icespear' | 'mercado_negro';
-  setActiveSanctuary: (sanctuary: 'icespear' | 'mercado_negro') => void;
+  goToSanctuary: () => void;
+  activeSanctuary: 'icespear' | 'mercado_negro' | 'silverpeack';
+  setActiveSanctuary: (sanctuary: 'icespear' | 'mercado_negro' | 'silverpeack') => void;
   selectedBanner: SummonBanner;
   setSelectedBanner: (banner: SummonBanner) => void;
   questProgress: {
@@ -182,7 +183,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const sanitizeTab = (saved: unknown): string => {
-    const validTabs = ['quest', 'heroes', 'santuario', 'camp', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'world', 'combat', 'patrol', 'inventory', 'auction', 'order', 'clan'];
+    const validTabs = ['quest', 'heroes', 'santuario', 'camp', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'world', 'combat', 'patrol', 'labyrinth', 'inventory', 'auction', 'order', 'clan'];
     if (typeof saved === 'string' && validTabs.includes(saved)) {
       return saved;
     }
@@ -193,9 +194,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const saved = safeGetJSON<string>(`${STORAGE_KEY}_current_tab`, 'quest');
     return sanitizeTab(saved);
   });
-  const [activeSanctuary, setActiveSanctuary] = useState<'icespear' | 'mercado_negro'>(() => {
+  const [activeSanctuary, setActiveSanctuary] = useState<'icespear' | 'mercado_negro' | 'silverpeack'>(() => {
     const saved = safeGetJSON<string>(`${STORAGE_KEY}_active_sanctuary`, 'icespear');
-    return saved === 'mercado_negro' ? 'mercado_negro' : 'icespear';
+    if (saved === 'mercado_negro' || saved === 'silverpeack') return saved;
+    return 'icespear';
   });
 
   useEffect(() => {
@@ -812,10 +814,37 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const patrol = PATROLS.find((p) => p.id === patrolId);
     if (!patrol) return false;
 
-    // Award rewards
-    setGold((prev) => prev + patrol.rewards.gold);
-    setSummonCrystals((prev) => prev + patrol.rewards.crystals);
-    setAstralShards((prev) => prev + patrol.rewards.crystals);
+    // Award rewards (las minas pagan en minerales, no en monedas ni cristales)
+    if (patrol.rewards.gold > 0) setGold((prev) => prev + patrol.rewards.gold);
+    if (patrol.rewards.crystals > 0) {
+      setSummonCrystals((prev) => prev + patrol.rewards.crystals);
+      setAstralShards((prev) => prev + patrol.rewards.crystals);
+    }
+
+    const itemRewards = patrol.rewards.items ?? [];
+    if (itemRewards.length > 0) {
+      setShelfInventory((prev) => {
+        const next = [...prev];
+        itemRewards.forEach((reward) => {
+          const idx = next.findIndex((it) => it.id === reward.id || it.name.toLowerCase() === reward.name.toLowerCase());
+          if (idx >= 0) {
+            next[idx] = { ...next[idx], count: next[idx].count + reward.count };
+          } else {
+            next.push({
+              id: reward.id,
+              name: reward.name,
+              category: 'materials',
+              count: reward.count,
+              icon: reward.icon,
+              rarity: reward.rarity ?? 'R',
+              description: reward.description ?? 'Extraído de las galerías de la mina de Silverpeack.',
+              priceGold: 0,
+            });
+          }
+        });
+        return next;
+      });
+    }
 
     // Free heroes
     setHeroes((prev) =>
@@ -1384,6 +1413,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCurrentTab(tab);
   };
 
+  // Boton de volver de la barra superior: siempre regresa al Santuario en el que
+  // se estuvo por ultima vez (activeSanctuary se conserva entre sesiones).
+  const goToSanctuary = () => {
+    setCurrentTab('santuario');
+    setHistoryStack(['santuario']);
+  };
+
   const goBack = () => {
     sound.playSFX('click');
     if (currentTab === 'forge' || currentTab === 'potions') {
@@ -1505,6 +1541,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setCurrentTab,
         navigateTo,
         goBack,
+        goToSanctuary,
         activeSanctuary,
         setActiveSanctuary,
         selectedBanner,

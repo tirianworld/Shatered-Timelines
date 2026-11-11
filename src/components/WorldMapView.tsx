@@ -36,7 +36,7 @@ export interface MapInteractiveLocation {
 }
 
 export const WorldMapView: React.FC = () => {
-  const { navigateTo, setSelectedCombatMissionId } = useGame();
+  const { navigateTo, setSelectedCombatMissionId, setActiveSanctuary, questProgress } = useGame();
   const [selectedLocation, setSelectedLocation] = useState<MapInteractiveLocation | null>(null);
 
   // Base dimensions matching icespear_map_8551bb2c (2048 x 1255 ratio = 1.6318)
@@ -154,6 +154,12 @@ export const WorldMapView: React.FC = () => {
     }
   };
 
+  // Silverpeack (Pico de Plata) se abre al terminar el Capítulo II: La Minas.
+  const isSilverpeackUnlocked =
+    questProgress.completedMissions.includes('m7_epilogo_aldea') ||
+    questProgress.completedMissions.includes('m6_puerta_laberinto') ||
+    questProgress.chapter >= 3;
+
   const handleLocationClick = (loc: MapInteractiveLocation) => {
     const now = Date.now();
     if (now - lastClickTimestampRef.current < 250) return;
@@ -255,6 +261,46 @@ export const WorldMapView: React.FC = () => {
       ],
     },
   ];
+
+  if (isSilverpeackUnlocked) {
+    locations.push({
+      id: 'silverpeack',
+      name: 'Silverpeack · Pico de Plata',
+      subtitle: 'Antigua colonia minera de Glimmerstone',
+      typeBadge: 'Nuevo Santuario • Colonia Minera',
+      badgeStyle: 'bg-violet-950/90 border-violet-400/80 text-violet-200',
+      description:
+        'Tras las Puertas Selladas, la vieja colonia enana de plata sigue en pie bajo el pico: puentes de piedra, cristales azules, una taberna de madera y los raíles que bajan hasta las galerías. La puerta arcana del fondo aún guarda el sello de Lloth.',
+      top: '30.0%',
+      left: '74.0%',
+      widthPercent: 12,
+      aspectRatio: '1 / 1',
+      imageSrc: '/assets/backgrounds/cuevas de icespear.png',
+      actionLabel: 'Entrar a Silverpeack',
+      actionIcon: 'mapPin',
+      action: () => {
+        setActiveSanctuary('silverpeack');
+        navigateTo('santuario');
+      },
+      quickLinks: [
+        {
+          label: 'Patrullas de la Mina',
+          icon: 'quest',
+          action: () => navigateTo('patrol'),
+        },
+        {
+          label: 'Herrería de Silverpeack',
+          icon: 'forge',
+          action: () => navigateTo('forge'),
+        },
+        {
+          label: 'Taberna del Pico',
+          icon: 'tavern',
+          action: () => navigateTo('tavern'),
+        },
+      ],
+    });
+  }
 
   return (
     <div

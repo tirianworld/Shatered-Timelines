@@ -621,12 +621,14 @@ export const CHARACTER_PROFILES: Record<CharacterId, CharacterProfile> = {
 
 export const formatDialogueText = (raw: string): string => {
   if (!raw) return '';
-  return raw
+  const clean = raw
     .replace(/\*.*?\*/g, '')
     .replace(/\(.*?\)/g, '')
     .replace(/\[.*?\]/g, '')
     .replace(/\s{2,}/g, ' ')
     .trim();
+  // Si al quitar las acotaciones solo quedan signos ("...", ".", "!!"), no hay linea que decir.
+  return /[\p{L}\p{N}]/u.test(clean) ? clean : '';
 };
 
 export const STORY_TIRANO_DIALOGUE: DialogueLine[] = [

@@ -10,7 +10,7 @@ export const GameHeader: React.FC = () => {
     astralShards,
     playerName,
     setPlayerName,
-    goBack,
+    goToSanctuary,
     setIsMailboxOpen,
     mailItems,
     openPlayGames,
@@ -45,7 +45,7 @@ export const GameHeader: React.FC = () => {
           type="button"
           onClick={() => {
             sound.playSFX('click');
-            goBack();
+            goToSanctuary();
           }}
           className="absolute left-[1.2%] top-[12.3%] w-[11.8%] h-[73.8%] rounded cursor-pointer group transition-transform active:scale-95"
           title="Volver"

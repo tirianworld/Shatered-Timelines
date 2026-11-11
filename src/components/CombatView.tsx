@@ -3027,6 +3027,7 @@ export const CombatView: React.FC = () => {
     navigateTo,
     addGold,
     addCrystals,
+    summonCrystals,
     addShelfItem,
     inventory,
     selectedCombatMissionId,
@@ -3056,6 +3057,20 @@ export const CombatView: React.FC = () => {
   };
 
   const [currentFloor, setCurrentFloor] = useState<number>(getInitialFloor);
+  // Reintentos tras caer: el primero es gratis, los siguientes cuestan cristales del recuerdo.
+  const [retriesUsed, setRetriesUsed] = useState<number>(0);
+  const retryLabel = ['m2_robo', 'm3_bosque', 'm9_emboscada_ferton'].includes(String(selectedCombatMissionId))
+    ? `Oleada ${currentFloor}`
+    : `Sala ${currentFloor}`;
+  // Foto exacta de la sala en el instante de la muerte: enemigos con su vida y estados,
+  // sala/oleada, turno y mano, para que reintentar reanude justo ahí.
+  type DefeatSnapshot = {
+    floor: number;
+    turn: number;
+    enemies: ChamberEnemyState[];
+  };
+  const defeatSnapshotRef = useRef<DefeatSnapshot | null>(null);
+  const defeatCapturedRef = useRef<boolean>(false);
   const [bestFloor, setBestFloor] = useState<number>(() => {
     try {
       const saved = localStorage.getItem('icespear_best_floor');
@@ -3214,6 +3229,7 @@ export const CombatView: React.FC = () => {
 
   // Hero Stats (Magordito) - 100 HP
   const MAX_HERO_HP = 100;
+const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el primero es gratis)
   const [heroHp, setHeroHp] = useState<number>(MAX_HERO_HP);
   const heroHpRef = useRef<number>(MAX_HERO_HP);
   const [heroMaxHp] = useState<number>(MAX_HERO_HP);
@@ -3999,8 +4015,78 @@ export const CombatView: React.FC = () => {
     setHeroHp(MAX_HERO_HP);
     setHeroConditions([]);
     setUltimateOrbs(0);
+    setRetriesUsed(0);
     startChamber(1);
   };
+
+  // Reintentar tras caer: reanuda exactamente en la sala/oleada donde se perdio,
+  // gratis la primera vez y por RETRY_CRYSTAL_COST cristales del recuerdo despues.
+  const handleRetryBattle = () => {
+    const cost = retriesUsed === 0 ? 0 : RETRY_CRYSTAL_COST;
+    if (cost > 0 && summonCrystals < cost) return;
+    if (cost > 0) addCrystals(-cost);
+    setRetriesUsed((n) => n + 1);
+
+    // El héroe vuelve con la vida al máximo, pero la sala se queda tal cual estaba
+    // al caer: mismos enemigos con su vida, sus estados, el turno y la mano.
+    const snap = defeatSnapshotRef.current;
+    heroHpRef.current = MAX_HERO_HP;
+    setHeroHp(MAX_HERO_HP);
+    setHeroConditions([]);
+    setUltimateOrbs(0);
+    setHeroCastSkill(null);
+    setHeroAnimation('idle');
+    setEnemyAnimation('idle');
+    setIsHeroHitShaking(false);
+    setIsEnemyHitShaking(false);
+    setIsHeroAshDissolving(false);
+    setIsEnemyAshDissolving(false);
+    setSlashEffect('none');
+    setMergeAnim(null);
+    setSelectedConditionTooltip(null);
+    setActiveVfx({ type: 'none', tier: 1 });
+    setBossTransitioning(false);
+    setWaveClearBanner(null);
+    setBattleState('idle');
+
+    if (snap) {
+      const restored: ChamberEnemyState[] = snap.enemies.map((e) => ({
+        ...e,
+        conditions: e.conditions.map((c) => ({ ...c })),
+        isHitShaking: false,
+        isTwitching: false,
+        animation: e.hp > 0 ? 'idle' : 'dead',
+      }));
+      activeEnemiesRef.current = restored;
+      setActiveEnemies(restored);
+      setSelectedEnemyIdx(Math.max(0, restored.findIndex((e) => e.hp > 0)));
+      setCurrentFloor(snap.floor);
+      setTurnCounter(snap.turn);
+    } else {
+      startChamber(currentFloor);
+    }
+    // Mano nueva: al reintentar no se heredan las cartas de la partida perdida.
+    setHand([]);
+    refillHandToFull();
+    defeatCapturedRef.current = false;
+  };
+
+  // Al caer el héroe se toma la foto de la sala para poder reanudarla en el reintento.
+  useEffect(() => {
+    if (heroHp <= 0 && !defeatCapturedRef.current) {
+      defeatCapturedRef.current = true;
+      defeatSnapshotRef.current = {
+        floor: currentFloor,
+        turn: turnCounter,
+        enemies: activeEnemiesRef.current.map((e) => ({
+          ...e,
+          conditions: e.conditions.map((c) => ({ ...c })),
+        })),
+      };
+    } else if (heroHp > 0 && defeatCapturedRef.current) {
+      defeatCapturedRef.current = false;
+    }
+  }, [heroHp, currentFloor, turnCounter]);
 
   // Retreat from dungeon and bank all accumulated rewards safely
   const handleRetreatAndClaim = () => {
@@ -8808,21 +8894,27 @@ export const CombatView: React.FC = () => {
 
             <div className="w-full flex flex-col gap-2">
               <button
-                onClick={handleRetreatAndClaim}
-                className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-lg"
+                onClick={handleRetryBattle}
+                disabled={retriesUsed > 0 && summonCrystals < RETRY_CRYSTAL_COST}
+                className={`w-full py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all ${
+                  retriesUsed > 0 && summonCrystals < RETRY_CRYSTAL_COST
+                    ? 'bg-stone-900 text-stone-500 border border-stone-700 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-stone-950 cursor-pointer shadow-lg active:scale-95'
+                }`}
               >
-                {selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
+                {`Reintentar en la ${retryLabel}${retriesUsed === 0 ? ' · Gratis' : ` · ${RETRY_CRYSTAL_COST} 💎`}`}
               </button>
+              {retriesUsed > 0 && summonCrystals < RETRY_CRYSTAL_COST && (
+                <span className="text-[10px] text-red-400 font-bold text-center">
+                  Te faltan {(RETRY_CRYSTAL_COST - summonCrystals).toLocaleString()} cristales del recuerdo
+                </span>
+              )}
 
               <button
-                onClick={handleRestartBattle}
-                className="w-full py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs rounded-xl cursor-pointer"
+                onClick={handleRetreatAndClaim}
+                className="w-full py-2.5 bg-gradient-to-r from-red-900 via-red-700 to-red-900 hover:from-red-800 hover:to-red-800 text-red-50 border border-red-500/70 font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-lg transition-transform active:scale-95"
               >
-                {selectedCombatMissionId === 'm9_emboscada_ferton'
-                  ? 'Reintentar Combate de Ferton (Oleada 1)'
-                  : selectedCombatMissionId === 'm2_robo'
-                  ? 'Reintentar Asalto (Oleada 1)'
-                  : 'Reintentar desde Sala 1'}
+                {selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
               </button>
             </div>
           </div>
