@@ -8,15 +8,11 @@ services:
     buildCommand: npm ci && npm run build
     startCommand: npm start
     healthCheckPath: /healthz
-    autoDeploy: true
+    autoDeployTrigger: commit
     envVars:
       - key: NODE_ENV
         value: production
       - key: GITHUB_TOKEN
         sync: false
-      - key: PLAY_GAMES_CLIENT_ID
-        sync: false
-      - key: PLAY_GAMES_CLIENT_SECRET
-        sync: false
       - key: ALLOWED_ORIGINS
-        value: https://localhost,capacitor://localhost
+        value: "https://localhost,capacitor://localhost"
