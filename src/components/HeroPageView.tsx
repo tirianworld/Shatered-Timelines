@@ -1698,7 +1698,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         <img
           src={activeSkin.art}
           alt={activeSkin.name}
-          className={`absolute inset-0 h-full w-full origin-top scale-[2] object-contain object-top drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)] ${isArlem ? 'max-w-[95%]' : ''}`}
+          className={`absolute inset-0 h-full w-full origin-top scale-[2] object-contain object-top drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)] ${isArlem ? 'max-w-[400px]' : ''}`}
         />
       </div>
       <button
