@@ -705,7 +705,7 @@ export const QuestView: React.FC = () => {
             <img
               src={
                 isChapterFullyCompleted
-                  ? '/assets/items/cofre_de_tintes_app.png'
+                  ? 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd201bd3e8b5b402994150967bf48b17e?format=webp&width=800&height=1200'
                   : 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd2533040a05c45d4ae3cf4e5eec4929f'
               }
               alt="Cofre"
@@ -1016,7 +1016,7 @@ export const QuestView: React.FC = () => {
               <img
                 src={
                   isChapterFullyCompleted
-                    ? '/assets/items/cofre_de_tintes_app.png'
+                    ? 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd201bd3e8b5b402994150967bf48b17e?format=webp&width=800&height=1200'
                     : 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd2533040a05c45d4ae3cf4e5eec4929f'
                 }
                 alt="Cofre de Recompensas"
