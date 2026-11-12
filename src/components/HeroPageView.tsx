@@ -1694,7 +1694,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         <img src={`${A}/boton_flecha.png`} alt="" className="w-full h-full object-contain -scale-x-100" />
       </button>
       {/* Skin: enmascarada al hueco de la vista previa */}
-      <div className="pointer-events-none absolute left-[51%] top-[21%] h-[36%] w-[40%] overflow-hidden">
+      <div className={`pointer-events-none absolute h-[36%] overflow-hidden ${isArlem ? 'left-[219px] top-[190px] w-[186px]' : 'left-[51%] top-[21%] w-[40%]'}`}>
         <img
           src={
             isArlem
@@ -1702,7 +1702,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
               : activeSkin.art
           }
           alt={isArlem ? hero.name : activeSkin.name}
-          className="absolute inset-0 h-full w-full origin-top scale-[2] object-contain object-top drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]"
+          className={`absolute inset-0 h-full w-full origin-top scale-[2] object-contain object-top drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)] ${isArlem ? 'max-w-[95%]' : ''}`}
         />
       </div>
       <button
