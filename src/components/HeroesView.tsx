@@ -360,7 +360,7 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     bio: 'Ágil y mortífero espadachín de dagas gemelas, maestro del sigilo y el contraataque fulminante.',
   },
   {
-    id: 'arlem',
+    id: 'arlem_diaz',
     name: 'Arlem Díaz',
     title: 'Monje de los Cien Golpes',
     rarity: 'SSR',

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGame } from '../context/GameContext';
-import { Check, Edit3, Gamepad2 } from 'lucide-react';
+import { Check, Edit3 } from 'lucide-react';
 import { sound } from '../services/soundService';
 
 export const GameHeader: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
@@ -13,7 +13,6 @@ export const GameHeader: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
     goBack,
     setIsMailboxOpen,
     mailItems,
-    openPlayGames,
   } = useGame();
 
   const [isEditingName, setIsEditingName] = useState(false);
@@ -93,44 +92,25 @@ export const GameHeader: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         </div>
 
         {/* 3. Bottom-Left Pill: Summon Crystals / Green Gemstone Number */}
-        <div className="absolute left-[20.2%] top-[56.5%] w-[20.0%] h-[28.5%] flex items-center justify-end pr-1.5 pointer-events-none">
+        <div className="absolute left-[20.2%] top-[56.5%] w-[20.0%] h-[28.5%] flex items-center justify-center pointer-events-none">
           <span className="text-[11px] sm:text-xs font-mono font-bold text-white tracking-tight truncate leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
             {summonCrystals.toLocaleString()}
           </span>
         </div>
 
         {/* 4. Top-Right Pill: Gold Coins Number */}
-        <div className="absolute left-[64.5%] top-[16.5%] w-[19.8%] h-[28.5%] flex items-center justify-end pr-1.5 pointer-events-none">
+        <div className="absolute left-[64.5%] top-[16.5%] w-[19.8%] h-[28.5%] flex items-center justify-center pointer-events-none">
           <span className="text-[11px] sm:text-xs font-mono font-bold text-white tracking-tight truncate leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
             {gold.toLocaleString()}
           </span>
         </div>
 
         {/* 5. Bottom-Right Pill: Astral Shards / Blue Diamond Number */}
-        <div className="absolute left-[64.5%] top-[56.5%] w-[19.8%] h-[28.5%] flex items-center justify-end pr-1.5 pointer-events-none">
+        <div className="absolute left-[64.5%] top-[56.5%] w-[19.8%] h-[28.5%] flex items-center justify-center pointer-events-none">
           <span className="text-[11px] sm:text-xs font-mono font-bold text-white tracking-tight truncate leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
             {astralShards.toLocaleString()}
           </span>
         </div>
-
-        {/* Central Wheel: Google Play Games Button */}
-        <button
-          type="button"
-          onClick={() => {
-            sound.playSFX('click');
-            openPlayGames();
-          }}
-          className="absolute left-[44.2%] top-[12.3%] w-[11.6%] h-[73.8%] rounded-full cursor-pointer group transition-transform active:scale-95 flex items-center justify-center z-10"
-          title="Google Play Games (Logros, Marcadores y Nube)"
-          aria-label="Google Play Games"
-        >
-          <div className="w-full h-full rounded-full opacity-0 group-hover:opacity-100 bg-emerald-500/25 transition-opacity" />
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-4 h-4 rounded-full bg-emerald-950/85 border border-emerald-400/90 flex items-center justify-center shadow-lg group-hover:scale-115 transition-transform">
-              <Gamepad2 className="w-2.5 h-2.5 text-emerald-300" />
-            </div>
-          </div>
-        </button>
 
         {/* 6. Right Mail Button (Interactive Overlay) */}
         <button

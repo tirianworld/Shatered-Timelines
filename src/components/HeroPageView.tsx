@@ -150,7 +150,6 @@ const SKINS = [
     name: 'Clásico',
     subtitle: 'Aspecto base del héroe',
     art: `${A}/skin_clasico.png`,
-    title: 'CLÁSICO',
     description: 'Atuendo de bardo errante, cosido en la sastrería más prestigiosa de Moonhaven.',
     bonus: 'Sin bonificación adicional.',
     owned: true,
@@ -166,7 +165,6 @@ const SKINS = [
     name: 'Atuendo Monástico',
     subtitle: 'Ropajes de la iglesia',
     art: `${A}/skin_monje.png`,
-    title: 'ATUENDO MONÁSTICO',
     description: 'Ropajes prestados por la Iglesia de Freya al encontrarte desnudo en su puerta.',
     bonus: '+8% Defensa · reduce el daño recibido de Profano.',
     owned: false,
@@ -182,7 +180,6 @@ const SKINS = [
     name: 'Orco Ilusorio',
     subtitle: 'Ilusión de Gromock',
     art: `${A}/skin_orco.png`,
-    title: 'ORCO ILUSORIO',
     description: 'Ilusión creada por Arlem para engañar a Gromock y a su horda.',
     bonus: '+15% al Ataque · cuenta como Semiorco.',
     owned: false,
@@ -205,8 +202,13 @@ const fmt = (n: number) => n.toLocaleString('es-ES', { maximumFractionDigits: 1 
 
 const starCountFor = (rarity?: string) => (rarity === 'SSR' || rarity === 'UR' ? 5 : rarity === 'SR' ? 4 : 3);
 
-const StatTile: React.FC<{ icon: string; value: string; label: string }> = ({ icon, value, label }) => (
-  <div className="relative flex flex-col items-center justify-center rounded-[7px] border border-[#c8862f]/80 bg-[#2a1006] shadow-[inset_0_1px_0_rgba(255,196,110,0.25),0_2px_4px_rgba(0,0,0,0.45)] py-[3px]">
+const StatTile: React.FC<{
+  icon: string;
+  value: string;
+  label: string;
+  marginY?: 'my-[15px]' | 'my-[-6px]' | 'my-[-8px]';
+}> = ({ icon, value, label, marginY = 'my-[15px]' }) => (
+  <div className={`relative ${marginY} mx-[-0.5px] h-[75px] grow-0 self-stretch flex flex-col items-center justify-center rounded-[7px] border-[4px] border-[#2e1100] bg-[#06112a] text-black shadow-[inset_0_1px_0_rgba(255,196,110,0.25),0_2px_4px_rgba(0,0,0,0.45)] py-[3px]`}>
     <img src={icon} alt="" className="w-[21px] h-[21px] object-contain drop-shadow" />
     <span className="mt-[1px] font-mono text-[10.5px] font-black leading-none text-[#f6c46a]">{value}</span>
     <span className="text-[7.5px] font-black uppercase leading-tight tracking-[0.02em] text-[#f6c46a]/80">
@@ -635,9 +637,9 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         className="absolute left-[12%] top-[69.4%] w-[13%] object-contain drop-shadow"
       />
       <div className="absolute left-[28%] top-[69.6%] w-[56%]">
-        <p className="text-[10.5px] font-bold leading-[1.15] text-[#40200a]">
+        <p className="mr-auto my-[10px] border-0 text-[13px] font-bold leading-[1.15] text-[#40200a]">
           Aumenta un 15% la defensa de todos los aliados de Atributo{' '}
-          <span className="text-[#1a91c9]">{hero.attribute}</span>
+          <span className="mr-auto text-[#1a91c9]">{hero.attribute}</span>
         </p>
       </div>
 
@@ -648,10 +650,10 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         className="absolute left-[8%] top-[79.8%] w-[18%] object-contain"
       />
       <div className="absolute left-[29%] top-[80.6%] w-[38%] leading-tight">
-        <p className="text-[10px] font-black text-[#5b3a1c]">
+        <p className="mx-[2px] my-[8px] text-[10px] font-black text-[#5b3a1c]">
           {hero.rarity === 'SSR' ? 'Súper Raro' : hero.rarity === 'SR' ? 'Super Raro' : 'Raro'}
         </p>
-        <p className="text-[10.5px] font-black text-[#3b1c06]">Máximo Nivel:{maxLevel}</p>
+        <p className="my-[-8px] text-[10.5px] font-black text-[#3b1c06]">Máximo Nivel:{maxLevel}</p>
       </div>
       <button
         type="button"
@@ -662,7 +664,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
       </button>
 
       {/* INFORMACIÓN */}
-      <p className="absolute left-[7%] top-[91.2%] w-[86%] text-[9.5px] font-semibold leading-[1.2] text-[#40200a]">
+      <p className="absolute left-[7%] top-[91.2%] my-[2px] w-[86%] text-center font-[Palatino,serif] text-[14px] italic font-semibold leading-[1.2] text-[#40200a]">
         {hero.bio}
       </p>
     </>
@@ -787,7 +789,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         {/* BONIFICACIONES TOTALES (suma de lo equipado) */}
         <div className="absolute left-[7.7%] top-[57.4%] w-[84.3%] h-[6.8%] grid grid-cols-5 gap-[4px]">
           {bonusTiles.map((s) => (
-            <StatTile key={s.label} icon={s.icon} value={s.value} label={s.label} />
+            <StatTile key={s.label} icon={s.icon} value={s.value} label={s.label} marginY="my-[-6px]" />
           ))}
         </div>
 
@@ -915,7 +917,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
 
       {/* Nivel + barra de EXP */}
       <div className="absolute left-[5%] top-[23%] w-[44%]">
-        <div className="flex items-end gap-[4px]">
+        <div className="my-[10px] flex items-end gap-[4px]">
           <span className="rounded-[4px] border border-[#8a4a10]/80 bg-gradient-to-b from-[#3a1c0a] to-[#251006] px-[6px] py-[2px] text-[10.5px] font-black uppercase leading-none tracking-[0.1em] text-[#ffd98a] shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
             Lv.
           </span>
@@ -931,7 +933,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         </div>
 
         <div
-          className="relative mt-[4px] h-[17px] overflow-hidden rounded-[4px] border border-[#2c1004] bg-[#3a1206]"
+          className="relative mt-[4px] h-[20px] overflow-hidden rounded-[4px] border border-[#2c1004] bg-[#3a1206]"
           style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.8), 0 1px 0 rgba(255,235,195,0.35)' }}
         >
           <div
@@ -1397,7 +1399,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
     const list = owned.filter((it) => equipCategoryOf(it.type) === equipTab);
 
     return (
-      <div className="absolute inset-0 z-40 flex flex-col overflow-hidden bg-[#e2b077] animate-fade-in">
+      <div className="absolute inset-0 z-40 flex flex-col overflow-hidden bg-white animate-fade-in">
         <img
           src="/assets/backgrounds/fondo_personajes.png"
           alt=""
@@ -1552,7 +1554,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         <div className="relative z-10 mx-[7%] mt-[4px] rounded-[8px] border border-[#8a4a10]/70 bg-[#2a1006]/45 p-[4px] shadow-[inset_0_2px_6px_rgba(0,0,0,0.35)]">
           <div className="grid grid-cols-5 gap-[4px]">
             {bonusTiles.map((s) => (
-              <StatTile key={s.label} icon={s.icon} value={s.value} label={s.label} />
+              <StatTile key={s.label} icon={s.icon} value={s.value} label={s.label} marginY="my-[-8px]" />
             ))}
           </div>
         </div>
@@ -1712,13 +1714,12 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
 
       {/* Descripción de la skin: en el marco que queda bajo la vista previa */}
       <div className="absolute left-[49%] top-[57.6%] flex h-[10.8%] w-[44%] flex-col justify-center text-center">
-        <p className="font-serif text-[9.5px] font-black uppercase tracking-[0.12em] text-[#f6c46a]">{activeSkin.title}</p>
-        <p className="mt-[2px] text-[7.5px] leading-[1.25] text-[#f0dcbc]/90">{activeSkin.description}</p>
+        <p className="mx-auto mt-[-41px] mb-[-32px] h-[95px] text-[12px] leading-[1.25] text-[#f0dcbc]/90">{activeSkin.description}</p>
       </div>
 
       {/* Bonificación de la skin (dentro del marco del panel) */}
       <div className="absolute left-[49%] top-[69.2%] flex h-[3.2%] w-[44%] items-center justify-center px-2">
-        <p className="text-center text-[7.5px] font-semibold leading-tight text-[#f0dcbc]/90">{activeSkin.bonus}</p>
+        <p className="h-[40px] text-center text-[7.5px] font-semibold leading-tight text-[#f0dcbc]/90">{activeSkin.bonus}</p>
       </div>
 
       {/* FABRICAR SKIN: materiales + botón (los huecos están en la plantilla) */}
@@ -1728,21 +1729,59 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         return (
           <div
             key={`${activeSkin.id}-${mat.name}`}
-            className="absolute"
-            style={{ left: SKIN_SLOT_LEFT[i], top: '83.6%', width: '14%', height: '9%' }}
+            className={`absolute ${mat.name === 'Paquetes Sospechosos' ? 'py-[5px]' : ''}`}
+            style={{
+              left:
+                mat.name === 'Montón de Arapos'
+                  ? '142px'
+                  : mat.name === 'Polvo de Hadas'
+                    ? '209.2px'
+                    : SKIN_SLOT_LEFT[i],
+              top: '83.6%',
+              width: '14%',
+              height: '9%',
+              ...(mat.name === 'Polvo de Hadas' ? { marginLeft: 'auto', marginRight: 'auto' } : {}),
+            }}
             title={`${mat.name} · tienes ${have} de ${mat.count}`}
           >
             <img
               src={mat.icon}
               alt={mat.name}
-              className={`absolute inset-x-0 top-[9%] mx-auto h-[62%] w-[84%] object-contain ${
+              className={`absolute inset-x-0 mx-auto h-[62%] w-[84%] object-contain ${
                 enough ? '' : 'opacity-40 grayscale'
               }`}
+              style={{
+                top: '-13px',
+                ...(mat.name === 'Montón de Arapos'
+                  ? { left: '-6px' }
+                  : mat.name === 'Polvo de Hadas'
+                    ? { left: '28px' }
+                    : mat.name === 'Talismán de Jefe Orco'
+                      ? { left: '40px' }
+                      : mat.name === 'Fragmentos Óseos'
+                        ? { left: '15px' }
+                        : mat.name === 'Colmillos Desgastados'
+                          ? { left: '-5px' }
+                          : mat.name === 'Paquetes Sospechosos'
+                            ? { left: '37px' }
+                            : {}),
+                ...(mat.name === 'Libro Sagrado' ? { marginRight: 'auto' } : {}),
+              }}
             />
             <span
-              className={`absolute inset-x-0 bottom-[15%] text-center text-[6.5px] font-black leading-none ${
+              className={`absolute top-[43.6px] text-[11px] font-black leading-none ${
                 enough ? 'text-[#ffe9c2]' : 'text-[#e59a76]'
               }`}
+              style={{
+                left: mat.count === 3 ? '30px' : mat.count === 2 ? '45px' : '55px',
+                ...(mat.name === 'Paquetes Sospechosos'
+                  ? { paddingLeft: '36px', paddingRight: '36px' }
+                  : mat.name === 'Polvo de Hadas'
+                    ? { marginLeft: '-10px', marginRight: '-10px' }
+                    : mat.count === 2
+                      ? { marginLeft: '-26px', marginRight: '-26px' }
+                      : {}),
+              }}
             >
               {Math.min(have, mat.count)}/{mat.count}
             </span>
