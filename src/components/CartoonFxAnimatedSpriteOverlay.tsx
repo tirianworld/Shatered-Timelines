@@ -524,6 +524,48 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
               />
             </div>
           )}
+
+          {/* ROXANNE: VELADA ENCANTADORA & INSPIRACIÓN BÁRDICA (Magia Rosada & Notas) */}
+          {(skillType === 'roxanne_velada' || skillType === 'roxanne_inspiracion' || skillType?.includes('velada')) && (
+            <div className="relative w-full h-full flex items-center justify-center pointer-events-none">
+              <img
+                src="/assets/cfxr/graphics/cfxr-ring-electric-violet.png"
+                alt=""
+                className="absolute w-[290px] h-[290px] object-contain animate-[cfxrRingExpand_0.85s_ease-out_forwards] filter drop-shadow-[0_0_30px_#ec4899] hue-rotate-[320deg]"
+                style={{ mixBlendMode: 'screen' }}
+              />
+              <img
+                src="/assets/cfxr/graphics/cfxr-heart.png"
+                alt=""
+                className="absolute w-[180px] h-[180px] object-contain animate-[cfxrStarSpin_0.9s_ease-out_forwards] filter drop-shadow-[0_0_35px_#f43f5e] drop-shadow-[0_0_20px_#ec4899]"
+                style={{ mixBlendMode: 'screen' }}
+              />
+              <img
+                src="/assets/cfxr/graphics/cfxr-heart-break-parts.png"
+                alt=""
+                className="absolute w-[160px] h-[160px] object-contain animate-[cfxrHitPop_0.8s_ease-out_forwards] filter drop-shadow-[0_0_25px_#ec4899]"
+                style={{ mixBlendMode: 'screen' }}
+              />
+            </div>
+          )}
+
+          {/* ROXANNE: ESTOCADA SONORA DE RAPIER */}
+          {skillType === 'roxanne_estocada' && (
+            <div className="relative w-full h-full flex items-center justify-center pointer-events-none">
+              <img
+                src="/assets/cfxr/graphics/cfxr-sword-trail-mask-light-crimson.png"
+                alt=""
+                className="absolute w-[260px] h-[260px] object-contain animate-[cfxrSlashSweepA_0.6s_ease-out_forwards] filter drop-shadow-[0_0_30px_#ec4899] hue-rotate-[290deg]"
+                style={{ mixBlendMode: 'screen' }}
+              />
+              <img
+                src="/assets/cfxr/graphics/cfxr-spikes-impact-cyan.png"
+                alt=""
+                className="absolute bottom-6 w-[200px] h-[200px] object-contain animate-[cfxrSpikePop_0.5s_ease-out_forwards] filter drop-shadow-[0_0_25px_#f43f5e] hue-rotate-[280deg]"
+                style={{ mixBlendMode: 'screen' }}
+              />
+            </div>
+          )}
         </div>
       )}
 

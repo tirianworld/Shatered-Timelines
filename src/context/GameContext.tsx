@@ -72,16 +72,17 @@ interface GameContextType {
   setCurrentTab: (tab: string) => void;
   navigateTo: (tab: string) => void;
   goBack: () => void;
-  goToSanctuary: () => void;
-  activeSanctuary: 'icespear' | 'mercado_negro' | 'silverpeack';
-  setActiveSanctuary: (sanctuary: 'icespear' | 'mercado_negro' | 'silverpeack') => void;
+  activeSanctuary: 'icespear' | 'mercado_negro';
+  setActiveSanctuary: (sanctuary: 'icespear' | 'mercado_negro') => void;
   selectedBanner: SummonBanner;
   setSelectedBanner: (banner: SummonBanner) => void;
   questProgress: {
     chapter: number;
     completedMissions: string[];
     stars: Record<string, number>;
+    allMissionsCompleted?: boolean;
   };
+  isMissionCompleted: (missionId: string) => boolean;
   activeQuestChapter: number;
   setActiveQuestChapter: (chapter: number) => void;
   completeQuestMission: (missionId: string, stars: number) => void;
@@ -109,6 +110,7 @@ interface GameContextType {
   addCrystals: (amt: number) => void;
   addAstralShards: (amt: number) => void;
   setTeamSlot: (slotIndex: number, heroId: string | null) => void;
+  setEntireTeam: (newTeam: (string | null)[]) => void;
   summon: (bannerId: string, count: number) => { pulled: Hero[]; duplicates: number; bonusCoins: number };
   levelUpHero: (heroId: string) => boolean;
   startPatrol: (patrolId: string, heroIds: string[]) => boolean;
@@ -183,7 +185,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const sanitizeTab = (saved: unknown): string => {
-    const validTabs = ['quest', 'heroes', 'santuario', 'camp', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'world', 'combat', 'patrol', 'labyrinth', 'inventory', 'auction', 'order', 'clan'];
+    const validTabs = ['quest', 'heroes', 'santuario', 'camp', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'world', 'combat', 'patrol', 'inventory', 'auction', 'order', 'clan'];
     if (typeof saved === 'string' && validTabs.includes(saved)) {
       return saved;
     }
@@ -194,10 +196,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const saved = safeGetJSON<string>(`${STORAGE_KEY}_current_tab`, 'quest');
     return sanitizeTab(saved);
   });
-  const [activeSanctuary, setActiveSanctuary] = useState<'icespear' | 'mercado_negro' | 'silverpeack'>(() => {
+  const [activeSanctuary, setActiveSanctuary] = useState<'icespear' | 'mercado_negro'>(() => {
     const saved = safeGetJSON<string>(`${STORAGE_KEY}_active_sanctuary`, 'icespear');
-    if (saved === 'mercado_negro' || saved === 'silverpeack') return saved;
-    return 'icespear';
+    return saved === 'mercado_negro' ? 'mercado_negro' : 'icespear';
   });
 
   useEffect(() => {
@@ -237,7 +238,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return INITIAL_HEROES;
     }
     // Rehydrate saved heroes ensuring all required fields (skills, stats, equipped) exist
-    return saved.map((h) => {
+    const rehydrated = saved.map((h) => {
       const canonical = INITIAL_HEROES.find((ih) => ih.id === h.id) || INITIAL_HEROES[0];
       return {
         ...canonical,
@@ -246,13 +247,23 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           ...canonical.stats,
           ...(h.stats || {}),
         },
-        skills: h.id === 'magordito' ? canonical.skills : Array.isArray(h.skills) && h.skills.length > 0 ? h.skills : canonical.skills,
+        skills:
+          h.id === 'magordito' || h.id === 'ragnavaldr' || h.id === 'kairon'
+            ? canonical.skills
+            : Array.isArray(h.skills) && h.skills.length > 0
+            ? h.skills
+            : canonical.skills,
         title: canonical.title,
         bio: canonical.bio,
         quote: canonical.quote,
         equipped: h.equipped && typeof h.equipped === 'object' ? h.equipped : {},
       };
     });
+
+    // Ensure all canonical heroes (like Ragnavaldr) exist even if localStorage was created previously
+    const existingIds = new Set(rehydrated.map((h) => h.id));
+    const missingHeroes = INITIAL_HEROES.filter((ih) => !existingIds.has(ih.id));
+    return [...rehydrated, ...missingHeroes];
   });
 
   const [team, setTeam] = useState<(string | null)[]>(() => {
@@ -488,19 +499,72 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return Array.isArray(saved) ? saved : INITIAL_EQUIPMENT;
   });
 
-  const [questProgress, setQuestProgress] = useState<{ chapter: number; completedMissions: string[]; stars: Record<string, number> }>(() => {
+  const createQuestProgressState = (raw: {
+    chapter?: number;
+    completedMissions?: string[];
+    stars?: Record<string, number>;
+    allMissionsCompleted?: boolean;
+  }): { chapter: number; completedMissions: string[]; stars: Record<string, number>; allMissionsCompleted?: boolean } => {
+    const isAll = !!raw.allMissionsCompleted;
+    const baseChapter = isAll ? 99 : (typeof raw.chapter === 'number' ? raw.chapter : 1);
+    const baseCompleted = Array.isArray(raw.completedMissions) ? [...raw.completedMissions] : ['m1_tirano'];
+    const baseStars: Record<string, number> = (raw.stars && typeof raw.stars === 'object') ? { ...raw.stars } : { m1_tirano: 3 };
+
+    if (!isAll) {
+      return {
+        chapter: baseChapter,
+        completedMissions: baseCompleted,
+        stars: baseStars,
+        allMissionsCompleted: false,
+      };
+    }
+
+    // Proxy completedMissions array so .includes returns true for ANY mission ID (even ones not existing yet)
+    const completedProxy = new Proxy(baseCompleted, {
+      get(target, prop, receiver) {
+        if (prop === 'includes') {
+          return () => true;
+        }
+        if (prop === 'indexOf') {
+          return () => 0;
+        }
+        return Reflect.get(target, prop, receiver);
+      },
+    });
+
+    // Proxy stars map so querying stars for ANY mission returns 3
+    const starsProxy = new Proxy(baseStars, {
+      get(target: Record<string, number>, prop: string, receiver) {
+        if (typeof prop === 'string' && prop !== 'toJSON' && prop !== 'valueOf' && prop !== 'constructor') {
+          return target[prop] ?? 3;
+        }
+        return Reflect.get(target, prop, receiver);
+      },
+    });
+
+    return {
+      chapter: 99,
+      completedMissions: completedProxy,
+      stars: starsProxy,
+      allMissionsCompleted: true,
+    };
+  };
+
+  const [questProgress, setQuestProgress] = useState<{ chapter: number; completedMissions: string[]; stars: Record<string, number>; allMissionsCompleted?: boolean }>(() => {
     const defaultProgress = {
       chapter: 1,
       completedMissions: ['m1_tirano'],
       stars: { m1_tirano: 3 },
+      allMissionsCompleted: false,
     };
     const saved = safeGetJSON<any>(`${STORAGE_KEY}_quest_progress`, null);
-    if (!saved || typeof saved !== 'object') return defaultProgress;
-    return {
+    if (!saved || typeof saved !== 'object') return createQuestProgressState(defaultProgress);
+    return createQuestProgressState({
       chapter: typeof saved.chapter === 'number' ? saved.chapter : 1,
       completedMissions: Array.isArray(saved.completedMissions) ? saved.completedMissions : ['m1_tirano'],
       stars: saved.stars && typeof saved.stars === 'object' ? saved.stars : { m1_tirano: 3 },
-    };
+      allMissionsCompleted: !!saved.allMissionsCompleted,
+    });
   });
 
   const [activeQuestChapter, setActiveQuestChapterState] = useState<number>(() => {
@@ -643,6 +707,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return next;
     });
     sound.playSFX('click');
+  };
+
+  const setEntireTeam = (newTeam: (string | null)[]) => {
+    setTeam(newTeam);
   };
 
   const summon = (bannerId: string, count: number) => {
@@ -814,37 +882,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const patrol = PATROLS.find((p) => p.id === patrolId);
     if (!patrol) return false;
 
-    // Award rewards (las minas pagan en minerales, no en monedas ni cristales)
-    if (patrol.rewards.gold > 0) setGold((prev) => prev + patrol.rewards.gold);
-    if (patrol.rewards.crystals > 0) {
-      setSummonCrystals((prev) => prev + patrol.rewards.crystals);
-      setAstralShards((prev) => prev + patrol.rewards.crystals);
-    }
-
-    const itemRewards = patrol.rewards.items ?? [];
-    if (itemRewards.length > 0) {
-      setShelfInventory((prev) => {
-        const next = [...prev];
-        itemRewards.forEach((reward) => {
-          const idx = next.findIndex((it) => it.id === reward.id || it.name.toLowerCase() === reward.name.toLowerCase());
-          if (idx >= 0) {
-            next[idx] = { ...next[idx], count: next[idx].count + reward.count };
-          } else {
-            next.push({
-              id: reward.id,
-              name: reward.name,
-              category: 'materials',
-              count: reward.count,
-              icon: reward.icon,
-              rarity: reward.rarity ?? 'R',
-              description: reward.description ?? 'Extraído de las galerías de la mina de Silverpeack.',
-              priceGold: 0,
-            });
-          }
-        });
-        return next;
-      });
-    }
+    // Award rewards
+    setGold((prev) => prev + patrol.rewards.gold);
+    setSummonCrystals((prev) => prev + patrol.rewards.crystals);
+    setAstralShards((prev) => prev + patrol.rewards.crystals);
 
     // Free heroes
     setHeroes((prev) =>
@@ -1379,11 +1420,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setShelfInventory([]);
     setEquipment(INITIAL_EQUIPMENT);
     setActivePatrols([]);
-    setQuestProgress({
+    setQuestProgress(createQuestProgressState({
       chapter: 1,
       completedMissions: ['m1_tirano'],
       stars: { m1_tirano: 3 },
-    });
+      allMissionsCompleted: false,
+    }));
     setMailItems(DEFAULT_MAIL);
   };
 
@@ -1399,7 +1441,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (Array.isArray(data.inventory)) setInventory(data.inventory);
       if (Array.isArray(data.shelfInventory)) setShelfInventory(data.shelfInventory);
       if (Array.isArray(data.equipment)) setEquipment(data.equipment);
-      if (data.questProgress && typeof data.questProgress === 'object') setQuestProgress(data.questProgress);
+      if (data.questProgress && typeof data.questProgress === 'object') setQuestProgress(createQuestProgressState(data.questProgress));
       return true;
     } catch (e) {
       console.error('Error restoring game state:', e);
@@ -1411,13 +1453,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sound.playSFX('click');
     setHistoryStack((prev) => [...prev, tab]);
     setCurrentTab(tab);
-  };
-
-  // Boton de volver de la barra superior: siempre regresa al Santuario en el que
-  // se estuvo por ultima vez (activeSanctuary se conserva entre sesiones).
-  const goToSanctuary = () => {
-    setCurrentTab('santuario');
-    setHistoryStack(['santuario']);
   };
 
   const goBack = () => {
@@ -1444,6 +1479,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const isMissionCompleted = (missionId: string): boolean => {
+    if (questProgress.allMissionsCompleted) return true;
+    return questProgress.completedMissions.includes(missionId);
+  };
+
   const completeQuestMission = (missionId: string, stars: number) => {
     setQuestProgress((prev) => {
       const completed = prev.completedMissions.includes(missionId)
@@ -1456,21 +1496,30 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       let nextChapter = prev.chapter;
       if (missionId === 'm4_puertas_selladas') {
         nextChapter = Math.max(prev.chapter, 2);
+      } else if (missionId === 'm7_epilogo_aldea') {
+        nextChapter = Math.max(prev.chapter, 3);
+      } else if (missionId === 'm10_hobgoblin_boss') {
+        nextChapter = Math.max(prev.chapter, 4);
       }
-      const updated = {
-        ...prev,
-        chapter: nextChapter,
+      const updated = createQuestProgressState({
+        chapter: prev.allMissionsCompleted ? 99 : nextChapter,
         completedMissions: completed,
         stars: newStars,
-      };
-      safeStorage.setItem(`${STORAGE_KEY}_quest_progress`, JSON.stringify(updated));
+        allMissionsCompleted: prev.allMissionsCompleted,
+      });
+      safeStorage.setItem(`${STORAGE_KEY}_quest_progress`, JSON.stringify({
+        chapter: updated.chapter,
+        completedMissions: Array.isArray(updated.completedMissions) ? Array.from(updated.completedMissions) : completed,
+        stars: updated.stars,
+        allMissionsCompleted: updated.allMissionsCompleted,
+      }));
       playGames.unlockAchievement('ach_first_victory');
       return updated;
     });
   };
 
   const completeAllMissions = () => {
-    const allMissionIds = [
+    const allKnownMissionIds = [
       'm1_tirano',
       'm2_robo',
       'm3_bosque',
@@ -1479,20 +1528,38 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       'm3_cuevas_rojo',
       'm4_cuevas_azul',
       'm5_cuevas_zancudo',
+      'm6_cuevas_titan',
       'm6_puerta_laberinto',
+      'm7_cuevas_reina',
       'm7_epilogo_aldea',
+      'm8_intro_capitulo3',
+      'm9_emboscada_ferton',
+      'm10_hobgoblin_boss',
     ];
+    // Seed placeholder missions m11..m100 for all future missions and chapters
+    for (let i = 11; i <= 100; i++) {
+      allKnownMissionIds.push(`m${i}`);
+    }
+
     const allStars: Record<string, number> = {};
-    allMissionIds.forEach((id) => {
+    allKnownMissionIds.forEach((id) => {
       allStars[id] = 3;
     });
-    const updated = {
-      chapter: 2,
-      completedMissions: allMissionIds,
+
+    const updated = createQuestProgressState({
+      chapter: 99,
+      completedMissions: allKnownMissionIds,
       stars: allStars,
-    };
+      allMissionsCompleted: true,
+    });
+
     setQuestProgress(updated);
-    safeStorage.setItem(`${STORAGE_KEY}_quest_progress`, JSON.stringify(updated));
+    safeStorage.setItem(`${STORAGE_KEY}_quest_progress`, JSON.stringify({
+      chapter: 99,
+      completedMissions: allKnownMissionIds,
+      stars: allStars,
+      allMissionsCompleted: true,
+    }));
     playGames.unlockAchievement('ach_first_victory');
     playGames.unlockAchievement('ach_chapter_1');
     sound.playSFX('powerup');
@@ -1541,12 +1608,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setCurrentTab,
         navigateTo,
         goBack,
-        goToSanctuary,
         activeSanctuary,
         setActiveSanctuary,
         selectedBanner,
         setSelectedBanner,
         questProgress,
+        isMissionCompleted,
         activeQuestChapter,
         setActiveQuestChapter,
         completeQuestMission,
@@ -1570,6 +1637,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         addCrystals,
         addAstralShards,
         setTeamSlot,
+        setEntireTeam,
         summon,
         levelUpHero,
         startPatrol,

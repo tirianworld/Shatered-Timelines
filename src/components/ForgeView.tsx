@@ -4,8 +4,6 @@ import { sound } from '../services/soundService';
 import { ArrowLeft, Shield, Heart, Coins } from 'lucide-react';
 import { ForgeMaskedSlider } from './ForgeMaskedSlider';
 import { ForgeMilestonesModal, FORGE_MILESTONES, ForgeMilestoneStats } from './ForgeMilestonesModal';
-import { MaterialSourcesModal } from './MaterialSourcesModal';
-import { materialDisplayName } from '../data/materialSources';
 import { safeStorage } from '../utils/storage';
 import {
   FORGE_INTRO_MISSION_ID,
@@ -88,7 +86,6 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
 
   const [elementFilter, setElementFilter] = useState<string | null>(null);
   const [craftModalItem, setCraftModalItem] = useState<CraftItemData | null>(null);
-  const [materialHint, setMaterialHint] = useState<{ name: string; icon: string; have?: number; need?: number } | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showMilestonesModal, setShowMilestonesModal] = useState<boolean>(false);
 
@@ -3233,19 +3230,7 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
               return (
                 <div className="absolute top-[51%] left-1/2 -translate-x-1/2 flex items-center justify-center gap-1.5 sm:gap-2 z-20">
                   {/* Slot 1: Ingot / Primary Material */}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setMaterialHint({
-                        name: materialDisplayName(craftModalItem.ingredients.ingotIcon),
-                        icon: craftModalItem.ingredients.ingotIcon,
-                        have: ingotHave,
-                        need: craftModalItem.ingredients.ingotNeed,
-                      })
-                    }
-                    className="relative w-[70px] sm:w-[74px] h-[76px] sm:h-[80px] flex items-center justify-center select-none cursor-pointer active:scale-95 transition-transform"
-                    title="¿Dónde consigo este material?"
-                  >
+                  <div className="relative w-[70px] sm:w-[74px] h-[76px] sm:h-[80px] flex items-center justify-center select-none">
                     <img
                       src="/assets/forge/marco_items.png"
                       alt=""
@@ -3271,22 +3256,10 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
                         {ingotHave}/{craftModalItem.ingredients.ingotNeed}
                       </span>
                     </div>
-                  </button>
+                  </div>
 
                   {/* Slot 2: Sword Hilt / Secondary Material */}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setMaterialHint({
-                        name: materialDisplayName(craftModalItem.ingredients.hiltIcon),
-                        icon: craftModalItem.ingredients.hiltIcon,
-                        have: hiltHave,
-                        need: craftModalItem.ingredients.hiltNeed,
-                      })
-                    }
-                    className="relative w-[70px] sm:w-[74px] h-[76px] sm:h-[80px] flex items-center justify-center select-none cursor-pointer active:scale-95 transition-transform"
-                    title="¿Dónde consigo este material?"
-                  >
+                  <div className="relative w-[70px] sm:w-[74px] h-[76px] sm:h-[80px] flex items-center justify-center select-none">
                     <img
                       src="/assets/forge/marco_items.png"
                       alt=""
@@ -3312,22 +3285,10 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
                         {hiltHave}/{craftModalItem.ingredients.hiltNeed}
                       </span>
                     </div>
-                  </button>
+                  </div>
 
                   {/* Slot 3: Blacksmith Kit / Tool */}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setMaterialHint({
-                        name: materialDisplayName(craftModalItem.ingredients.kitIcon),
-                        icon: craftModalItem.ingredients.kitIcon,
-                        have: kitHave,
-                        need: craftModalItem.ingredients.kitNeed,
-                      })
-                    }
-                    className="relative w-[70px] sm:w-[74px] h-[76px] sm:h-[80px] flex items-center justify-center select-none cursor-pointer active:scale-95 transition-transform"
-                    title="¿Dónde consigo este material?"
-                  >
+                  <div className="relative w-[70px] sm:w-[74px] h-[76px] sm:h-[80px] flex items-center justify-center select-none">
                     <img
                       src="/assets/forge/marco_items.png"
                       alt=""
@@ -3353,14 +3314,10 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
                         {kitHave}/{craftModalItem.ingredients.kitNeed}
                       </span>
                     </div>
-                  </button>
+                  </div>
                 </div>
               );
             })()}
-
-            {materialHint && (
-              <MaterialSourcesModal material={materialHint} onClose={() => setMaterialHint(null)} />
-            )}
 
             {/* FABRICAR Button: x2 más ancho (w-[276px] sm:w-[286px]) using clean trimmed asset */}
             <div className="absolute bottom-[6.5%] left-1/2 -translate-x-1/2 w-[276px] sm:w-[286px] h-[48px] sm:h-[52px] z-20">

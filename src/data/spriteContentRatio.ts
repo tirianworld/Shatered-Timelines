@@ -117,4 +117,8 @@ export const SPRITE_POSE_SCALE: Record<string, number> = {
   '/assets/portraits/drow_vaelas_llave_clean.png': 1.0,
   '/assets/combat/drow_vaelas_despeinado_clean.png': 1.0,
   '/assets/portraits/drow_vaelas_despeinado_clean.png': 1.0,
+  '/assets/combat/roxanne_idle.png': 1.0,
+  '/assets/combat/roxanne_attack.png': 1.0,
+  '/assets/combat/roxanne_cast.png': 1.0,
+  '/assets/combat/roxanne_hurt.png': 1.0,
 };

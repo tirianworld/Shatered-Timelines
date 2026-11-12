@@ -52,18 +52,7 @@ export interface DialogueLine {
   background: string;
   emotion?: EmotionType;
   shakeScreen?: boolean;
-  soundEffect?:
-    | 'click'
-    | 'drink'
-    | 'laugh'
-    | 'slam'
-    | 'roar'
-    | 'whisper'
-    | 'fanfare'
-    | 'furious'
-    | 'critical'
-    | 'attack'
-    | 'victory';
+  soundEffect?: 'click' | 'drink' | 'laugh' | 'slam' | 'roar' | 'whisper' | 'fanfare' | 'furious';
   screenFlash?: 'red' | 'cyan' | 'gold' | 'purple' | null;
   bgOverlay?: 'tavern-warmth' | 'blizzard-frost' | 'tense-shadow' | 'void-purple';
 }
@@ -632,14 +621,12 @@ export const CHARACTER_PROFILES: Record<CharacterId, CharacterProfile> = {
 
 export const formatDialogueText = (raw: string): string => {
   if (!raw) return '';
-  const clean = raw
+  return raw
     .replace(/\*.*?\*/g, '')
     .replace(/\(.*?\)/g, '')
     .replace(/\[.*?\]/g, '')
     .replace(/\s{2,}/g, ' ')
     .trim();
-  // Si al quitar las acotaciones solo quedan signos ("...", ".", "!!"), no hay linea que decir.
-  return /[\p{L}\p{N}]/u.test(clean) ? clean : '';
 };
 
 export const STORY_TIRANO_DIALOGUE: DialogueLine[] = [
@@ -6106,7 +6093,7 @@ export const STORY_CAPITULO3_M10_DIALOGUE: DialogueLine[] = [
     screenFlash: 'gold',
     text: '¡¿A quién llamas escoria, pedazo de orco inflado a bellotas podridas?! ¡Tu armadura brillará mucho en la nieve, pero debajo sólo hay un bravucón chillón con cara de coliflor fermentada!',
     background: '/assets/backgrounds/camino_bosque_carromatos.png',
-    soundEffect: 'critical',
+    soundEffect: 'slam',
     bgOverlay: 'tavern-warmth',
   },
   {
@@ -6136,7 +6123,7 @@ export const STORY_CAPITULO3_M10_DIALOGUE: DialogueLine[] = [
     emotion: 'sparkle',
     text: '¡Mucho ladrar y echar pestes, pero tus guardias ya están durmiendo en el barro helado! ¡Acércate un paso más y verás cómo canta el acero de mis dagas, bocazas!',
     background: '/assets/backgrounds/camino_bosque_carromatos.png',
-    soundEffect: 'attack',
+    soundEffect: 'slam',
     bgOverlay: 'tavern-warmth',
   },
   {
@@ -6202,7 +6189,7 @@ export const STORY_CAPITULO3_M10_EPILOGUE_DIALOGUE: DialogueLine[] = [
     emotion: 'exclamation',
     text: '¡Te dije que el oro brillante no sustituye el coraje, capataz! Has mordido la nieve como todos los tiranos que se cruzan con Caldo de Dragón.',
     background: '/assets/backgrounds/camino_bosque_carromatos.png',
-    soundEffect: 'victory',
+    soundEffect: 'fanfare',
     bgOverlay: 'tavern-warmth',
   },
   {

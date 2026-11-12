@@ -468,51 +468,6 @@ function getDishIcon(ings: CookingIngredient[]): string {
     rawIcon = '/assets/items/castillo_sopa.png';
   }
 
-  if (ids.has('ing_huevos_araknoide')) return '/assets/items/food_tortilla_araknoide.png';
-  if (ids.has('ing_larvas_araknoide')) return '/assets/items/food_larvas_crujientes.png';
-  if (ids.has('ing_carne_devorador')) return '/assets/items/food_devorador_empanada.png';
-
-  if (ids.has('ing_masa_madre')) return '/assets/items/pizza.png';
-  if (ids.has('ing_arroz_grano')) {
-    if (cats.includes('pescados')) return '/assets/items/Shushi.png';
-    return '/assets/items/ramen.png';
-  }
-  if (ids.has('ing_harina_trigo') && ids.has('ing_leche_fresca')) return '/assets/items/tortitas.png';
-  if (ids.has('ing_pan_rustico') && ids.has('ing_ajo_silvestre')) return '/assets/items/panes_de_ajo.png';
-  if (ids.has('ing_queso_cabra') && ids.has('ing_harina_trigo')) return '/assets/items/arepas.png';
-
-  if (ids.has('ing_patata_montana')) {
-    if (cats.includes('carnes')) return '/assets/items/food_steak_chips.png';
-    if (cats.includes('pescados')) return '/assets/items/food_fish_chips.png';
-    if (ids.has('ing_huevos_corral')) return '/assets/items/food_eggs_chips.png';
-    return '/assets/items/tortilla_patata.png';
-  }
-
-  if (ids.has('ing_salmon_helado') && ids.has('ing_arroz_grano')) {
-    return '/assets/items/food_sushi_salmon.png';
-  }
-
-  if (cats.includes('pescados')) {
-    if (ids.has('ing_especias_dragon') || ids.has('ing_sal_glacial')) return '/assets/items/food_ceviche.png';
-    return '/assets/items/food_fish_chips.png';
-  }
-
-  if (cats.includes('carnes')) {
-    if (ids.has('ing_lomo_jabali')) return '/assets/items/food_bourguignon.png';
-    if (ids.has('ing_especias_dragon')) return '/assets/items/kebab.png';
-    if (ids.has('ing_pan_rustico') || ids.has('ing_harina_trigo')) return '/assets/items/hamburguesa.png';
-    return '/assets/items/food_bourguignon.png';
-  }
-
-  if (cats.includes('lacteos')) {
-    if (ids.has('ing_queso_cabra') && ids.has('ing_leche_fresca')) return '/assets/items/food_fondue.png';
-    if (ids.has('ing_huevos_corral')) return '/assets/items/tortilla_patata.png';
-    return '/assets/items/quesarito.png';
-  }
-
-  if (cats.every((c) => c === 'verduras')) return '/assets/items/food_ratatouille.png';
-  if (cats.includes('especias')) return '/assets/items/doritos.png';
-
   return resolveCanonicalDishIcon(rawIcon);
 }
 

@@ -20,6 +20,7 @@ interface QuestMission {
 export const QuestView: React.FC = () => {
   const {
     questProgress,
+    isMissionCompleted,
     activeQuestChapter,
     setActiveQuestChapter,
     setSelectedCombatMissionId,
@@ -30,13 +31,19 @@ export const QuestView: React.FC = () => {
   } = useGame();
 
   const isChapter2Unlocked =
+    questProgress.allMissionsCompleted ||
     questProgress.completedMissions.includes('m4_puertas_selladas') ||
     questProgress.chapter >= 2;
 
   const isChapter3Unlocked =
+    questProgress.allMissionsCompleted ||
     questProgress.completedMissions.includes('m7_epilogo_aldea') ||
     questProgress.completedMissions.includes('m6_puerta_laberinto') ||
     questProgress.chapter >= 3;
+
+  const isChapter4Unlocked =
+    questProgress.allMissionsCompleted ||
+    questProgress.chapter >= 4;
 
 
   // Chapter 1 missions - Exclusively Icespear story & boss (no cave missions)
@@ -207,15 +214,47 @@ export const QuestView: React.FC = () => {
     },
   ];
 
+  // Chapter 4 missions - The icy peaks of Pico Icespear (future / upcoming missions)
+  const chapter4Missions: QuestMission[] = [
+    {
+      id: 'm11_pico_ascenso',
+      title: 'El Ascenso a las Cumbres',
+      iconType: 'swords',
+      difficulty: 'Dificil',
+      description:
+        'Las ventiscas azotan las laderas escarpadas del Pico Icespear. Criaturas elementales de hielo custodian las sendas prohibidas.',
+      portrait: '/assets/portraits/capitan_gabriel_clean.png',
+      portraitClass: 'scale-[1.12] translate-y-0.5 object-center',
+      stageId: 'stage_pico_ascenso',
+      isStory: true,
+    },
+    {
+      id: 'm12_nido_cryovain',
+      title: 'El Cubil de Cryovain',
+      iconType: 'boss',
+      difficulty: 'Pesadilla',
+      description:
+        'En la cima del Pico Icespear, la colosal bestia alada Cryovain acecha sobre su tesoro congelado. La batalla decisiva.',
+      portrait: '/assets/combat/devorador_quitinoso_clean.png',
+      portraitClass: 'scale-[1.5] origin-top translate-y-[2px]',
+      stageId: 'stage_cryovain_boss',
+      isStory: false,
+    },
+  ];
+
   // Active missions list based on selected chapter
   const missions =
-    activeQuestChapter === 3 && isChapter3Unlocked
+    activeQuestChapter === 4 && isChapter4Unlocked
+      ? chapter4Missions
+      : activeQuestChapter === 3 && isChapter3Unlocked
       ? chapter3Missions
       : activeQuestChapter === 2 && isChapter2Unlocked
       ? chapter2Missions
       : chapter1Missions;
   const currentChapter =
-    activeQuestChapter === 3 && isChapter3Unlocked
+    activeQuestChapter === 4 && isChapter4Unlocked
+      ? 4
+      : activeQuestChapter === 3 && isChapter3Unlocked
       ? 3
       : activeQuestChapter === 2 && isChapter2Unlocked
       ? 2
@@ -262,11 +301,11 @@ export const QuestView: React.FC = () => {
 
   // Dynamic completed missions count for current chapter
   const completedCount = missions.filter((m) =>
-    questProgress.completedMissions.includes(m.id)
+    isMissionCompleted(m.id)
   ).length;
 
   const totalCount = missions.length;
-  const isChapterFullyCompleted = completedCount >= totalCount;
+  const isChapterFullyCompleted = questProgress.allMissionsCompleted || completedCount >= totalCount;
 
   const getDifficultyColor = (diff: QuestMission['difficulty']) => {
     switch (diff) {
@@ -380,7 +419,7 @@ export const QuestView: React.FC = () => {
     // Capítulos bloqueados: pulsar no hace nada (ni sonido ni aviso).
     if (chapterNum === 2 && !isChapter2Unlocked) return;
     if (chapterNum === 3 && !isChapter3Unlocked) return;
-    if (chapterNum >= 4) return;
+    if (chapterNum === 4 && !isChapter4Unlocked) return;
     sound.playSFX('click');
     setActiveQuestChapter(chapterNum);
   };
@@ -390,17 +429,22 @@ export const QuestView: React.FC = () => {
       {/* 1. AUTHENTIC FULL-BLEED BACKGROUND:
           - Chapter 1: fondo_icespear_1.png
           - Chapter 2: image_5518948d.png (User-provided ornate mine background with tracks and lantern)
-          - Chapter 3: image_0fed218e.png (User-provided ornate Mercado Negro board with auction house and fortress) */}
+          - Chapter 3: image_0fed218e.png (User-provided ornate Mercado Negro board with auction house and fortress)
+          - Chapter 4: fondo_pico_Icespear_0b79dc85.png */}
       <img
         src={
-          currentChapter === 3
+          currentChapter === 4
+            ? '/assets/aistudio/fondo_pico_Icespear_0b79dc85.png'
+            : currentChapter === 3
             ? '/assets/aistudio/image_0fed218e.png'
             : currentChapter === 2
             ? '/assets/aistudio/image_5518948d.png'
             : '/assets/backgrounds/fondo_icespear_1.png'
         }
         alt={
-          currentChapter === 3
+          currentChapter === 4
+            ? 'Tablón de Misiones del Pico Icespear'
+            : currentChapter === 3
             ? 'Tablón de Misiones del Mercado Negro'
             : currentChapter === 2
             ? 'Las Minas de Glimmerstone'
@@ -536,31 +580,68 @@ export const QuestView: React.FC = () => {
           )}
 
 
-          {/* TAB 4: CAPITULO IV PICO ICESPEAR (Bloqueado) */}
-          <button
-            type="button"
-            onClick={() => handleSelectChapter(4)}
-            className="relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
-            title="Capítulo IV: Pico Icespear (Próximamente)"
-          >
-            <img
-              src="/assets/items/boton_historia.png"
-              alt="Capitulo IV Bloqueado"
-              className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
-            />
-            <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-              CAPITULO IV
-            </span>
-            <span className="relative z-10 text-[6.5px] sm:text-[7.5px] font-bold uppercase text-stone-400 leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-              PICO ICESPEAR
-            </span>
-            {/* Hanging Padlock */}
-            <img
-              src="/assets/items/CANDADO.png"
-              alt="Bloqueado"
-              className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
-            />
-          </button>
+          {/* TAB 4: CAPITULO IV PICO ICESPEAR */}
+          {isChapter4Unlocked ? (
+            <button
+              type="button"
+              onClick={() => handleSelectChapter(4)}
+              className={`relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-all ${
+                currentChapter === 4
+                  ? 'brightness-110 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] scale-[1.03]'
+                  : 'filter brightness-90 hover:brightness-105'
+              }`}
+              title="Capítulo IV: Pico Icespear"
+            >
+              <img
+                src={
+                  currentChapter === 4
+                    ? '/assets/items/BOTON SELECCIONADO HISTORIA.png'
+                    : '/assets/items/boton_historia.png'
+                }
+                alt="Capitulo IV"
+                className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+              />
+              <span
+                className={`relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                  currentChapter === 4 ? 'text-amber-100 font-black' : 'text-[#d6c2a5]'
+                }`}
+              >
+                CAPITULO IV
+              </span>
+              <span
+                className={`relative z-10 text-[6.5px] sm:text-[7.5px] font-bold uppercase leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                  currentChapter === 4 ? 'text-amber-300' : 'text-stone-300'
+                }`}
+              >
+                PICO ICESPEAR
+              </span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleSelectChapter(4)}
+              className="relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
+              title="Capítulo IV: Pico Icespear (Bloqueado)"
+            >
+              <img
+                src="/assets/items/boton_historia.png"
+                alt="Capitulo IV Bloqueado"
+                className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+              />
+              <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                CAPITULO IV
+              </span>
+              <span className="relative z-10 text-[6.5px] sm:text-[7.5px] font-bold uppercase text-stone-400 leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                PICO ICESPEAR
+              </span>
+              {/* Hanging Padlock */}
+              <img
+                src="/assets/items/CANDADO.png"
+                alt="Bloqueado"
+                className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
+              />
+            </button>
+          )}
         </div>
       </div>
 
@@ -574,7 +655,11 @@ export const QuestView: React.FC = () => {
           <div className="flex-1 space-y-1">
             <div className="flex items-center justify-between text-[10px] sm:text-[10.5px] font-black text-[#d6c2a5] tracking-wide uppercase">
               <span>
-                {currentChapter === 2
+                {currentChapter === 4
+                  ? 'PROGRESO CAPÍTULO IV • PICO ICESPEAR'
+                  : currentChapter === 3
+                  ? 'PROGRESO CAPÍTULO III • MERCADO NEGRO'
+                  : currentChapter === 2
                   ? 'PROGRESO CAPÍTULO II • LAS MINAS'
                   : 'PROGRESO CAPÍTULO I • ICESPEAR'}
               </span>
@@ -587,7 +672,11 @@ export const QuestView: React.FC = () => {
             <div className="relative w-full h-4 sm:h-4.5 rounded-full bg-[#0c0401] border border-[#521c08] p-0.5 overflow-hidden shadow-inner">
               <div
                 className={`h-full rounded-full ${
-                  currentChapter === 2
+                  currentChapter === 4
+                    ? 'bg-gradient-to-r from-[#38bdf8] via-[#818cf8] to-[#c084fc] shadow-[0_0_10px_rgba(56,189,248,0.8)]'
+                    : currentChapter === 3
+                    ? 'bg-gradient-to-r from-[#9333ea] via-[#c026d3] to-[#f59e0b] shadow-[0_0_10px_rgba(192,38,211,0.8)]'
+                    : currentChapter === 2
                     ? 'bg-gradient-to-r from-[#0284c7] via-[#06b6d4] to-[#f59e0b] shadow-[0_0_10px_rgba(6,182,212,0.8)]'
                     : 'bg-gradient-to-r from-[#dc2626] via-[#ea580c] to-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.8)]'
                 } transition-all duration-500`}
@@ -604,14 +693,22 @@ export const QuestView: React.FC = () => {
               isChapterFullyCompleted ? 'ring-2 ring-amber-400/80 animate-pulse' : ''
             }`}
             title={
-              currentChapter === 2
+              currentChapter === 4
+                ? 'Cofre de Cumbres de Pico Icespear'
+                : currentChapter === 3
+                ? 'Cofre del Mercado Negro de Ferton'
+                : currentChapter === 2
                 ? 'Cofre de las Minas de Glimmerstone'
                 : 'Cofre de Recompensas de Icespear'
             }
           >
             <img
               src={
-                currentChapter === 2
+                currentChapter === 4
+                  ? '/assets/items/cofre_sellado_mansion.png'
+                  : currentChapter === 3
+                  ? '/assets/items/cofre_sellado_mansion.png'
+                  : currentChapter === 2
                   ? '/assets/items/cofre_sellado_mansion.png'
                   : '/assets/items/cofre_de_tintes_app.png'
               }
@@ -632,12 +729,13 @@ export const QuestView: React.FC = () => {
           className="w-full flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden scroll-smooth flex flex-col gap-2.5 sm:gap-3 mt-1.5 pb-28 sm:pb-32 cursor-grab active:cursor-grabbing touch-pan-y"
         >
           {missions.map((mission, idx) => {
-            const isCompleted = questProgress.completedMissions.includes(mission.id);
-            // In chapter 2, first mission is automatically unlocked once Chapter 2 is opened
+            const isCompleted = isMissionCompleted(mission.id);
+            // In chapter 2/3/4, first mission is automatically unlocked once Chapter is opened
             const isUnlocked =
+              questProgress.allMissionsCompleted ||
               idx === 0 ||
-              questProgress.completedMissions.includes(missions[idx - 1].id) ||
-              (missions[idx - 1].id === 'm6_puerta_laberinto' && questProgress.completedMissions.includes('m6_cuevas_titan')) ||
+              isMissionCompleted(missions[idx - 1].id) ||
+              (missions[idx - 1].id === 'm6_puerta_laberinto' && isMissionCompleted('m6_cuevas_titan')) ||
               isCompleted;
 
             const isFertonMission = mission.id === 'm9_emboscada_ferton';
@@ -778,7 +876,10 @@ export const QuestView: React.FC = () => {
                         mission.id === 'm2_robo' ||
                         mission.id === 'm3_bosque' ||
                         mission.id === 'm4_puertas_selladas' ||
-                        mission.id === 'm5_minas_historia';
+                        mission.id === 'm5_minas_historia' ||
+                        mission.id === 'm8_intro_capitulo3' ||
+                        mission.id === 'm9_emboscada_ferton' ||
+                        mission.id === 'm10_hobgoblin_boss';
 
                       if (hasStoryBtn && isCompleted) {
                         return (

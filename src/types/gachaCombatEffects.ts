@@ -23,6 +23,7 @@ export type GachaEffectType =
   | 'laceration'  // Cortante: Laceración acumulable (+15% a todo el daño recibido)
   | 'corrosion'   // Ácido: Corrosión cáustica permanente (-DEF & -ATK)
   | 'confused'    // Psíquico: Confusión mental (35% probabilidad de autolesión)
+  | 'charmed'     // Bardo: Encantado por Roxanne (se ataca a sí mismo)
   | 'shock'       // Relámpago: Sobrecarga voltaica con críticos
   | 'decay'       // Necrótico: Marchitamiento vital
   | 'holy_blind'  // Radiante: Ceguera divina por resplandor
@@ -314,6 +315,23 @@ export const GACHA_EFFECTS_CATALOG: Record<string, GachaEffectMeta> = {
     bgColor: 'bg-slate-900/90',
     glowColor: '#94a3b8',
     particleType: 'blind',
+  },
+  charmed: {
+    type: 'charmed',
+    canonicalType: 'charmed',
+    name: 'Charmed',
+    nameEs: 'Encantado',
+    category: 'debuff',
+    shortDesc: 'Seducido por la música de Roxanne: Al atacar se autolesiona con su propio daño.',
+    tacticalDesc: 'Bajo influjo de la Velada Encantadora, el enemigo se ataca a sí mismo al ejecutar su turno ofensivo. En Tier II o III, además recibe un 10% adicional de su propio ataque.',
+    isBuff: false,
+    maxStacks: 1,
+    icon: '💖',
+    color: 'text-pink-400',
+    borderColor: 'border-pink-500/80',
+    bgColor: 'bg-pink-950/80',
+    glowColor: '#ec4899',
+    particleType: 'haste',
   },
   atk_buff: {
     type: 'atk_buff',

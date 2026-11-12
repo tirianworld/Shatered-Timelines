@@ -4,9 +4,7 @@ import { sound } from '../services/soundService';
 import { Check, X } from 'lucide-react';
 import { CANONICAL_HEROES_LIST, CanonicalHeroItem } from './HeroesView';
 
-const STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v4';
-const LEGACY_STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v3';
-const REFERENCE_PARTY = ['kairon', 'prometeo', 'arlem_diaz', 'magordito'];
+const STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v3';
 
 interface PartySelectionViewProps {
   onClose?: () => void;
@@ -18,50 +16,30 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
   // 5 Party Presets (each with 4 slots)
   const [parties, setParties] = useState<(string | null)[][]>(() => {
     try {
-      const current = localStorage.getItem(STORAGE_PARTIES_KEY);
-      if (current) {
-        const parsed = JSON.parse(current);
-        if (Array.isArray(parsed) && parsed.length === 5) return parsed;
-      }
-
-      // Migración: conserva los otros cuatro equipos, pero aplica la formación
-      // de referencia al primer preset una sola vez.
-      const legacy = localStorage.getItem(LEGACY_STORAGE_PARTIES_KEY);
-      if (legacy) {
-        const parsed = JSON.parse(legacy);
+      const saved = localStorage.getItem(STORAGE_PARTIES_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length === 5) {
-          const migrated = parsed.map((party) => Array.isArray(party) ? [...party] : [null, null, null, null]);
-          migrated[0] = [...REFERENCE_PARTY];
-          localStorage.setItem(STORAGE_PARTIES_KEY, JSON.stringify(migrated));
-          return migrated;
+          return parsed;
         }
       }
     } catch {
-      // Ignore storage or JSON errors and use the reference formation.
+      // Ignore JSON error
     }
 
-    const defaults = [
-      [...REFERENCE_PARTY],
+    // Default: Party 1 initialized with current team (or Gromock if empty), others empty
+    const defaultParty1 = team.length === 4 ? [...team] : ['gromock', null, null, null];
+    return [
+      defaultParty1,
       [null, null, null, null],
       [null, null, null, null],
       [null, null, null, null],
       [null, null, null, null],
     ];
-    try {
-      localStorage.setItem(STORAGE_PARTIES_KEY, JSON.stringify(defaults));
-    } catch {
-      // Ignore storage errors.
-    }
-    return defaults;
   });
 
   const [activePreset, setActivePreset] = useState<number>(0);
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
-
-  // Al abrir la pestaña, sincroniza el equipo de combate con el preset inicial.
-  useEffect(() => {
-    setEntireTeam(parties[0] || [...REFERENCE_PARTY]);
-  }, []);
 
   // Current active 4-hero slots
   const currentSlots = parties[activePreset] || [null, null, null, null];
@@ -168,7 +146,7 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
       />
 
       {/* 1. TOP PARTY PRESETS BAR (1) (2) (3) (4) (5) */}
-      <div className="relative z-10 w-full bg-[#0a0302] border-b-2 border-[#2b0d04] py-2 px-4 flex items-center justify-center gap-3 sm:gap-4 shrink-0 shadow-md">
+      <div className="relative z-10 w-full bg-[#0a0302] border-b-2 border-[#2b0d04] py-1.5 px-4 flex items-center justify-center gap-3 sm:gap-4 shrink-0 shadow-md">
         {[0, 1, 2, 3, 4].map((idx) => {
           const isCurrent = activePreset === idx;
           return (
@@ -176,7 +154,7 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
               key={idx}
               type="button"
               onClick={() => handleSelectPreset(idx)}
-              className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-95 ${
+              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-95 ${
                 isCurrent
                   ? 'bg-[#3d1607] border-2 border-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.7)] ring-1 ring-amber-300 text-amber-100 font-black text-sm sm:text-base font-serif scale-105'
                   : 'bg-[#180703] border-2 border-[#6d2a0e] text-stone-300 hover:text-white hover:border-amber-600 font-bold text-sm sm:text-base font-serif opacity-85 hover:opacity-100'
@@ -202,10 +180,10 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
                 <div
                   key={slotIdx}
                   onClick={() => handleSlotClick(slotIdx)}
-                  className={`relative aspect-[1/1.25] rounded-[13px] overflow-hidden border-[2.5px] transition-all duration-150 cursor-pointer shadow-[inset_0_0_0_1px_rgba(244,170,91,0.18),0_3px_7px_rgba(0,0,0,0.55)] ${
+                  className={`relative aspect-[1/1.22] rounded-xl overflow-hidden border-2 transition-all duration-150 cursor-pointer ${
                     isSelected
-                      ? 'border-[#f5a623] ring-2 ring-amber-400 shadow-[0_0_14px_rgba(245,158,11,0.75)] scale-[1.01]'
-                      : 'border-[#8a3b16] hover:border-[#bd6a29]'
+                      ? 'border-[#f59e0b] ring-2 ring-amber-400 shadow-[0_0_14px_rgba(245,158,11,0.75)] scale-[1.01]'
+                      : 'border-[#54210a] hover:border-[#823b12]'
                   } ${hero ? 'bg-[#180905]' : 'bg-[#120502]'}`}
                 >
                   {hero ? (
@@ -231,7 +209,7 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
                       </button>
 
                       {/* Subtle Hero Nameplate at Bottom */}
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/65 to-transparent pt-4 pb-1.5 px-1 text-center pointer-events-none border-b border-amber-700/30">
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pt-3 pb-1 px-1 text-center pointer-events-none">
                         <span className="text-[10px] font-black text-amber-200 font-serif tracking-wide drop-shadow truncate block">
                           {hero.name}
                         </span>
@@ -259,7 +237,7 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
 
       {/* 3. BOTTOM SECTION: 5-COLUMN HERO CARDS GRID IN CARVED WOOD CONTAINER */}
       <div className="relative z-10 flex-1 min-h-0 mx-3 mb-2 flex flex-col">
-        <div className="w-full h-full rounded-[22px] border-[3.5px] border-[#8a3b16] bg-[#220c04]/95 p-2 sm:p-2.5 flex flex-col min-h-0 shadow-[inset_0_0_16px_rgba(0,0,0,0.85),0_8px_20px_rgba(0,0,0,0.7)]">
+        <div className="w-full h-full rounded-[22px] border-[3.5px] border-[#7a320f] bg-[#220c04]/95 p-2 sm:p-2.5 flex flex-col min-h-0 shadow-[inset_0_0_16px_rgba(0,0,0,0.85),0_8px_20px_rgba(0,0,0,0.7)]">
           {/* Scrollable Hero Cards Area */}
           <div className="flex-1 w-full overflow-y-auto no-scrollbar pt-0.5">
             <div className="grid grid-cols-5 gap-1 sm:gap-1.5 pb-2">

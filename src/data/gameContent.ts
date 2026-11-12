@@ -112,66 +112,6 @@ export const PATROLS: PatrolMission[] = [
       materials: ['Escama de Cryovain', 'Núcleo Astral'],
     },
   },
-  // --- Silverpeack (Pico de Plata): patrullas de mina, más largas y mejor pagadas ---
-  {
-    id: 'patrol_silverpeack_1',
-    name: 'Galerías Superficiales',
-    region: 'Silverpeack',
-    durationSeconds: 300,
-    description:
-      'Peinar las galerías altas de la colonia en busca de vetas de plata recién expuestas y despejar de alimañas los raíles.',
-    bgImage: '/assets/backgrounds/silverpeack.png',
-    recommendedPower: 900,
-    rewards: {
-      gold: 0,
-      xp: 0,
-      crystals: 0,
-      items: [
-        { id: 'mineral_cobre', name: 'Mineral de Cobre', count: 12, icon: '/assets/items/lingote cobre app.png', rarity: 'R' },
-        { id: 'gema_comun', name: 'Gema Común', count: 3, icon: '/assets/items/gema.png', rarity: 'R' },
-      ],
-    },
-  },
-  {
-    id: 'patrol_silverpeack_2',
-    name: 'Pozo Profundo de Glimmerstone',
-    region: 'Silverpeack',
-    durationSeconds: 900,
-    description:
-      'Descender con la vagoneta hasta los pozos inundados de la colonia antigua, donde la plata se mezcla con cristales azules.',
-    bgImage: '/assets/backgrounds/minas_glimmerstone_profunda.png',
-    recommendedPower: 1500,
-    rewards: {
-      gold: 0,
-      xp: 0,
-      crystals: 0,
-      items: [
-        { id: 'mineral_cobre', name: 'Mineral de Cobre', count: 25, icon: '/assets/items/lingote cobre app.png', rarity: 'R' },
-        { id: 'mineral_plata', name: 'Mineral de Plata', count: 18, icon: '/assets/items/lingote plata app.png', rarity: 'SR' },
-        { id: 'gema_azul', name: 'Gema Azul', count: 6, icon: '/assets/items/amatista app.png', rarity: 'SR' },
-      ],
-    },
-  },
-  {
-    id: 'patrol_silverpeack_3',
-    name: 'Puerta Sellada de los Cristales',
-    region: 'Silverpeack',
-    durationSeconds: 1800,
-    description:
-      'Expedición de élite a la puerta arcana del fondo de la colonia: vigilar el sello de Lloth y extraer los cristales que rezuman.',
-    bgImage: '/assets/backgrounds/puertas_selladas_glimmerstone.png',
-    recommendedPower: 2400,
-    rewards: {
-      gold: 0,
-      xp: 0,
-      crystals: 0,
-      items: [
-        { id: 'mineral_plata', name: 'Mineral de Plata', count: 40, icon: '/assets/items/lingote plata app.png', rarity: 'SR' },
-        { id: 'mineral_oro', name: 'Mineral de Oro', count: 20, icon: '/assets/items/lingote oro  app.png', rarity: 'SSR' },
-        { id: 'gema_primigenia', name: 'Gema Primigenia', count: 12, icon: '/assets/items/arcano gema app.png', rarity: 'SSR' },
-      ],
-    },
-  },
 ];
 
 export const INITIAL_INVENTORY: InventoryItem[] = [

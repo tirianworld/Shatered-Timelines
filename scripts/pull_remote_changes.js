@@ -1,6 +1,7 @@
-﻿import fs from 'fs';
+import fs from 'fs';
 import path from 'path';
 
+const TOKEN = process.env.GITHUB_TOKEN || '';
 const OWNER = 'tirianworld';
 const REPO = 'Shatered-Timelines';
 const HEAD_SHA = 'bab5265b11d20c122cf80335ec9d05d78c824e1e';
@@ -8,11 +9,11 @@ const BASE_SHA = '73f99e3d257b7eca0f633bb12d43ae59c6db31de';
 
 async function main() {
   console.log(`Fetching compare between ${BASE_SHA.slice(0, 7)} and ${HEAD_SHA.slice(0, 7)}...`);
-
   const compareRes = await fetch(
     `https://api.github.com/repos/${OWNER}/${REPO}/compare/${BASE_SHA}...${HEAD_SHA}`,
     {
       headers: {
+        Authorization: `Bearer ${TOKEN}`,
         Accept: 'application/vnd.github.v3+json',
         'User-Agent': 'SyncScript',
       },
@@ -25,7 +26,6 @@ async function main() {
 
   const compareData = await compareRes.json();
   const files = compareData.files || [];
-
   console.log(`Found ${files.length} changed files across ${compareData.total_commits} commits.`);
 
   let downloadedCount = 0;
@@ -48,7 +48,10 @@ async function main() {
     try {
       const rawUrl = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${HEAD_SHA}/${encodeURI(filename)}`;
       const fileRes = await fetch(rawUrl, {
-        headers: { 'User-Agent': 'SyncScript' },
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+          'User-Agent': 'SyncScript',
+        },
       });
 
       if (!fileRes.ok) {

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
@@ -482,6 +482,1345 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       },
     },
   },
+  // --- ARLEM'S COMBAT DECK (BARDO CON LAÚD Y RAPIER) ---
+  arlem_rankup: {
+    id: 'arlem_rankup',
+    name: 'Inspiración Bárdica',
+    type: 'buff',
+    sfx: 'powerup',
+    dndDamageType: 'force',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/inspiracion_bardica_tier_1.png',
+        damage: 10,
+        title: 'Inspiración Bárdica',
+        description: '🎶 [BARDO]: Toca un arpegio afinado en su laúd y eleva +1 rango todas las cartas en mano.',
+        gachaEffectBadge: '🎶 Inspiración • Todas las cartas en mano +1 Rango',
+        gachaEffectsApplied: [
+          { type: 'atk_buff', duration: 1, stacks: 1, target: 'hero' },
+        ],
+        dndDamageType: 'force',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/inspiracion_bardica_tier_2.png',
+        damage: 22,
+        title: 'Crescendo Virtuoso II',
+        description: '🎶 [BARDO]: Melodía vibrante de laúd que eleva todas las cartas en mano +1 rango y confiere +25% ATK.',
+        gachaEffectBadge: '🎶 Crescendo +1 Rango + ⚔️ ATK Buff (+25%)',
+        gachaEffectsApplied: [
+          { type: 'atk_buff', duration: 2, stacks: 2, target: 'hero' },
+        ],
+        dndDamageType: 'force',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/inspiracion_bardica_tier_3.png',
+        damage: 38,
+        title: 'Sinfonía Heroica III',
+        description: '🎶 [BARDO SUPREMO]: Acordes magistrales con laúd que elevan todas las cartas en mano al rango máximo (Oro).',
+        gachaEffectBadge: '🎶 Rango Máximo Total + ⚡ +1 Orbe Definitiva',
+        gachaEffectsApplied: [
+          { type: 'atk_buff', duration: 3, stacks: 3, target: 'hero' },
+        ],
+        dndDamageType: 'force',
+      },
+    },
+  },
+  arlem_curacion: {
+    id: 'arlem_curacion',
+    name: 'Balada Serena',
+    type: 'buff',
+    sfx: 'powerup',
+    dndDamageType: 'radiant',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/items/curacion.png',
+        damage: 0,
+        heal: 45,
+        title: 'Balada Serena',
+        description: '💚 [CANCIÓN VITAL]: Toca una melodía calmante en su laúd restaurando 45 PV al instante.',
+        gachaEffectBadge: '💚 Balada Vital • Restaura 45 PV',
+        gachaEffectsApplied: [],
+        dndDamageType: 'radiant',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/items/curacion.png',
+        damage: 0,
+        heal: 90,
+        title: 'Canto del Manantial II',
+        description: '💚 [CANCIÓN VITAL]: Acordes armoniosos que restauran 90 PV y purifican debuffs y aflicciones.',
+        gachaEffectBadge: '💚 Canto Armonioso (90 PV) + Purificación de Debuffs',
+        gachaEffectsApplied: [],
+        dndDamageType: 'radiant',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/items/curacion.png',
+        damage: 0,
+        heal: 180,
+        title: 'Réquiem del Renacer III',
+        description: '💚 [CANCIÓN SUPREMA]: Solo virtuoso de laúd que restaura 180 PV, limpia todas las aflicciones y otorga celeridad.',
+        gachaEffectBadge: '💚 Réquiem Vital (180 PV) + Purificación Total + Celeridad',
+        gachaEffectsApplied: [
+          { type: 'haste', duration: 2, stacks: 1, target: 'hero' },
+        ],
+        dndDamageType: 'radiant',
+      },
+    },
+  },
+  arlem_fuego: {
+    id: 'arlem_fuego',
+    name: 'Estocada de Rapier',
+    type: 'attack',
+    sfx: 'attack',
+    dndDamageType: 'piercing',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/items/boton_espada_clean.png',
+        damage: 18,
+        title: 'Estocada de Rapier',
+        description: '🤺 [PERFORANTE]: Precisa y elegante estocada con su fina ropera al compás de la música.',
+        gachaEffectBadge: '🤺 Perforante • Estocada Fina de Rapier (18 DMG)',
+        gachaEffectsApplied: [],
+        dndDamageType: 'piercing',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/items/boton_espada_clean.png',
+        damage: 34,
+        title: 'Finta y Hendidura II',
+        description: '🤺 [PERFORANTE]: Finta engañosa de bardo seguida de una penetrante estocada que fractura la defensa enemiga.',
+        gachaEffectBadge: '🤺 Finta Ágil • Ruptura DEF (-25%)',
+        gachaEffectsApplied: [
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/items/boton_espada_clean.png',
+        damage: 60,
+        title: 'Danza de Ropera III',
+        description: '🤺 [PERFORANTE SUPREMO]: Ráfaga virtuosa de estocadas de rapier con crítico letal y ruptura defensiva.',
+        gachaEffectBadge: '🤺 Danza Virtuosa • Crítico Letal + Ruptura DEF Total',
+        gachaEffectsApplied: [
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+    },
+  },
+
+  // --- PEPE LOUX'S COMBAT DECK ---
+  pepe_ataque: {
+    id: 'pepe_ataque',
+    name: 'Hachazo de Combate',
+    type: 'attack',
+    sfx: 'attack',
+    dndDamageType: 'slashing',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/golpe_hacha.png',
+        damage: 18,
+        title: 'Hachazo Hendiente',
+        description: '⚔️ [CORTANTE]: Golpe directo con el hacha pesada de Pepe Loux.',
+        gachaEffectBadge: '⚔️ Cortante • Hachazo Físico Contundente',
+        gachaEffectsApplied: [],
+        dndDamageType: 'slashing',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/golpe_hacha.png',
+        damage: 34,
+        title: 'Tajo de Hacha II',
+        description: '⚔️ [CORTANTE]: Hachazo vertical pesado que fractura la armadura del enemigo.',
+        gachaEffectBadge: '⚔️ Cortante • Fractura Armadura (-30% DEF)',
+        gachaEffectsApplied: [
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'slashing',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/golpe_hacha.png',
+        damage: 62,
+        title: 'Hendidura Devastadora III',
+        description: '⚔️ [CORTANTE SUPREMO]: Hachazo demoledor de veterano con crítico garantizado y desgarro.',
+        gachaEffectBadge: '⚔️ Crítico Devastador • Fractura DEF III + Laceración',
+        gachaEffectsApplied: [
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'laceration', duration: 3, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'slashing',
+      },
+    },
+  },
+  pepe_remo: {
+    id: 'pepe_remo',
+    name: 'Golpe de Remo',
+    type: 'attack',
+    sfx: 'attack',
+    dndDamageType: 'bludgeoning',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/golpe_de_remo.png',
+        damage: 15,
+        title: 'Golpe de Remo',
+        description: '🚣‍♂️ [CONTUNDENTE]: Pepe estrella un remo macizo contra el rival. ¡Aturde al enemigo 1 turno, pero el impacto aturde también a Pepe!',
+        gachaEffectBadge: '🚣‍♂️ Aturdimiento Mutuo • Enemigo y Pepe Aturdidos (1 Turno)',
+        gachaEffectsApplied: [
+          { type: 'stun', duration: 1, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'bludgeoning',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/golpe_de_remo.png',
+        damage: 30,
+        title: 'Remazo de la Costa II',
+        description: '🚣‍♂️ [CONTUNDENTE]: Remazo de gran impacto que noquea al enemigo 1 turno y rompe su guardia (Pepe queda aturdido 1T).',
+        gachaEffectBadge: '🚣‍♂️ Remazo Pesado • Aturdimiento Mutuo + Ruptura DEF (-30%)',
+        gachaEffectsApplied: [
+          { type: 'stun', duration: 1, stacks: 1, target: 'enemy' },
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'bludgeoning',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/golpe_de_remo.png',
+        damage: 52,
+        title: 'Impacto Naufragio III',
+        description: '🚣‍♂️ [CONTUNDENTE SUPREMO]: Golpe brutal con la quilla que aturde al enemigo 2 turnos (Pepe queda aturdido 1 turno).',
+        gachaEffectBadge: '🚣‍♂️ Conmoción Severa • Enemigo 2T Aturdido / Pepe 1T',
+        gachaEffectsApplied: [
+          { type: 'stun', duration: 2, stacks: 1, target: 'enemy' },
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'bludgeoning',
+      },
+    },
+  },
+  pepe_escudo: {
+    id: 'pepe_escudo',
+    name: 'Baluarte de Pepe',
+    type: 'buff',
+    sfx: 'skill',
+    dndDamageType: 'force',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/items/Defense.png',
+        damage: 0,
+        title: 'Guardia del Escudo',
+        description: '🛡️ [BALUARTE]: Pepe alza su gran escudo. Obtiene barrera de 50 PV y 75% de resistencia a todo daño este turno.',
+        gachaEffectBadge: '🛡️ Baluarte • Barrera 50 PV + 75% Resistencia al Daño (1T)',
+        gachaEffectsApplied: [
+          { type: 'def_buff', duration: 1, stacks: 1, target: 'hero' },
+        ],
+        dndDamageType: 'force',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/items/Defense.png',
+        damage: 0,
+        title: 'Muralla Inquebrantable II',
+        description: '🛡️ [BALUARTE]: Levanta un muro defensivo impenetrable. Barrera de 100 PV y 80% de reducción de daño por 1 turno.',
+        gachaEffectBadge: '🛡️ Muralla • Barrera 100 PV + 80% Resistencia al Daño',
+        gachaEffectsApplied: [
+          { type: 'def_buff', duration: 1, stacks: 2, target: 'hero' },
+        ],
+        dndDamageType: 'force',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/items/Defense.png',
+        damage: 0,
+        title: 'Fortaleza del Bastión III',
+        description: '🛡️ [BALUARTE SUPREMO]: Se convierte en una fortaleza andante. Barrera de 180 PV y 90% de reducción de daño.',
+        gachaEffectBadge: '🛡️ Fortaleza Absoluta • Barrera 180 PV + 90% Resistencia',
+        gachaEffectsApplied: [
+          { type: 'def_buff', duration: 1, stacks: 3, target: 'hero' },
+        ],
+        dndDamageType: 'force',
+      },
+    },
+  },
+
+  // --- CHISPO DEEZ'S COMBAT DECK (PALADÍN ENANO ALADO / DIVINO) ---
+  chispo_martillo: {
+    id: 'chispo_martillo',
+    name: 'Golpe de Martillo',
+    type: 'attack',
+    sfx: 'attack',
+    dndDamageType: 'bludgeoning',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/aistudio/martillo_de_guerra_8845aea4.png',
+        damage: 22,
+        title: 'Martillazo de Guerra',
+        description: '🔨 [CONTUNDENTE]: Descarga un brutal golpe con su pesado martillo de guerra forjado en oro (22 DMG).',
+        gachaEffectBadge: '🔨 Martillazo de Guerra (22 DMG)',
+        gachaEffectsApplied: [],
+        dndDamageType: 'bludgeoning',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/aistudio/martillo_de_guerra_de_plata_d2e6353c.png',
+        damage: 42,
+        title: 'Martillo Bendito II',
+        description: '🔨 [RUPTURA]: Embiste con su martillo impregnado en luz sagrada, fracturando armaduras enemigas.',
+        gachaEffectBadge: '🔨 Martillo Bendito • Ruptura DEF + 42 DMG',
+        gachaEffectsApplied: [
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'bludgeoning',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/aistudio/martillo_de_guerra_de_oro_b5f2d8a4.png',
+        damage: 75,
+        title: 'Maza Celestial III',
+        description: '🔨 [IMPACTO SÍSMICO]: Salto alado y aplastamiento demoledor que aturde al rival y destruye sus defensas.',
+        gachaEffectBadge: '🔨 Maza Celestial • Aturdimiento Total (1T) + Fractura DEF (3T)',
+        gachaEffectsApplied: [
+          { type: 'stun', duration: 1, stacks: 1, target: 'enemy' },
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'bludgeoning',
+      },
+    },
+  },
+  chispo_luz_divina: {
+    id: 'chispo_luz_divina',
+    name: 'Luz Divina',
+    type: 'buff',
+    sfx: 'powerup',
+    dndDamageType: 'radiant',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/rezo_divino_tier_1.png',
+        damage: 0,
+        heal: 20,
+        title: 'Luz Divina',
+        description: '✨ [BENDICIÓN]: Eleva su martillo de guerra bañando de luz divina a Chispo y sus aliados (+25% ATK, +20% DEF, sana 20 PV).',
+        gachaEffectBadge: '✨ Luz Divina • +25% ATK +20% DEF a Todo el Grupo',
+        gachaEffectsApplied: [
+          { type: 'atk_buff', duration: 2, stacks: 1, target: 'hero' },
+          { type: 'def_buff', duration: 2, stacks: 1, target: 'hero' },
+        ],
+        dndDamageType: 'radiant',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/rezo_divino_tier_2.png',
+        damage: 0,
+        heal: 45,
+        title: 'Resplandor Celestial II',
+        description: '✨ [BARRERA SAGRADA]: La luz divina crea una barrera de 70 PV, sana 45 PV y otorga +35% ATK y +30% DEF a los aliados.',
+        gachaEffectBadge: '✨ Resplandor Divino • Barrera 70 PV + Sanación 45 PV + ATK/DEF UP',
+        gachaEffectsApplied: [
+          { type: 'atk_buff', duration: 2, stacks: 2, target: 'hero' },
+          { type: 'def_buff', duration: 2, stacks: 2, target: 'hero' },
+          { type: 'haste', duration: 2, stacks: 1, target: 'hero' },
+        ],
+        dndDamageType: 'radiant',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/rezo_divino_tier_3.png',
+        damage: 0,
+        heal: 90,
+        title: 'Gloria del Paladín III',
+        description: '✨ [GRACIA TOTAL]: Juicio radiante protector: Barrera sagrada de 140 PV, sana 90 PV, +50% ATK, +50% DEF y purifica todos los estados alterados.',
+        gachaEffectBadge: '✨ Gloria Paladín • Barrera 140 PV + Sanación Masiva + Purificación',
+        gachaEffectsApplied: [
+          { type: 'atk_buff', duration: 3, stacks: 3, target: 'hero' },
+          { type: 'def_buff', duration: 3, stacks: 3, target: 'hero' },
+          { type: 'haste', duration: 3, stacks: 2, target: 'hero' },
+        ],
+        dndDamageType: 'radiant',
+      },
+    },
+  },
+  chispo_castigo_divino: {
+    id: 'chispo_castigo_divino',
+    name: 'Castigo Divino',
+    type: 'attack',
+    sfx: 'laser',
+    dndDamageType: 'radiant',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/smite_celestial.png',
+        damage: 26,
+        title: 'Castigo Divino',
+        description: '⚡ [ROBO DE ORBE]: Descarga el castigo divino con su martillo causando 26 DMG radiante y roba 1 orbe de definitiva para el equipo.',
+        gachaEffectBadge: '⚡ Castigo Divino (26 DMG) + 🔮 ROBA 1 ORBE DEFINITIVA',
+        gachaEffectsApplied: [],
+        dndDamageType: 'radiant',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/smite_celestial_tier_2.png',
+        damage: 48,
+        title: 'Castigo Divino II - Juicio',
+        description: '⚡ [ROBO & QUIEBRA]: Rayo de fuego sagrado inflige 48 DMG, roba 1 orbe de ulti y reduce el ataque del enemigo.',
+        gachaEffectBadge: '⚡ Juicio Divino (48 DMG) + 🔮 ROBA 1 ORBE + ATK DOWN',
+        gachaEffectsApplied: [
+          { type: 'atk_down', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'radiant',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/smite_celestial_tier_3.png',
+        damage: 82,
+        title: 'Castigo Divino III - Ira de los Dioses',
+        description: '⚡ [COLAPSO CELESTIAL]: Castigo celestial supremo de 82 DMG que roba 2 orbes de definitiva, drena el medidor rival y lo ciega.',
+        gachaEffectBadge: '⚡ Ira Divina (82 DMG) + 🔮 ROBA 2 ORBES DEFINITIVA + Ceguera',
+        gachaEffectsApplied: [
+          { type: 'blind', duration: 2, stacks: 2, target: 'enemy' },
+          { type: 'atk_down', duration: 2, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'radiant',
+      },
+    },
+  },
+
+  // --- GIOVANI VÁZQUEZ'S COMBAT DECK (BRIBÓN EMPLUMADO / MAGO OSCURO) ---
+  giovani_plumas: {
+    id: 'giovani_plumas',
+    name: 'Plumas Sombrías',
+    type: 'attack',
+    sfx: 'attack',
+    dndDamageType: 'piercing',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/giovani_plumas.png',
+        damage: 18,
+        title: 'Plumas Sombrías',
+        description: '🪶 [SOMBRA]: Lanza tres plumas afiladas como dagas imbuidas de magia oscura penetrante.',
+        gachaEffectBadge: '🪶 Plumas Penetrantes (18 DMG)',
+        gachaEffectsApplied: [],
+        dndDamageType: 'piercing',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/giovani_plumas.png',
+        damage: 35,
+        title: 'Dardos de Ocaso II',
+        description: '🪶 [SOMBRA]: Ráfaga de plumas oscuras perforantes que aplican desgarro y debilidad.',
+        gachaEffectBadge: '🪶 Dardos de Ocaso • Desgarro DEF (-25%)',
+        gachaEffectsApplied: [
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/giovani_plumas.png',
+        damage: 60,
+        title: 'Tormenta de Plumaje Negro III',
+        description: '🪶 [SOMBRA SUPREMA]: Lluvia torrencial de plumas de sombra que desgarra al rival con daño crítico severo.',
+        gachaEffectBadge: '🪶 Tormenta de Plumas • Crítico Profano + Ruptura DEF',
+        gachaEffectsApplied: [
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+    },
+  },
+  giovani_treta: {
+    id: 'giovani_treta',
+    name: 'Treta del Bribón',
+    type: 'buff',
+    sfx: 'coin',
+    dndDamageType: 'necrotic',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/giovani_treta.png',
+        damage: 12,
+        title: 'Escamoteo Sombrío',
+        description: '🃏 [BRIBÓN]: Rápido juego de manos con monedas oscuras que confunde al enemigo y roba concentración (+20% ATK).',
+        gachaEffectBadge: '🃏 Escamoteo • ATK UP (+20%) + ATK DOWN Rival',
+        gachaEffectsApplied: [
+          { type: 'atk_buff', duration: 2, stacks: 1, target: 'hero' },
+          { type: 'atk_down', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'necrotic',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/giovani_treta.png',
+        damage: 24,
+        heal: 20,
+        title: 'Truco del Tahúr II',
+        description: '🃏 [BRIBÓN]: Ilusión con naipes del bajo mundo. Sana 20 PV, otorga celeridad y reduce ataque enemigo.',
+        gachaEffectBadge: '🃏 Tahúr • Celeridad + Sanación (20 PV) + ATK DOWN Rival',
+        gachaEffectsApplied: [
+          { type: 'haste', duration: 2, stacks: 2, target: 'hero' },
+          { type: 'atk_down', duration: 2, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'necrotic',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/giovani_treta.png',
+        damage: 45,
+        title: 'Jaque de Sombras III',
+        description: '🃏 [BRIBÓN SUPREMO]: Jugada maestra clandestina: Confiere +1 Orbe definitiva, aturde al rival y garantiza golpe crítico.',
+        gachaEffectBadge: '🃏 Jaque de Sombras • +1 Orbe Definitiva + Aturdimiento (1T)',
+        gachaEffectsApplied: [
+          { type: 'stun', duration: 1, stacks: 1, target: 'enemy' },
+          { type: 'atk_buff', duration: 3, stacks: 2, target: 'hero' },
+        ],
+        dndDamageType: 'necrotic',
+      },
+    },
+  },
+  giovani_tomo: {
+    id: 'giovani_tomo',
+    name: 'Cántico del Tomo Violeta',
+    type: 'attack',
+    sfx: 'powerup',
+    dndDamageType: 'necrotic',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/giovani_tomo.png',
+        damage: 20,
+        title: 'Llama Arcana Violeta',
+        description: '📖 [GRIMORIO]: Lee un verso arcano prohibido desatando una llamarada violeta profana.',
+        gachaEffectBadge: '📖 Llama Arcana Violeta (20 DMG)',
+        gachaEffectsApplied: [],
+        dndDamageType: 'necrotic',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/giovani_tomo.png',
+        damage: 38,
+        heal: 25,
+        title: 'Pacto del Ocaso II',
+        description: '📖 [GRIMORIO]: Fuego etéreo que desgarra la esencia enemiga y restaura 25 PV a Giovani.',
+        gachaEffectBadge: '📖 Pacto de Ocaso (38 DMG) + Drena 25 PV',
+        gachaEffectsApplied: [],
+        dndDamageType: 'necrotic',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/giovani_tomo.png',
+        damage: 65,
+        heal: 50,
+        title: 'Vórtice del Grimorio III',
+        description: '📖 [GRIMORIO SUPREMO]: Desata las runas ancestrales en un vórtice devastador sobre el enemigo, drenando 50 PV.',
+        gachaEffectBadge: '📖 Vórtice Supremo (65 DMG) + Drena 50 PV + Purificación',
+        gachaEffectsApplied: [],
+        dndDamageType: 'necrotic',
+      },
+    },
+  },
+
+  // --- PROMETEO'S COMBAT DECK (CAZADOR DE SANGRE / BLOOD HUNTER - MAGIA DE FUEGO) ---
+  prometeo_fire_bolt: {
+    id: 'prometeo_fire_bolt',
+    name: 'Fire Bolt',
+    type: 'attack',
+    sfx: 'laser',
+    dndDamageType: 'fire',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/prometeo_fire_bolt.png',
+        damage: 22,
+        title: 'Fire Bolt',
+        description: '🔥 [PROYECTIL]: Dispara una saeta ígnea concentrada de alta velocidad que inflige 22 DMG de fuego.',
+        gachaEffectBadge: '🔥 Fire Bolt (22 DMG)',
+        gachaEffectsApplied: [
+          { type: 'burn', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'fire',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/prometeo_fire_bolt.png',
+        damage: 44,
+        title: 'Fire Bolt II - Saeta Abrasadora',
+        description: '🔥 [PERFORANTE]: Saeta ígnea penetrante que quema la armadura del rival (44 DMG) y reduce su defensa.',
+        gachaEffectBadge: '🔥 Saeta Abrasadora • 44 DMG + Quemadura + Ruptura DEF',
+        gachaEffectsApplied: [
+          { type: 'burn', duration: 2, stacks: 2, target: 'enemy' },
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'fire',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/prometeo_fire_bolt.png',
+        damage: 78,
+        title: 'Fire Bolt III - Ráfaga de Ceniza',
+        description: '🔥 [LANZAÍGNEA SUPREMA]: Impacto piromántico crítico que desintegra defensas e inflige 78 DMG con quemadura severa.',
+        gachaEffectBadge: '🔥 Ráfaga de Ceniza • 78 DMG + Quemadura Máxima (3T)',
+        gachaEffectsApplied: [
+          { type: 'burn', duration: 3, stacks: 3, target: 'enemy' },
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'fire',
+      },
+    },
+  },
+  prometeo_espada_verde: {
+    id: 'prometeo_espada_verde',
+    name: 'Espada de Fuego Verde',
+    type: 'attack',
+    sfx: 'attack',
+    dndDamageType: 'fire',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/prometeo_espada_verde.png',
+        damage: 26,
+        title: 'Espada de Fuego Verde',
+        description: '🗡️ [FUEGO & CORTE]: Taja con su espada envuelta en llamas esmeralda (26 DMG) y abre una herida sangrante (Hemorragia).',
+        gachaEffectBadge: '🗡️ Fuego Verde • 26 DMG + 🩸 Hemorragia (2T)',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 2, stacks: 1, target: 'enemy' },
+          { type: 'burn', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'fire',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/prometeo_espada_verde.png',
+        damage: 50,
+        title: 'Espada Verde II - Tajo Sangriento',
+        description: '🗡️ [RITO DE SANGRE]: Desata la magia de sangre en su hoja esmeralda. Causa 50 DMG y aplica hemorragia profunda.',
+        gachaEffectBadge: '🗡️ Tajo Sangriento • 50 DMG + 🩸 Hemorragia Doble (3T)',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'burn', duration: 2, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'fire',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/prometeo_espada_verde.png',
+        damage: 88,
+        title: 'Espada Verde III - Rito de Sangre Esmeralda',
+        description: '🗡️ [CORTE VORAZ]: Salto implacable con arco de fuego verde titánico que desangra masivamente al enemigo e incendia su esencia.',
+        gachaEffectBadge: '🗡️ Rito Esmeralda • 88 DMG + 🩸 Desangrado Crítico (3 Stacks)',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 4, stacks: 3, target: 'enemy' },
+          { type: 'burn', duration: 3, stacks: 3, target: 'enemy' },
+        ],
+        dndDamageType: 'fire',
+      },
+    },
+  },
+  prometeo_bola_fuego: {
+    id: 'prometeo_bola_fuego',
+    name: 'Bola de Fuego',
+    type: 'attack',
+    sfx: 'laser',
+    dndDamageType: 'fire',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/prometeo_bola_fuego.png',
+        damage: 30,
+        title: 'Bola de Fuego',
+        description: '💥 [ÁREA ÍGNEA]: Detona un orbe colosal de fuego primordial infligiendo 30 DMG ígneo envolvente.',
+        gachaEffectBadge: '💥 Bola de Fuego (30 DMG) + Conflagración',
+        gachaEffectsApplied: [
+          { type: 'burn', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'fire',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/prometeo_bola_fuego.png',
+        damage: 58,
+        title: 'Bola de Fuego II - Magma Ardiente',
+        description: '💥 [EXPLOSIÓN DEVASTADORA]: Estallido masivo de magma hirviente que envuelve al enemigo causando 58 DMG y ceguera por humo.',
+        gachaEffectBadge: '💥 Magma Ardiente • 58 DMG + Ceguera + Quemadura',
+        gachaEffectsApplied: [
+          { type: 'burn', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'blind', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'fire',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/prometeo_bola_fuego.png',
+        damage: 96,
+        title: 'Bola de Fuego III - Infierno Cataclísmico',
+        description: '💥 [INFIERNO SUPREMO]: Invocación de un sol abrasador volcánico que aniquila la zona con 96 DMG masivo y reduce el ataque enemigo.',
+        gachaEffectBadge: '💥 Infierno Cataclísmico • 96 DMG + Quemadura Feroz + Desorientación',
+        gachaEffectsApplied: [
+          { type: 'burn', duration: 4, stacks: 3, target: 'enemy' },
+          { type: 'atk_down', duration: 2, stacks: 2, target: 'enemy' },
+          { type: 'blind', duration: 2, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'fire',
+      },
+    },
+  },
+  // --- KAIRON'S COMBAT DECK (GUNSLINGER / PISTOLERO DUAL & ESPADA LARGA) ---
+  kairon_tiro_doble: {
+    id: 'kairon_tiro_doble',
+    name: 'Tiro Doble',
+    type: 'attack',
+    sfx: 'laser',
+    dndDamageType: 'piercing',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/kairon_tiro_doble.png',
+        damage: 22,
+        title: 'Tiro Doble',
+        description: '🎯 [DOBLE DISPARO]: Dos tiros rápidos uno detrás de otro con sus pistolas duales (22 DMG perforante).',
+        gachaEffectBadge: '🎯 Tiro Doble (22 DMG)',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/kairon_tiro_doble.png',
+        damage: 46,
+        title: 'Tiro Doble II - Cadencia Mortal',
+        description: '🎯 [RAFAGA CERTERA]: Dos impactos perforantes consecutivos en puntos vitales (46 DMG) que desgarran la armadura.',
+        gachaEffectBadge: '🎯 Cadencia Mortal • 46 DMG + Ruptura DEF + Sangrado',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/kairon_tiro_doble.png',
+        damage: 82,
+        title: 'Tiro Doble III - Balas Fantasma',
+        description: '🎯 [BALAS DE PLATA]: Dos proyectiles hipersónicos secuenciales que perforan la defensa enemiga (82 DMG) e inmovilizan con aturdimiento.',
+        gachaEffectBadge: '🎯 Balas Fantasma • 82 DMG + Aturdimiento + Sangrado Severo',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 3, stacks: 3, target: 'enemy' },
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'stun', duration: 1, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+    },
+  },
+  kairon_disparo_dual: {
+    id: 'kairon_disparo_dual',
+    name: 'Disparo Dual',
+    type: 'attack',
+    sfx: 'laser',
+    dndDamageType: 'piercing',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/kairon_disparo_dual.png',
+        damage: 28,
+        title: 'Disparo Dual',
+        description: '💥 [FOGONAZO SIMULTÁNEO]: Dispara con ambas pistolas al unísono, desatando una lluvia de plomo y pólvora (28 DMG).',
+        gachaEffectBadge: '💥 Disparo Dual (28 DMG)',
+        gachaEffectsApplied: [
+          { type: 'burn', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/kairon_disparo_dual.png',
+        damage: 54,
+        title: 'Disparo Dual II - Descarga de Pólvora',
+        description: '💥 [DOBLE CAÑÓN]: Potente descarga simultánea a quemarropa (54 DMG) que ciega al oponente con humo y quema por pólvora.',
+        gachaEffectBadge: '💥 Descarga de Pólvora • 54 DMG + Ceguera + Quemadura',
+        gachaEffectsApplied: [
+          { type: 'burn', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'blind', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/kairon_disparo_dual.png',
+        damage: 94,
+        title: 'Disparo Dual III - Tempestad de Plomo',
+        description: '💥 [BARRERA DE FUEGO]: Doble fogonazo devastador a máxima potencia (94 DMG) que desorienta y debilita el ataque rival.',
+        gachaEffectBadge: '💥 Tempestad de Plomo • 94 DMG + Quemadura Feroz + Reducción ATK',
+        gachaEffectsApplied: [
+          { type: 'burn', duration: 4, stacks: 3, target: 'enemy' },
+          { type: 'blind', duration: 2, stacks: 2, target: 'enemy' },
+          { type: 'atk_down', duration: 2, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+    },
+  },
+  kairon_espadazo_largo: {
+    id: 'kairon_espadazo_largo',
+    name: 'Espadazo de Acero',
+    type: 'attack',
+    sfx: 'sword',
+    dndDamageType: 'slashing',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/kairon_espadazo_largo.png',
+        damage: 32,
+        title: 'Espadazo de Acero',
+        description: '⚔️ [TAJO DE ESPADA LARGA]: Desenvaina su espada larga y propina un brutal mandoble en arco cortante (32 DMG).',
+        gachaEffectBadge: '⚔️ Espadazo de Acero (32 DMG)',
+        gachaEffectsApplied: [
+          { type: 'laceration', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'slashing',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/kairon_espadazo_largo.png',
+        damage: 62,
+        title: 'Espadazo de Acero II - Hendidura Voraz',
+        description: '⚔️ [CORTE PROFUNDO]: Asesta un espadazo descendente de tremenda violencia (62 DMG) que desgarra la defensa y desangra.',
+        gachaEffectBadge: '⚔️ Hendidura Voraz • 62 DMG + 🩸 Hemorragia + Ruptura DEF',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'laceration', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'slashing',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/kairon_espadazo_largo.png',
+        damage: 105,
+        title: 'Espadazo de Acero III - Juicio del Acero Glacial',
+        description: '⚔️ [MANDOBLE SUPREMO]: Salto frontal con estela astral cortante (105 DMG) que mutila la armadura y aturde al oponente.',
+        gachaEffectBadge: '⚔️ Juicio de Acero • 105 DMG + 🩸 Sangrado Severo + Aturdimiento',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 4, stacks: 3, target: 'enemy' },
+          { type: 'laceration', duration: 4, stacks: 3, target: 'enemy' },
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'stun', duration: 1, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'slashing',
+      },
+    },
+  },
+  ragnavaldr_doble_lanza: {
+    id: 'ragnavaldr_doble_lanza',
+    name: 'Estocada de Lanzas Gemelas',
+    type: 'attack',
+    sfx: 'attack',
+    dndDamageType: 'piercing',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/ragnavaldr_doble_lanza.png',
+        damage: 26,
+        title: 'Estocada de Lanzas I',
+        description: '🔱 [PERFORANTE]: Embestida frontal salvaje clavando ambas lanzas al unísono (26 DMG).',
+        gachaEffectBadge: '🔱 Lanzas Gemelas • 26 Daño Perforante',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/ragnavaldr_doble_lanza.png',
+        damage: 52,
+        title: 'Estocada de Lanzas II - Furia de Sílex',
+        description: '🔱 [EMPALAMIENTO VORAZ]: Clava ambas lanzas atravesando armaduras (52 DMG) y desgarrando la defensa.',
+        gachaEffectBadge: '🔱 Empalamiento Voraz • 52 DMG + 🩸 Sangrado + Ruptura DEF',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/ragnavaldr_doble_lanza.png',
+        damage: 98,
+        title: 'Estocada de Lanzas III - Masacre Bárbara',
+        description: '🔱 [MASACRE PRIMORDIAL]: Salto devastador clavando las dos lanzas con toda la potencia muscular (98 DMG) y desangrado masivo.',
+        gachaEffectBadge: '🔱 Masacre Primordial • 98 DMG + 🩸 Sangrado Severo (x3)',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 4, stacks: 3, target: 'enemy' },
+          { type: 'laceration', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+    },
+  },
+  ragnavaldr_furia: {
+    id: 'ragnavaldr_furia',
+    name: 'Furia Druídica Primordial',
+    type: 'buff',
+    sfx: 'powerup',
+    dndDamageType: 'force',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/ragnavaldr_furia.png',
+        damage: 0,
+        title: 'Furia Druídica I - Rugido Primitivo',
+        description: '🔥 [FURIA TOTAL]: Entra en furia salvaje. Otorga +20% de daño y +15% de resistencia a todos los héroes durante 2 turnos.',
+        gachaEffectBadge: '🔥 Furia • +20% Daño / +15% Resistencia a Todos (2T)',
+        gachaEffectsApplied: [
+          { type: 'atk_buff', duration: 2, stacks: 1, target: 'hero' },
+          { type: 'def_buff', duration: 2, stacks: 1, target: 'hero' },
+        ],
+        dndDamageType: 'force',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/ragnavaldr_furia.png',
+        damage: 0,
+        title: 'Furia Druídica II - Sangre de los Antiguos',
+        description: '🔥 [FERVOR SALVAJE]: Potencia el frenesí en combate. Otorga +35% de daño y +25% de resistencia a todos los héroes durante 2 turnos.',
+        gachaEffectBadge: '🔥 Furia Voraz • +35% Daño / +25% Resistencia a Todos (2T)',
+        gachaEffectsApplied: [
+          { type: 'atk_buff', duration: 2, stacks: 2, target: 'hero' },
+          { type: 'def_buff', duration: 2, stacks: 2, target: 'hero' },
+        ],
+        dndDamageType: 'force',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/ragnavaldr_furia.png',
+        damage: 0,
+        title: 'Furia Druídica III - Avatar del Páramo',
+        description: '🔥 [AVATAR DEL PÁRAMO]: Rugido apocalíptico que enciende la sangre aliada. Otorga +50% de daño y +35% de resistencia a todos los héroes durante 3 turnos.',
+        gachaEffectBadge: '🔥 Furia Ancestral • +50% Daño / +35% Resistencia a Todos (3T)',
+        gachaEffectsApplied: [
+          { type: 'atk_buff', duration: 3, stacks: 3, target: 'hero' },
+          { type: 'def_buff', duration: 3, stacks: 3, target: 'hero' },
+        ],
+        dndDamageType: 'force',
+      },
+    },
+  },
+  ragnavaldr_cuchillo_hielo: {
+    id: 'ragnavaldr_cuchillo_hielo',
+    name: 'Cuchillo de Hielo',
+    type: 'magic',
+    sfx: 'laser',
+    dndDamageType: 'cold',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/ragnavaldr_cuchillo_hielo.png',
+        damage: 28,
+        title: 'Cuchillo de Hielo I - Filo Glacial',
+        description: '❄️ [HIELO]: Conjura un afilado cuchillo de hielo desde el cielo que cae en picado e inflige 28 de daño gélido (solo daño).',
+        gachaEffectBadge: '❄️ Cuchillo de Hielo • 28 Daño Gélido (Solo Daño)',
+        gachaEffectsApplied: [],
+        dndDamageType: 'cold',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/ragnavaldr_cuchillo_hielo.png',
+        damage: 55,
+        title: 'Cuchillo de Hielo II - Congelación Rápida',
+        description: '❄️ [CONGELACIÓN]: Enorme estalactita gélida cae desde las nubes (55 DMG). ¡El enemigo queda congelado y PIERDE 1 TURNO!',
+        gachaEffectBadge: '❄️ Congelación • 55 DMG + 🧊 Enemigo Pierde 1 Turno (Stun 1T)',
+        gachaEffectsApplied: [
+          { type: 'frozen', duration: 1, stacks: 1, target: 'enemy' },
+          { type: 'stun', duration: 1, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'cold',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/ragnavaldr_cuchillo_hielo.png',
+        damage: 96,
+        title: 'Cuchillo de Hielo III - Cero Absoluto',
+        description: '🧊 [CONGELACIÓN PROFUNDA]: Daga glacial titánica aplasta al objetivo (96 DMG). ¡El enemigo queda sepultado en hielo y PIERDE 2 TURNOS!',
+        gachaEffectBadge: '🧊 Cero Absoluto • 96 DMG + 🧊🧊 Enemigo Pierde 2 Turnos (Stun 2T)',
+        gachaEffectsApplied: [
+          { type: 'frozen', duration: 2, stacks: 2, target: 'enemy' },
+          { type: 'stun', duration: 2, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'cold',
+      },
+    },
+  },
+  // --- ROXANNE'S COMBAT DECK (BARDA KITSUNE CON LIRA, MAGIA ROSADA Y RAPIER) ---
+  roxanne_inspiracion: {
+    id: 'roxanne_inspiracion',
+    name: 'Inspiración Bárdica',
+    type: 'buff',
+    sfx: 'powerup',
+    dndDamageType: 'force',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/inspiracion_bardica_tier_1.png',
+        damage: 0,
+        title: 'Inspiración Bárdica I',
+        description: '🎶 [BARDA DE LA LIRA]: Roxanne tañe su lira dorada con magia rosada y sube de tier 1 carta de la mano al seleccionarla (+1 Rango).',
+        gachaEffectBadge: '🎶 Inspiración • 1 Carta sube +1 Rango',
+        gachaEffectsApplied: [],
+        dndDamageType: 'force',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/inspiracion_bardica_tier_2.png',
+        damage: 0,
+        title: 'Inspiración Bárdica II - Crescendo Armónico',
+        description: '🎶 [ARPEGIO ARMONIOSO]: Acorde vibrante de lira que sube de tier 2 cartas de la mano al seleccionarla (+1 Rango a cada una).',
+        gachaEffectBadge: '🎶 Inspiración II • 2 Cartas suben +1 Rango',
+        gachaEffectsApplied: [],
+        dndDamageType: 'force',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/inspiracion_bardica_tier_3.png',
+        damage: 0,
+        title: 'Inspiración Bárdica III - Sinfonía Virtuosa',
+        description: '🎶 [SINFONÍA DE LA VIXEN]: Clímax celestial con estallido de notas rosadas que sube de tier 4 cartas de la mano (+1 Rango a toda la mano).',
+        gachaEffectBadge: '🎶 Sinfonía Bárdica • 4 Cartas suben +1 Rango',
+        gachaEffectsApplied: [],
+        dndDamageType: 'force',
+      },
+    },
+  },
+  roxanne_velada: {
+    id: 'roxanne_velada',
+    name: 'Velada Encantadora',
+    type: 'magic',
+    sfx: 'dark_god',
+    dndDamageType: 'psychic',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/roxanne_velada_tier_1.png',
+        damage: 12,
+        title: 'Velada Encantadora I',
+        description: '💖 [SEDUCCIÓN BÁRDICA]: Encanta al enemigo durante 1 turno. Cuando el enemigo intente atacar, ¡se atacará a sí mismo!',
+        gachaEffectBadge: '💖 Encanto (1T) • El enemigo se ataca a sí mismo',
+        gachaEffectsApplied: [
+          { type: 'charmed', duration: 1, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'psychic',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/roxanne_velada_tier_2.png',
+        damage: 24,
+        title: 'Velada Encantadora II - Fascinación Hipnótica',
+        description: '💖 [FASCINACIÓN HIPNÓTICA]: Encanta al rival durante 1 turno. Al atacar se autolesiona y el daño recibido aumenta un 10% de su propio ataque.',
+        gachaEffectBadge: '💖 Encanto II (1T) • Autolesión + 10% ATK Daño Extra',
+        gachaEffectsApplied: [
+          { type: 'charmed', duration: 1, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'psychic',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/roxanne_velada_tier_3.png',
+        damage: 42,
+        title: 'Velada Encantadora III - Trance Fatal',
+        description: '💖 [TRANCE DE AMOR FATAL]: Cautiva al rival durante 2 turnos completos. Se autolesiona en cada ataque recibiendo un 10% de daño extra de su ataque.',
+        gachaEffectBadge: '💖 Encanto Supremo (2T) • Autolesión 2 Turnos + 10% ATK',
+        gachaEffectsApplied: [
+          { type: 'charmed', duration: 2, stacks: 3, target: 'enemy' },
+        ],
+        dndDamageType: 'psychic',
+      },
+    },
+  },
+  roxanne_estocada: {
+    id: 'roxanne_estocada',
+    name: 'Estocada Sonora',
+    type: 'attack',
+    sfx: 'attack',
+    dndDamageType: 'piercing',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/roxanne_estocada.png',
+        damage: 24,
+        title: 'Estocada Sonora I',
+        description: '🗡️ [ESGRIMA Y MAGIA ROSADA]: Estocada precisa de rapier envuelta en espirales sónicas (24 DMG).',
+        gachaEffectBadge: '🗡️ Rapier Resonante • 24 DMG Perforante',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/roxanne_estocada.png',
+        damage: 48,
+        title: 'Estocada Sonora II - Duelo Virtuoso',
+        description: '🗡️ [ESTOCADA VIBRANTE]: Rápido envite de rapier que quiebra la armadura enemiga (48 DMG) y desgarra su defensa.',
+        gachaEffectBadge: '🗡️ Duelo Virtuoso • 48 DMG + Ruptura DEF (-30%)',
+        gachaEffectsApplied: [
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+          { type: 'bleed', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/roxanne_estocada.png',
+        damage: 86,
+        title: 'Estocada Sonora III - Danza de Rapier',
+        description: '🗡️ [DANZA DE RAPIER]: Ráfaga de fintas y estocadas con estallido de acordes mágicos rosados (86 DMG) y desgarro masivo.',
+        gachaEffectBadge: '🗡️ Danza Magistral • 86 DMG + Ruptura DEF II (-50%)',
+        gachaEffectsApplied: [
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'laceration', duration: 3, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+    },
+  },
+  // --- SMURPH DRACO'S COMBAT DECK (HECHICERO DRACÓNICO) ---
+  smurph_aterrizaje_heroico: {
+    id: 'smurph_aterrizaje_heroico',
+    name: 'Vuelo y Aterrizaje Heroico',
+    type: 'attack',
+    sfx: 'powerup',
+    dndDamageType: 'bludgeoning',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/smurph_aterrizaje_heroico.png',
+        damage: 38,
+        title: 'Vuelo y Aterrizaje Heroico',
+        description: '🦅 [VUELO & ATERRIZAJE]: Smurph se eleva hacia arriba haciéndose invisible por 1 turno (inmune a daño). Al final del turno cae en picado y ataca al guardia con un brutal aterrizaje superheroico contra el suelo (38 DMG).',
+        gachaEffectBadge: '🦅 Vuelo Invisible (1T) + Aterrizaje Sísmico (38 DMG)',
+        gachaEffectsApplied: [
+          { type: 'stun', duration: 1, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'bludgeoning',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/smurph_aterrizaje_heroico.png',
+        damage: 74,
+        title: 'Aterrizaje Heroico II - Impacto Sísmico',
+        description: '🦅 [SUPERHERO LANDING II]: Ascenso invisible a las nubes. Cae con violencia demoledora estrellándose contra el suelo (74 DMG), quebrando la armadura del guardia y aturdiéndolo.',
+        gachaEffectBadge: '🦅 Vuelo Invisible + Aterrizaje Demoledor • 74 DMG + Aturdimiento',
+        gachaEffectsApplied: [
+          { type: 'stun', duration: 1, stacks: 1, target: 'enemy' },
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'bludgeoning',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/smurph_aterrizaje_heroico.png',
+        damage: 125,
+        title: 'Aterrizaje Heroico III - Colapso Dracónico',
+        description: '🦅 [COLAPSO SUPREMO]: Despegue supersónico invisible inmune a todo daño. Cae como un meteoro en aterrizaje superheroico perfecto causando 125 DMG en un cráter eléctrico masivo.',
+        gachaEffectBadge: '🦅 Vuelo Celestial + Colapso Dracónico • 125 DMG + Aturdimiento + Quiebre Total',
+        gachaEffectsApplied: [
+          { type: 'stun', duration: 2, stacks: 1, target: 'enemy' },
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'bludgeoning',
+      },
+    },
+  },
+  smurph_bolas_fuego: {
+    id: 'smurph_bolas_fuego',
+    name: 'Bolas de Fuego Dracónicas',
+    type: 'attack',
+    sfx: 'laser',
+    dndDamageType: 'fire',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/smurph_bolas_fuego.png',
+        damage: 28,
+        title: 'Bolas de Fuego Dracónicas',
+        description: '🔥 [FUEGO DRACÓNICO]: Dispara múltiples esferas de fuego dracónico que impactan al guardia infligiendo 28 DMG ígneo y quemadura persistente.',
+        gachaEffectBadge: '🔥 Bolas de Fuego (28 DMG) + Quemadura Dracónica',
+        gachaEffectsApplied: [
+          { type: 'burn', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'fire',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/smurph_bolas_fuego.png',
+        damage: 56,
+        title: 'Bolas de Fuego II - Ráfaga Ígnea',
+        description: '🔥 [ANDANADA MAGMÁTICA]: Lanza una ráfaga arrolladora de meteoros ígneos que calcinan al rival (56 DMG) y reducen su poder de ataque.',
+        gachaEffectBadge: '🔥 Ráfaga Ígnea • 56 DMG + Quemadura Doble + Reducción ATK',
+        gachaEffectsApplied: [
+          { type: 'burn', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'atk_down', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'fire',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/smurph_bolas_fuego.png',
+        damage: 94,
+        title: 'Bolas de Fuego III - Tormenta Piromántica',
+        description: '🔥 [CATACLISMO ÍGNEO]: Bombardeo masivo de orbes solares dracónicos que desintegran la defensa enemiga (94 DMG) e incendian el campo de batalla.',
+        gachaEffectBadge: '🔥 Tormenta Piromántica • 94 DMG + Quemadura Máxima (3T) + Ruptura DEF',
+        gachaEffectsApplied: [
+          { type: 'burn', duration: 4, stacks: 3, target: 'enemy' },
+          { type: 'def_break', duration: 2, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'fire',
+      },
+    },
+  },
+  smurph_aliento_rayo: {
+    id: 'smurph_aliento_rayo',
+    name: 'Aliento de Rayo Dracónico',
+    type: 'attack',
+    sfx: 'laser',
+    dndDamageType: 'lightning',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/smurph_aliento_rayo.png',
+        damage: 32,
+        title: 'Aliento de Rayo',
+        description: '⚡ [RELÁMPAGO BUCAL]: Abre las fauces y exhala un rayo eléctrico continuo de alta potencia que electrocuta al objetivo causando 32 DMG de rayo.',
+        gachaEffectBadge: '⚡ Aliento de Rayo (32 DMG) + Electrificación',
+        gachaEffectsApplied: [
+          { type: 'shock', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'lightning',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/smurph_aliento_rayo.png',
+        damage: 64,
+        title: 'Aliento de Rayo II - Descarga Voltaica',
+        description: '⚡ [DESCARGA VOLTAICA]: Haz crepitante de plasma eléctrico exhalado desde la garganta que atraviesa las armaduras (64 DMG) con choque severo.',
+        gachaEffectBadge: '⚡ Descarga Voltaica • 64 DMG + Parálisis + Ruptura DEF',
+        gachaEffectsApplied: [
+          { type: 'shock', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'paralyze', duration: 1, stacks: 1, target: 'enemy' },
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'lightning',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/smurph_aliento_rayo.png',
+        damage: 105,
+        title: 'Aliento de Rayo III - Tormenta de Relámpagos',
+        description: '⚡ [HAZ DRACÓNICO TITÁNICO]: Emisión atronadora de relámpagos celestes concentrados desde su boca (105 DMG), paralizando y quebrando al guardia por completo.',
+        gachaEffectBadge: '⚡ Tormenta Dracónica • 105 DMG + Aturdimiento Total + Sobrecarga de Relámpagos',
+        gachaEffectsApplied: [
+          { type: 'shock', duration: 4, stacks: 3, target: 'enemy' },
+          { type: 'stun', duration: 2, stacks: 1, target: 'enemy' },
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'lightning',
+      },
+    },
+  },
 };
 
 export interface ActiveCombatCard {
@@ -526,11 +1865,35 @@ export type CombatVfxType =
   | 'ataque_furtivo'
   | 'contraataque'
   | 'sigilo'
+  | 'arlem_rankup'
+  | 'arlem_curacion'
+  | 'arlem_fuego'
+  | 'pepe_ataque'
+  | 'pepe_remo'
+  | 'pepe_escudo'
+  | 'chispo_dagas'
+  | 'chispo_truco'
+  | 'chispo_alas'
+  | 'chispo_martillo'
+  | 'chispo_luz_divina'
+  | 'chispo_castigo_divino'
+  | 'giovani_plumas'
+  | 'giovani_treta'
+  | 'giovani_tomo'
+  | 'prometeo_fire_bolt'
+  | 'prometeo_espada_verde'
+  | 'prometeo_bola_fuego'
+  | 'smurph_aterrizaje_heroico'
+  | 'smurph_bolas_fuego'
+  | 'smurph_aliento_rayo'
   | 'araknoide_claw'
   | 'araknoide_silk'
   | 'araknoide_death'
   | 'medusa_electric'
-  | 'medusa_sting';
+  | 'medusa_sting'
+  | 'roxanne_inspiracion'
+  | 'roxanne_velada'
+  | 'roxanne_estocada';
 
 export interface CombatVfxState {
   type: CombatVfxType;
@@ -568,7 +1931,8 @@ export type CombatEnemyId =
   | 'guarda_negro_espada'
   | 'guarda_negro_alabarda'
   | 'guarda_negro_ballesta'
-  | 'guarda_negro_pesado';
+  | 'guarda_negro_pesado'
+  | 'hobgoblin_capataz';
 
 export interface EnemyConfig {
   id: CombatEnemyId;
@@ -2775,7 +4139,243 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         },
       },
     },
+    hobgoblin_capataz: {
+      id: 'hobgoblin_capataz',
+      missionId: 'm10_hobgoblin_boss',
+      name: 'Capataz Hoggoblin de Ferton',
+      title: 'Comandante del Contrabando Imperial',
+      chamberName: 'Duelo contra el Capataz Hoggoblin',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/hobgoblin_fase1_idle.png',
+      attackSpriteUrl: '/assets/combat/hobgoblin_fase1_attack.png',
+      hurtSpriteUrl: '/assets/combat/hobgoblin_fase1_hurt.png',
+      thumbUrl: '/assets/combat/hobgoblin_fase1_idle.png',
+      maxHp: 300,
+      width: 154,
+      height: 210,
+      scaleClass: 'w-[154px] h-[210px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Embestida de Maza Brutal',
+        desc: 'Golpea violentamente con su maza de guerra de ébano reforzada provocando contusiones severas.',
+        damage: [16, 24],
+        vfx: 'earth_titan',
+        sfx: 'slash',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Defensa Agrietada',
+        },
+      },
+      specialSkill: {
+        name: 'Furia del Capataz',
+        desc: 'Brama contra sus adversarios descargando un barrido brutal de su maza.',
+        damage: [20, 28],
+        vfx: 'earth_titan',
+        sfx: 'slam',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'frightened',
+          duration: 2,
+          stacks: 1,
+          title: 'Terror del Capataz',
+        },
+      },
+      ultimateSkill: {
+        name: 'Triturador de Escoria',
+        desc: 'Carga con furia desatada aplastando a los aventureros con su armadura pesada.',
+        damage: 38,
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'stun',
+          duration: 1,
+          stacks: 1,
+          title: 'Conmoción Brutal',
+        },
+      },
+      rewards: {
+        gold: 25000,
+        crystals: 600,
+        item: {
+          id: 'trabuco_ebano_oro_ferton',
+          name: 'Trabuco de Fuego de Ébano y Oro',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/combat/hobgoblin_fase3_idle.png',
+          description: 'Arma de fuego reglamentaria imperial con grabados de oro incautada al Capataz Hoggoblin.',
+        },
+      },
+    },
   };
+
+export const HOBGOBLIN_SKILLS_BY_PHASE = {
+  1: {
+    phase: 1 as const,
+    title: 'Fase 1: Maza de Asalto',
+    idleSprite: '/assets/combat/hobgoblin_fase1_idle.png',
+    attackSprite: '/assets/combat/hobgoblin_fase1_attack.png',
+    hurtSprite: '/assets/combat/hobgoblin_fase1_hurt.png',
+    normal: {
+      name: 'Embestida de Maza Brutal',
+      desc: 'Golpea violentamente con su maza pesada de ébano.',
+      damage: [16, 24] as [number, number],
+      vfx: 'earth_titan' as const,
+      sound: 'slash' as const,
+      dndDamageType: 'bludgeoning' as const,
+      condition: {
+        type: 'def_break' as const,
+        duration: 2,
+        stacks: 1,
+        title: 'Defensa Agrietada',
+      },
+    },
+    ultimate: {
+      name: 'Triturador de Escoria',
+      desc: 'Carga con furia desatada aplastando a los aventureros.',
+      damage: 38,
+      dndDamageType: 'bludgeoning' as const,
+      condition: {
+        type: 'stun' as const,
+        duration: 1,
+        stacks: 1,
+        title: 'Conmoción Brutal',
+      },
+    },
+  },
+  2: {
+    phase: 2 as const,
+    title: 'Fase 2: Granadas Alquímicas',
+    idleSprite: '/assets/combat/hobgoblin_fase2_idle.png',
+    attackSprite: '/assets/combat/hobgoblin_fase2_attack.png',
+    hurtSprite: '/assets/combat/hobgoblin_fase2_hurt.png',
+    normal: {
+      name: 'Lanzamiento de Granada Explosiva',
+      desc: 'Arroja un artefacto alquímico que detona en metralla ardiente.',
+      damage: [20, 30] as [number, number],
+      vfx: 'crimson_claw' as const,
+      sound: 'magic' as const,
+      dndDamageType: 'fire' as const,
+      condition: {
+        type: 'burn' as const,
+        duration: 2,
+        stacks: 1,
+        title: 'Fuego Alquímico',
+      },
+    },
+    ultimate: {
+      name: 'Batería de Bombas de Metralla',
+      desc: 'Lanza una salva múltiple de granadas incendiarias.',
+      damage: 44,
+      dndDamageType: 'fire' as const,
+      condition: {
+        type: 'burn' as const,
+        duration: 2,
+        stacks: 2,
+        title: 'Infierno Alquímico',
+      },
+    },
+  },
+  3: {
+    phase: 3 as const,
+    title: 'Fase 3: Trabuco de Fuego de Ébano',
+    idleSprite: '/assets/combat/hobgoblin_fase3_idle.png',
+    attackSprite: '/assets/combat/hobgoblin_fase3_attack.png',
+    hurtSprite: '/assets/combat/hobgoblin_fase3_hurt.png',
+    normal: {
+      name: 'Disparo de Trabuco Perforante',
+      desc: 'Dispara un proyectil macizo con pólvora negra que atraviesa armaduras.',
+      damage: [24, 36] as [number, number],
+      vfx: 'shadow_needle' as const,
+      sound: 'bow' as const,
+      dndDamageType: 'piercing' as const,
+      condition: {
+        type: 'bleed' as const,
+        duration: 2,
+        stacks: 1,
+        title: 'Herida de Perdigón',
+      },
+    },
+    ultimate: {
+      name: 'Descarga a Quemarropa de Dragón Negro',
+      desc: 'Sobrecarga el cañón con munición incendiaria imperial a quemarropa.',
+      damage: 52,
+      dndDamageType: 'fire' as const,
+      condition: {
+        type: 'burn' as const,
+        duration: 2,
+        stacks: 3,
+        title: 'Calcinación Imperial',
+      },
+    },
+  },
+};
+
+/**
+ * Gating y límite de daño para el Boss Hoggoblin de 3 fases:
+ * - Vida total: 300 PV compartida entre las 3 fases (100 PV por fase).
+ * - Daño máximo de un solo ataque: 1 tercio (100 PV).
+ * - No se pueden saltar fases:
+ *   - En Fase 1 (300-200 PV), la vida no puede bajar de 200. Si llega a 200, pasa a Fase 2.
+ *   - En Fase 2 (200-100 PV), la vida no puede bajar de 100. Si llega a 100, pasa a Fase 3.
+ *   - En Fase 3 (100-0 PV), la vida puede llegar a 0 para derrotarlo.
+ */
+export const calculateHobgoblinDamage = (
+  currentHp: number,
+  incomingDamage: number,
+  currentPhase: 1 | 2 | 3 = 1
+): { nextHp: number; nextPhase: 1 | 2 | 3; phaseChanged: boolean; effectiveDamage: number } => {
+  // Regla: Daño máximo de un solo ataque es 1 tercio (100 PV)
+  const cappedDamage = Math.min(incomingDamage, 100);
+
+  if (currentPhase === 1) {
+    const theoreticalHp = currentHp - cappedDamage;
+    if (theoreticalHp <= 200) {
+      return {
+        nextHp: 200,
+        nextPhase: 2,
+        phaseChanged: true,
+        effectiveDamage: Math.max(0, currentHp - 200),
+      };
+    }
+    return {
+      nextHp: theoreticalHp,
+      nextPhase: 1,
+      phaseChanged: false,
+      effectiveDamage: cappedDamage,
+    };
+  } else if (currentPhase === 2) {
+    const theoreticalHp = currentHp - cappedDamage;
+    if (theoreticalHp <= 100) {
+      return {
+        nextHp: 100,
+        nextPhase: 3,
+        phaseChanged: true,
+        effectiveDamage: Math.max(0, currentHp - 100),
+      };
+    }
+    return {
+      nextHp: theoreticalHp,
+      nextPhase: 2,
+      phaseChanged: false,
+      effectiveDamage: cappedDamage,
+    };
+  } else {
+    const theoreticalHp = Math.max(0, currentHp - cappedDamage);
+    return {
+      nextHp: theoreticalHp,
+      nextPhase: 3,
+      phaseChanged: false,
+      effectiveDamage: Math.max(0, currentHp - theoreticalHp),
+    };
+  }
+};
+
+export const HOBGOBLIN_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Duelo de Honor contra el Capataz Hoggoblin', isBoss: true, enemyConfigIds: ['hobgoblin_capataz'], missionId: 'm10_hobgoblin_boss' },
+];
 
 export const FERTON_GUARD_CHAMBERS: BaseChamber[] = [
   { floor: 1, name: 'Oleada 1: Patrulla Negra de Avanzada', isBoss: false, enemyConfigIds: ['guarda_negro_espada', 'guarda_negro_alabarda', 'guarda_negro_ballesta'], missionId: 'm9_emboscada_ferton' },
@@ -2893,6 +4493,7 @@ export interface ChamberEnemyState {
   hasPhaseTwo?: boolean;
   isBoss?: boolean;
   isSemiboss?: boolean;
+  hobgoblinPhase?: 1 | 2 | 3;
 }
 
 export interface AccumulatedLoot {
@@ -2910,7 +4511,9 @@ export interface AccumulatedLoot {
 
 export const createChamberEnemies = (floor: number, missionId?: string | null): ChamberEnemyState[] => {
   let configIds: CombatEnemyId[] = [];
-  if (missionId === 'm5_cuevas_zancudo') {
+  if (missionId === 'm10_hobgoblin_boss') {
+    configIds = ['hobgoblin_capataz'];
+  } else if (missionId === 'm5_cuevas_zancudo') {
     // Boss fight: El Zancudo Espectral in the entrance to the colony heart
     configIds = ['semiboss_zancudo'];
   } else if (missionId === 'm4_cuevas_azul') {
@@ -3004,6 +4607,7 @@ export const createChamberEnemies = (floor: number, missionId?: string | null): 
       hasPhaseTwo: cfg.hasPhaseTwo,
       isBoss: cfg.isBoss,
       isSemiboss: cfg.isSemiboss,
+      hobgoblinPhase: cfgId === 'hobgoblin_capataz' ? (1 as const) : undefined,
     };
   });
 };
@@ -3027,7 +4631,6 @@ export const CombatView: React.FC = () => {
     navigateTo,
     addGold,
     addCrystals,
-    summonCrystals,
     addShelfItem,
     inventory,
     selectedCombatMissionId,
@@ -3035,11 +4638,13 @@ export const CombatView: React.FC = () => {
     questProgress,
     completeQuestMission,
     setActiveQuestChapter,
+    team,
   } = useGame();
 
   // Determine starting floor based on selected mission
   const getInitialFloor = (): number => {
     if (
+      selectedCombatMissionId === 'm10_hobgoblin_boss' ||
       selectedCombatMissionId === 'm9_emboscada_ferton' ||
       selectedCombatMissionId === 'evento_asalto_orco' ||
       selectedCombatMissionId === 'evento_emboscada_bandidos' ||
@@ -3057,20 +4662,6 @@ export const CombatView: React.FC = () => {
   };
 
   const [currentFloor, setCurrentFloor] = useState<number>(getInitialFloor);
-  // Reintentos tras caer: el primero es gratis, los siguientes cuestan cristales del recuerdo.
-  const [retriesUsed, setRetriesUsed] = useState<number>(0);
-  const retryLabel = ['m2_robo', 'm3_bosque', 'm9_emboscada_ferton'].includes(String(selectedCombatMissionId))
-    ? `Oleada ${currentFloor}`
-    : `Sala ${currentFloor}`;
-  // Foto exacta de la sala en el instante de la muerte: enemigos con su vida y estados,
-  // sala/oleada, turno y mano, para que reintentar reanude justo ahí.
-  type DefeatSnapshot = {
-    floor: number;
-    turn: number;
-    enemies: ChamberEnemyState[];
-  };
-  const defeatSnapshotRef = useRef<DefeatSnapshot | null>(null);
-  const defeatCapturedRef = useRef<boolean>(false);
   const [bestFloor, setBestFloor] = useState<number>(() => {
     try {
       const saved = localStorage.getItem('icespear_best_floor');
@@ -3229,7 +4820,6 @@ export const CombatView: React.FC = () => {
 
   // Hero Stats (Magordito) - 100 HP
   const MAX_HERO_HP = 100;
-const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el primero es gratis)
   const [heroHp, setHeroHp] = useState<number>(MAX_HERO_HP);
   const heroHpRef = useRef<number>(MAX_HERO_HP);
   const [heroMaxHp] = useState<number>(MAX_HERO_HP);
@@ -3260,6 +4850,38 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
       '/assets/combat/magordito_cast_dios.png',
       '/assets/combat/magordito_cast_slash.png',
       '/assets/combat/magordito_cast_toxic.png',
+      '/assets/combat/chispo_idle.png',
+      '/assets/combat/chispo_hurt.png',
+      '/assets/combat/chispo_attack.png',
+      '/assets/combat/chispo_cast.png',
+      '/assets/combat/giovani_idle.png',
+      '/assets/combat/giovani_hurt.png',
+      '/assets/combat/giovani_attack.png',
+      '/assets/combat/giovani_cast.png',
+      '/assets/combat/prometeo_idle.png',
+      '/assets/combat/prometeo_hurt.png',
+      '/assets/combat/prometeo_attack.png',
+      '/assets/combat/prometeo_cast.png',
+      '/assets/combat/kairon_idle.png',
+      '/assets/combat/kairon_hurt.png',
+      '/assets/combat/kairon_attack.png',
+      '/assets/combat/kairon_attack_dual.png',
+      '/assets/combat/kairon_cast.png',
+      '/assets/combat/ragnavaldr_idle.png',
+      '/assets/combat/ragnavaldr_hurt.png',
+      '/assets/combat/ragnavaldr_attack.png',
+      '/assets/combat/ragnavaldr_furia.png',
+      '/assets/combat/ragnavaldr_cast.png',
+      '/assets/combat/smurph_idle.png',
+      '/assets/combat/smurph_hurt.png',
+      '/assets/combat/smurph_attack.png',
+      '/assets/combat/smurph_landing.png',
+      '/assets/combat/smurph_flight.png',
+      '/assets/combat/smurph_cast.png',
+      '/assets/combat/smurph_lightning.png',
+      '/assets/skills/smurph_aterrizaje_heroico.png',
+      '/assets/skills/smurph_bolas_fuego.png',
+      '/assets/skills/smurph_aliento_rayo.png',
     ];
     sprites.forEach((src) => {
       const img = new Image();
@@ -3267,20 +4889,443 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
     });
   }, []);
 
-  const isEdacornCombat = selectedCombatMissionId === 'm3_cuevas_rojo';
+  // Active Hero Selection: Defaults to mission hero or first non-null member in user's team preset
+  const defaultHeroId = useMemo(() => {
+    if (selectedCombatMissionId === 'm3_cuevas_rojo') return 'edacorn';
+    const firstAssigned = team.find((h) => h !== null && h !== undefined);
+    return firstAssigned || 'pepe_loux';
+  }, [selectedCombatMissionId, team]);
+
+  const partyHeroesList = useMemo(() => {
+    const rawAssigned = team.filter((id): id is string => Boolean(id));
+    const unique = Array.from(new Set(rawAssigned));
+    if (unique.length >= 2) {
+      return unique;
+    }
+    return ['smurph_draco', 'roxanne', 'magordito', 'kairon', 'ragnavaldr', 'chispo_deez', 'giovani', 'prometeo', 'edacorn', 'pepe_loux', 'arlem_diaz'];
+  }, [team]);
+
+  const [activeCombatHeroId, setActiveCombatHeroId] = useState<string>(defaultHeroId);
+  const activeCombatHeroIdRef = useRef<string>(defaultHeroId);
+  activeCombatHeroIdRef.current = activeCombatHeroId;
+
+  // Persistent Hand per Hero: Each hero has their own exclusive deck and hand in combat
+  const heroHandsRef = useRef<Record<string, ActiveCombatCard[]>>({});
+
+  useEffect(() => {
+    setActiveCombatHeroId(defaultHeroId);
+    activeCombatHeroIdRef.current = defaultHeroId;
+  }, [defaultHeroId]);
+
+  const isSmurphCombat = activeCombatHeroId === 'smurph_draco' || activeCombatHeroId === 'smurph';
+  const [isSmurphAirborne, setIsSmurphAirborne] = useState<boolean>(false);
+  const [isSmurphLandingAction, setIsSmurphLandingAction] = useState<boolean>(false);
+  const [pendingLandingData, setPendingLandingData] = useState<{ damage: number; tier: 1 | 2 | 3; targetEnemyUid?: string } | null>(null);
+  const pendingLandingDataRef = useRef<{ damage: number; tier: 1 | 2 | 3; targetEnemyUid?: string } | null>(null);
+  pendingLandingDataRef.current = pendingLandingData;
+
+  const isRoxanneCombat = activeCombatHeroId === 'roxanne';
+  const isEdacornCombat = activeCombatHeroId === 'edacorn';
+  const isPepeCombat = activeCombatHeroId === 'pepe_loux';
+  const isArlemCombat = activeCombatHeroId === 'arlem' || activeCombatHeroId === 'arlem_diaz';
+  const isChispoCombat = activeCombatHeroId === 'chispo_deez' || activeCombatHeroId === 'chispo';
+  const isGiovaniCombat = activeCombatHeroId === 'giovani' || activeCombatHeroId === 'giovani_vazquez';
+  const isPrometeoCombat = activeCombatHeroId === 'prometeo';
+  const isKaironCombat = activeCombatHeroId === 'kairon';
+  const isRagnavaldrCombat = activeCombatHeroId === 'ragnavaldr';
+
   const [isEdacornStealthed, setIsEdacornStealthed] = useState<boolean>(false);
   const [edacornCounter, setEdacornCounter] = useState<{ active: boolean; damage: number } | null>(null);
 
+  const getHeroName = (): string => {
+    if (isSmurphCombat) return 'Smurph Draco';
+    if (isRoxanneCombat) return 'Roxanne';
+    if (isRagnavaldrCombat) return 'Ragnavaldr';
+    if (isKaironCombat) return 'Kairon';
+    if (isPrometeoCombat) return 'Prometeo';
+    if (isChispoCombat) return 'Chispo Deez';
+    if (isGiovaniCombat) return 'Giovani Vázquez';
+    if (isEdacornCombat) return 'Edacorn';
+    if (isPepeCombat) return 'Pepe Loux';
+    if (isArlemCombat) return 'Arlem Díaz';
+    return 'Magordito';
+  };
+
+  const getHeroSplashartUrl = (): string => {
+    if (isSmurphCombat) return '/assets/portraits/smurph_draco.png';
+    if (isRoxanneCombat) return '/assets/portraits/roxanne.png';
+    if (isRagnavaldrCombat) return '/assets/portraits/ragnavaldr.png';
+    if (isKaironCombat) return '/assets/portraits/kairon.png';
+    if (isPrometeoCombat) return '/assets/portraits/prometeo.png';
+    if (isChispoCombat) return '/assets/portraits/chispo_deez_icono.png';
+    if (isGiovaniCombat) return '/assets/portraits/giovani_vazquez_icono.png';
+    if (isEdacornCombat) return '/assets/portraits/edacorn_icono.png';
+    if (isPepeCombat) return '/assets/portraits/pepe_loux.png';
+    if (isArlemCombat) return '/assets/portraits/arlem_diaz_icono.png';
+    return '/assets/aistudio/splashart_magordito_c1637d56.png';
+  };
+
+  const getHeroCardPool = useCallback((heroId: string): string[] => {
+    if (heroId === 'smurph_draco' || heroId === 'smurph') {
+      return ['smurph_aterrizaje_heroico', 'smurph_bolas_fuego', 'smurph_aliento_rayo'];
+    }
+    if (heroId === 'roxanne') {
+      return ['roxanne_inspiracion', 'roxanne_velada', 'roxanne_estocada'];
+    }
+    if (heroId === 'ragnavaldr') {
+      return ['ragnavaldr_doble_lanza', 'ragnavaldr_furia', 'ragnavaldr_cuchillo_hielo'];
+    }
+    if (heroId === 'kairon') {
+      return ['kairon_tiro_doble', 'kairon_disparo_dual', 'kairon_espadazo_largo'];
+    }
+    if (heroId === 'prometeo') {
+      return ['prometeo_fire_bolt', 'prometeo_espada_verde', 'prometeo_bola_fuego'];
+    }
+    if (heroId === 'chispo_deez' || heroId === 'chispo') {
+      return ['chispo_martillo', 'chispo_luz_divina', 'chispo_castigo_divino'];
+    }
+    if (heroId === 'giovani' || heroId === 'giovani_vazquez') {
+      return ['giovani_plumas', 'giovani_treta', 'giovani_tomo'];
+    }
+    if (heroId === 'edacorn') {
+      return ['ataque_furtivo', 'contraataque', 'sigilo'];
+    }
+    if (heroId === 'pepe_loux') {
+      return ['pepe_ataque', 'pepe_remo', 'pepe_escudo'];
+    }
+    if (heroId === 'arlem' || heroId === 'arlem_diaz') {
+      return ['arlem_rankup', 'arlem_curacion', 'arlem_fuego'];
+    }
+    return [
+      'rayo_necrotico',
+      'dios_oscuro',
+      'drenar_maldiciones',
+      'fortalecer_marioneta',
+    ];
+  }, []);
+
+  const createInitialHandForHero = useCallback((heroId: string): ActiveCombatCard[] => {
+    const pool = getHeroCardPool(heroId);
+    return [
+      { instanceId: `init_${heroId}_1_${Date.now()}`, skillId: pool[0] || 'rayo_necrotico', tier: 1 },
+      { instanceId: `init_${heroId}_2_${Date.now()}`, skillId: pool[1] || pool[0], tier: 1 },
+      { instanceId: `init_${heroId}_3_${Date.now()}`, skillId: pool[2 % pool.length] || pool[0], tier: 1 },
+      { instanceId: `init_${heroId}_4_${Date.now()}`, skillId: pool[0], tier: 1 },
+    ];
+  }, [getHeroCardPool]);
+
+  const getOrCreateHeroHand = useCallback((heroId: string): ActiveCombatCard[] => {
+    const pool = getHeroCardPool(heroId);
+    const existing = heroHandsRef.current[heroId];
+    if (existing && existing.length > 0) {
+      // Ensure strictly that only this hero's cards remain in hand (plus ultimate if charged)
+      return existing.map((card) => {
+        if (card.skillId === 'cataclismo_astral') return card;
+        if (!pool.includes(card.skillId)) {
+          return {
+            ...card,
+            instanceId: `clean_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+            skillId: pool[Math.floor(Math.random() * pool.length)],
+          };
+        }
+        return card;
+      });
+    }
+    const fresh = createInitialHandForHero(heroId);
+    heroHandsRef.current[heroId] = fresh;
+    return fresh;
+  }, [getHeroCardPool, createInitialHandForHero]);
+
+  const handleSwitchActiveHero = (newHeroId: string) => {
+    if (newHeroId === activeCombatHeroId || battleState !== 'idle') return;
+    sound.playSFX('powerup');
+    
+    // 1. Save current active hero's hand into persistent memory
+    heroHandsRef.current[activeCombatHeroId] = handRef.current;
+    
+    // 2. Fetch or create new hero's exclusive hand
+    const nextHand = getOrCreateHeroHand(newHeroId);
+    heroHandsRef.current[newHeroId] = nextHand;
+    
+    // 3. Switch active hero state & hand state
+    setActiveCombatHeroId(newHeroId);
+    activeCombatHeroIdRef.current = newHeroId;
+    setHand(nextHand);
+
+    const targetName =
+      newHeroId === 'smurph_draco' || newHeroId === 'smurph'
+        ? 'Smurph Draco'
+        : newHeroId === 'roxanne'
+        ? 'Roxanne'
+        : newHeroId === 'ragnavaldr'
+        ? 'Ragnavaldr'
+        : newHeroId === 'kairon'
+        ? 'Kairon'
+        : newHeroId === 'chispo_deez' || newHeroId === 'chispo'
+        ? 'Chispo Deez'
+        : newHeroId === 'giovani' || newHeroId === 'giovani_vazquez'
+        ? 'Giovani Vázquez'
+        : newHeroId === 'prometeo'
+        ? 'Prometeo'
+        : newHeroId === 'pepe_loux'
+        ? 'Pepe Loux'
+        : newHeroId === 'arlem' || newHeroId === 'arlem_diaz'
+        ? 'Arlem Díaz'
+        : newHeroId === 'edacorn'
+        ? 'Edacorn'
+        : 'Magordito';
+    queueStatusNotification({
+      icon: '🛡️',
+      title: `¡${targetName} entra al combate!`,
+      detail: `Mostrando baraja y habilidades exclusivas de ${targetName}.`,
+      target: 'hero',
+      isBuff: true,
+    });
+  };
+
   const getHeroSpriteUrl = (): string => {
+    // 0. Smurph Draco: Hechicero Dracónico
+    if (isSmurphCombat) {
+      if (heroAnimation === 'hit' || isHeroHitShaking) {
+        return '/assets/combat/smurph_hurt.png';
+      }
+      if (isSmurphLandingAction) {
+        return '/assets/combat/smurph_landing.png';
+      }
+      if (isSmurphAirborne) {
+        return '/assets/combat/smurph_flight.png';
+      }
+      if (heroCastSkill) {
+        switch (heroCastSkill) {
+          case 'smurph_aterrizaje_heroico':
+            return isSmurphLandingAction
+              ? '/assets/combat/smurph_landing.png'
+              : '/assets/combat/smurph_flight.png';
+          case 'smurph_bolas_fuego':
+            return '/assets/combat/smurph_cast.png';
+          case 'smurph_aliento_rayo':
+            return '/assets/combat/smurph_lightning.png';
+          default:
+            return '/assets/combat/smurph_attack.png';
+        }
+      }
+      if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
+        return '/assets/combat/smurph_landing.png';
+      }
+      return '/assets/combat/smurph_idle.png';
+    }
+
+    // 0. Roxanne: Barda con lira, magia rosada y rapier
+    if (isRoxanneCombat) {
+      if (heroAnimation === 'hit' || isHeroHitShaking) {
+        return '/assets/combat/roxanne_hurt.png';
+      }
+      if (heroCastSkill) {
+        switch (heroCastSkill) {
+          case 'roxanne_estocada':
+            return '/assets/combat/roxanne_attack.png';
+          case 'roxanne_inspiracion':
+          case 'roxanne_velada':
+            return '/assets/combat/roxanne_cast.png';
+          default:
+            return '/assets/combat/roxanne_attack.png';
+        }
+      }
+      if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
+        return '/assets/combat/roxanne_attack.png';
+      }
+      return '/assets/combat/roxanne_idle.png';
+    }
+
+    // 0.1 Ragnavaldr: Bárbaro Druida con dos lanzas
+    if (isRagnavaldrCombat) {
+      if (heroAnimation === 'hit' || isHeroHitShaking) {
+        return '/assets/combat/ragnavaldr_hurt.png';
+      }
+      if (heroCastSkill) {
+        switch (heroCastSkill) {
+          case 'ragnavaldr_doble_lanza':
+            return '/assets/combat/ragnavaldr_attack.png';
+          case 'ragnavaldr_furia':
+            return '/assets/combat/ragnavaldr_furia.png';
+          case 'ragnavaldr_cuchillo_hielo':
+            return '/assets/combat/ragnavaldr_cast.png';
+          default:
+            return '/assets/combat/ragnavaldr_attack.png';
+        }
+      }
+      if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
+        return '/assets/combat/ragnavaldr_attack.png';
+      }
+      return '/assets/combat/ragnavaldr_idle.png';
+    }
+
+    // 0.1 Kairon: Gunslinger (Pistolas duales y espada larga)
+    if (isKaironCombat) {
+      if (heroAnimation === 'hit' || isHeroHitShaking) {
+        return '/assets/combat/kairon_hurt.png';
+      }
+      if (heroCastSkill) {
+        switch (heroCastSkill) {
+          case 'kairon_tiro_doble':
+            return '/assets/combat/kairon_attack.png';
+          case 'kairon_disparo_dual':
+            return '/assets/combat/kairon_attack_dual.png';
+          case 'kairon_espadazo_largo':
+            return '/assets/combat/kairon_cast.png';
+          default:
+            return '/assets/combat/kairon_attack.png';
+        }
+      }
+      if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
+        return '/assets/combat/kairon_cast.png';
+      }
+      return '/assets/combat/kairon_idle.png';
+    }
+
+    // 1. Chispo Deez: Paladín Enano Alado / Divino
+    if (isChispoCombat) {
+      if (heroAnimation === 'hit' || isHeroHitShaking) {
+        return '/assets/combat/chispo_hurt.png';
+      }
+      if (heroCastSkill) {
+        switch (heroCastSkill) {
+          case 'chispo_martillo':
+            return '/assets/combat/chispo_attack.png';
+          case 'chispo_luz_divina':
+            return '/assets/combat/chispo_cast.png';
+          case 'chispo_castigo_divino':
+            return '/assets/combat/chispo_cast.png';
+          case 'chispo_dagas':
+            return '/assets/combat/chispo_attack.png';
+          case 'chispo_truco':
+          case 'chispo_alas':
+            return '/assets/combat/chispo_cast.png';
+          default:
+            return '/assets/combat/chispo_attack.png';
+        }
+      }
+      if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
+        return '/assets/combat/chispo_attack.png';
+      }
+      return '/assets/combat/chispo_idle.png';
+    }
+
+    // 2. Giovani Vázquez: Bribón Emplumado / Mago Oscuro
+    if (isGiovaniCombat) {
+      if (heroAnimation === 'hit' || isHeroHitShaking) {
+        return '/assets/combat/giovani_hurt.png';
+      }
+      if (heroCastSkill) {
+        switch (heroCastSkill) {
+          case 'giovani_plumas':
+            return '/assets/combat/giovani_attack.png';
+          case 'giovani_treta':
+            return '/assets/combat/giovani_attack.png';
+          case 'giovani_tomo':
+            return '/assets/combat/giovani_cast.png';
+          default:
+            return '/assets/combat/giovani_attack.png';
+        }
+      }
+      if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
+        return '/assets/combat/giovani_cast.png';
+      }
+      return '/assets/combat/giovani_idle.png';
+    }
+
+    // 3. Prometeo: Cazador de Sangre (Blood Hunter) / Magia de Fuego
+    if (isPrometeoCombat) {
+      if (heroAnimation === 'hit' || isHeroHitShaking) {
+        return '/assets/combat/prometeo_hurt.png';
+      }
+      if (heroCastSkill) {
+        switch (heroCastSkill) {
+          case 'prometeo_espada_verde':
+            return '/assets/combat/prometeo_attack.png';
+          case 'prometeo_bola_fuego':
+          case 'prometeo_fire_bolt':
+            return '/assets/combat/prometeo_cast.png';
+          default:
+            return '/assets/combat/prometeo_attack.png';
+        }
+      }
+      if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
+        return '/assets/combat/prometeo_attack.png';
+      }
+      return '/assets/combat/prometeo_idle.png';
+    }
+
+    // 3. Edacorn: Idle, Hurt & Per-Skill transparent combat sprites (without spectral wings)
     if (isEdacornCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/edacorn_alas_hurt.png';
+        return '/assets/combat/edacorn_hurt.png';
       }
-      if (heroCastSkill || heroAnimation === 'lunge' || tier3Cinematic) {
-        return '/assets/combat/edacorn_alas_attack.png';
+      if (heroCastSkill) {
+        switch (heroCastSkill) {
+          case 'ataque_furtivo':
+            return '/assets/combat/edacorn_cast_furtivo.png';
+          case 'contraataque':
+            return '/assets/combat/edacorn_cast_contraataque.png';
+          case 'sigilo':
+            return '/assets/combat/edacorn_cast_sigilo.png';
+          default:
+            return '/assets/combat/edacorn_attack.png';
+        }
       }
-      return '/assets/combat/edacorn_alas_idle.png';
+      if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
+        return '/assets/combat/edacorn_cast_furtivo.png';
+      }
+      return '/assets/combat/edacorn_idle.png';
     }
+
+    // 4. Pepe Loux: Guerrero enano con hacha de combate (sin espada, sin magia)
+    if (isPepeCombat) {
+      if (heroAnimation === 'hit' || isHeroHitShaking) {
+        return '/assets/combat/pepe_loux_hurt.png';
+      }
+      if (heroCastSkill) {
+        switch (heroCastSkill) {
+          case 'pepe_ataque':
+            return '/assets/combat/pepe_loux_cast_hacha.png';
+          case 'pepe_remo':
+            return '/assets/combat/pepe_loux_cast_remo.png';
+          case 'pepe_escudo':
+            return '/assets/combat/pepe_loux_cast_escudo.png';
+          default:
+            return '/assets/combat/pepe_loux_attack.png';
+        }
+      }
+      if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
+        return '/assets/combat/pepe_loux_cast_hacha.png';
+      }
+      return '/assets/combat/pepe_loux_idle.png';
+    }
+
+    // 5. Arlem Díaz: Bardo con laúd y rapier, Idle, Hurt & Per-Skill transparent combat sprites
+    if (isArlemCombat) {
+      if (heroAnimation === 'hit' || isHeroHitShaking) {
+        return '/assets/combat/arlem_hurt.png';
+      }
+      if (heroCastSkill) {
+        switch (heroCastSkill) {
+          case 'arlem_rankup':
+            return '/assets/combat/arlem_cast_inspiracion.png';
+          case 'arlem_curacion':
+            return '/assets/combat/arlem_cast_balada.png';
+          case 'arlem_fuego':
+            return '/assets/combat/arlem_cast_estocada.png';
+          default:
+            return '/assets/combat/arlem_attack.png';
+        }
+      }
+      if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
+        return '/assets/combat/arlem_cast_estocada.png';
+      }
+      return '/assets/combat/arlem_idle.png';
+    }
+
+    // 6. Default / Magordito
     if (heroAnimation === 'hit' || isHeroHitShaking) {
       return '/assets/combat/magordito_hurt.png';
     }
@@ -3342,22 +5387,11 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
     setWaveClearBanner(null);
     setIsEdacornStealthed(false);
     setEdacornCounter(null);
-    if (selectedCombatMissionId === 'm3_cuevas_rojo') {
-      setHand([
-        { instanceId: 'init_eda_1', skillId: 'ataque_furtivo', tier: 1 },
-        { instanceId: 'init_eda_2', skillId: 'contraataque', tier: 1 },
-        { instanceId: 'init_eda_3', skillId: 'sigilo', tier: 1 },
-        { instanceId: 'init_eda_4', skillId: 'ataque_furtivo', tier: 1 },
-      ]);
-    } else {
-      setHand([
-        { instanceId: 'init_1', skillId: 'drenar_maldiciones', tier: 1 },
-        { instanceId: 'init_2', skillId: 'dios_oscuro', tier: 1 },
-        { instanceId: 'init_3', skillId: 'fortalecer_marioneta', tier: 1 },
-        { instanceId: 'init_4', skillId: 'fortalecer_marioneta', tier: 1 },
-      ]);
-    }
-  }, [selectedCombatMissionId]);
+    heroHandsRef.current = {};
+    const initHeroHand = createInitialHandForHero(activeCombatHeroIdRef.current);
+    heroHandsRef.current[activeCombatHeroIdRef.current] = initHeroHand;
+    setHand(initHeroHand);
+  }, [selectedCombatMissionId, createInitialHandForHero]);
 
 
 
@@ -3410,9 +5444,31 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
       '/assets/cfxr/graphics/cfxr-sword-trail-mask-light-crimson.png',
       '/assets/cfxr/graphics/cfxr-ember-blur.png',
       '/assets/cfxr/graphics/cfxr-explosion-smoke-dissolve-fire.png',
-      '/assets/cfxr/graphics/cfxr-fire-edge-dissolve.png',
       '/assets/skills/rayo_necrotico_spritesheet.png',
       '/assets/skills/rayo_necrotico_impacto.webp',
+      // Hero Combat Sprites (Edacorn, Pepe Loux, Arlem, Magordito)
+      '/assets/combat/edacorn_idle.png',
+      '/assets/combat/edacorn_hurt.png',
+      '/assets/combat/edacorn_attack.png',
+      '/assets/combat/edacorn_cast_furtivo.png',
+      '/assets/combat/edacorn_cast_contraataque.png',
+      '/assets/combat/edacorn_cast_sigilo.png',
+      '/assets/skills/golpe_hacha.png',
+      '/assets/combat/pepe_loux_idle.png',
+      '/assets/combat/pepe_loux_hurt.png',
+      '/assets/combat/pepe_loux_attack.png',
+      '/assets/combat/pepe_loux_cast_hacha.png',
+      '/assets/combat/pepe_loux_cast_mandoble.png',
+      '/assets/combat/pepe_loux_cast_remo.png',
+      '/assets/combat/pepe_loux_cast_escudo.png',
+      '/assets/combat/arlem_idle.png',
+      '/assets/combat/arlem_hurt.png',
+      '/assets/combat/arlem_attack.png',
+      '/assets/combat/arlem_cast_inspiracion.png',
+      '/assets/combat/arlem_cast_balada.png',
+      '/assets/combat/arlem_cast_estocada.png',
+      '/assets/combat/magordito_idle.png',
+      '/assets/combat/magordito_hurt.png',
     ];
     assetsToPreload.forEach((src) => {
       const img = new Image();
@@ -3454,7 +5510,7 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
 
   // AAA Gacha Camera Shake & Impact Flash (Tiered Intensities)
   const [screenShake, setScreenShake] = useState<'none' | 'light' | 'medium' | 'heavy'>('none');
-  const [screenFlash, setScreenFlash] = useState<'cyan' | 'purple' | 'gold' | 'red' | null>(null);
+  const [screenFlash, setScreenFlash] = useState<'cyan' | 'purple' | 'gold' | 'red' | 'green' | null>(null);
   const [tier3Cinematic, setTier3Cinematic] = useState<boolean>(false);
 
   // In-combat inventory modal & Active Food Buff
@@ -3501,17 +5557,21 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
   // Combination (Merge) Animation State
   const [mergeAnim, setMergeAnim] = useState<MergeAnimation | null>(null);
 
-  // 4 Active Hand Slots (Starts with Tier 1 cards ready to merge, exactly matching screenshot)
-  const [hand, setHand] = useState<ActiveCombatCard[]>([
-    { instanceId: 'init_1', skillId: 'drenar_maldiciones', tier: 1 },
-    { instanceId: 'init_2', skillId: 'dios_oscuro', tier: 1 },
-    { instanceId: 'init_3', skillId: 'fortalecer_marioneta', tier: 1 },
-    { instanceId: 'init_4', skillId: 'fortalecer_marioneta', tier: 1 },
-  ]);
+  // 4 Active Hand Slots (Starts with Tier 1 cards ready to merge, dynamically populated for active hero)
+  const [hand, setHand] = useState<ActiveCombatCard[]>(() => {
+    const initial = createInitialHandForHero(defaultHeroId);
+    heroHandsRef.current[defaultHeroId] = initial;
+    return initial;
+  });
 
   // REFS TO PREVENT STALE CLOSURES DURING DRAG & DROP
   const handRef = useRef<ActiveCombatCard[]>(hand);
   handRef.current = hand;
+
+  // Auto-sync persistent heroHandsRef whenever hand changes
+  useEffect(() => {
+    heroHandsRef.current[activeCombatHeroId] = hand;
+  }, [hand, activeCombatHeroId]);
 
   const dragIndexRef = useRef<number | null>(null);
   const hoverIndexRef = useRef<number | null>(null);
@@ -3919,43 +5979,48 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
     [heroMaxHp, spawnFloating, addUltimateOrb, queueStatusNotification]
   );
 
-  // Helper to draw random tier 1 skill (spawns Edacorn skills during m3_cuevas_rojo, Magordito skills otherwise)
-  const drawRandomCard = (): ActiveCombatCard => {
-    if (selectedCombatMissionId === 'm3_cuevas_rojo') {
-      const edacornSkills = ['ataque_furtivo', 'contraataque', 'sigilo'];
-      const randomKey = edacornSkills[Math.floor(Math.random() * edacornSkills.length)];
-      return {
-        instanceId: `draw_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-        skillId: randomKey,
-        tier: 1,
-      };
-    }
-    const regularSkills = [
-      'rayo_necrotico',      // Lightning - Rayo Voltaico
-      'dios_oscuro',         // Necrotic - Dios Oscuro
-      'drenar_maldiciones',  // Poison - Peste Tóxica
-      'fortalecer_marioneta',// Slashing - Tajo Lacerante
-    ];
-    const randomKey = regularSkills[Math.floor(Math.random() * regularSkills.length)];
+  // Helper to draw random tier 1 skill strictly based on active combat hero (Edacorn, Pepe Loux, Arlem, Magordito)
+  const drawRandomCard = useCallback((heroId: string = activeCombatHeroIdRef.current): ActiveCombatCard => {
+    const heroPool = getHeroCardPool(heroId);
+    const randomKey = heroPool[Math.floor(Math.random() * heroPool.length)];
     return {
-      instanceId: `draw_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      instanceId: `draw_${heroId}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       skillId: randomKey,
       tier: 1,
     };
-  };
+  }, [getHeroCardPool]);
 
-  // Refill hand back to 4 cards at the start of each player turn
+  // Refill hand back to 4 cards at the start of each player turn, strictly with the active hero's cards
   const refillHandToFull = useCallback(() => {
+    const currentHero = activeCombatHeroIdRef.current;
+    const heroPool = getHeroCardPool(currentHero);
     setHand((prev) => {
-      const needed = 4 - prev.length;
-      if (needed <= 0) return prev;
+      // 1. Sanitize: Ensure every card in hand belongs to current hero's pool (unless cataclismo_astral)
+      const sanitized = prev.map((card) => {
+        if (card.skillId === 'cataclismo_astral') return card;
+        if (!heroPool.includes(card.skillId)) {
+          return {
+            ...card,
+            instanceId: `fix_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+            skillId: heroPool[Math.floor(Math.random() * heroPool.length)],
+          };
+        }
+        return card;
+      });
+      const needed = 4 - sanitized.length;
+      if (needed <= 0) return sanitized;
       const newCards: ActiveCombatCard[] = [];
       for (let i = 0; i < needed; i++) {
-        newCards.push(drawRandomCard());
+        const randomKey = heroPool[Math.floor(Math.random() * heroPool.length)];
+        newCards.push({
+          instanceId: `draw_${currentHero}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}_${i}`,
+          skillId: randomKey,
+          tier: 1,
+        });
       }
-      return [...prev, ...newCards];
+      return [...sanitized, ...newCards];
     });
-  }, []);
+  }, [getHeroCardPool]);
 
   // Start or transition to a specific dungeon chamber (Endless Wave flow)
   const startChamber = (floorNumber: number) => {
@@ -4015,78 +6080,8 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
     setHeroHp(MAX_HERO_HP);
     setHeroConditions([]);
     setUltimateOrbs(0);
-    setRetriesUsed(0);
     startChamber(1);
   };
-
-  // Reintentar tras caer: reanuda exactamente en la sala/oleada donde se perdio,
-  // gratis la primera vez y por RETRY_CRYSTAL_COST cristales del recuerdo despues.
-  const handleRetryBattle = () => {
-    const cost = retriesUsed === 0 ? 0 : RETRY_CRYSTAL_COST;
-    if (cost > 0 && summonCrystals < cost) return;
-    if (cost > 0) addCrystals(-cost);
-    setRetriesUsed((n) => n + 1);
-
-    // El héroe vuelve con la vida al máximo, pero la sala se queda tal cual estaba
-    // al caer: mismos enemigos con su vida, sus estados, el turno y la mano.
-    const snap = defeatSnapshotRef.current;
-    heroHpRef.current = MAX_HERO_HP;
-    setHeroHp(MAX_HERO_HP);
-    setHeroConditions([]);
-    setUltimateOrbs(0);
-    setHeroCastSkill(null);
-    setHeroAnimation('idle');
-    setEnemyAnimation('idle');
-    setIsHeroHitShaking(false);
-    setIsEnemyHitShaking(false);
-    setIsHeroAshDissolving(false);
-    setIsEnemyAshDissolving(false);
-    setSlashEffect('none');
-    setMergeAnim(null);
-    setSelectedConditionTooltip(null);
-    setActiveVfx({ type: 'none', tier: 1 });
-    setBossTransitioning(false);
-    setWaveClearBanner(null);
-    setBattleState('idle');
-
-    if (snap) {
-      const restored: ChamberEnemyState[] = snap.enemies.map((e) => ({
-        ...e,
-        conditions: e.conditions.map((c) => ({ ...c })),
-        isHitShaking: false,
-        isTwitching: false,
-        animation: e.hp > 0 ? 'idle' : 'dead',
-      }));
-      activeEnemiesRef.current = restored;
-      setActiveEnemies(restored);
-      setSelectedEnemyIdx(Math.max(0, restored.findIndex((e) => e.hp > 0)));
-      setCurrentFloor(snap.floor);
-      setTurnCounter(snap.turn);
-    } else {
-      startChamber(currentFloor);
-    }
-    // Mano nueva: al reintentar no se heredan las cartas de la partida perdida.
-    setHand([]);
-    refillHandToFull();
-    defeatCapturedRef.current = false;
-  };
-
-  // Al caer el héroe se toma la foto de la sala para poder reanudarla en el reintento.
-  useEffect(() => {
-    if (heroHp <= 0 && !defeatCapturedRef.current) {
-      defeatCapturedRef.current = true;
-      defeatSnapshotRef.current = {
-        floor: currentFloor,
-        turn: turnCounter,
-        enemies: activeEnemiesRef.current.map((e) => ({
-          ...e,
-          conditions: e.conditions.map((c) => ({ ...c })),
-        })),
-      };
-    } else if (heroHp > 0 && defeatCapturedRef.current) {
-      defeatCapturedRef.current = false;
-    }
-  }, [heroHp, currentFloor, turnCounter]);
 
   // Retreat from dungeon and bank all accumulated rewards safely
   const handleRetreatAndClaim = () => {
@@ -4113,76 +6108,171 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
 
   // Finalize enemy phase: tick conditions on enemies & hero, resolve start-of-turn DoT/HoT, refill hand
   const finalizeEnemyPhase = () => {
+    // If Smurph Draco was airborne, drop down in Superhero Landing before ending turn
+    if (isSmurphAirborne && pendingLandingDataRef.current) {
+      const landingData = pendingLandingDataRef.current;
+      setIsSmurphAirborne(false);
+      setIsSmurphLandingAction(true);
+      sound.playSFX('powerup');
+
+      setTimeout(() => {
+        sound.playSFX('critical');
+        setScreenShake('heavy');
+        setScreenFlash('cyan');
+
+        const aliveEnemies = activeEnemiesRef.current.filter((e) => e.hp > 0 && !e.isAshDissolving);
+        const target =
+          aliveEnemies.find((e) => e.uid === landingData.targetEnemyUid) || aliveEnemies[0];
+
+        if (target) {
+          const dmg = landingData.damage;
+          const eIdx = activeEnemiesRef.current.findIndex((e) => e.uid === target.uid);
+
+          const updatedEnemies = activeEnemiesRef.current.map((e) => {
+            if (e.uid !== target.uid) return e;
+            let conds = stackGachaEffect(e.conditions, 'stun', 1, 1, landingData.tier, 'Aterrizaje Heroico').updatedEffects;
+            conds = stackGachaEffect(conds, 'def_break', 2, 1, landingData.tier, 'Aterrizaje Heroico').updatedEffects;
+            return {
+              ...e,
+              hp: Math.max(0, e.hp - dmg),
+              conditions: conds,
+            };
+          });
+          activeEnemiesRef.current = updatedEnemies;
+          setActiveEnemies(updatedEnemies);
+
+          spawnFloating(
+            `-${dmg}`,
+            true,
+            false,
+            landingData.tier,
+            landingData.tier === 3,
+            eIdx >= 0 ? eIdx : undefined,
+            'bludgeoning',
+            '💥 ¡ATERRIZAJE SUPERHEROICO!',
+            '#06b6d4'
+          );
+
+          triggerEnemyHitReaction('bludgeoning');
+          queueStatusNotification({
+            icon: '💥',
+            title: '¡Aterrizaje Superheroico!',
+            detail: `¡Smurph Draco impacta contra el suelo con violencia sísmica causando ${dmg} DMG y quebrando al guardia!`,
+            target: 'enemy',
+            isBuff: false,
+          });
+        }
+
+        setPendingLandingData(null);
+        pendingLandingDataRef.current = null;
+
+        setTimeout(() => {
+          setIsSmurphLandingAction(false);
+          finalizeEnemyPhase();
+        }, 750);
+      }, 300);
+      return;
+    }
+
     setTimeout(() => {
       setActiveVfx({ type: 'none', tier: 1 });
       setHeroCastSkill(null);
       setHeroAnimation('idle');
 
       // 1. Tick down conditions on all alive enemies & apply DoT damages (Burn, Bleed, Poison)
-      setActiveEnemies((prev) =>
-        prev.map((e, eIdx) => {
-          if (e.hp <= 0 || e.isAshDissolving) return e;
+      const updatedEnemyList = activeEnemiesRef.current.map((e, eIdx) => {
+        if (e.hp <= 0 || e.isAshDissolving) return e;
 
-          let updatedHp = e.hp;
-          let dotDamage = 0;
-          let primaryDotType: DndDamageType | undefined = undefined;
+        let updatedHp = e.hp;
+        let dotDamage = 0;
+        let primaryDotType: DndDamageType | undefined = undefined;
 
-          // Burn DoT (Fuego)
-          const burnEffect = e.conditions.find((c) => c.type === 'burn');
-          if (burnEffect) {
-            const bDmg = 8 * burnEffect.stacks;
-            dotDamage += bDmg;
-            primaryDotType = 'fire';
-            spawnFloating(`-${bDmg}`, true, false, 1, false, eIdx, 'fire', '🔥 QUEMADURA', '#ea580c');
-          }
+        // Burn DoT (Fuego)
+        const burnEffect = e.conditions.find((c) => c.type === 'burn');
+        if (burnEffect) {
+          const bDmg = 8 * burnEffect.stacks;
+          dotDamage += bDmg;
+          primaryDotType = 'fire';
+          spawnFloating(`-${bDmg}`, true, false, 1, false, eIdx, 'fire', '🔥 QUEMADURA', '#ea580c');
+        }
 
-          // Bleed DoT (Perforante) - True DoT
-          const bleedEffect = e.conditions.find((c) => c.type === 'bleed');
-          if (bleedEffect) {
-            const blDmg = 9 * bleedEffect.stacks;
-            dotDamage += blDmg;
-            if (!primaryDotType) primaryDotType = 'piercing';
-            spawnFloating(`-${blDmg}`, true, false, 1, false, eIdx, 'piercing', '🩸 SANGRADO', '#94a3b8');
-          }
+        // Bleed DoT (Perforante) - True DoT
+        const bleedEffect = e.conditions.find((c) => c.type === 'bleed');
+        if (bleedEffect) {
+          const blDmg = 9 * bleedEffect.stacks;
+          dotDamage += blDmg;
+          if (!primaryDotType) primaryDotType = 'piercing';
+          spawnFloating(`-${blDmg}`, true, false, 1, false, eIdx, 'piercing', '🩸 SANGRADO', '#94a3b8');
+        }
 
-          // Poison DoT (Veneno)
-          const poisonEffect = e.conditions.find((c) => c.type === 'poison' || c.type === 'poisoned');
-          if (poisonEffect) {
-            const pDmg = 7 * poisonEffect.stacks;
-            dotDamage += pDmg;
-            if (!primaryDotType) primaryDotType = 'poison';
-            spawnFloating(`-${pDmg}`, true, false, 1, false, eIdx, 'poison', '☣️ VENENO', '#10b981');
-          }
+        // Poison DoT (Veneno)
+        const poisonEffect = e.conditions.find((c) => c.type === 'poison' || c.type === 'poisoned');
+        if (poisonEffect) {
+          const pDmg = 7 * poisonEffect.stacks;
+          dotDamage += pDmg;
+          if (!primaryDotType) primaryDotType = 'poison';
+          spawnFloating(`-${pDmg}`, true, false, 1, false, eIdx, 'poison', '☣️ VENENO', '#10b981');
+        }
 
-          if (dotDamage > 0) {
+        let hobPhase = e.hobgoblinPhase || 1;
+        let hobSpriteUrl = e.spriteUrl;
+        let hobAttackSpriteUrl = e.attackSpriteUrl;
+        let hobHurtSpriteUrl = e.hurtSpriteUrl;
+        let hobThumbUrl = e.thumbUrl;
+        let hobTitle = e.title;
+
+        if (dotDamage > 0) {
+          if (e.configId === 'hobgoblin_capataz') {
+            const res = calculateHobgoblinDamage(updatedHp, dotDamage, hobPhase);
+            updatedHp = res.nextHp;
+            if (res.phaseChanged) {
+              hobPhase = res.nextPhase;
+              const sp = HOBGOBLIN_SKILLS_BY_PHASE[hobPhase];
+              hobSpriteUrl = sp.idleSprite;
+              hobAttackSpriteUrl = sp.attackSprite;
+              hobHurtSpriteUrl = sp.hurtSprite;
+              hobThumbUrl = sp.idleSprite;
+              hobTitle = sp.title;
+              sound.playSFX(hobPhase === 2 ? 'powerup' : 'critical');
+              setTurnSkippedBanner(
+                hobPhase === 2
+                  ? '💣 ¡¡FASE 2!! ¡EL HOGGOBLIN DESENFUNDA SUS GRANADAS ALQUÍMICAS!'
+                  : '💥 ¡¡FASE 3!! ¡EL HOGGOBLIN CARGA SU TRABUCO DE FUEGO IMPERIAL!'
+              );
+              setTimeout(() => setTurnSkippedBanner(null), 3000);
+            }
+          } else {
             updatedHp = Math.max(0, updatedHp - dotDamage);
-            triggerEnemyHitReaction(primaryDotType);
           }
+          triggerEnemyHitReaction(primaryDotType);
+        }
 
-          const { remainingEffects, expiredEffects } = tickGachaEffects(e.conditions);
-          expiredEffects.forEach((exp) => {
-            queueStatusNotification({
-              icon: exp.icon || '⌛',
-              title: exp.name,
-              detail: `Efecto expirado en ${e.name}`,
-              target: 'enemy',
-              isBuff: exp.isBuff,
-            });
+        const { remainingEffects, expiredEffects } = tickGachaEffects(e.conditions);
+        expiredEffects.forEach((exp) => {
+          queueStatusNotification({
+            icon: exp.icon || '⌛',
+            title: exp.name,
+            detail: `Efecto expirado en ${e.name}`,
+            target: 'enemy',
+            isBuff: exp.isBuff,
           });
-          return {
-            ...e,
-            hp: updatedHp,
-            conditions: remainingEffects,
-            isAshDissolving: updatedHp <= 0,
-          };
-        })
-      );
-
-      // Keep activeEnemiesRef in sync immediately
-      activeEnemiesRef.current = activeEnemiesRef.current.map((e) => {
-        const found = e;
-        return found;
+        });
+        return {
+          ...e,
+          hp: updatedHp,
+          hobgoblinPhase: hobPhase,
+          spriteUrl: hobSpriteUrl,
+          attackSpriteUrl: hobAttackSpriteUrl,
+          hurtSpriteUrl: hobHurtSpriteUrl,
+          thumbUrl: hobThumbUrl,
+          title: hobTitle,
+          conditions: remainingEffects,
+          isAshDissolving: updatedHp <= 0,
+        };
       });
+
+      activeEnemiesRef.current = updatedEnemyList;
+      setActiveEnemies(updatedEnemyList);
 
       // Check if DoT defeated all enemies in the chamber
       const aliveAfterDot = activeEnemiesRef.current.filter((e) => e.hp > 0 && !e.isAshDissolving);
@@ -4737,6 +6827,68 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
       return;
     }
 
+    // Specialized Victory Handling for Capataz Hoggoblin Bossfight (m10_hobgoblin_boss)
+    if (selectedCombatMissionId === 'm10_hobgoblin_boss') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      completeQuestMission('m10_hobgoblin_boss', 3);
+      addGold(25000);
+      addCrystals(600);
+      const trabucoItem = {
+        id: 'trabuco_ebano_oro_ferton',
+        name: 'Trabuco de Fuego de Ébano y Oro',
+        category: 'materials' as const,
+        count: 1,
+        icon: '/assets/combat/hobgoblin_fase3_idle.png',
+        rarity: 'UR' as const,
+        priceGold: 35000,
+        description: 'Arma de fuego reglamentaria imperial incautada tras abatir al Capataz Hoggoblin de Ferton. Su cañón de ébano canaliza metralla devastadora.',
+      };
+      addShelfItem(trabucoItem);
+
+      const salvoconductoItem = {
+        id: 'salvoconducto_mercado_negro',
+        name: 'Salvoconducto Real del Mercado Negro',
+        category: 'materials' as const,
+        count: 1,
+        icon: '/assets/items/fragmento_astral.png',
+        rarity: 'SSR' as const,
+        priceGold: 20000,
+        description: 'Emblema dorado con el sello de Ferton que permite libre acceso comercial a los puertos del Mercado Negro subterráneo.',
+      };
+      addShelfItem(salvoconductoItem);
+
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          description: it.description,
+        })
+      );
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+      setWaveClearBanner({
+        floor: 1,
+        gold: 25000,
+        crystals: 600,
+        nextFloor: 1,
+      });
+
+      // Launch epilogue dialogue seamlessly
+      setSelectedCombatMissionId('m10_hobgoblin_boss_epilogo');
+      setTimeout(() => {
+        navigateTo('story');
+      }, 1500);
+      return;
+    }
+
     // Specialized Wave Progression for Los Guardias de Ferton (m9_emboscada_ferton)
     if (selectedCombatMissionId === 'm9_emboscada_ferton') {
       sound.playSFX('victory');
@@ -5181,6 +7333,67 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
       return;
     }
 
+    // Check Charmed (Velada Encantadora de Roxanne: el enemigo se ataca a sí mismo)
+    const charmEffect = actingEnemy.conditions.find((c) => c.type === 'charmed');
+    if (charmEffect) {
+      sound.playSFX('laser');
+      const enemyCfg = DUNGEON_ENEMIES[actingEnemy.configId] || DUNGEON_ENEMIES['araknoide_rojo'];
+      const rawDamage = enemyCfg?.normalSkill?.damage;
+      const baseAtk = Array.isArray(rawDamage)
+        ? Math.round((rawDamage[0] + rawDamage[1]) / 2)
+        : typeof rawDamage === 'number'
+        ? rawDamage
+        : Math.max(25, Math.round(actingEnemy.maxHp * 0.15));
+      const extraDmgPercent = ((charmEffect.tier ?? 1) >= 2) ? 0.10 : 0;
+      const selfDmg = Math.max(16, Math.round(baseAtk * (1 + extraDmgPercent)));
+
+      setActiveEnemies((prev) =>
+        prev.map((e) =>
+          e.uid === actingEnemy.uid
+            ? {
+                ...e,
+                hp: Math.max(0, e.hp - selfDmg),
+                isAshDissolving: e.hp - selfDmg <= 0,
+                animation: 'hit',
+              }
+            : e
+        )
+      );
+      triggerEnemyHitReaction('psychic');
+      spawnFloating(
+        `-${selfDmg}`,
+        true,
+        false,
+        (charmEffect.tier || 1) as 1 | 2 | 3,
+        true,
+        selectedEnemyIdx,
+        'psychic',
+        `💖 ¡ENCANTADO! SE ATACA A SÍ MISMO${extraDmgPercent > 0 ? ' (+10% ATK)' : ''}`,
+        '#ec4899'
+      );
+      setTurnSkippedBanner(`💖 ¡${actingEnemy.name} sucumbe a la VELADA ENCANTADORA y se ataca a sí mismo (-${selfDmg} PV)!`);
+      setTimeout(() => setTurnSkippedBanner(null), 2500);
+
+      // Decrement charm turns remaining
+      setActiveEnemies((prev) =>
+        prev.map((e) => {
+          if (e.uid !== actingEnemy.uid) return e;
+          const updated = e.conditions
+            .map((c) => (c.type === 'charmed' ? { ...c, turnsRemaining: c.turnsRemaining - 1 } : c))
+            .filter((c) => c.turnsRemaining > 0);
+          return { ...e, conditions: updated };
+        })
+      );
+
+      setTimeout(() => {
+        setActiveEnemies((prev) =>
+          prev.map((e) => (e.uid === actingEnemy.uid ? { ...e, animation: 'idle' } : e))
+        );
+        finalizeEnemyPhase();
+      }, 750);
+      return;
+    }
+
     // Check Confusion (Psíquico - 35% probabilidad de autolesión)
     const isConfused = actingEnemy.conditions.some((c) => c.type === 'confused');
     if (isConfused && Math.random() < 0.35) {
@@ -5249,7 +7462,12 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
       prev.map((e) => (e.uid === actingEnemy.uid ? { ...e, animation: 'strike' } : e))
     );
 
-    const skill = isUlt
+    const currentHobPhase = (actingEnemy.hobgoblinPhase || 1) as 1 | 2 | 3;
+    const hobPhaseData = HOBGOBLIN_SKILLS_BY_PHASE[currentHobPhase];
+
+    const skill = actingEnemy.configId === 'hobgoblin_capataz'
+      ? (isUlt ? hobPhaseData.ultimate : hobPhaseData.normal)
+      : isUlt
       ? enemyCfg.ultimateSkill
       : turnCounter % 2 === 0
       ? enemyCfg.specialSkill
@@ -5371,6 +7589,21 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
         themeColor = '#dc2626';
         attackSfx = isUlt ? 'critical' : 'attack';
         break;
+      case 'hobgoblin_capataz':
+        if (currentHobPhase === 1) {
+          vfxType = 'earth_titan';
+          themeColor = '#f59e0b';
+          attackSfx = isUlt ? 'critical' : 'slash';
+        } else if (currentHobPhase === 2) {
+          vfxType = 'crimson_claw';
+          themeColor = '#ea580c';
+          attackSfx = isUlt ? 'dark_god' : 'magic';
+        } else {
+          vfxType = 'shadow_needle';
+          themeColor = '#dc2626';
+          attackSfx = isUlt ? 'critical' : 'bow';
+        }
+        break;
       default:
         vfxType = 'crimson_claw';
         themeColor = '#ef4444';
@@ -5392,6 +7625,21 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
       setActiveEnemies((prev) =>
         prev.map((e) => (e.uid === actingEnemy.uid ? { ...e, animation: 'idle' } : e))
       );
+
+      // Guaranteed Evasion from Smurph Draco Airborne Flight (Vuelo Dracónico e Inalcanzable)
+      if (isSmurphCombat && isSmurphAirborne) {
+        queueStatusNotification({
+          icon: '🦅',
+          title: '¡Esquivado en Pleno Vuelo!',
+          detail: `¡Smurph Draco vuela sobre las nubes! El ataque de ${actingEnemy.name} falla por completo contra el aire.`,
+          target: 'hero',
+          isBuff: true,
+        });
+        spawnFloating('¡EVADIDO EN VUELO!', false, false, 2, false, undefined, 'force', '🦅 SOBREVUELO', '#38bdf8');
+        setActiveEnemyAttackVisual(null);
+        setTimeout(finalizeEnemyPhase, 450);
+        return;
+      }
 
       // Guaranteed Evasion from Edacorn Stealth (Sigilo Esmeralda)
       if (isEdacornCombat && isEdacornStealthed) {
@@ -5461,6 +7709,15 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
       // Food DEF Multiplier (Pizza: -30% daño)
       if (activeFoodBuff?.defMultiplier) {
         dmg = Math.max(1, Math.round(dmg * activeFoodBuff.defMultiplier));
+      }
+
+      // Pepe Loux Baluarte Shield: se vuelve muy resistente un turno (75% a 90% de reducción)
+      const heroShield = heroConditions.find((c) => c.type === 'def_buff');
+      if (heroShield && dmg > 0) {
+        const reductionPct = heroShield.stacks >= 3 ? 0.90 : heroShield.stacks === 2 ? 0.80 : 0.75;
+        const reducedDmg = Math.max(1, Math.round(dmg * (1 - reductionPct)));
+        dmg = reducedDmg;
+        spawnFloating(`🛡️ -${Math.round(reductionPct * 100)}% RESISTENCIA`, false, true, 2, false, undefined, 'force', 'BALUARTE', '#38bdf8');
       }
 
       // Food Protective Barrier / Shield
@@ -5881,6 +8138,41 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
               dmg = Math.round(dmg * 0.50);
             }
 
+            if (e.configId === 'hobgoblin_capataz') {
+              const currentPhase = (e.hobgoblinPhase || 1) as 1 | 2 | 3;
+              const hobRes = calculateHobgoblinDamage(e.hp, dmg, currentPhase);
+              const nextHp = hobRes.nextHp;
+              const nextPhase = hobRes.nextPhase;
+              if (nextHp > 0) anyAliveAfterUlt = true;
+
+              if (hobRes.phaseChanged) {
+                const sp = HOBGOBLIN_SKILLS_BY_PHASE[nextPhase];
+                setTurnSkippedBanner(
+                  nextPhase === 2
+                    ? '💣 ¡¡FASE 2!! ¡EL HOGGOBLIN DESENFUNDA SUS GRANADAS ALQUÍMICAS!'
+                    : '💥 ¡¡FASE 3!! ¡EL HOGGOBLIN CARGA SU TRABUCO DE FUEGO IMPERIAL!'
+                );
+                setTimeout(() => setTurnSkippedBanner(null), 3000);
+                return {
+                  ...e,
+                  hp: nextHp,
+                  hobgoblinPhase: nextPhase,
+                  spriteUrl: sp.idleSprite,
+                  attackSpriteUrl: sp.attackSprite,
+                  hurtSpriteUrl: sp.hurtSprite,
+                  thumbUrl: sp.idleSprite,
+                  title: sp.title,
+                  isAshDissolving: nextHp <= 0,
+                };
+              }
+
+              return {
+                ...e,
+                hp: nextHp,
+                isAshDissolving: nextHp <= 0,
+              };
+            }
+
             const nextHp = Math.max(0, e.hp - dmg);
             if (nextHp > 0) anyAliveAfterUlt = true;
             return {
@@ -6008,10 +8300,437 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
         target: 'hero',
         isBuff: true,
       });
+    } else if (card.skillId === 'arlem_rankup') {
+      // Arlem Rank Up: sube un rango todas las cartas de los héroes en mano
+      sound.playSFX('powerup');
+      setHand((prev) =>
+        prev
+          .filter((_, idx) => idx !== cardIndex)
+          .map((c) => ({
+            ...c,
+            tier: (Math.min(3, c.tier + (card.tier >= 3 ? 2 : 1)) as 1 | 2 | 3),
+          }))
+      );
+      spawnFloating('⭐ ¡ASCENSO DE RANGO!', false, true, card.tier, false, undefined, 'force', 'RANK UP', '#eab308');
+      queueStatusNotification({
+        icon: '⭐',
+        title: '¡Ascenso de Rango!',
+        detail: '¡Arlem sube un rango a todas las cartas de la mano!',
+        target: 'hero',
+        isBuff: true,
+      });
+    } else if (card.skillId === 'roxanne_inspiracion') {
+      // Roxanne Inspiración Bárdica: Sube de tier 1 carta en T1, 2 cartas en T2 y 4 cartas en T3
+      sound.playSFX('powerup');
+      const numCardsToUpgrade = card.tier === 3 ? 4 : card.tier === 2 ? 2 : 1;
+      setHand((prev) => {
+        const remaining = prev.filter((_, idx) => idx !== cardIndex);
+        let upgradedCount = 0;
+        return remaining.map((c) => {
+          if (c.tier < 3 && upgradedCount < numCardsToUpgrade) {
+            upgradedCount++;
+            return {
+              ...c,
+              tier: (Math.min(3, c.tier + 1) as 1 | 2 | 3),
+            };
+          }
+          return c;
+        });
+      });
+      spawnFloating(
+        `🎶 ¡INSPIRACIÓN +${numCardsToUpgrade} CARTA${numCardsToUpgrade > 1 ? 'S' : ''}!`,
+        false,
+        true,
+        card.tier,
+        false,
+        undefined,
+        'force',
+        'RANK UP',
+        '#ec4899'
+      );
+      queueStatusNotification({
+        icon: '🎶',
+        title: 'Inspiración Bárdica',
+        detail: `¡Roxanne toca su lira y asciende +1 rango a ${numCardsToUpgrade} carta${numCardsToUpgrade > 1 ? 's' : ''} en mano!`,
+        target: 'hero',
+        isBuff: true,
+      });
+    } else if (card.skillId === 'roxanne_velada') {
+      // Roxanne Velada Encantadora: Encanta al enemigo para que se ataque a sí mismo (1T en T1/T2 con +10% ATK en T2, 2T en T3)
+      sound.playSFX('dark_god');
+      const turns = card.tier === 3 ? 2 : 1;
+      const extraDmgText = card.tier >= 2 ? ' (+10% ATK Daño Extra)' : '';
+      setActiveEnemies((prev) =>
+        prev.map((e, idx) => {
+          if (idx !== selectedEnemyIdx) return e;
+          return {
+            ...e,
+            conditions: stackGachaEffect(
+              e.conditions,
+              'charmed',
+              turns,
+              1,
+              card.tier,
+              'Velada Encantadora'
+            ).updatedEffects,
+          };
+        })
+      );
+      spawnFloating(
+        `💖 ¡ENCANTADO (${turns}T)${extraDmgText}!`,
+        true,
+        false,
+        card.tier,
+        false,
+        selectedEnemyIdx,
+        'psychic',
+        '💖 VELADA ENCANTADORA',
+        '#ec4899'
+      );
+      queueStatusNotification({
+        icon: '💖',
+        title: 'Velada Encantadora',
+        detail: `¡Roxanne hipnotiza al rival durante ${turns} turno${turns > 1 ? 's' : ''}! Cuando ataque se atacará a sí mismo${extraDmgText}.`,
+        target: 'enemy',
+        isBuff: false,
+      });
+    } else if (card.skillId === 'arlem_curacion') {
+      // Arlem Solo Curación: restauración pura de PV
+      sound.playSFX('powerup');
+      const healAmount = card.tier === 3 ? 180 : card.tier === 2 ? 90 : 45;
+      heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healAmount);
+      setHeroHp(heroHpRef.current);
+      spawnFloating(`+${healAmount}`, false, true, card.tier, false, undefined, 'radiant', '💚 SANACIÓN PURA', '#10b981');
+      if (card.tier >= 2) {
+        setHeroConditions((prev) => prev.filter((c) => c.isBuff));
+        spawnFloating('✨ PURIFICADO', false, true, card.tier, false, undefined, 'radiant', 'PURIFICACIÓN', '#38bdf8');
+      }
+      queueStatusNotification({
+        icon: '💚',
+        title: 'Curación Serena',
+        detail: `Arlem restaura ${healAmount} PV${card.tier >= 2 ? ' y purifica debuffs' : ''}.`,
+        target: 'hero',
+        isBuff: true,
+      });
+    } else if (card.skillId === 'pepe_remo') {
+      // Pepe Golpe de Remo: da un golpe de remo y deja al enemigo paralizado un turno, pero él también se queda así
+      setHeroConditions((prev) =>
+        stackGachaEffect(prev, 'stun', 1, 1, 1, 'Impacto Remo').updatedEffects
+      );
+      spawnFloating('💫 ¡PEPE ATURDIDO (1T)!', false, false, 1, false, undefined, 'bludgeoning', 'AUTOGOLPE', '#f97316');
+      queueStatusNotification({
+        icon: '🚣‍♂️',
+        title: '¡Golpe de Remo!',
+        detail: '¡Pepe aturde al enemigo pero el tremendo impacto lo aturde a él también por 1 turno!',
+        target: 'hero',
+        isBuff: false,
+      });
+    } else if (card.skillId === 'pepe_escudo') {
+      // Pepe Escudo: saca un escudo y se vuelve muy resistente un turno
+      sound.playSFX('skill');
+      const shieldAmount = card.tier === 3 ? 180 : card.tier === 2 ? 100 : 50;
+      setFoodShieldHp((prev) => prev + shieldAmount);
+      setHeroConditions((prev) =>
+        stackGachaEffect(prev, 'def_buff', 1, card.tier, 3, 'Baluarte de Pepe').updatedEffects
+      );
+      spawnFloating(`🛡️ +${shieldAmount} ESCUDO`, false, true, card.tier, false, undefined, 'force', 'GRAN RESISTENCIA', '#38bdf8');
+      queueStatusNotification({
+        icon: '🛡️',
+        title: 'Baluarte de Pepe',
+        detail: `Escudo de +${shieldAmount} PV y ${card.tier === 3 ? '90%' : card.tier === 2 ? '80%' : '75%'} de reducción de daño este turno.`,
+        target: 'hero',
+        isBuff: true,
+      });
+    } else if (card.skillId === 'chispo_luz_divina') {
+      // Chispo Luz Divina: Baña de luz divina a Chispo y sus aliados (+DEF, +ATK, sanación y barrera sagrada)
+      sound.playSFX('powerup');
+      const shieldAmount = card.tier === 3 ? 140 : card.tier === 2 ? 70 : 0;
+      const healAmount = card.tier === 3 ? 90 : card.tier === 2 ? 45 : 20;
+      if (shieldAmount > 0) setFoodShieldHp((prev) => prev + shieldAmount);
+      if (healAmount > 0) {
+        heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healAmount);
+        setHeroHp(heroHpRef.current);
+        spawnFloating(`+${healAmount} PV`, false, true, card.tier, false, undefined, 'radiant', 'LUZ SAGRADA', '#10b981');
+      }
+      setHeroConditions((prev) => {
+        let updated = stackGachaEffect(prev, 'atk_buff', card.tier >= 3 ? 3 : 2, card.tier, 3, 'Luz Divina').updatedEffects;
+        updated = stackGachaEffect(updated, 'def_buff', card.tier >= 3 ? 3 : 2, card.tier, 3, 'Baluarte Sagrado').updatedEffects;
+        if (card.tier >= 2) {
+          updated = stackGachaEffect(updated, 'haste', card.tier >= 3 ? 3 : 2, 1, 3, 'Celeridad Divina').updatedEffects;
+        }
+        if (card.tier >= 3) {
+          updated = updated.filter((c) => c.isBuff);
+        }
+        return updated;
+      });
+      spawnFloating(
+        shieldAmount > 0 ? `✨ +${shieldAmount} BARRERA DIVINA` : '✨ ¡LUZ DIVINA (+ATK / +DEF)!',
+        false,
+        true,
+        card.tier,
+        false,
+        undefined,
+        'radiant',
+        'BENDICIÓN',
+        '#facc15'
+      );
+      queueStatusNotification({
+        icon: '✨',
+        title: 'Luz Divina',
+        detail: `Chispo baña de luz divina al grupo: +${card.tier * 20}% DEF, +${card.tier * 25}% ATK${shieldAmount > 0 ? ` y barrera de ${shieldAmount} PV` : ''}.`,
+        target: 'hero',
+        isBuff: true,
+      });
+    } else if (card.skillId === 'chispo_castigo_divino') {
+      // Chispo Castigo Divino: daño radiante masivo + roba un orbe de ulti
+      sound.playSFX('laser');
+      sound.playSFX('critical');
+      const orbsStolen = card.tier === 3 ? 2 : 1;
+      setActiveEnemies((prev) =>
+        prev.map((e) =>
+          e.uid === targetEnemy?.uid
+            ? { ...e, ultimateOrbs: Math.max(0, e.ultimateOrbs - orbsStolen) }
+            : e
+        )
+      );
+      addUltimateOrb(orbsStolen);
+      spawnFloating(`⚡ ¡ROBA ${orbsStolen} ORBE${orbsStolen > 1 ? 'S' : ''} DE ULTI!`, false, true, card.tier, false, undefined, 'radiant', 'CASTIGO DIVINO', '#facc15');
+      queueStatusNotification({
+        icon: '⚡',
+        title: '¡Castigo Divino!',
+        detail: `¡Chispo descarga un martillazo celestial que inflige daño radiante y roba ${orbsStolen} orbe${orbsStolen > 1 ? 's' : ''} de definitiva!`,
+        target: 'enemy',
+        isBuff: false,
+      });
+    } else if (card.skillId === 'chispo_martillo') {
+      // Chispo Golpe de Martillo
+      sound.playSFX('attack');
+      if (card.tier >= 2) {
+        sound.playSFX('critical');
+      }
+      queueStatusNotification({
+        icon: '🔨',
+        title: 'Golpe de Martillo',
+        detail: `Chispo arremete con su pesado martillo de guerra forjado en oro aplastando al enemigo.`,
+        target: 'enemy',
+        isBuff: false,
+      });
+    } else if (card.skillId === 'chispo_alas') {
+      // Chispo Égida Alada (Legacy fallback)
+      sound.playSFX('powerup');
+      const shieldAmount = card.tier === 3 ? 120 : card.tier === 2 ? 60 : 0;
+      const healAmount = card.tier === 3 ? 50 : card.tier === 2 ? 25 : 0;
+      if (shieldAmount > 0) setFoodShieldHp((prev) => prev + shieldAmount);
+      if (healAmount > 0) {
+        heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healAmount);
+        setHeroHp(heroHpRef.current);
+        spawnFloating(`+${healAmount} PV`, false, true, card.tier, false, undefined, 'radiant', 'SANACIÓN', '#10b981');
+      }
+      setHeroConditions((prev) => {
+        let updated = stackGachaEffect(prev, 'atk_buff', card.tier >= 3 ? 3 : 2, card.tier, 3, 'Égida Alada').updatedEffects;
+        updated = stackGachaEffect(updated, 'haste', card.tier >= 3 ? 3 : 2, card.tier, 3, 'Celeridad Alada').updatedEffects;
+        if (card.tier >= 3) {
+          updated = updated.filter((c) => c.isBuff);
+        }
+        return updated;
+      });
+      spawnFloating(shieldAmount > 0 ? `🛡️ +${shieldAmount} BARRERA ALADA` : '🪶 ¡CELERIDAD ALADA!', false, true, card.tier, false, undefined, 'force', 'ÉGIDA', '#facc15');
+      queueStatusNotification({
+        icon: '🪶',
+        title: 'Égida Alada',
+        detail: `Chispo despliega sus alas doradas: +${card.tier * 25}% ATK, celeridad${shieldAmount > 0 ? ` y barrera de ${shieldAmount} PV` : ''}.`,
+        target: 'hero',
+        isBuff: true,
+      });
+    } else if (card.skillId === 'chispo_truco') {
+      // Chispo Truco Explosivo (Legacy fallback)
+      sound.playSFX('laser');
+      if (card.tier >= 2) {
+        sound.playSFX('critical');
+      }
+      queueStatusNotification({
+        icon: '💥',
+        title: '¡Truco Explosivo!',
+        detail: `Chispo lanza un arsenal pirotécnico desorientando al rival${card.tier === 3 ? ' con aturdimiento total' : ''}.`,
+        target: 'enemy',
+        isBuff: false,
+      });
+    } else if (card.skillId === 'giovani_treta') {
+      // Giovani Treta del Bribón: robo de concentración, ilusión y cartas
+      sound.playSFX('powerup');
+      if (card.tier === 3) {
+        addUltimateOrb(1);
+        spawnFloating('⚡ +1 ORBE DEFINITIVA', false, true, 3, false, undefined, 'necrotic', 'ROBO ARCANO', '#a855f7');
+      }
+      if (card.tier >= 2) {
+        heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + 20);
+        setHeroHp(heroHpRef.current);
+        spawnFloating('+20 PV', false, true, card.tier, false, undefined, 'radiant', 'ESCAMOTEO', '#10b981');
+      }
+      setHeroConditions((prev) => {
+        let updated = stackGachaEffect(prev, 'atk_buff', 2, card.tier, 3, 'Treta del Bribón').updatedEffects;
+        if (card.tier >= 2) {
+          updated = stackGachaEffect(updated, 'haste', 2, card.tier, 3, 'Reflejos Rapaces').updatedEffects;
+        }
+        return updated;
+      });
+      queueStatusNotification({
+        icon: '🃏',
+        title: 'Treta del Bribón',
+        detail: `Giovani ejecuta un juego de manos sombrío, potenciando su ataque y confundiendo al rival.`,
+        target: 'hero',
+        isBuff: true,
+      });
+    } else if (card.skillId === 'giovani_tomo') {
+      // Giovani Cántico del Tomo: drena salud
+      sound.playSFX('powerup');
+      const drainAmount = card.tier === 3 ? 50 : card.tier === 2 ? 25 : 0;
+      if (drainAmount > 0) {
+        heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + drainAmount);
+        setHeroHp(heroHpRef.current);
+        spawnFloating(`+${drainAmount} PV DRENADOS`, false, true, card.tier, false, undefined, 'necrotic', 'DRENAJE VITAL', '#a855f7');
+      }
+      queueStatusNotification({
+        icon: '📖',
+        title: 'Pacto del Tomo Violeta',
+        detail: `Giovani canaliza las páginas del grimorio ancestral con fuego umbrío${drainAmount > 0 ? ` y absorbe ${drainAmount} PV` : ''}.`,
+        target: 'hero',
+        isBuff: true,
+      });
+    } else if (card.skillId === 'prometeo_espada_verde') {
+      // Prometeo Espada de Fuego Verde: tajo con fuego esmeralda y rito de sangre
+      sound.playSFX('attack');
+      if (card.tier >= 2) sound.playSFX('critical');
+      queueStatusNotification({
+        icon: '🗡️',
+        title: 'Espada de Fuego Verde',
+        detail: `Prometeo propina un tajo con su hoja en llamas esmeralda (Corte & Fuego) provocando heridas sangrantes.`,
+        target: 'enemy',
+        isBuff: false,
+      });
+    } else if (card.skillId === 'prometeo_bola_fuego') {
+      // Prometeo Bola de Fuego: conflagración masiva
+      sound.playSFX('laser');
+      sound.playSFX('critical');
+      queueStatusNotification({
+        icon: '💥',
+        title: '¡Bola de Fuego!',
+        detail: `Una gigantesca esfera de magma ígneo estalla envolviendo al objetivo en conflagración abrasadora.`,
+        target: 'enemy',
+        isBuff: false,
+      });
+    } else if (card.skillId === 'prometeo_fire_bolt') {
+      // Prometeo Fire Bolt: saeta veloz de alta temperatura
+      sound.playSFX('laser');
+      if (card.tier >= 2) sound.playSFX('critical');
+      queueStatusNotification({
+        icon: '🔥',
+        title: 'Fire Bolt',
+        detail: `Prometeo dispara una saeta penetrante de fuego primordial que quema las defensas rivales.`,
+        target: 'enemy',
+        isBuff: false,
+      });
+    } else if (card.skillId === 'smurph_aterrizaje_heroico') {
+      // Smurph Draco: Vuelo Dracónico y Aterrizaje Heroico
+      sound.playSFX('powerup');
+      setIsSmurphAirborne(true);
+      const landingDmg = card.tier === 3 ? 125 : card.tier === 2 ? 74 : 38;
+      setPendingLandingData({
+        damage: landingDmg,
+        tier: card.tier,
+        targetEnemyUid: targetEnemy?.uid,
+      });
+      spawnFloating('🦅 ¡VUELO DRACÓNICO!', false, true, card.tier, false, undefined, 'force', 'INVISIBILIDAD Y VUELO', '#38bdf8');
+      queueStatusNotification({
+        icon: '🦅',
+        title: 'Vuelo Dracónico Iniciado',
+        detail: 'Smurph Draco bate sus alas y asciende a los cielos haciéndose invisible durante 1 turno. Al finalizar el turno, ¡caerá en picado con un aterrizaje superheroico contra el suelo!',
+        target: 'hero',
+        isBuff: true,
+      });
+    } else if (card.skillId === 'smurph_bolas_fuego') {
+      // Smurph Draco: Bolas de Fuego Dracónicas
+      sound.playSFX('laser');
+      if (card.tier >= 2) sound.playSFX('critical');
+      queueStatusNotification({
+        icon: '🔥',
+        title: 'Bolas de Fuego Dracónicas',
+        detail: 'Smurph Draco conjura una andanada de esferas magmáticas que bombardean al guardia en llamas vivas.',
+        target: 'enemy',
+        isBuff: false,
+      });
+    } else if (card.skillId === 'smurph_aliento_rayo') {
+      // Smurph Draco: Aliento de Rayo Dracónico
+      sound.playSFX('laser');
+      sound.playSFX('critical');
+      queueStatusNotification({
+        icon: '⚡',
+        title: 'Aliento de Rayo Dracónico',
+        detail: 'Smurph Draco abre sus fauces y exhala un rayo eléctrico concentrado devastador que sacude al guardia.',
+        target: 'enemy',
+        isBuff: false,
+      });
+    } else if (card.skillId === 'ragnavaldr_furia') {
+      // Ragnavaldr Furia Druídica: entra en furia otorgando bufos de daño y resistencia a todos los héroes
+      sound.playSFX('powerup');
+      sound.playSFX('critical');
+      const atkStacks = card.tier;
+      const defStacks = card.tier;
+      const duration = card.tier >= 3 ? 3 : 2;
+      setHeroConditions((prev) => {
+        let updated = stackGachaEffect(prev, 'atk_buff', duration, atkStacks, 3, 'Furia Bárbara').updatedEffects;
+        updated = stackGachaEffect(updated, 'def_buff', duration, defStacks, 3, 'Resistencia Druídica').updatedEffects;
+        return updated;
+      });
+      spawnFloating('🔥 ¡FURIA DRUÍDICA!', false, true, card.tier, false, undefined, 'force', 'FRENESÍ COLECTIVO', '#ef4444');
+      spawnFloating(`🛡️ +${card.tier * 20}% RESISTENCIA`, false, true, card.tier, false, undefined, 'force', 'PIEL DE PIEDRA', '#38bdf8');
+      queueStatusNotification({
+        icon: '🔥',
+        title: '¡Furia Druídica Primordial!',
+        detail: `¡Ragnavaldr desata su furia bárbara! Otorga +${card.tier * 25}% DAÑO y +${card.tier * 20}% RESISTENCIA a todos los héroes durante ${duration} turnos.`,
+        target: 'hero',
+        isBuff: true,
+      });
+    } else if (card.skillId === 'ragnavaldr_cuchillo_hielo') {
+      // Ragnavaldr Cuchillo de Hielo: crea un cuchillo de hielo que cae desde el cielo y congela al enemigo
+      // Tier 1: solo daño. Tier 2: pierde 1 turno. Tier 3: pierde 2 turnos.
+      sound.playSFX('laser');
+      if (card.tier >= 2) sound.playSFX('critical');
+      const turnsLost = card.tier === 3 ? 2 : card.tier === 2 ? 1 : 0;
+      if (turnsLost > 0) {
+        queueStatusNotification({
+          icon: '🧊',
+          title: '¡Cuchillo de Hielo Glacial!',
+          detail: `¡Una descomunal daga de hielo cae desde el cielo! Congela al enemigo y le hace perder ${turnsLost} turno${turnsLost > 1 ? 's' : ''}.`,
+          target: 'enemy',
+          isBuff: false,
+        });
+      } else {
+        queueStatusNotification({
+          icon: '❄️',
+          title: 'Cuchillo de Hielo',
+          detail: 'Un afilado cuchillo de hielo cae desde el cielo e inflige daño gélido directo.',
+          target: 'enemy',
+          isBuff: false,
+        });
+      }
+    } else if (card.skillId === 'ragnavaldr_doble_lanza') {
+      // Ragnavaldr Estocada de Lanzas Gemelas: carga frontal con ambas lanzas empalando al enemigo
+      sound.playSFX('attack');
+      if (card.tier >= 2) sound.playSFX('critical');
+      queueStatusNotification({
+        icon: '🔱',
+        title: 'Estocada de Lanzas Gemelas',
+        detail: 'Ragnavaldr carga con sus dos lanzas empalando al enemigo con daño perforante.',
+        target: 'enemy',
+        isBuff: false,
+      });
     }
 
-    // 1. CARD DISAPPEARS IMMEDIATELY FROM HAND!
-    setHand((prev) => prev.filter((_, idx) => idx !== cardIndex));
+    // 1. CARD DISAPPEARS IMMEDIATELY FROM HAND (if not already handled by rankup)!
+    if (card.skillId !== 'arlem_rankup' && card.skillId !== 'roxanne_inspiracion') {
+      setHand((prev) => prev.filter((_, idx) => idx !== cardIndex));
+    }
 
     // Ultimate Move Gauge: Consume on ultimate, charge on standard skill
     addUltimateOrb(1);
@@ -6077,13 +8796,42 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
 
       const flashColor = isUltimate
         ? 'gold'
-        : card.skillId === 'dios_oscuro'
+        : card.skillId === 'dios_oscuro' || card.skillId === 'giovani_tomo' || card.skillId === 'giovani_plumas' || card.skillId === 'giovani_treta'
         ? 'purple'
-        : card.skillId === 'fortalecer_marioneta'
+        : card.skillId === 'ragnavaldr_cuchillo_hielo'
+        ? 'cyan'
+        : card.skillId === 'ragnavaldr_furia'
+        ? 'red'
+        : card.skillId === 'prometeo_espada_verde'
+        ? 'green'
+        : card.skillId === 'smurph_bolas_fuego'
+        ? 'red'
+        : card.skillId === 'smurph_aliento_rayo' || card.skillId === 'smurph_aterrizaje_heroico'
+        ? 'cyan'
+        : card.skillId === 'fortalecer_marioneta' ||
+          card.skillId === 'chispo_luz_divina' ||
+          card.skillId === 'chispo_castigo_divino' ||
+          card.skillId === 'chispo_martillo' ||
+          card.skillId === 'chispo_alas' ||
+          card.skillId === 'chispo_truco'
         ? 'gold'
         : 'cyan';
       setScreenFlash(flashColor);
       setTimeout(() => setScreenFlash(null), isUltimate ? 350 : card.tier === 3 ? 240 : 180);
+
+      // Smurph Draco superhero landing takes off into the skies; landing impact executes at end of enemy phase!
+      if (card.skillId === 'smurph_aterrizaje_heroico') {
+        setTimeout(() => {
+          setActiveVfx({ type: 'none', tier: 1 });
+          setHeroCastSkill(null);
+          setHeroAnimation('idle');
+          setBattleState('enemy_acting');
+          setTimeout(() => {
+            executeEnemyTurn();
+          }, 350);
+        }, 350);
+        return;
+      }
 
       // --- GACHA DAMAGE FORMULA ---
       let baseDmg = tierInfo.damage;
@@ -6165,6 +8913,27 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
         setEnemyConditions((prev) =>
           stackGachaEffect(prev, 'def_break', 2, 1, 1, 'Kebab Táctico').updatedEffects
         );
+      }
+
+      // Prometeo Blood Hunter Passive: +10% de daño si el objetivo tiene sangre (bleed / hemorragia / desangrado)
+      const enemyHasBlood = target.conditions.some(
+        (c) =>
+          c.type === 'bleed' ||
+          c.name?.toLowerCase().includes('sangr') ||
+          c.name?.toLowerCase().includes('hemorrag') ||
+          c.name?.toLowerCase().includes('desangrad')
+      );
+      if (isPrometeoCombat && enemyHasBlood) {
+        const bloodHunterBonus = Math.max(1, Math.round(baseDmg * 0.10));
+        baseDmg += bloodHunterBonus;
+        spawnFloating(`🩸 +${bloodHunterBonus} (SED DE SANGRE +10%)`, false, true, card.tier, false, undefined, 'necrotic', 'BLOOD HUNTER', '#ef4444');
+        queueStatusNotification({
+          icon: '🩸',
+          title: 'Pasiva: Cazador de Sangre',
+          detail: `¡El objetivo sangra! Prometeo aprovecha la sangre derramada para infligir +10% de daño (+${bloodHunterBonus} DMG).`,
+          target: 'hero',
+          isBuff: true,
+        });
       }
 
       // --- D&D 5E GACHA DAMAGE & MECHANIC EXECUTION ---
@@ -6344,7 +9113,46 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
       const allEffectsToApply = [...baseEffects, ...extraEffects];
 
       const targetUid = target.uid;
-      const targetNextHp = Math.max(0, target.hp - finalCalculatedDamage);
+      let targetNextHp = Math.max(0, target.hp - finalCalculatedDamage);
+      let targetHobPhase = target.hobgoblinPhase || 1;
+      let targetSpriteUrl = target.spriteUrl;
+      let targetAttackSpriteUrl = target.attackSpriteUrl;
+      let targetHurtSpriteUrl = target.hurtSpriteUrl;
+      let targetThumbUrl = target.thumbUrl;
+      let targetTitle = target.title;
+
+      if (target.configId === 'hobgoblin_capataz') {
+        const hobRes = calculateHobgoblinDamage(target.hp, finalCalculatedDamage, target.hobgoblinPhase || 1);
+        targetNextHp = hobRes.nextHp;
+        if (hobRes.phaseChanged) {
+          targetHobPhase = hobRes.nextPhase;
+          const sp = HOBGOBLIN_SKILLS_BY_PHASE[targetHobPhase];
+          targetSpriteUrl = sp.idleSprite;
+          targetAttackSpriteUrl = sp.attackSprite;
+          targetHurtSpriteUrl = sp.hurtSprite;
+          targetThumbUrl = sp.idleSprite;
+          targetTitle = sp.title;
+
+          sound.playSFX(targetHobPhase === 2 ? 'powerup' : 'critical');
+          setScreenShake('heavy');
+          setTurnSkippedBanner(
+            targetHobPhase === 2
+              ? '💣 ¡¡FASE 2!! ¡EL HOGGOBLIN DESENFUNDA SUS GRANADAS ALQUÍMICAS!'
+              : '💥 ¡¡FASE 3!! ¡EL HOGGOBLIN CARGA SU TRABUCO DE FUEGO IMPERIAL!'
+          );
+          setTimeout(() => setTurnSkippedBanner(null), 3000);
+          queueStatusNotification({
+            icon: targetHobPhase === 2 ? '💣' : '💥',
+            title: targetHobPhase === 2 ? '¡Fase 2: Granadas!' : '¡Fase 3: Trabuco!',
+            detail: targetHobPhase === 2
+              ? '¡El Hoggoblin enfurecido equipa bombas alquímicas incendiarias!'
+              : '¡El Hoggoblin desenfunda su arma de fuego reglamentaria imperial!',
+            target: 'enemy',
+            isBuff: true,
+          });
+        }
+      }
+
       const isTargetDying = targetNextHp <= 0;
 
       // Check if all enemies in the chamber will be defeated after this blow
@@ -6356,7 +9164,17 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
       // Update activeEnemiesRef immediately to prevent race conditions
       activeEnemiesRef.current = activeEnemiesRef.current.map((e) =>
         e.uid === targetUid
-          ? { ...e, hp: targetNextHp, isAshDissolving: isTargetDying }
+          ? {
+              ...e,
+              hp: targetNextHp,
+              hobgoblinPhase: targetHobPhase,
+              spriteUrl: targetSpriteUrl,
+              attackSpriteUrl: targetAttackSpriteUrl,
+              hurtSpriteUrl: targetHurtSpriteUrl,
+              thumbUrl: targetThumbUrl,
+              title: targetTitle,
+              isAshDissolving: isTargetDying,
+            }
           : e
       );
 
@@ -6380,6 +9198,12 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
             return {
               ...e,
               hp: targetNextHp,
+              hobgoblinPhase: targetHobPhase,
+              spriteUrl: targetSpriteUrl,
+              attackSpriteUrl: targetAttackSpriteUrl,
+              hurtSpriteUrl: targetHurtSpriteUrl,
+              thumbUrl: targetThumbUrl,
+              title: targetTitle,
               conditions: updatedConds,
               isAshDissolving: isTargetDying,
             };
@@ -6478,6 +9302,69 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
       cardFrom.skillId === cardTo.skillId &&
       cardFrom.tier === cardTo.tier &&
       cardFrom.tier < 3;
+
+    // Comprobar si es Inspiración Bárdica de Roxanne soltada sobre una carta específica para seleccionarla y subirla de rango
+    if (cardFrom.skillId === 'roxanne_inspiracion' && fromIdx !== toIdx) {
+      sound.playSFX('upgrade');
+      addUltimateOrb(1);
+      const numCardsToUpgrade = cardFrom.tier === 3 ? 4 : cardFrom.tier === 2 ? 2 : 1;
+      const targetSlotAfterSplice = toIdx > fromIdx ? toIdx - 1 : toIdx;
+      
+      setHand((prev) => {
+        const remaining = prev.filter((_, idx) => idx !== fromIdx);
+        let upgradedCount = 0;
+        // 1. Upgrade the specifically targeted card first
+        const next = remaining.map((c, idx) => {
+          if (idx === targetSlotAfterSplice && c.tier < 3 && upgradedCount < numCardsToUpgrade) {
+            upgradedCount++;
+            return {
+              ...c,
+              tier: (Math.min(3, c.tier + 1) as 1 | 2 | 3),
+            };
+          }
+          return c;
+        });
+        // 2. If tier 2 or 3, upgrade additional cards in hand as well
+        if (upgradedCount < numCardsToUpgrade) {
+          return next.map((c, idx) => {
+            if (idx !== targetSlotAfterSplice && c.tier < 3 && upgradedCount < numCardsToUpgrade) {
+              upgradedCount++;
+              return {
+                ...c,
+                tier: (Math.min(3, c.tier + 1) as 1 | 2 | 3),
+              };
+            }
+            return c;
+          });
+        }
+        return next;
+      });
+      spawnFloating(
+        `🎶 ¡CARTA SELECCIONADA SUBE DE RANGO!`,
+        false,
+        true,
+        cardFrom.tier,
+        false,
+        undefined,
+        'force',
+        'RANK UP',
+        '#ec4899'
+      );
+      queueStatusNotification({
+        icon: '🎶',
+        title: 'Inspiración Bárdica',
+        detail: `¡Roxanne selecciona la carta y asciende su rango (+${numCardsToUpgrade} carta${numCardsToUpgrade > 1 ? 's' : ''})!`,
+        target: 'hero',
+        isBuff: true,
+      });
+
+      // CONSUMO DE TURNO
+      setTimeout(() => {
+        setBattleState('enemy_acting');
+        executeEnemyTurn();
+      }, 500);
+      return;
+    }
 
     if (isRankUpMerge) {
       // 1. COMBINACIÓN DE RANGO (RANK UP MERGE)
@@ -7585,6 +10472,24 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
                   </div>
                 </div>
               )}
+
+              {targetEnemy.configId === 'hobgoblin_capataz' && (
+                <div className="flex items-center gap-1.5">
+                  <div className={`px-2 py-0.5 rounded text-[10px] font-black tracking-wider uppercase border shadow-md ${
+                    (targetEnemy.hobgoblinPhase || 1) === 1
+                      ? 'bg-amber-950/90 text-amber-300 border-amber-500/80 shadow-[0_0_10px_rgba(245,158,11,0.5)]'
+                      : (targetEnemy.hobgoblinPhase || 1) === 2
+                      ? 'bg-orange-950/90 text-orange-300 border-orange-500/80 shadow-[0_0_10px_rgba(249,115,22,0.6)] animate-pulse'
+                      : 'bg-rose-950/90 text-rose-300 border-rose-500/80 shadow-[0_0_12px_rgba(244,63,94,0.7)] animate-pulse'
+                  }`}>
+                    {(targetEnemy.hobgoblinPhase || 1) === 1
+                      ? '⚔️ FASE 1/3 • CUERPO A CUERPO'
+                      : (targetEnemy.hobgoblinPhase || 1) === 2
+                      ? '💣 FASE 2/3 • GRANADAS ALQUÍMICAS'
+                      : '💥 FASE 3/3 • ARMA DE FUEGO'}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Clean Boss Health Bar without text overlay */}
@@ -7599,6 +10504,12 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
                 >
                   <div className="absolute top-0 left-0 right-0 h-[45%] bg-gradient-to-b from-white/45 to-transparent pointer-events-none" />
                   <div className="absolute bottom-0 left-0 right-0 h-[25%] bg-black/25 pointer-events-none" />
+                  {targetEnemy.configId === 'hobgoblin_capataz' && (
+                    <>
+                      <div className="absolute top-0 bottom-0 left-[33.33%] w-0.5 bg-yellow-300/80 shadow-[0_0_4px_#fbbf24] z-20 pointer-events-none" />
+                      <div className="absolute top-0 bottom-0 left-[66.66%] w-0.5 bg-yellow-300/80 shadow-[0_0_4px_#fbbf24] z-20 pointer-events-none" />
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -7641,7 +10552,7 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
         {/* Arena Cave / Mansion / Forest / Sealed Gates / Bandits Ambush Background */}
         <img
           src={
-            selectedCombatMissionId === 'm9_emboscada_ferton'
+            selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm9_emboscada_ferton'
               ? '/assets/backgrounds/camino_bosque_carromatos.png'
               : selectedCombatMissionId === 'm5_cuevas_zancudo'
               ? '/assets/backgrounds/mina_underdark_telaranas.png'
@@ -7662,7 +10573,9 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
               : '/assets/aistudio/image_4daa80e0.png'
           }
           alt={
-            selectedCombatMissionId === 'm9_emboscada_ferton'
+            selectedCombatMissionId === 'm10_hobgoblin_boss'
+              ? 'Confrontación con el Capataz Hoggoblin de Ferton'
+              : selectedCombatMissionId === 'm9_emboscada_ferton'
               ? 'Paso Nevado con Carromatos y Guardia Negra de Ferton'
               : selectedCombatMissionId === 'm5_cuevas_zancudo'
               ? 'Mina Enana en Ruinas con Telarañas en el Underdark'
@@ -7812,6 +10725,8 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
                 ? 'bg-gradient-to-r from-purple-500/35 via-white/45 to-purple-500/35'
                 : screenFlash === 'red'
                 ? 'bg-gradient-to-r from-red-600/40 via-red-500/30 to-red-600/40'
+                : screenFlash === 'green'
+                ? 'bg-gradient-to-r from-emerald-500/40 via-lime-300/40 to-emerald-500/40'
                 : 'bg-gradient-to-r from-amber-300/35 via-white/45 to-amber-300/35'
             }`}
             style={{ mixBlendMode: 'screen' }}
@@ -7866,13 +10781,17 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
           </div>
         ))}
 
-        {/* HERO: MAGORDITO (Scaled down 25% and pushed left for increased separation, moved 5% upwards) */}
+        {/* HERO: MAGORDITO / SMURPH DRACO (Scaled down 25% and pushed left for increased separation, moved 5% upwards) */}
         <div
           key="hero-sprite-wrapper"
           style={{
             bottom: 'calc(5% + 4px)',
             transform:
-              heroAnimation === 'lunge'
+              isSmurphAirborne
+                ? 'translateY(-340px) scale(0.85)'
+                : isSmurphLandingAction
+                ? 'translateY(0px) scale(1.15)'
+                : heroAnimation === 'lunge'
                 ? 'translateX(35px) scale(1.04)'
                 : undefined,
           }}
@@ -7884,23 +10803,46 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
               : 'filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]'
           }`}
         >
-          {/* Authentic Shadow sprite anchored in the exact middle of Magordito's feet contact plane */}
+          {/* Authentic Shadow sprite anchored in the exact middle of feet contact plane */}
           <img
             src="/assets/aistudio/sombra_6ce1cba3.png"
             alt="Sombra"
-            className={`absolute -bottom-[10px] left-1/2 transform -translate-x-1/2 w-[142px] h-[20px] object-fill pointer-events-none z-0 transition-opacity duration-1000 ${
-              isHeroAshDissolving ? 'opacity-0' : 'opacity-50'
+            className={`absolute -bottom-[10px] left-1/2 transform -translate-x-1/2 w-[142px] h-[20px] object-fill pointer-events-none z-0 transition-all duration-500 ${
+              isHeroAshDissolving ? 'opacity-0' : isSmurphAirborne ? 'opacity-15 scale-50' : 'opacity-50'
             }`}
           />
 
-          {/* Magordito Sprite (Transparent Background, Dynamic Pose Changes, Stably Mounted) */}
+          {/* Smurph Draco Superhero Landing Crater Ring Effect */}
+          {isSmurphLandingAction && (
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 pointer-events-none z-30 w-44 h-16 rounded-full border-4 border-cyan-400 bg-cyan-500/30 blur-[1px] animate-ping" />
+          )}
+
+          {/* Hero Sprite (Transparent Background, Dynamic Pose Changes, Stably Mounted) */}
           <div className="relative w-full h-full flex items-end justify-center">
             {/* Authentic Ash/Ember Dissolution Effect when defeated */}
             <AshDisintegrationEffect active={isHeroAshDissolving} width={149} height={256} />
+
+            {/* Ragnavaldr Furia Druídica: Aura Ígnea y Fervor Bárbara */}
+            {(heroCastSkill === 'ragnavaldr_furia' || heroConditions.some((c) => c.name?.includes('Furia'))) && (
+              <div className="absolute inset-[-14%] pointer-events-none z-0 rounded-full bg-gradient-to-t from-red-600/40 via-amber-500/25 to-transparent blur-md animate-pulse" />
+            )}
+
+            {/* Smurph Draco Airborne / Invisible Indicator */}
+            {isSmurphAirborne && (
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none z-30 flex flex-col items-center whitespace-nowrap animate-pulse">
+                <span className="px-2 py-0.5 rounded-full bg-cyan-950/90 border border-cyan-400 text-cyan-300 font-black text-[9px] tracking-wider uppercase shadow-[0_0_12px_#38bdf8] flex items-center gap-1">
+                  🌪️ EN VUELO • INVISIBLE
+                </span>
+                <span className="text-[7.5px] text-cyan-200/90 font-mono drop-shadow bg-black/75 px-1 rounded mt-0.5">
+                  Inmune a ataques este turno
+                </span>
+              </div>
+            )}
+
             <img
               key="hero-sprite-img"
               src={getHeroSpriteUrl()}
-              alt={isEdacornCombat ? 'Edacorn' : 'Magordito'}
+              alt={getHeroName()}
               className={`relative h-full w-auto shrink-0 max-w-none max-h-[256px] object-contain pointer-events-none z-10 transition-all duration-300 ${
                 isHeroAshDissolving
                   ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
@@ -7910,6 +10852,12 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
               } ${
                 isEdacornStealthed
                   ? 'opacity-35 drop-shadow-[0_0_24px_rgba(16,185,129,0.95)] filter saturate-150 brightness-110'
+                  : ''
+              } ${
+                isSmurphAirborne
+                  ? 'opacity-35 filter blur-[0.5px] drop-shadow-[0_0_24px_rgba(56,189,248,0.9)]'
+                  : isSmurphLandingAction
+                  ? 'filter drop-shadow-[0_0_35px_rgba(56,189,248,1)] brightness-125'
                   : ''
               }`}
             />
@@ -8063,6 +11011,28 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
                           : ''
                       }`}
                     />
+                  </span>
+                </div>
+              )}
+
+              {/* Ragnavaldr Cuchillo de Hielo: Daga Glacial que cae desde el cielo sobre el enemigo */}
+              {heroCastSkill === 'ragnavaldr_cuchillo_hielo' && (
+                <div className="absolute -top-32 left-1/2 -translate-x-1/2 pointer-events-none z-50 flex flex-col items-center animate-[iceDaggerFall_0.45s_cubic-bezier(0.25,1,0.5,1)_forwards]">
+                  <img
+                    src="/assets/skills/ragnavaldr_cuchillo_hielo.png"
+                    alt="Cuchillo de Hielo"
+                    className="w-24 h-24 object-contain filter drop-shadow-[0_0_25px_#38bdf8] rotate-[135deg]"
+                  />
+                  <div className="w-16 h-16 rounded-full bg-cyan-400/50 blur-lg -mt-10" />
+                </div>
+              )}
+
+              {/* Congelación Glacial: Bloque de hielo puro cuando el enemigo está congelado (Pierde turnos) */}
+              {targetEnemy.conditions.some((c) => c.type === 'frozen') && (
+                <div className="absolute inset-[-10%] pointer-events-none z-30 rounded-2xl bg-cyan-400/25 border-2 border-cyan-200 shadow-[0_0_28px_rgba(56,189,248,0.75)] backdrop-blur-[1px] animate-pulse flex flex-col items-center justify-center">
+                  <span className="text-3xl select-none filter drop-shadow-[0_0_12px_#38bdf8]">🧊</span>
+                  <span className="text-[9px] font-black uppercase tracking-wider text-cyan-200 bg-slate-950/85 px-2.5 py-0.5 rounded-full border border-cyan-300 shadow-md mt-1 font-mono">
+                    CONGELADO
                   </span>
                 </div>
               )}
@@ -8287,8 +11257,8 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
                       <div className="relative w-40 h-40 flex items-center justify-center">
                         <div className="absolute inset-0 rounded-full bg-yellow-400/30 blur-xl animate-pulse" />
                         <img
-                          src="/assets/aistudio/splashart_magordito_c1637d56.png"
-                          alt="Magordito"
+                          src={getHeroSplashartUrl()}
+                          alt={getHeroName()}
                           className="relative w-full h-full object-contain filter drop-shadow-[0_0_20px_#f59e0b] scale-125"
                         />
                         {/* Eye Lens Flare */}
@@ -8517,15 +11487,83 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
           </div>
         )}
 
+        {/* Party Switcher: Quick swap between party heroes */}
+        <div className="absolute -top-7 left-3 flex items-center gap-1.5 z-40 bg-stone-950/85 px-2.5 py-1 rounded-full border border-amber-600/40 shadow-xl backdrop-blur-xs">
+          <span className="text-[9px] font-black tracking-wider text-amber-300 uppercase mr-0.5">Héroe:</span>
+          {partyHeroesList.map((heroId) => {
+            const isActive =
+              activeCombatHeroId === heroId ||
+              (heroId === 'smurph' && activeCombatHeroId === 'smurph_draco') ||
+              (heroId === 'smurph_draco' && activeCombatHeroId === 'smurph') ||
+              (heroId === 'arlem' && activeCombatHeroId === 'arlem_diaz') ||
+              (heroId === 'arlem_diaz' && activeCombatHeroId === 'arlem');
+            const heroPortrait =
+              heroId === 'smurph_draco' || heroId === 'smurph'
+                ? '/assets/portraits/smurph_draco.png'
+                : heroId === 'roxanne'
+                ? '/assets/portraits/roxanne.png'
+                : heroId === 'ragnavaldr'
+                ? '/assets/portraits/ragnavaldr.png'
+                : heroId === 'kairon'
+                ? '/assets/portraits/kairon.png'
+                : heroId === 'chispo_deez' || heroId === 'chispo'
+                ? '/assets/portraits/chispo_deez_icono.png'
+                : heroId === 'giovani' || heroId === 'giovani_vazquez'
+                ? '/assets/portraits/giovani_vazquez_icono.png'
+                : heroId === 'prometeo'
+                ? '/assets/portraits/prometeo.png'
+                : heroId === 'pepe_loux'
+                ? '/assets/portraits/pepe_loux.png'
+                : heroId === 'arlem' || heroId === 'arlem_diaz'
+                ? '/assets/portraits/arlem_diaz_icono.png'
+                : heroId === 'edacorn'
+                ? '/assets/portraits/edacorn_icono.png'
+                : '/assets/portraits/magordito.png';
+            const heroLabel =
+              heroId === 'smurph_draco' || heroId === 'smurph'
+                ? 'Smurph Draco'
+                : heroId === 'roxanne'
+                ? 'Roxanne'
+                : heroId === 'ragnavaldr'
+                ? 'Ragnavaldr'
+                : heroId === 'kairon'
+                ? 'Kairon'
+                : heroId === 'chispo_deez' || heroId === 'chispo'
+                ? 'Chispo Deez'
+                : heroId === 'giovani' || heroId === 'giovani_vazquez'
+                ? 'Giovani Vázquez'
+                : heroId === 'prometeo'
+                ? 'Prometeo'
+                : heroId === 'pepe_loux'
+                ? 'Pepe Loux'
+                : heroId === 'arlem' || heroId === 'arlem_diaz'
+                ? 'Arlem Díaz'
+                : heroId === 'edacorn'
+                ? 'Edacorn'
+                : 'Magordito';
+            return (
+              <button
+                key={heroId}
+                onClick={() => handleSwitchActiveHero(heroId)}
+                disabled={battleState !== 'idle'}
+                className={`relative w-6 h-6 rounded-full overflow-hidden border-2 transition-all cursor-pointer ${
+                  isActive
+                    ? 'border-yellow-400 scale-120 shadow-[0_0_8px_#facc15]'
+                    : 'border-stone-600 opacity-60 hover:opacity-100 hover:scale-110'
+                }`}
+                title={`Cambiar a ${heroLabel}`}
+              >
+                <img src={heroPortrait} alt={heroLabel} className="w-full h-full object-cover" />
+              </button>
+            );
+          })}
+        </div>
+
         {/* Hero Upper-Body Splashart */}
         <div className="relative -ml-2 -mt-4 w-[96px] h-[96px] shrink-0 z-30 drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] pointer-events-none">
           <img
-            src={
-              isEdacornCombat
-                ? '/assets/portraits/edacorn_alas_thumb.png'
-                : '/assets/aistudio/splashart_magordito_c1637d56.png'
-            }
-            alt={isEdacornCombat ? 'Edacorn Splashart' : 'Magordito Splashart'}
+            src={getHeroSplashartUrl()}
+            alt={getHeroName()}
             className="w-full h-full object-contain object-bottom filter drop-shadow-[0_3px_8px_rgba(0,0,0,0.95)]"
           />
         </div>
@@ -8839,7 +11877,9 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
         <div className="absolute inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="relative w-full max-w-[340px] bg-[#1a0604] border-2 border-red-700 rounded-2xl p-5 shadow-[0_0_30px_rgba(220,38,38,0.6)] flex flex-col items-center text-center animate-in fade-in zoom-in-95">
             <h3 className="text-xl font-serif font-black text-red-400 tracking-wider mb-1">
-              {selectedCombatMissionId === 'm9_emboscada_ferton'
+              {selectedCombatMissionId === 'm10_hobgoblin_boss'
+                ? 'DUELO CONTRA EL CAPATAZ FALLIDO'
+                : selectedCombatMissionId === 'm9_emboscada_ferton'
                 ? 'EMBOSCADA DE FERTON FALLIDA'
                 : selectedCombatMissionId === 'm3_bosque'
                 ? 'EMBOSCADA FALLIDA'
@@ -8848,7 +11888,9 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
                 : 'EXPEDICIÓN FINALIZADA'}
             </h3>
             <p className="text-xs text-stone-300 mb-1">
-              {selectedCombatMissionId === 'm9_emboscada_ferton' ? (
+              {selectedCombatMissionId === 'm10_hobgoblin_boss' ? (
+                <>Has caído ante el Capataz Hoggoblin de Ferton.</>
+              ) : selectedCombatMissionId === 'm9_emboscada_ferton' ? (
                 <>Has caído ante la Guardia Negra de Ferton en la <b className="text-amber-300">Oleada {currentFloor} de 3</b>.</>
               ) : selectedCombatMissionId === 'm3_bosque' ? (
                 <>Has caído ante los goblins en la <b className="text-amber-300">Oleada {currentFloor} de 2</b>.</>
@@ -8858,7 +11900,7 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
                 <>Has caído en combate en la <b className="text-amber-300">Sala {currentFloor}</b>.</>
               )}
             </p>
-            {selectedCombatMissionId !== 'm2_robo' && selectedCombatMissionId !== 'm3_bosque' && selectedCombatMissionId !== 'm9_emboscada_ferton' && (
+            {selectedCombatMissionId !== 'm2_robo' && selectedCombatMissionId !== 'm3_bosque' && selectedCombatMissionId !== 'm9_emboscada_ferton' && selectedCombatMissionId !== 'm10_hobgoblin_boss' && (
               <div className="text-[10px] text-stone-400 font-mono mb-3">
                 Récord alcanzado: <b className="text-amber-400 font-bold">Sala {bestFloor}</b>
               </div>
@@ -8867,7 +11909,9 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
             {/* Accumulated Loot to bank */}
             <div className="w-full bg-black/60 border border-red-950 rounded-xl p-3 mb-4 flex flex-col gap-1.5 text-left">
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 text-center">
-                {selectedCombatMissionId === 'm9_emboscada_ferton'
+                {selectedCombatMissionId === 'm10_hobgoblin_boss'
+                  ? 'Botín del Capataz'
+                  : selectedCombatMissionId === 'm9_emboscada_ferton'
                   ? 'Botín Rescatado del Convoy'
                   : selectedCombatMissionId === 'm3_bosque'
                   ? 'Botín Rescatado del Bosque'
@@ -8894,27 +11938,23 @@ const RETRY_CRYSTAL_COST = 300; // cristales del recuerdo por reintento (el prim
 
             <div className="w-full flex flex-col gap-2">
               <button
-                onClick={handleRetryBattle}
-                disabled={retriesUsed > 0 && summonCrystals < RETRY_CRYSTAL_COST}
-                className={`w-full py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all ${
-                  retriesUsed > 0 && summonCrystals < RETRY_CRYSTAL_COST
-                    ? 'bg-stone-900 text-stone-500 border border-stone-700 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-stone-950 cursor-pointer shadow-lg active:scale-95'
-                }`}
+                onClick={handleRetreatAndClaim}
+                className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-lg"
               >
-                {`Reintentar en la ${retryLabel}${retriesUsed === 0 ? ' · Gratis' : ` · ${RETRY_CRYSTAL_COST} 💎`}`}
+                {selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' || selectedCombatMissionId === 'm10_hobgoblin_boss' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
               </button>
-              {retriesUsed > 0 && summonCrystals < RETRY_CRYSTAL_COST && (
-                <span className="text-[10px] text-red-400 font-bold text-center">
-                  Te faltan {(RETRY_CRYSTAL_COST - summonCrystals).toLocaleString()} cristales del recuerdo
-                </span>
-              )}
 
               <button
-                onClick={handleRetreatAndClaim}
-                className="w-full py-2.5 bg-gradient-to-r from-red-900 via-red-700 to-red-900 hover:from-red-800 hover:to-red-800 text-red-50 border border-red-500/70 font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-lg transition-transform active:scale-95"
+                onClick={handleRestartBattle}
+                className="w-full py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs rounded-xl cursor-pointer"
               >
-                {selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
+                {selectedCombatMissionId === 'm10_hobgoblin_boss'
+                  ? 'Reintentar Duelo contra el Hoggoblin'
+                  : selectedCombatMissionId === 'm9_emboscada_ferton'
+                  ? 'Reintentar Combate de Ferton (Oleada 1)'
+                  : selectedCombatMissionId === 'm2_robo'
+                  ? 'Reintentar Asalto (Oleada 1)'
+                  : 'Reintentar desde Sala 1'}
               </button>
             </div>
           </div>

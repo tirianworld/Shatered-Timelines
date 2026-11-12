@@ -396,113 +396,116 @@
   {
     "id": "roxanne",
     "name": "Roxanne",
-    "title": "Sombra del Bosque Helado",
+    "title": "Barda de la Lira y el Rapier",
     "rarity": "SR",
-    "heroClass": "Cazador",
-    "attribute": "Profano",
+    "heroClass": "Bardo",
+    "attribute": "Arcano",
     "alliance": "Nómadas del Páramo",
     "level": 1,
     "currentXp": 0,
     "xpToNextLevel": 100,
     "stars": 3,
     "stats": {
-      "hp": 880,
-      "maxHp": 880,
-      "attack": 275,
-      "defense": 125,
-      "speed": 135,
-      "critRate": 0.28,
-      "critDamage": 1.85
+      "hp": 940,
+      "maxHp": 940,
+      "attack": 285,
+      "defense": 140,
+      "speed": 138,
+      "critRate": 0.25,
+      "critDamage": 1.80
     },
     "skills": [
       {
-        "id": "rox_s1",
-        "name": "Flecha Envenenada",
-        "description": "Disparo certero que inflige 155% de daño con toxina letal.",
-        "cooldown": 0,
-        "damageMultiplier": 1.55,
-        "targetType": "single_enemy",
-        "effectType": "damage"
+        "id": "roxanne_inspiracion",
+        "name": "Inspiración Bárdica",
+        "description": "Toca un arpegio en su lira que sube de tier una carta al seleccionarla (sube 2 cartas en T2 y 4 en T3).",
+        "cooldown: 0,
+        "damageMultiplier": 1.0,
+        "targetType": "single_ally",
+        "effectType": "buff"
       },
       {
-        "id": "rox_s2",
-        "name": "Tiro Doble",
-        "description": "Lanza dos saetas veloces para 190% de daño total.",
+        "id": "roxanne_velada",
+        "name": "Velada Encantadora",
+        "description": "Hipnotiza con magia rosada a un enemigo durante 1 turno haciendo que se ataque a sí mismo (+10% de su ATK en T2, 2 turnos en T3).",
         "cooldown": 2,
-        "damageMultiplier": 1.9,
+        "damageMultiplier": 1.6,
         "targetType": "single_enemy",
-        "effectType": "damage"
+        "effectType": "debuff"
       },
       {
-        "id": "rox_ult",
-        "name": "Lluvia de Sombras",
-        "description": "Lanza una descarga de proyectiles oscuros contra todos los rivales (200% de daño).",
-        "cooldown": 4,
-        "damageMultiplier": 2,
-        "targetType": "all_enemies",
+        "id": "roxanne_estocada",
+        "name": "Estocada Sonora",
+        "description": "Acometida de esgrima con su rapier imbuido en ondas sónicas rosadas (210% de daño perforante y ruptura de defensa).",
+        "cooldown": 3,
+        "damageMultiplier": 2.1,
+        "targetType": "single_enemy",
         "effectType": "damage"
       }
     ],
     "portrait": "/assets/portraits/roxanne.png",
     "backgroundArt": "/assets/backgrounds/fondo_cartas.png",
-    "quote": "Nunca me verás venir antes de que mi flecha encuentre tu cuello.",
-    "bio": "Cazadora silenciosa que aprendió a rastrear presas en las ventiscas perpetuas del páramo.",
+    "quote": "¡Siente el compás de mi lira y el filo de mi rapier!",
+    "bio": "Virtuosa barda kitsune que combina el encanto hipnótico de su lira dorada con magia rosada y la velocidad letal de su rapier.",
     "equipped": {}
   },
   {
     "id": "ragnavaldr",
     "name": "Ragnavaldr",
-    "title": "Berserker de la Furia",
-    "rarity": "SR",
-    "heroClass": "Bárbaro",
+    "title": "Bárbaro Druida del Páramo Helado",
+    "rarity": "UR",
+    "heroClass": "Bárbaro Druida",
     "attribute": "Natural",
     "alliance": "Nómadas del Páramo",
     "level": 1,
     "currentXp": 0,
     "xpToNextLevel": 100,
-    "stars": 3,
+    "stars": 5,
     "stats": {
-      "hp": 1300,
-      "maxHp": 1300,
-      "attack": 285,
-      "defense": 150,
-      "speed": 102,
-      "critRate": 0.18,
-      "critDamage": 1.6
+      "hp": 1420,
+      "maxHp": 1420,
+      "attack": 305,
+      "defense": 240,
+      "speed": 105,
+      "critRate": 0.2,
+      "critDamage": 1.65
     },
     "skills": [
       {
         "id": "rag_s1",
-        "name": "Hachazo Brutal",
-        "description": "Corta con su hacha de guerra infligiendo 165% de daño físico.",
+        "name": "Estocada de Lanzas Gemelas",
+        "description": "Embestida frontal con ambas lanzas empalando al enemigo (185% DMG perforante) con desangrado.",
         "cooldown": 0,
-        "damageMultiplier": 1.65,
+        "damageMultiplier": 1.85,
         "targetType": "single_enemy",
-        "effectType": "damage"
+        "effectType": "damage",
+        "dndDamageType": "piercing"
       },
       {
         "id": "rag_s2",
-        "name": "Furia Sangrienta",
-        "description": "Pierde 5% de HP para aumentar su ataque un 40% durante 2 turnos.",
+        "name": "Furia Druídica Primordial",
+        "description": "Entra en furia otorgando bufos de daño (+30%) y resistencia (+25%) a todos los héroes durante 2 turnos.",
         "cooldown": 3,
         "damageMultiplier": 0,
-        "targetType": "self",
-        "effectType": "buff_atk"
+        "targetType": "all_allies",
+        "effectType": "buff_atk",
+        "dndDamageType": "force"
       },
       {
         "id": "rag_ult",
-        "name": "Torbellino Sangriento",
-        "description": "Gira desatando destrucción a toda la fila enemiga por 220% de daño.",
+        "name": "Cuchillo de Hielo Glacial",
+        "description": "Invoca un descomunal cuchillo de hielo desde el cielo que cae y congela al enemigo. En Tier 1 solo daña, en Tier 2 el enemigo pierde 1 turno, y en Tier 3 pierde 2 turnos.",
         "cooldown": 4,
-        "damageMultiplier": 2.2,
-        "targetType": "all_enemies",
-        "effectType": "damage"
+        "damageMultiplier": 2.8,
+        "targetType": "single_enemy",
+        "effectType": "damage",
+        "dndDamageType": "cold"
       }
     ],
     "portrait": "/assets/portraits/ragnavaldr.png",
     "backgroundArt": "/assets/backgrounds/fondo_herreria.png",
-    "quote": "¡La sangre alimenta mi hacha y el frío endurece mis huesos!",
-    "bio": "Un guerrero indomable cuyos cánticos de guerra hacen temblar a los osos polares de la tundra.",
+    "quote": "¡El frío es mi piel, la furia mi aliento y mis dos lanzas la ley del páramo!",
+    "bio": "Bárbaro druida imponente de piel gélida y pelaje ceremonial. Empuña dos lanzas de caza primordiales, entra en una furia mística que galvaniza a todo su escuadrón con daño y resistencia, y precipita cuchillos de hielo desde el cielo para congelar e inmovilizar a sus enemigos.",
     "equipped": {}
   },
   {
@@ -565,7 +568,7 @@
   {
     "id": "smurph_draco",
     "name": "Smurph Draco",
-    "title": "Invocador de Dragones",
+    "title": "Hechicero Dracónico",
     "rarity": "SSR",
     "heroClass": "Hechicero",
     "attribute": "Fuego",
@@ -575,47 +578,50 @@
     "xpToNextLevel": 100,
     "stars": 4,
     "stats": {
-      "hp": 1020,
-      "maxHp": 1020,
-      "attack": 320,
-      "defense": 155,
-      "speed": 114,
-      "critRate": 0.22,
-      "critDamage": 1.7
+      "hp": 1140,
+      "maxHp": 1140,
+      "attack": 345,
+      "defense": 165,
+      "speed": 118,
+      "critRate": 0.24,
+      "critDamage": 1.75
     },
     "skills": [
       {
-        "id": "smurph_s1",
-        "name": "Aliento de Draco",
-        "description": "Exhala una llamarada dracónica por 170% de daño de fuego.",
-        "cooldown": 0,
-        "damageMultiplier": 1.7,
-        "targetType": "single_enemy",
-        "effectType": "damage"
-      },
-      {
-        "id": "smurph_s2",
-        "name": "Rugido Territorial",
-        "description": "Intimida a los rivales reduciendo su ataque un 25% por 2 turnos.",
+        "id": "smurph_aterrizaje_heroico",
+        "name": "Vuelo y Aterrizaje Heroico",
+        "description": "Smurph bate sus alas y se eleva a los cielos, volviéndose invisible e inmune a los ataques enemigos durante 1 turno. Al finalizar el turno cae en picado con un devastador aterrizaje superheroico contra el suelo causando 240% de daño y quebrando la postura del guardia.",
         "cooldown": 3,
-        "damageMultiplier": 0,
-        "targetType": "all_enemies",
-        "effectType": "stun"
+        "damageMultiplier": 2.4,
+        "targetType": "single_enemy",
+        "effectType": "damage",
+        "dndDamageType": "bludgeoning"
       },
       {
-        "id": "smurph_ult",
-        "name": "Cometa Dracónico",
-        "description": "Convoca la silueta de un gran dragón rojo causando 255% de daño en área.",
+        "id": "smurph_bolas_fuego",
+        "name": "Bolas de Fuego Dracónicas",
+        "description": "Conjura y dispara múltiples bolas de fuego dracónico que impactan al objetivo infligiendo 180% de daño ígneo e ignición continua.",
+        "cooldown": 0,
+        "damageMultiplier": 1.8,
+        "targetType": "single_enemy",
+        "effectType": "damage",
+        "dndDamageType": "fire"
+      },
+      {
+        "id": "smurph_aliento_rayo",
+        "name": "Aliento de Rayo",
+        "description": "Abre sus fauces y exhala un torrente de relámpagos dracónicos concentrados que electrocuta al guardia causando 280% de daño de rayo con alta probabilidad de aturdimiento.",
         "cooldown": 4,
-        "damageMultiplier": 2.55,
-        "targetType": "all_enemies",
-        "effectType": "damage"
+        "damageMultiplier": 2.8,
+        "targetType": "single_enemy",
+        "effectType": "damage",
+        "dndDamageType": "lightning"
       }
     ],
     "portrait": "/assets/portraits/smurph_draco.png",
     "backgroundArt": "/assets/backgrounds/fondo_arlem.png",
-    "quote": "La sangre de los dragones antiguos corre por mis venas.",
-    "bio": "Custodio de los santuarios de dragones en las cumbres nevadas de Icespear.",
+    "quote": "La sangre de los dragones antiguos ruge en mi pecho. ¡Nadie escapa a mi vuelo ni a mi aliento!",
+    "bio": "Hechicero dracónico de escamas azul cobalto y alas imponentes. Domina el arte del vuelo sigiloso con aterrizajes demoledores de superhéroe, la invocación de bolas de fuego dracónicas y la exhalación de devastadores relámpagos por sus fauces.",
     "equipped": {}
   },
   {

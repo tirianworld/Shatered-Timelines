@@ -13,7 +13,7 @@ export interface CanonicalHeroItem {
   id: string;
   name: string;
   title: string;
-  rarity: 'SSR' | 'SR' | 'R';
+  rarity: 'UR' | 'SSR' | 'SR' | 'R';
   attribute: 'Divino' | 'Natural' | 'Profano' | 'Arcano';
   portrait: string;
   frame: string;
@@ -28,38 +28,54 @@ export interface CanonicalHeroItem {
 }
 
 export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
-  // --- ROW 1 (5 heroes) ---
+  // --- ROW 1 (5 heroes - Matching image_582628df.png) ---
   {
     id: 'chispo_deez',
     name: 'Chispo Deez',
-    title: 'Guerrero Enano Alado',
+    title: 'Paladín Enano Alado',
     rarity: 'SR',
     attribute: 'Divino',
     portrait: '/assets/portraits/chispo_deez_icono.png',
     frame: '/assets/ui/marco_sr.png',
     orb: '/assets/items/atributo fe.png',
     level: 1,
-    hp: 1320,
-    attack: 270,
-    defense: 220,
-    cc: 1395,
-    bio: 'Veterano guerrero del clan forjador, porta el yelmo alado ceremonial bendecido por la llama celestial.',
+    hp: 1450,
+    attack: 275,
+    defense: 250,
+    cc: 1420,
+    bio: 'Noble Paladín enano bendecido por la llama celestial. Empuña su imponente martillo de guerra y yelmo alado ceremonial para proteger a sus aliados y purgar a los impíos.',
   },
   {
     id: 'kurogame',
     name: 'Kurogame',
     title: 'Guardián Acorazado',
     rarity: 'SR',
-    attribute: 'Natural',
+    attribute: 'Divino',
     portrait: '/assets/portraits/kurogame_icono.png',
     frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo natural.png',
+    orb: '/assets/items/atributo fe.png',
     level: 1,
     hp: 1200,
     attack: 260,
     defense: 230,
     cc: 1380,
     bio: 'Caballero impasible de armadura negra, consagrado a la defensa sagrada de los bastiones de Moonhaven.',
+  },
+  {
+    id: 'pepe_loux',
+    name: 'Pepe Loux',
+    title: 'Gran Cruzado Veterano',
+    rarity: 'SR',
+    attribute: 'Natural',
+    portrait: '/assets/portraits/pepe_loux.png',
+    frame: '/assets/ui/marco_sr.png',
+    orb: '/assets/items/atributo natural.png',
+    level: 1,
+    hp: 1450,
+    attack: 280,
+    defense: 250,
+    cc: 1480,
+    bio: 'Veterano de mil batallas con su capa escarlata, custodio de los bosques ancestrales y la tierra natal.',
   },
   {
     id: 'luminor',
@@ -78,39 +94,23 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     bio: 'Espadachín noble dotado de esgrima estelar, su hoja corta el velo de la magia con gracia incomparable.',
   },
   {
-    id: 'pepe_loux',
-    name: 'Pepe Loux',
-    title: 'Gran Cruzado Veterano',
-    rarity: 'SR',
-    attribute: 'Divino',
-    portrait: '/assets/portraits/pepe_loux.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo fe.png',
-    level: 1,
-    hp: 1450,
-    attack: 280,
-    defense: 250,
-    cc: 1480,
-    bio: 'Veterano de mil batallas con su capa escarlata, custodio de los bosques ancestrales y la tierra natal.',
-  },
-  {
-    id: 'magordito',
-    name: 'Magordito',
-    title: 'Nigromante Oscuro',
+    id: 'gromock',
+    name: 'Gromock',
+    title: 'Señor de la Horda Orco',
     rarity: 'SR',
     attribute: 'Profano',
-    portrait: '/assets/portraits/Magordito.png',
+    portrait: '/assets/portraits/gromock_icono.png',
     frame: '/assets/ui/marco_sr.png',
     orb: '/assets/items/atributo OSCURO.png',
     level: 1,
-    hp: 1350,
-    attack: 310,
+    hp: 1380,
+    attack: 295,
     defense: 210,
-    cc: 1460,
-    bio: 'Temido maestro de las artes necróticas que doblega la energía de la muerte, desintegrando a sus adversarios con rayos profanos y castigos espectrales.',
+    cc: 1470,
+    bio: 'Brutal caudillo orco revestido de hierro oxidado y amuletos de cráneos, señor absoluto de la batalla.',
   },
 
-  // --- ROW 2 (5 heroes) ---
+  // --- ROW 2 (5 heroes - Matching image_582628df.png) ---
   {
     id: 'giovani',
     name: 'Giovani Vázquez',
@@ -176,39 +176,23 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     bio: 'Letal cazadora de las profundidades subterráneas, sus dagas envenenadas no conocen el perdón.',
   },
   {
-    id: 'gromock',
-    name: 'Gromock',
-    title: 'Señor de la Horda Orco',
-    rarity: 'SR',
-    attribute: 'Profano',
-    portrait: '/assets/portraits/gromock_icono.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo OSCURO.png',
-    level: 1,
-    hp: 1380,
-    attack: 295,
-    defense: 210,
-    cc: 1470,
-    bio: 'Brutal caudillo orco revestido de hierro oxidado y amuletos de cráneos, señor absoluto de la batalla.',
-  },
-
-  // --- ROW 3 (5 heroes) ---
-  {
     id: 'prometeo',
     name: 'Prometeo',
-    title: 'Mago Ígneo Tiefling',
-    rarity: 'SR',
+    title: 'Cazador de Sangre Ígneo',
+    rarity: 'SSR',
     attribute: 'Profano',
-    portrait: '/assets/portraits/Prometeo.png',
+    portrait: '/assets/portraits/prometeo.png',
     frame: '/assets/ui/marco_sr.png',
     orb: '/assets/items/atributo OSCURO.png',
     level: 1,
-    hp: 1050,
-    attack: 320,
-    defense: 170,
-    cc: 1330,
-    bio: 'Tiefling con corona de fuego perpetuo, conjura las llamas del abismo para purificar a sus adversarios.',
+    hp: 1180,
+    attack: 350,
+    defense: 180,
+    cc: 1410,
+    bio: 'Tiefling Cazador de Sangre (Blood Hunter) y piromante. Empuña una espada de fuego verde; causa 10% de daño adicional contra enemigos sangrantes.',
   },
+
+  // --- ROW 3 (5 heroes - Matching image_582628df.png) ---
   {
     id: 'barled',
     name: 'Barled',
@@ -228,50 +212,34 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
   {
     id: 'kairon',
     name: 'Kairon',
-    title: 'Elegido de los Cuernos',
-    rarity: 'SR',
-    attribute: 'Arcano',
-    portrait: '/assets/portraits/kairon.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo arcano.png',
-    level: 1,
-    hp: 1120,
-    attack: 310,
-    defense: 175,
-    cc: 1315,
-    bio: 'Joven hechicero con cuernos de carnero y mirada dorada, canaliza el flujo astral con pasmosa naturalidad.',
-  },
-  {
-    id: 'arlem_diaz',
-    name: 'Arlem Díaz',
-    title: 'Bardo Aventurero',
-    rarity: 'SR',
+    title: 'Pistolero Errante',
+    rarity: 'UR',
     attribute: 'Natural',
-    portrait: '/assets/portraits/arlem_diaz_icono.png',
-    frame: '/assets/ui/marco_sr.png',
+    portrait: '/assets/portraits/kairon.png',
+    frame: '/assets/ui/marco_ur.png',
     orb: '/assets/items/atributo natural.png',
     level: 1,
-    hp: 1180,
-    attack: 285,
-    defense: 190,
-    cc: 1325,
-    bio: 'Bardo aventurero que combina destreza marcial, ingenio y magia musical para apoyar a sus compañeros.',
+    hp: 1200,
+    attack: 310,
+    defense: 185,
+    cc: 1420,
+    bio: 'Pistolero con dos pistolas duales de tiro rápido y una espada larga a dos manos, letal a cualquier distancia.',
   },
   {
     id: 'ragnavaldr',
     name: 'Ragnavaldr',
-    title: 'Furia de las Nieves',
-    rarity: 'SR',
+    title: 'Bárbaro Druida',
+    rarity: 'UR',
     attribute: 'Natural',
     portrait: '/assets/portraits/ragnavaldr.png',
-    frame: '/assets/ui/marco_sr.png',
+    frame: '/assets/ui/marco_ur.png',
     orb: '/assets/items/atributo natural.png',
     level: 1,
     hp: 1420,
-    attack: 260,
+    attack: 305,
     defense: 240,
-    cc: 1473,
-    bio: 'Gigante nórdico de piel azulada y manto de pieles de lobo blanco, encarnación de la furia de los glaciares.',
+    cc: 1510,
+    bio: 'Bárbaro druida con dos lanzas ceremoniales. Entra en furia otorgando bufos de daño y resistencia a todo el equipo, y precipita cuchillos de hielo desde el cielo que congelan a los enemigos.',
   },
   {
     id: 'red_lion',
@@ -289,23 +257,39 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     cc: 1460,
     bio: 'Bestia demoníaca con melena roja llameante y cornamenta oscura, señor temible de las legiones de asalto.',
   },
-
-  // --- ROW 4 (4 heroes, matching image_4e3a91b1.png 100%) ---
   {
     id: 'smurph_draco',
     name: 'Smurph Draco',
-    title: 'Draco Alado del Alba',
-    rarity: 'SR',
+    title: 'Hechicero Dracónico',
+    rarity: 'SSR',
     attribute: 'Arcano',
     portrait: '/assets/portraits/smurph_draco.png',
-    frame: '/assets/ui/marco_sr.png',
+    frame: '/assets/ui/marco_ssr.png',
     orb: '/assets/items/atributo arcano.png',
     level: 1,
-    hp: 1080,
-    attack: 305,
-    defense: 175,
-    cc: 1320,
-    bio: 'Dracónido azul de escamas perladas y bufanda bermeja, vuela veloz desatando ráfagas heladas.',
+    hp: 1140,
+    attack: 345,
+    defense: 165,
+    cc: 1420,
+    bio: 'Hechicero dracónico de escamas azul cobalto y alas imponentes. Domina el arte del vuelo sigiloso con aterrizajes demoledores de superhéroe, la invocación de bolas de fuego dracónicas y la exhalación de devastadores relámpagos por sus fauces.',
+  },
+
+  // --- ROW 4+ ---
+  {
+    id: 'magordito',
+    name: 'Magordito',
+    title: 'Nigromante Oscuro',
+    rarity: 'SR',
+    attribute: 'Profano',
+    portrait: '/assets/portraits/Magordito.png',
+    frame: '/assets/ui/marco_sr.png',
+    orb: '/assets/items/atributo OSCURO.png',
+    level: 1,
+    hp: 1350,
+    attack: 310,
+    defense: 210,
+    cc: 1460,
+    bio: 'Temido maestro de las artes necróticas que doblega la energía de la muerte, desintegrando a sus adversarios con rayos profanos y castigos espectrales.',
   },
   {
     id: 'alma_fellas',
@@ -326,7 +310,7 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
   {
     id: 'roxanne',
     name: 'Roxanne',
-    title: 'Zorra Encantadora',
+    title: 'Barda de la Lira y el Rapier',
     rarity: 'SR',
     attribute: 'Arcano',
     portrait: '/assets/portraits/roxanne.png',
@@ -337,12 +321,44 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     attack: 295,
     defense: 180,
     cc: 1297,
-    bio: 'Astuta hechicera kitsune con vestido escarlata, seduce y confunde a los enemigos con ilusiones doradas.',
+    bio: 'Virtuosa barda kitsune que combina el encanto hipnótico de su lira dorada con magia rosada y la velocidad de su rapier.',
+  },
+  {
+    id: 'edacorn',
+    name: 'Edacorn',
+    title: 'Vanguardia de Acero',
+    rarity: 'SSR',
+    attribute: 'Natural',
+    portrait: '/assets/portraits/edacorn_icono.png',
+    frame: '/assets/ui/marco_ssr.png',
+    orb: '/assets/items/atributo natural.png',
+    level: 1,
+    hp: 1380,
+    attack: 320,
+    defense: 215,
+    cc: 1490,
+    bio: 'Ágil y mortífero espadachín de dagas gemelas, maestro del sigilo y el contraataque fulminante.',
+  },
+  {
+    id: 'arlem',
+    name: 'Arlem Díaz',
+    title: 'Monje de los Cien Golpes',
+    rarity: 'SSR',
+    attribute: 'Profano',
+    portrait: '/assets/portraits/arlem_diaz_icono.png',
+    frame: '/assets/ui/marco_ssr.png',
+    orb: '/assets/items/atributo OSCURO.png',
+    level: 1,
+    hp: 1250,
+    attack: 300,
+    defense: 200,
+    cc: 1450,
+    bio: 'Monje místico que asciende el rango de las cartas de sus aliados, purifica con fuego primordial y sana heridas de batalla.',
   },
 ];
 
 export const HeroesView: React.FC = () => {
-  const { team, setTeamSlot } = useGame();
+  const { team, setTeamSlot, navigateTo } = useGame();
 
   const [filterCarouselIndex, setFilterCarouselIndex] = useState(0);
   const [activeFilterId, setActiveFilterId] = useState<string>('cc');
@@ -550,13 +566,9 @@ export const HeroesView: React.FC = () => {
           type="button"
           onClick={() => {
             sound.playSFX('click');
-            setPartyMode((prev) => !prev);
+            navigateTo('party');
           }}
-          className={`h-full flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 rounded-lg border-2 transition-all cursor-pointer ${
-            partyMode
-              ? 'bg-[#92400e] border-[#f59e0b] text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.7)] scale-102'
-              : 'bg-[#78350f]/90 border-[#92400e] text-amber-200 hover:text-white hover:bg-[#92400e]'
-          }`}
+          className="h-full flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 rounded-lg border-2 border-[#92400e] bg-[#78350f]/90 text-amber-200 hover:text-white hover:bg-[#92400e] transition-all cursor-pointer shadow-md active:scale-95"
           title="Equipo / Party"
         >
           <Users className="w-3.5 h-3.5 text-amber-300 shrink-0 drop-shadow" />

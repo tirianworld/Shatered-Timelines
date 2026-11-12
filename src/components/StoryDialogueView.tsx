@@ -71,12 +71,9 @@ function paginateDialogueLines(lines: DialogueLine[]): DialogueLine[] {
   const result: DialogueLine[] = [];
 
   for (const line of lines) {
-    // Solo líneas habladas: fuera las acotaciones entre *...* o (...) antes de paginar,
-    // para que ningún trozo quede a medias y muestre la acción al jugador.
-    const rawText = formatDialogueText(line.text);
-    if (!rawText) continue;
+    const rawText = line.text;
     if (rawText.length <= 130) {
-      result.push({ ...line, text: rawText });
+      result.push(line);
       continue;
     }
 
@@ -89,7 +86,6 @@ function paginateDialogueLines(lines: DialogueLine[]): DialogueLine[] {
     for (const s of rawSentences) {
       const trimmed = s.trim();
       if (!trimmed) continue;
-      if (!/[\p{L}\p{N}]/u.test(trimmed)) continue;
       if (!cur) {
         cur = trimmed;
       } else if ((cur + ' ' + trimmed).length <= 125) {
@@ -434,15 +430,6 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
           break;
         case 'whisper':
           sound.playSFX('merge');
-          break;
-        case 'critical':
-          sound.playSFX('critical');
-          break;
-        case 'attack':
-          sound.playSFX('attack');
-          break;
-        case 'victory':
-          sound.playSFX('victory');
           break;
         default:
           sound.playSFX('click');
