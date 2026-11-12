@@ -677,7 +677,7 @@ export const QuestView: React.FC = () => {
                     : currentChapter === 3
                     ? 'bg-gradient-to-r from-[#9333ea] via-[#c026d3] to-[#f59e0b] shadow-[0_0_10px_rgba(192,38,211,0.8)]'
                     : currentChapter === 2
-                    ? 'bg-gradient-to-r from-[#0284c7] via-[#06b6d4] to-[#f59e0b] shadow-[0_0_10px_rgba(6,182,212,0.8)]'
+                    ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]'
                     : 'bg-gradient-to-r from-[#dc2626] via-[#ea580c] to-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.8)]'
                 } transition-all duration-500`}
                 style={{ width: `${Math.min(100, (completedCount / totalCount) * 100)}%` }}
@@ -1037,10 +1037,12 @@ export const QuestView: React.FC = () => {
             {isChapterFullyCompleted ? (
               <div className="flex items-center justify-center gap-4 py-2 bg-[#140602] rounded-lg border border-amber-900/60">
                 <div className="flex items-center gap-1.5 text-xs font-black text-amber-400 font-mono">
-                  <span>+{currentChapter === 3 ? '35,000' : currentChapter === 2 ? '25,000' : '15,000'} ORO</span>
+                  <span>+{currentChapter === 3 ? '35,000' : currentChapter === 2 ? '25,000' : '15,000'}</span>
+                  <img src="/assets/items/oro.png" alt="Moneda" className="w-4 h-4 object-contain" />
                 </div>
                 <div className="flex items-center gap-1.5 text-xs font-black text-sky-400 font-mono">
-                  <span>+{currentChapter === 3 ? '1,200' : currentChapter === 2 ? '800' : '500'} GEMAS</span>
+                  <span>+{currentChapter === 3 ? '1,200' : currentChapter === 2 ? '800' : '500'}</span>
+                  <img src="/assets/items/gema.png" alt="Gema" className="w-4 h-4 object-contain" />
                 </div>
               </div>
             ) : (
