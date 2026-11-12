@@ -703,7 +703,11 @@ export const QuestView: React.FC = () => {
             }
           >
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd2533040a05c45d4ae3cf4e5eec4929f"
+              src={
+                isChapterFullyCompleted
+                  ? '/assets/items/cofre_de_tintes_app.png'
+                  : 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd2533040a05c45d4ae3cf4e5eec4929f'
+              }
               alt="Cofre"
               className="w-8.5 h-8.5 sm:w-9 sm:h-9 object-contain drop-shadow-[0_0_8px_rgba(168,85,247,0.9)]"
             />
@@ -1010,7 +1014,11 @@ export const QuestView: React.FC = () => {
 
             <div className="flex justify-center pt-2">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd2533040a05c45d4ae3cf4e5eec4929f"
+                src={
+                  isChapterFullyCompleted
+                    ? '/assets/items/cofre_de_tintes_app.png'
+                    : 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd2533040a05c45d4ae3cf4e5eec4929f'
+                }
                 alt="Cofre de Recompensas"
                 className="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(168,85,247,0.9)]"
               />
