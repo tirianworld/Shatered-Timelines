@@ -738,7 +738,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         {/* Arte del héroe: recortado al hueco del panel para que no se salga del marco */}
         <div className={`pointer-events-none absolute left-[25%] top-[19.6%] ${isArlem ? 'h-[300px]' : 'h-[32%]'} w-[50%] overflow-hidden`}>
           <img
-            src={isArlem ? 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2F2a2296bdc3c34d74b65cb51bbe0e4b61?format=webp&width=800&height=1200' : heroArt}
+            src={isArlem ? 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2F4d2ac513c4bd46faae8ebc9719391004?format=webp&width=800&height=1200' : heroArt}
             alt={hero.name}
             className={`absolute bottom-0 left-0 h-full w-full object-contain object-bottom drop-shadow-[0_4px_8px_rgba(0,0,0,0.28)] ${isArlem ? 'scale-[1.25] origin-bottom -my-[75px]' : ''}`}
           />
