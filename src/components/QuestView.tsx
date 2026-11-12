@@ -677,7 +677,7 @@ export const QuestView: React.FC = () => {
                     : currentChapter === 3
                     ? 'bg-gradient-to-r from-[#9333ea] via-[#c026d3] to-[#f59e0b] shadow-[0_0_10px_rgba(192,38,211,0.8)]'
                     : currentChapter === 2
-                    ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]'
+                    ? 'bg-gradient-to-r from-[#0284c7] via-[#06b6d4] to-[#f59e0b] shadow-[0_0_10px_rgba(6,182,212,0.8)]'
                     : 'bg-gradient-to-r from-[#dc2626] via-[#ea580c] to-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.8)]'
                 } transition-all duration-500`}
                 style={{ width: `${Math.min(100, (completedCount / totalCount) * 100)}%` }}
@@ -703,11 +703,7 @@ export const QuestView: React.FC = () => {
             }
           >
             <img
-              src={
-                isChapterFullyCompleted
-                  ? 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd201bd3e8b5b402994150967bf48b17e?format=webp&width=800&height=1200'
-                  : 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd2533040a05c45d4ae3cf4e5eec4929f'
-              }
+              src="https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd2533040a05c45d4ae3cf4e5eec4929f"
               alt="Cofre"
               className="w-8.5 h-8.5 sm:w-9 sm:h-9 object-contain drop-shadow-[0_0_8px_rgba(168,85,247,0.9)]"
             />
