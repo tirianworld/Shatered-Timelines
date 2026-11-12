@@ -1709,12 +1709,12 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
 
       {/* Descripción de la skin: en el marco que queda bajo la vista previa */}
       <div className="absolute left-[49%] top-[57.6%] flex h-[10.8%] w-[44%] flex-col justify-center text-center">
-        <p className="mx-auto mt-[-41px] mb-[-32px] text-[12px] leading-[1.25] text-[#f0dcbc]/90">{activeSkin.description}</p>
+        <p className="mx-auto mt-[-41px] mb-[-32px] h-[95px] text-[12px] leading-[1.25] text-[#f0dcbc]/90">{activeSkin.description}</p>
       </div>
 
       {/* Bonificación de la skin (dentro del marco del panel) */}
       <div className="absolute left-[49%] top-[69.2%] flex h-[3.2%] w-[44%] items-center justify-center px-2">
-        <p className="text-center text-[7.5px] font-semibold leading-tight text-[#f0dcbc]/90">{activeSkin.bonus}</p>
+        <p className="h-[40px] text-center text-[7.5px] font-semibold leading-tight text-[#f0dcbc]/90">{activeSkin.bonus}</p>
       </div>
 
       {/* FABRICAR SKIN: materiales + botón (los huecos están en la plantilla) */}
@@ -1726,7 +1726,12 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
             key={`${activeSkin.id}-${mat.name}`}
             className="absolute"
             style={{
-              left: mat.name === 'Polvo de Hadas' ? '209.2px' : SKIN_SLOT_LEFT[i],
+              left:
+                mat.name === 'Montón de Arapos'
+                  ? '142px'
+                  : mat.name === 'Polvo de Hadas'
+                    ? '209.2px'
+                    : SKIN_SLOT_LEFT[i],
               top: '83.6%',
               width: '14%',
               height: '9%',
@@ -1743,9 +1748,9 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
               style={{
                 top: '-13px',
                 ...(mat.name === 'Montón de Arapos'
-                  ? { left: '14px' }
+                  ? { left: '-6px' }
                   : mat.name === 'Polvo de Hadas'
-                    ? { left: '26px' }
+                    ? { left: '29px' }
                     : mat.name === 'Paquetes Sospechosos'
                       ? { left: '37px' }
                       : {}),
@@ -1753,9 +1758,17 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
               }}
             />
             <span
-              className={`absolute left-[20px] top-[43.6px] text-[11px] font-black leading-none ${
+              className={`absolute top-[43.6px] text-[11px] font-black leading-none ${
                 enough ? 'text-[#ffe9c2]' : 'text-[#e59a76]'
               }`}
+              style={{
+                left:
+                  mat.name === 'Montón de Arapos'
+                    ? '46px'
+                    : mat.name === 'Polvo de Hadas'
+                      ? '56px'
+                      : '20px',
+              }}
             >
               {Math.min(have, mat.count)}/{mat.count}
             </span>
