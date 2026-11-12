@@ -1399,7 +1399,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
     const list = owned.filter((it) => equipCategoryOf(it.type) === equipTab);
 
     return (
-      <div className="absolute inset-0 z-40 flex flex-col overflow-hidden bg-[#e2b077] animate-fade-in">
+      <div className="absolute inset-0 z-40 flex flex-col overflow-hidden bg-white animate-fade-in">
         <img
           src="/assets/backgrounds/fondo_personajes.png"
           alt=""
@@ -1729,7 +1729,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         return (
           <div
             key={`${activeSkin.id}-${mat.name}`}
-            className="absolute"
+            className={`absolute ${mat.name === 'Paquetes Sospechosos' ? 'py-[5px]' : ''}`}
             style={{
               left:
                 mat.name === 'Montón de Arapos'
@@ -1774,6 +1774,13 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
               }`}
               style={{
                 left: mat.count === 3 ? '30px' : mat.count === 2 ? '45px' : '55px',
+                ...(mat.name === 'Paquetes Sospechosos'
+                  ? { paddingLeft: '36px', paddingRight: '36px' }
+                  : mat.name === 'Polvo de Hadas'
+                    ? { marginLeft: '-10px', marginRight: '-10px' }
+                    : mat.count === 2
+                      ? { marginLeft: '-26px', marginRight: '-26px' }
+                      : {}),
               }}
             >
               {Math.min(have, mat.count)}/{mat.count}
