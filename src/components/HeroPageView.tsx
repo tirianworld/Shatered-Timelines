@@ -1750,10 +1750,16 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
                 ...(mat.name === 'Montón de Arapos'
                   ? { left: '-6px' }
                   : mat.name === 'Polvo de Hadas'
-                    ? { left: '29px' }
-                    : mat.name === 'Paquetes Sospechosos'
-                      ? { left: '37px' }
-                      : {}),
+                    ? { left: '28px' }
+                    : mat.name === 'Talismán de Jefe Orco'
+                      ? { left: '40px' }
+                      : mat.name === 'Fragmentos Óseos'
+                        ? { left: '15px' }
+                        : mat.name === 'Colmillos Desgastados'
+                          ? { left: '-5px' }
+                          : mat.name === 'Paquetes Sospechosos'
+                            ? { left: '37px' }
+                            : {}),
                 ...(mat.name === 'Libro Sagrado' ? { marginRight: 'auto' } : {}),
               }}
             />
@@ -1762,12 +1768,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
                 enough ? 'text-[#ffe9c2]' : 'text-[#e59a76]'
               }`}
               style={{
-                left:
-                  mat.name === 'Montón de Arapos'
-                    ? '46px'
-                    : mat.name === 'Polvo de Hadas'
-                      ? '56px'
-                      : '20px',
+                left: mat.count === 3 ? '30px' : mat.count === 2 ? '45px' : '55px',
               }}
             >
               {Math.min(have, mat.count)}/{mat.count}
