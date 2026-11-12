@@ -164,7 +164,7 @@ const SKINS = [
     id: 'monje',
     name: 'Atuendo Monástico',
     subtitle: 'Ropajes de la iglesia',
-    art: `${A}/skin_monje.png`,
+    art: 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2F79242e0d488741b7a38c4874cf353a4d?format=webp&width=800&height=1200',
     description: 'Ropajes prestados por la Iglesia de Freya al encontrarte desnudo en su puerta.',
     bonus: '+8% Defensa · reduce el daño recibido de Profano.',
     owned: false,
@@ -179,7 +179,7 @@ const SKINS = [
     id: 'orco',
     name: 'Orco Ilusorio',
     subtitle: 'Ilusión de Gromock',
-    art: `${A}/skin_orco.png`,
+    art: 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2F7b42f6a116124c0288ef646da091da69?format=webp&width=800&height=1200',
     description: 'Ilusión creada por Arlem para engañar a Gromock y a su horda.',
     bonus: '+15% al Ataque · cuenta como Semiorco.',
     owned: false,
@@ -557,15 +557,15 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
   const renderDescripcion = () => (
     <>
       {/* PERSONAJE */}
-      <div className="absolute left-[7%] top-[18%] w-[86%] h-[32.6%]">
+      <div className="absolute left-[7%] top-[18%] w-[86%] h-[32.6%] my-[5px]">
         <img
           src={RARITY_BADGE[hero.rarity] ?? RARITY_BADGE.SR}
           alt={hero.rarity}
-          className="absolute left-[1.5%] top-[2%] w-[23%] object-contain drop-shadow-[0_2px_3px_rgba(0,0,0,0.35)]"
+          className="absolute left-[1.5%] top-[2%] w-[23%] max-w-[20%] object-contain drop-shadow-[0_2px_3px_rgba(0,0,0,0.35)]"
         />
         <div className="absolute left-[27%] top-[4%] z-[1] w-[46%] leading-tight">
-          <p className="font-serif text-[11px] font-black text-[#a85a1c]">[Caldo de Dragón]</p>
-          <p className="font-serif text-[19px] font-black leading-none text-[#8a3b0e] drop-shadow-[0_1px_0_rgba(255,242,210,0.9)]">
+          <p className="mx-[15px] max-w-[200px] text-left font-serif text-[11px] font-black text-[#a85a1c]">[Caldo de Dragón]</p>
+          <p className="max-w-[800px] font-serif text-[22px] font-black leading-none text-[#8a3b0e] drop-shadow-[0_1px_0_rgba(255,242,210,0.9)]">
             {hero.name}
           </p>
         </div>
@@ -578,7 +578,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
                 key={i}
                 src={`${A}/estrella_mejora.png`}
                 alt=""
-                className={`w-[28px] h-[28px] object-contain ${i < stars ? '' : 'opacity-25 grayscale'}`}
+                className={`w-[28px] h-[28px] object-contain ${i < stars ? '' : 'opacity-[0.47] grayscale'}`}
               />
             ))}
           </div>
@@ -613,12 +613,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
           <img
             src={heroArt}
             alt={hero.name}
-            className={`absolute inset-0 h-full w-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.28)] ${
-              isArlem
-                ? // Doble de tamaño y enmascarado por el cuadro: solo se ve de rodillas hacia arriba.
-                  'origin-top scale-[1.45] object-top'
-                : 'origin-bottom object-bottom'
-            }`}
+            className="absolute inset-0 h-full w-full origin-top scale-[1.45] object-contain object-top drop-shadow-[0_4px_8px_rgba(0,0,0,0.28)]"
           />
         </div>
       </div>
@@ -630,12 +625,13 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         ))}
       </div>
 
-      {/* HABILIDAD PASIVA */}
-      <img
-        src={isArlem ? `${A}/pasiva_arlem.png` : `/assets/portraits/${hero.id}_icono.png`}
-        alt="Habilidad pasiva"
-        className="absolute left-[12%] top-[69.4%] w-[13%] object-contain drop-shadow"
-      />
+      {!isArlem && (
+        <img
+          src={`/assets/portraits/${hero.id}_icono.png`}
+          alt="Habilidad pasiva"
+          className="absolute left-[12%] top-[69.4%] w-[13%] object-contain drop-shadow"
+        />
+      )}
       <div className="absolute left-[28%] top-[69.6%] w-[56%]">
         <p className="mr-auto my-[10px] border-0 text-[13px] font-bold leading-[1.15] text-[#40200a]">
           Aumenta un 15% la defensa de todos los aliados de Atributo{' '}
@@ -647,7 +643,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
       <img
         src={RARITY_BADGE[hero.rarity] ?? RARITY_BADGE.SR}
         alt={hero.rarity}
-        className="absolute left-[8%] top-[79.8%] w-[18%] object-contain"
+        className="absolute left-[8%] top-[79.8%] w-[18%] max-w-[25%] object-contain"
       />
       <div className="absolute left-[29%] top-[80.6%] w-[38%] leading-tight">
         <p className="mx-[2px] my-[8px] text-[10px] font-black text-[#5b3a1c]">
@@ -658,7 +654,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
       <button
         type="button"
         onClick={() => sound.playSFX('click')}
-        className="absolute right-[7%] top-[79.9%] w-[26%] h-[6%] rounded-[5px] border border-[#8a4a10] bg-gradient-to-b from-[#f0a03a] to-[#d97a12] text-[10.5px] font-black uppercase tracking-wide text-[#3a1a00] shadow-[inset_0_1px_0_rgba(255,225,160,0.7)] cursor-pointer active:scale-95 transition-transform"
+        className="absolute right-[7%] top-[79.9%] w-[26%] h-[6%] rounded-[5px] border-[#710500] my-3 mx-[6.8px] bg-gradient-to-b from-[#f0a03a] to-[#d97a12] text-[10.5px] font-black uppercase tracking-wide text-[#3a1a00] shadow-[inset_0_1px_0_rgba(255,225,160,0.7)] cursor-pointer active:scale-95 transition-transform"
       >
         Mejorar
       </button>
@@ -735,11 +731,11 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
     return (
       <>
         {/* Arte del héroe: recortado al hueco del panel para que no se salga del marco */}
-        <div className="pointer-events-none absolute left-[25%] top-[19.6%] h-[32%] w-[50%] overflow-hidden">
+        <div className="pointer-events-none absolute left-[25%] top-[19.6%] h-[300px] w-[50%] overflow-hidden">
           <img
-            src={heroArt}
+            src={isArlem ? 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2F4d2ac513c4bd46faae8ebc9719391004?format=webp&width=800&height=1200' : heroArt}
             alt={hero.name}
-            className="absolute bottom-0 left-0 h-full w-full object-contain object-bottom drop-shadow-[0_4px_8px_rgba(0,0,0,0.28)]"
+            className="absolute bottom-0 left-0 h-full w-full -my-[75px] origin-bottom scale-[1.25] object-contain object-bottom drop-shadow-[0_4px_8px_rgba(0,0,0,0.28)]"
           />
         </div>
 
@@ -1693,11 +1689,11 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         <img src={`${A}/boton_flecha.png`} alt="" className="w-full h-full object-contain -scale-x-100" />
       </button>
       {/* Skin: enmascarada al hueco de la vista previa */}
-      <div className="pointer-events-none absolute left-[51%] top-[21%] h-[36%] w-[40%] overflow-hidden">
+      <div className="pointer-events-none absolute left-[219px] top-[190px] h-[36%] w-[186px] overflow-hidden">
         <img
           src={activeSkin.art}
           alt={activeSkin.name}
-          className="absolute inset-0 h-full w-full origin-top scale-[2] object-contain object-top drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]"
+          className="absolute inset-0 h-full w-full max-w-[400px] origin-top scale-[2] object-contain object-top drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]"
         />
       </div>
       <button

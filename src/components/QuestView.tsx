@@ -703,15 +703,7 @@ export const QuestView: React.FC = () => {
             }
           >
             <img
-              src={
-                currentChapter === 4
-                  ? '/assets/items/cofre_sellado_mansion.png'
-                  : currentChapter === 3
-                  ? '/assets/items/cofre_sellado_mansion.png'
-                  : currentChapter === 2
-                  ? '/assets/items/cofre_sellado_mansion.png'
-                  : '/assets/items/cofre_de_tintes_app.png'
-              }
+              src="https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd2533040a05c45d4ae3cf4e5eec4929f"
               alt="Cofre"
               className="w-8.5 h-8.5 sm:w-9 sm:h-9 object-contain drop-shadow-[0_0_8px_rgba(168,85,247,0.9)]"
             />
@@ -766,8 +758,8 @@ export const QuestView: React.FC = () => {
                       src={mission.portrait}
                       alt={mission.title}
                       className={`w-full h-full object-contain pointer-events-none select-none transition-transform duration-300 ${
-                        mission.portraitClass || 'scale-[1.8] origin-top'
-                      }`}
+                        currentChapter === 1 ? '-scale-x-100' : ''
+                      } ${mission.portraitClass || 'scale-[1.8] origin-top'}`}
                     />
                   </div>
                   <div className="relative z-10 flex-1 min-w-0 pl-3 pr-2 flex flex-col justify-center space-y-0.5 sm:space-y-1">
@@ -1019,9 +1011,9 @@ export const QuestView: React.FC = () => {
             <div className="flex justify-center pt-2">
               <img
                 src={
-                  currentChapter === 2
-                    ? '/assets/items/cofre_sellado_mansion.png'
-                    : '/assets/items/cofre_de_tintes_app.png'
+                  isChapterFullyCompleted
+                    ? 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd201bd3e8b5b402994150967bf48b17e?format=webp&width=800&height=1200'
+                    : 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2Fd2533040a05c45d4ae3cf4e5eec4929f'
                 }
                 alt="Cofre de Recompensas"
                 className="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(168,85,247,0.9)]"
@@ -1050,11 +1042,11 @@ export const QuestView: React.FC = () => {
               <div className="flex items-center justify-center gap-4 py-2 bg-[#140602] rounded-lg border border-amber-900/60">
                 <div className="flex items-center gap-1.5 text-xs font-black text-amber-400 font-mono">
                   <span>+{currentChapter === 3 ? '35,000' : currentChapter === 2 ? '25,000' : '15,000'}</span>
-                  <span className="text-[10px] text-amber-200">ORO</span>
+                  <img src="/assets/items/oro.png" alt="Moneda" className="w-4 h-4 object-contain" />
                 </div>
                 <div className="flex items-center gap-1.5 text-xs font-black text-sky-400 font-mono">
                   <span>+{currentChapter === 3 ? '1,200' : currentChapter === 2 ? '800' : '500'}</span>
-                  <span className="text-[10px] text-sky-200">GEMAS</span>
+                  <img src="/assets/items/gema.png" alt="Gema" className="w-4 h-4 object-contain" />
                 </div>
               </div>
             ) : (

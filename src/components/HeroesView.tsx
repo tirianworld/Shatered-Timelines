@@ -681,8 +681,8 @@ export const HeroesView: React.FC = () => {
                     setSelectedHero(hero);
                   }}
                   className={`relative aspect-square cursor-pointer transition-transform duration-100 active:scale-95 hover:scale-102 select-none ${
-                    inTeam ? 'ring-2 ring-emerald-500 rounded-lg' : ''
-                  } ${isLocked ? 'cursor-not-allowed opacity-70' : ''}`}
+                    isLocked ? 'cursor-not-allowed opacity-70' : ''
+                  }`}
                   title={isLocked ? `${hero.name} · bloqueado` : `${hero.name} · mantén pulsado para la ficha`}
                 >
                   {/* Underneath: Hero Portrait safely contained inside the frame */}
