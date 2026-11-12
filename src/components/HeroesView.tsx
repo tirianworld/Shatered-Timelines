@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
-import { X, Check, Heart, Search, Eye, Users, Zap, Shield, Sparkles, BookOpen } from 'lucide-react';
+import { X, Check, Heart, Search, Eye, Users, Zap, Shield, Sparkles, BookOpen, Lock } from 'lucide-react';
 import { INITIAL_HEROES } from '../data/heroesData';
 import { HeroCleanAura, CleanVFXStatus } from './CleanHeroVisualEffects';
 import { DND_DAMAGE_TYPES_REGISTRY, DndDamageType, DND_DAMAGE_TYPES_LIST } from '../types/dndCombatDamage';
 import { DndDamageCodexModal } from './DndDamageCodexModal';
+import { HeroPageView } from './HeroPageView';
 
 type SortOption = 'cc' | 'vida' | 'damage' | 'bond';
 
@@ -27,8 +28,27 @@ export interface CanonicalHeroItem {
   bio?: string;
 }
 
+/** Filtro sepia para retratos, marcos y orbes de los héroes bloqueados. */
+const LOCKED_TINT = 'sepia saturate-[0.45] brightness-[0.78] contrast-[0.95]';
+
 export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
   // --- ROW 1 (5 heroes - Matching image_582628df.png) ---
+  {
+    id: 'edacorn',
+    name: 'Edacorn',
+    title: 'Vanguardia de Acero',
+    rarity: 'SSR',
+    attribute: 'Natural',
+    portrait: '/assets/portraits/edacorn_icono.png',
+    frame: '/assets/ui/marco_ssr.png',
+    orb: '/assets/items/atributo natural.png',
+    level: 1,
+    hp: 1380,
+    attack: 245,
+    defense: 235,
+    cc: 1520,
+    bio: 'Vanguardia de acero de la Guardia de Icespear: yelmo alado, gola de malla y peto forjado para resistir el hielo de Cryovain.',
+  },
   {
     id: 'chispo_deez',
     name: 'Chispo Deez',
@@ -358,13 +378,17 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
 ];
 
 export const HeroesView: React.FC = () => {
-  const { team, setTeamSlot, navigateTo } = useGame();
+  const { team, setTeamSlot, navigateTo, heroes: ownedHeroes } = useGame();
+
+  // Solo los héroes desbloqueados son jugables; el resto se muestra bloqueado.
+  const ownedHeroIds = useMemo(() => new Set(ownedHeroes.map((h) => h.id)), [ownedHeroes]);
 
   const [filterCarouselIndex, setFilterCarouselIndex] = useState(0);
   const [activeFilterId, setActiveFilterId] = useState<string>('cc');
   const [showStats, setShowStats] = useState(false);
   const [partyMode, setPartyMode] = useState(false);
   const [selectedHero, setSelectedHero] = useState<CanonicalHeroItem | null>(null);
+  const [heroPageId, setHeroPageId] = useState<string | null>(null);
   const [filterRarity, setFilterRarity] = useState<string>('ALL');
   const [filterAttribute, setFilterAttribute] = useState<string>('ALL');
   const [filterDndDamage, setFilterDndDamage] = useState<string>('ALL');
@@ -414,8 +438,11 @@ export const HeroesView: React.FC = () => {
       });
     }
 
-    return list;
-  }, [filterRarity, filterAttribute, filterDndDamage]);
+    // Los héroes desbloqueados van primero; dentro de cada grupo se mantiene el orden canónico.
+    return list.sort(
+      (a, b) => Number(!ownedHeroIds.has(a.id)) - Number(!ownedHeroIds.has(b.id))
+    );
+  }, [filterRarity, filterAttribute, filterDndDamage, ownedHeroIds]);
 
   const handleToggleTeam = (heroId: string) => {
     sound.playSFX('click');
@@ -631,29 +658,39 @@ export const HeroesView: React.FC = () => {
           <div className="grid grid-cols-5 gap-1 sm:gap-1.5">
             {sortedHeroes.map((hero) => {
               const inTeam = team.includes(hero.id);
+              const isLocked = !ownedHeroIds.has(hero.id);
 
               return (
                 <div
                   key={hero.id}
                   onClick={() => {
-                    if (hero.isLocked) return;
+                    if (isLocked) return;
                     if (partyMode) {
                       handleToggleTeam(hero.id);
                     } else {
+                      // Abre directamente la página de héroe en la pestaña Descripción.
                       sound.playSFX('click');
-                      setSelectedHero(hero);
+                      setHeroPageId(hero.id);
                     }
+                  }}
+                  onContextMenu={(e) => {
+                    // Mantener pulsado (o clic derecho) abre la ficha clásica del héroe.
+                    e.preventDefault();
+                    if (isLocked || partyMode) return;
+                    sound.playSFX('click');
+                    setSelectedHero(hero);
                   }}
                   className={`relative aspect-square cursor-pointer transition-transform duration-100 active:scale-95 hover:scale-102 select-none ${
                     inTeam ? 'ring-2 ring-emerald-500 rounded-lg' : ''
-                  } ${hero.isLocked ? 'cursor-not-allowed filter grayscale-[70%] sepia-[30%] opacity-60' : ''}`}
+                  } ${isLocked ? 'cursor-not-allowed opacity-70' : ''}`}
+                  title={isLocked ? `${hero.name} · bloqueado` : `${hero.name} · mantén pulsado para la ficha`}
                 >
                   {/* Underneath: Hero Portrait safely contained inside the frame */}
                   <div className="absolute inset-[3px] sm:inset-[3.5px] rounded-[5px] overflow-hidden bg-[#18110c] flex items-center justify-center">
                     <img
                       src={hero.portrait}
                       alt={hero.name}
-                      className="w-full h-full object-cover object-center"
+                      className={`w-full h-full object-cover object-center ${isLocked ? LOCKED_TINT : ''}`}
                     />
                   </div>
 
@@ -661,14 +698,18 @@ export const HeroesView: React.FC = () => {
                   <img
                     src={hero.frame}
                     alt={hero.rarity}
-                    className="absolute inset-0 w-full h-full object-contain pointer-events-none z-10"
+                    className={`absolute inset-0 w-full h-full object-contain pointer-events-none z-10 ${
+                      isLocked ? LOCKED_TINT : ''
+                    }`}
                   />
 
                   {/* Top-Right Authentic Element Bead Orb */}
                   <img
                     src={hero.orb}
                     alt={hero.attribute}
-                    className="absolute top-0 right-0 w-[30%] h-[30%] object-contain z-20 pointer-events-none drop-shadow"
+                    className={`absolute top-0 right-0 w-[30%] h-[30%] object-contain z-20 pointer-events-none drop-shadow ${
+                      isLocked ? LOCKED_TINT : ''
+                    }`}
                   />
 
                   {/* In-Team Indicator Checkmark */}
@@ -678,8 +719,19 @@ export const HeroesView: React.FC = () => {
                     </div>
                   )}
 
+                  {/* Candado de héroe bloqueado */}
+                  {isLocked && (
+                    <div className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none">
+                      <div
+                        className={`w-6 h-6 rounded-full bg-black/80 border border-amber-700/70 flex items-center justify-center shadow ${LOCKED_TINT}`}
+                      >
+                        <Lock className="w-3 h-3 text-amber-300/80" />
+                      </div>
+                    </div>
+                  )}
+
                   {/* Stats overlay if stats button is toggled */}
-                  {showStats && !hero.isLocked && (
+                  {showStats && !isLocked && (
                     <div className="absolute inset-x-0 bottom-0 z-20 bg-black/85 text-center text-[7.5px] font-mono font-bold text-amber-300 py-0.2">
                       CC:{hero.cc}
                     </div>
@@ -959,6 +1011,21 @@ export const HeroesView: React.FC = () => {
                 );
               })()}
 
+              {/* Página de héroe (clon de la escena de Unity) */}
+              <div className="mt-3 flex items-center justify-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playSFX('click');
+                    setHeroPageId(selectedHero.id);
+                    setSelectedHero(null);
+                  }}
+                  className="w-full px-4 py-1.5 rounded-lg bg-[#2b1207] border border-[#8a4419] text-[11px] font-black uppercase tracking-[0.12em] text-amber-200 hover:bg-[#3a1708] hover:border-amber-500 active:scale-95 transition-all cursor-pointer"
+                >
+                  Página de héroe
+                </button>
+              </div>
+
               {/* Action Buttons */}
               <div className="mt-4 flex items-center justify-center gap-2">
                 <button
@@ -979,6 +1046,15 @@ export const HeroesView: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* PÁGINA DE HÉROE (clon de Arlem_Díaz_HeroPage de Unity) */}
+      {heroPageId && (
+        <HeroPageView
+          key={heroPageId}
+          heroId={heroPageId}
+          onClose={() => setHeroPageId(null)}
+        />
       )}
 
       {/* 5. FILTER MODAL */}

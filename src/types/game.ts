@@ -53,7 +53,7 @@ export interface HeroStats {
 export interface EquipmentItem {
   id: string;
   name: string;
-  type: 'weapon' | 'armor' | 'accessory' | 'ring';
+  type: 'weapon' | 'armor' | 'accessory' | 'ring' | 'helmet';
   rarity: HeroRarity;
   stats: Partial<HeroStats>;
   level: number;
@@ -83,6 +83,8 @@ export interface Hero {
   equipped: {
     weapon?: EquipmentItem;
     armor?: EquipmentItem;
+    helmet?: EquipmentItem;
+    ring?: EquipmentItem;
     accessory?: EquipmentItem;
   };
   inPatrol?: boolean;

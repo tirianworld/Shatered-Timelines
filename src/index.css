@@ -532,3 +532,29 @@
     animation-duration: 0.01s;
   }
 }
+
+/* --- Recompensas diarias: escena del portador y brillo del botón --- */
+@keyframes presenterFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.animate-presenter-float {
+  animation: presenterFloat 4.2s ease-in-out infinite;
+}
+
+@keyframes goldShine {
+  0% { transform: translateX(0%); }
+  55%, 100% { transform: translateX(420%); }
+}
+
+.animate-gold-shine {
+  animation: goldShine 3.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-presenter-float,
+  .animate-gold-shine {
+    animation: none;
+  }
+}

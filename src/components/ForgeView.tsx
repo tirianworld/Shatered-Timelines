@@ -5,6 +5,7 @@ import { ArrowLeft, Shield, Heart, Coins } from 'lucide-react';
 import { ForgeMaskedSlider } from './ForgeMaskedSlider';
 import { ForgeMilestonesModal, FORGE_MILESTONES, ForgeMilestoneStats } from './ForgeMilestonesModal';
 import { safeStorage } from '../utils/storage';
+import type { EquipmentItem } from '../types/game';
 import {
   FORGE_INTRO_MISSION_ID,
   FORGE_INTRO_SEEN_KEY,
@@ -71,6 +72,7 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
     shelfInventory,
     getMaterialCount,
     deductMaterials,
+    addForgedEquipment,
     forgeCategory,
     setForgeCategory,
     forgeSubcategory,
@@ -2521,6 +2523,40 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
       description: `Pieza forjada con maestría en el taller de herrería de Icespear.`,
       priceGold: Math.round(item.costGold * 0.65),
     });
+
+    // La pieza también entra en el inventario de equipo: aparece en la página
+    // de héroe (pestaña Equipo) y se puede equipar, mejorar y vender.
+    const equipmentType: EquipmentItem['type'] | null =
+      item.category === 'Anillos'
+        ? 'ring'
+        : item.category === 'Cascos'
+          ? 'helmet'
+          : item.category === 'Armaduras'
+            ? 'armor'
+          : item.category === 'Abalorios' || item.category === 'Encantamientos'
+            ? 'accessory'
+            : item.category === 'Armas' || item.category === 'Aceites para Armas'
+              ? 'weapon'
+              : null;
+    if (equipmentType) {
+      const attackAvg =
+        item.minAtk || item.maxAtk
+          ? Math.round(((item.minAtk ?? item.maxAtk ?? 0) + (item.maxAtk ?? item.minAtk ?? 0)) / 2)
+          : undefined;
+      addForgedEquipment({
+        name: item.name,
+        type: equipmentType,
+        rarity: itemRarity,
+        level: Math.max(1, item.level),
+        icon: item.icon,
+        description: 'Pieza forjada con maestría en el taller de herrería de Icespear.',
+        stats: {
+          attack: attackAvg,
+          defense: item.defense ?? undefined,
+          hp: item.hp ?? undefined,
+        },
+      });
+    }
 
     // Update Forge Milestone statistics
     setMilestoneStats((prev) => {

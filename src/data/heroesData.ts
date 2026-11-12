@@ -1,5 +1,13 @@
 import { Hero } from '../types/game';
 
+/**
+ * Héroes jugables desde el primer arranque de la partida.
+ * El resto del elenco se desbloquea con el gacha, eventos o la historia.
+ */
+export const STARTER_HERO_IDS = ['edacorn', 'arlem_diaz', 'magordito', 'pepe_loux'];
+
+export const getHeroById = (heroId: string): Hero | undefined => INITIAL_HEROES.find((h) => h.id === heroId);
+
 export const INITIAL_HEROES: Hero[] = [
   {
     id: 'kairon',
@@ -125,7 +133,7 @@ export const INITIAL_HEROES: Hero[] = [
     title: 'Patriarca de la Mansión Loux',
     rarity: 'UR',
     heroClass: 'Guerrero',
-    attribute: 'Divino',
+    attribute: 'Natural',
     alliance: 'Casa Loux',
     level: 1,
     currentXp: 0,
@@ -301,7 +309,7 @@ export const INITIAL_HEROES: Hero[] = [
     title: 'Bardo Trovador',
     rarity: 'SSR',
     heroClass: 'Bardo',
-    attribute: 'Natural',
+    attribute: 'Arcano',
     alliance: 'Hermandad del Manantial',
     level: 1,
     currentXp: 0,
@@ -352,7 +360,7 @@ export const INITIAL_HEROES: Hero[] = [
     portrait: '/assets/portraits/arlem_diaz_icono.png',
     backgroundArt: '/assets/backgrounds/arlem_taverna.png',
     quote: '¡Una canción para animar el alma y una fina ropera para defenderla!',
-    bio: 'Elegante y virtuoso bardo viajero. Con su laúd entona melodías que inspiran a sus aliados, mientras su diestra maneja la ropera con sublime maestría.',
+    bio: 'Arlem Díaz, un joven bardo con problemas de adicciones y odiado por su familia, se embarca sin saberlo a la mayor aventura de su vida.',
     equipped: {},
   },
   {
@@ -361,7 +369,7 @@ export const INITIAL_HEROES: Hero[] = [
     title: 'Vanguardia de Acero',
     rarity: 'SSR',
     heroClass: 'Guerrero',
-    attribute: 'Hielo',
+    attribute: 'Profano',
     alliance: 'Guardia de Icespear',
     level: 1,
     currentXp: 0,

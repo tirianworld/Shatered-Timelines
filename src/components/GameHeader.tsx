@@ -3,7 +3,7 @@ import { useGame } from '../context/GameContext';
 import { Check, Edit3, Gamepad2 } from 'lucide-react';
 import { sound } from '../services/soundService';
 
-export const GameHeader: React.FC = () => {
+export const GameHeader: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const {
     gold,
     summonCrystals,
@@ -45,7 +45,8 @@ export const GameHeader: React.FC = () => {
           type="button"
           onClick={() => {
             sound.playSFX('click');
-            goBack();
+            if (onBack) onBack();
+            else goBack();
           }}
           className="absolute left-[1.2%] top-[12.3%] w-[11.8%] h-[73.8%] rounded cursor-pointer group transition-transform active:scale-95"
           title="Volver"

@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
 import { Check, X } from 'lucide-react';
 import { CANONICAL_HEROES_LIST, CanonicalHeroItem } from './HeroesView';
 
-const STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v3';
+const STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v4';
+const LEGACY_STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v3';
+const REFERENCE_PARTY = ['edacorn', 'arlem_diaz', 'magordito', 'pepe_loux'];
 
 interface PartySelectionViewProps {
   onClose?: () => void;
 }
 
 export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose }) => {
-  const { team, setEntireTeam, goBack } = useGame();
+  const { team, setEntireTeam, goBack, heroes: ownedHeroes } = useGame();
+
+  // Los equipos solo admiten héroes desbloqueados.
+  const ownedHeroIds = useMemo(() => new Set(ownedHeroes.map((h) => h.id)), [ownedHeroes]);
 
   // 5 Party Presets (each with 4 slots)
   const [parties, setParties] = useState<(string | null)[][]>(() => {
@@ -40,6 +45,14 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
 
   const [activePreset, setActivePreset] = useState<number>(0);
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
+
+  // Al abrir la pestaña, sincroniza el equipo de combate con el preset inicial
+  // descartando cualquier héroe que no esté desbloqueado.
+  useEffect(() => {
+    const first = parties[0] || [];
+    const safe = first.map((id) => (id && ownedHeroIds.has(id) ? id : null));
+    setEntireTeam(safe.some((id) => id) ? safe : [...REFERENCE_PARTY]);
+  }, []);
 
   // Current active 4-hero slots
   const currentSlots = parties[activePreset] || [null, null, null, null];
@@ -241,7 +254,7 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
           {/* Scrollable Hero Cards Area */}
           <div className="flex-1 w-full overflow-y-auto no-scrollbar pt-0.5">
             <div className="grid grid-cols-5 gap-1 sm:gap-1.5 pb-2">
-              {CANONICAL_HEROES_LIST.map((hero) => {
+              {CANONICAL_HEROES_LIST.filter((h) => ownedHeroIds.has(h.id)).map((hero) => {
                 const inTeam = currentSlots.includes(hero.id);
 
                 return (
