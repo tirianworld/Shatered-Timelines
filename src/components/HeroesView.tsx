@@ -365,7 +365,7 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Monje de los Cien Golpes',
     rarity: 'SSR',
     attribute: 'Profano',
-    portrait: '/assets/items/arlem capa.png',
+    portrait: '/assets/portraits/arlem_diaz_icono.png',
     frame: '/assets/ui/marco_ssr.png',
     orb: '/assets/items/atributo OSCURO.png',
     level: 1,
