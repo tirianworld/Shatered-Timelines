@@ -1049,12 +1049,10 @@ export const QuestView: React.FC = () => {
             {isChapterFullyCompleted ? (
               <div className="flex items-center justify-center gap-4 py-2 bg-[#140602] rounded-lg border border-amber-900/60">
                 <div className="flex items-center gap-1.5 text-xs font-black text-amber-400 font-mono">
-                  <span>+{currentChapter === 3 ? '35,000' : currentChapter === 2 ? '25,000' : '15,000'}</span>
-                  <span className="text-[10px] text-amber-200">ORO</span>
+                  <span>+{currentChapter === 3 ? '35,000' : currentChapter === 2 ? '25,000' : '15,000'} ORO</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs font-black text-sky-400 font-mono">
-                  <span>+{currentChapter === 3 ? '1,200' : currentChapter === 2 ? '800' : '500'}</span>
-                  <span className="text-[10px] text-sky-200">GEMAS</span>
+                  <span>+{currentChapter === 3 ? '1,200' : currentChapter === 2 ? '800' : '500'} GEMAS</span>
                 </div>
               </div>
             ) : (
