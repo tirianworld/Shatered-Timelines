@@ -92,21 +92,21 @@ export const GameHeader: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         </div>
 
         {/* 3. Bottom-Left Pill: Summon Crystals / Green Gemstone Number */}
-        <div className="absolute left-[20.2%] top-[56.5%] w-[20.0%] h-[28.5%] flex items-center justify-end pr-1.5 pointer-events-none">
+        <div className="absolute left-[20.2%] top-[56.5%] w-[20.0%] h-[28.5%] flex items-center justify-center pointer-events-none">
           <span className="text-[11px] sm:text-xs font-mono font-bold text-white tracking-tight truncate leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
             {summonCrystals.toLocaleString()}
           </span>
         </div>
 
         {/* 4. Top-Right Pill: Gold Coins Number */}
-        <div className="absolute left-[64.5%] top-[16.5%] w-[19.8%] h-[28.5%] flex items-center justify-end pr-1.5 pointer-events-none">
+        <div className="absolute left-[64.5%] top-[16.5%] w-[19.8%] h-[28.5%] flex items-center justify-center pointer-events-none">
           <span className="text-[11px] sm:text-xs font-mono font-bold text-white tracking-tight truncate leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
             {gold.toLocaleString()}
           </span>
         </div>
 
         {/* 5. Bottom-Right Pill: Astral Shards / Blue Diamond Number */}
-        <div className="absolute left-[64.5%] top-[56.5%] w-[19.8%] h-[28.5%] flex items-center justify-end pr-1.5 pointer-events-none">
+        <div className="absolute left-[64.5%] top-[56.5%] w-[19.8%] h-[28.5%] flex items-center justify-center pointer-events-none">
           <span className="text-[11px] sm:text-xs font-mono font-bold text-white tracking-tight truncate leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
             {astralShards.toLocaleString()}
           </span>
