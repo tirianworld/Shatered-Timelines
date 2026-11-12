@@ -1696,12 +1696,8 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
       {/* Skin: enmascarada al hueco de la vista previa */}
       <div className={`pointer-events-none absolute h-[36%] overflow-hidden ${isArlem ? 'left-[219px] top-[190px] w-[186px]' : 'left-[51%] top-[21%] w-[40%]'}`}>
         <img
-          src={
-            isArlem
-              ? 'https://cdn.builder.io/api/v1/image/assets%2F1ac2caa106d54a9cbc6d816111268c65%2F4d2ac513c4bd46faae8ebc9719391004?format=webp&width=800&height=1200'
-              : activeSkin.art
-          }
-          alt={isArlem ? hero.name : activeSkin.name}
+          src={activeSkin.art}
+          alt={activeSkin.name}
           className={`absolute inset-0 h-full w-full origin-top scale-[2] object-contain object-top drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)] ${isArlem ? 'max-w-[95%]' : ''}`}
         />
       </div>

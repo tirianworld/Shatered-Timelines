@@ -31,7 +31,7 @@ export const GameHeader: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   return (
     <header className="relative z-30 select-none bg-[#240e06] border-b-2 border-[#3d1405] shadow-xl w-full">
       {/* Exact 403x65 banner layout matching screenshot */}
-      <div className="relative w-full max-w-[412px] mx-auto aspect-[403/65] overflow-hidden">
+      <div className="relative w-full max-w-[407px] mx-auto aspect-[403/65] overflow-hidden">
         {/* Authentic banner sprite: wood frame, carved wheel, arrow button, mail button, pill frames & gem/coin icons */}
         <img
           src="/assets/items/banner_superior_base.png"
