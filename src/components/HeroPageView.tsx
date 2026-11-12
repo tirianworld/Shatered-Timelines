@@ -202,8 +202,13 @@ const fmt = (n: number) => n.toLocaleString('es-ES', { maximumFractionDigits: 1 
 
 const starCountFor = (rarity?: string) => (rarity === 'SSR' || rarity === 'UR' ? 5 : rarity === 'SR' ? 4 : 3);
 
-const StatTile: React.FC<{ icon: string; value: string; label: string }> = ({ icon, value, label }) => (
-  <div className="relative my-[15px] mx-[-0.5px] h-[75px] grow-0 self-stretch flex flex-col items-center justify-center rounded-[7px] border-[4px] border-[#2e1100] bg-[#06112a] text-black shadow-[inset_0_1px_0_rgba(255,196,110,0.25),0_2px_4px_rgba(0,0,0,0.45)] py-[3px]">
+const StatTile: React.FC<{
+  icon: string;
+  value: string;
+  label: string;
+  marginY?: 'my-[15px]' | 'my-[-6px]' | 'my-[-8px]';
+}> = ({ icon, value, label, marginY = 'my-[15px]' }) => (
+  <div className={`relative ${marginY} mx-[-0.5px] h-[75px] grow-0 self-stretch flex flex-col items-center justify-center rounded-[7px] border-[4px] border-[#2e1100] bg-[#06112a] text-black shadow-[inset_0_1px_0_rgba(255,196,110,0.25),0_2px_4px_rgba(0,0,0,0.45)] py-[3px]`}>
     <img src={icon} alt="" className="w-[21px] h-[21px] object-contain drop-shadow" />
     <span className="mt-[1px] font-mono text-[10.5px] font-black leading-none text-[#f6c46a]">{value}</span>
     <span className="text-[7.5px] font-black uppercase leading-tight tracking-[0.02em] text-[#f6c46a]/80">
@@ -784,7 +789,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         {/* BONIFICACIONES TOTALES (suma de lo equipado) */}
         <div className="absolute left-[7.7%] top-[57.4%] w-[84.3%] h-[6.8%] grid grid-cols-5 gap-[4px]">
           {bonusTiles.map((s) => (
-            <StatTile key={s.label} icon={s.icon} value={s.value} label={s.label} />
+            <StatTile key={s.label} icon={s.icon} value={s.value} label={s.label} marginY="my-[-6px]" />
           ))}
         </div>
 
@@ -1549,7 +1554,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         <div className="relative z-10 mx-[7%] mt-[4px] rounded-[8px] border border-[#8a4a10]/70 bg-[#2a1006]/45 p-[4px] shadow-[inset_0_2px_6px_rgba(0,0,0,0.35)]">
           <div className="grid grid-cols-5 gap-[4px]">
             {bonusTiles.map((s) => (
-              <StatTile key={s.label} icon={s.icon} value={s.value} label={s.label} />
+              <StatTile key={s.label} icon={s.icon} value={s.value} label={s.label} marginY="my-[-8px]" />
             ))}
           </div>
         </div>
