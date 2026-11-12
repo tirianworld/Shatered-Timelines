@@ -758,8 +758,8 @@ export const QuestView: React.FC = () => {
                       src={mission.portrait}
                       alt={mission.title}
                       className={`w-full h-full object-contain pointer-events-none select-none transition-transform duration-300 ${
-                        mission.portraitClass || 'scale-[1.8] origin-top'
-                      }`}
+                        currentChapter === 1 ? '-scale-x-100' : ''
+                      } ${mission.portraitClass || 'scale-[1.8] origin-top'}`}
                     />
                   </div>
                   <div className="relative z-10 flex-1 min-w-0 pl-3 pr-2 flex flex-col justify-center space-y-0.5 sm:space-y-1">
