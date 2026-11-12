@@ -557,15 +557,15 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
   const renderDescripcion = () => (
     <>
       {/* PERSONAJE */}
-      <div className="absolute left-[7%] top-[18%] w-[86%] h-[32.6%]">
+      <div className={`absolute left-[7%] top-[18%] w-[86%] h-[32.6%] ${isArlem ? 'my-[5px]' : ''}`}>
         <img
           src={RARITY_BADGE[hero.rarity] ?? RARITY_BADGE.SR}
           alt={hero.rarity}
-          className="absolute left-[1.5%] top-[2%] w-[23%] object-contain drop-shadow-[0_2px_3px_rgba(0,0,0,0.35)]"
+          className={`absolute left-[1.5%] top-[2%] w-[23%] object-contain drop-shadow-[0_2px_3px_rgba(0,0,0,0.35)] ${isArlem ? 'max-w-[20%]' : ''}`}
         />
         <div className="absolute left-[27%] top-[4%] z-[1] w-[46%] leading-tight">
-          <p className="font-serif text-[11px] font-black text-[#a85a1c]">[Caldo de Dragón]</p>
-          <p className="font-serif text-[19px] font-black leading-none text-[#8a3b0e] drop-shadow-[0_1px_0_rgba(255,242,210,0.9)]">
+          <p className={`font-serif text-[11px] font-black text-[#a85a1c] ${isArlem ? 'mx-[15px] max-w-[200px] text-left' : ''}`}>[Caldo de Dragón]</p>
+          <p className={`font-serif ${isArlem ? 'max-w-[800px] text-[22px]' : 'text-[19px]'} font-black leading-none text-[#8a3b0e] drop-shadow-[0_1px_0_rgba(255,242,210,0.9)]`}>
             {hero.name}
           </p>
         </div>
@@ -578,7 +578,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
                 key={i}
                 src={`${A}/estrella_mejora.png`}
                 alt=""
-                className={`w-[28px] h-[28px] object-contain ${i < stars ? '' : 'opacity-25 grayscale'}`}
+                className={`w-[28px] h-[28px] object-contain ${i < stars ? '' : isArlem ? 'opacity-[0.47] grayscale' : 'opacity-25 grayscale'}`}
               />
             ))}
           </div>
@@ -630,12 +630,13 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         ))}
       </div>
 
-      {/* HABILIDAD PASIVA */}
-      <img
-        src={isArlem ? `${A}/pasiva_arlem.png` : `/assets/portraits/${hero.id}_icono.png`}
-        alt="Habilidad pasiva"
-        className="absolute left-[12%] top-[69.4%] w-[13%] object-contain drop-shadow"
-      />
+      {!isArlem && (
+        <img
+          src={`/assets/portraits/${hero.id}_icono.png`}
+          alt="Habilidad pasiva"
+          className="absolute left-[12%] top-[69.4%] w-[13%] object-contain drop-shadow"
+        />
+      )}
       <div className="absolute left-[28%] top-[69.6%] w-[56%]">
         <p className="mr-auto my-[10px] border-0 text-[13px] font-bold leading-[1.15] text-[#40200a]">
           Aumenta un 15% la defensa de todos los aliados de Atributo{' '}
@@ -647,7 +648,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
       <img
         src={RARITY_BADGE[hero.rarity] ?? RARITY_BADGE.SR}
         alt={hero.rarity}
-        className="absolute left-[8%] top-[79.8%] w-[18%] object-contain"
+        className={`absolute left-[8%] top-[79.8%] w-[18%] object-contain ${isArlem ? 'max-w-[25%]' : ''}`}
       />
       <div className="absolute left-[29%] top-[80.6%] w-[38%] leading-tight">
         <p className="mx-[2px] my-[8px] text-[10px] font-black text-[#5b3a1c]">
@@ -658,7 +659,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
       <button
         type="button"
         onClick={() => sound.playSFX('click')}
-        className="absolute right-[7%] top-[79.9%] w-[26%] h-[6%] rounded-[5px] border border-[#8a4a10] bg-gradient-to-b from-[#f0a03a] to-[#d97a12] text-[10.5px] font-black uppercase tracking-wide text-[#3a1a00] shadow-[inset_0_1px_0_rgba(255,225,160,0.7)] cursor-pointer active:scale-95 transition-transform"
+        className={`absolute right-[7%] top-[79.9%] w-[26%] h-[6%] rounded-[5px] ${isArlem ? 'border-[#710500] my-3 mx-[6.8px]' : 'border border-[#8a4a10]'} bg-gradient-to-b from-[#f0a03a] to-[#d97a12] text-[10.5px] font-black uppercase tracking-wide text-[#3a1a00] shadow-[inset_0_1px_0_rgba(255,225,160,0.7)] cursor-pointer active:scale-95 transition-transform`}
       >
         Mejorar
       </button>
