@@ -8,21 +8,18 @@ import {
   Sparkles,
   Zap,
   Package,
-  X,
   Shield,
   Skull,
   Eye,
   Info,
   BookOpen,
   ChevronRight,
-  Swords,
   Activity,
   Flame,
 } from 'lucide-react';
 import {
   GachaEffectType,
   ActiveGachaEffect,
-  GACHA_EFFECTS_CATALOG,
   stackGachaEffect,
   tickGachaEffects,
 } from '../types/gachaCombatEffects';
@@ -31,9 +28,19 @@ import {
   DND_DAMAGE_TYPES_REGISTRY,
   evaluateDndDamageMechanic,
 } from '../types/dndCombatDamage';
-import { CartoonFxAnimatedSpriteOverlay } from './CartoonFxAnimatedSpriteOverlay';
+import { ArlemSkillVfxOverlay } from './ArlemSkillVfxOverlay';
+import { BarledSkillVfxOverlay } from './BarledSkillVfxOverlay';
+import { EdacornSkillVfxOverlay } from './EdacornSkillVfxOverlay';
+import { GiovaniSkillVfxOverlay } from './GiovaniSkillVfxOverlay';
+import { KaironSkillVfxOverlay } from './KaironSkillVfxOverlay';
+import { MagorditoSkillVfxOverlay } from './MagorditoSkillVfxOverlay';
+import { PepeSkillVfxOverlay } from './PepeSkillVfxOverlay';
+import { PrometeoSkillVfxOverlay } from './PrometeoSkillVfxOverlay';
+import { RagnavaldrSkillVfxOverlay } from './RagnavaldrSkillVfxOverlay';
+import { RaxxarSkillVfxOverlay } from './RaxxarSkillVfxOverlay';
+import { RoxanneSkillVfxOverlay } from './RoxanneSkillVfxOverlay';
+import { SmurphSkillVfxOverlay } from './SmurphSkillVfxOverlay';
 import { AshDisintegrationEffect } from './AshDisintegrationEffect';
-import { DndDamageCodexModal } from './DndDamageCodexModal';
 import { CombatInventoryModal } from './CombatInventoryModal';
 import {
   ActiveCombatFoodBuff,
@@ -41,6 +48,9 @@ import {
 } from '../types/combatConsumables';
 import { loadTavernCookingStock, saveTavernCookingStock } from '../data/cookingData';
 import { SPRITE_POSE_SCALE } from '../data/spriteContentRatio';
+import { SPRITE_ANCHOR } from '../data/spriteAnchor';
+import { DEFAULT_ENEMY_FRAME, type EnemyVfxFrame } from '../utils/enemyVfxFrame';
+import { getCardCombatSfx } from '../data/combatSfx';
 
 export interface GachaSkillEffectApplication {
   type: GachaEffectType;
@@ -89,7 +99,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/ui/rayo_necrotico.png',
+        image: '/assets/skills/magordito_rayo_tier_1.png',
         damage: 14,
         title: 'Rayo Voltaico',
         description: '⚡ [RELÁMPAGO]: Rayo verde descendente con impacto 3D y estallido cósmico (+25% crítico).',
@@ -102,7 +112,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/ui/rayo_necrotico_tier_2.png',
+        image: '/assets/skills/magordito_rayo_tier_2.png',
         damage: 27,
         title: 'Rayo Voltaico II',
         description: '⚡ [RELÁMPAGO]: Trueno doble con detonación 3D cian y sobrecarga paralisante.',
@@ -116,7 +126,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/ui/rayo_necrotico_tier_3.png',
+        image: '/assets/skills/magordito_rayo_tier_3.png',
         damage: 48,
         title: 'Rayo Voltaico III',
         description: '⚡ [RELÁMPAGO]: Cataclismo de trueno CFXR y detonación POW con parálisis total garantizada.',
@@ -139,7 +149,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/fragmento_del_dios_oscuro.png',
+        image: '/assets/skills/magordito_dios_tier_1.png',
         damage: 12,
         title: 'Fragmento Dios Oscuro',
         description: '💀 [NECRÓTICO]: Drenaje vampírico de vitalidad (restaura 35% de vida) y marchitamiento.',
@@ -152,7 +162,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/fragmento_del_dios_oscuro_tier_2.png',
+        image: '/assets/skills/magordito_dios_tier_2.png',
         damage: 25,
         title: 'Fragmento Dios Oscuro II',
         description: '💀 [NECRÓTICO]: Sifón de ánimas que erosiona el ataque e inocula marchitamiento.',
@@ -166,7 +176,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/fragmento_del_dios_oscuro_tier_3.png',
+        image: '/assets/skills/magordito_dios_tier_3.png',
         damage: 46,
         title: 'Fragmento Dios Oscuro III',
         description: '💀 [NECRÓTICO]: Colapso del alma enemiga con drenaje vampírico supremo.',
@@ -189,7 +199,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/items/drenar_maldiciones.png',
+        image: '/assets/skills/magordito_drenar_tier_1.png',
         damage: 8,
         heal: 10,
         title: 'Peste Tóxica',
@@ -203,7 +213,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/items/drenar_maldiciones_tier_2.png',
+        image: '/assets/skills/magordito_drenar_tier_2.png',
         damage: 16,
         heal: 18,
         title: 'Peste Tóxica II',
@@ -217,7 +227,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/items/drenar_maldiciones_tier_3.png',
+        image: '/assets/skills/magordito_drenar_tier_3.png',
         damage: 30,
         heal: 30,
         title: 'Peste Tóxica III',
@@ -241,7 +251,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/fortalecer_marioneta.png',
+        image: '/assets/skills/magordito_marioneta_tier_1.png',
         damage: 13,
         title: 'Tajo Lacerante',
         description: '⚔️ [CORTANTE]: Laceración que amplifica todo el daño recibido en un +15% por acumulación.',
@@ -255,7 +265,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/fortalecer_marioneta_tier_2.png',
+        image: '/assets/skills/magordito_marioneta_tier_2.png',
         damage: 27,
         title: 'Tajo Lacerante II',
         description: '⚔️ [CORTANTE]: Doble laceración en cadena para combos destructivos.',
@@ -269,7 +279,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/fortalecer_marioneta_tier_3.png',
+        image: '/assets/skills/magordito_marioneta_tier_3.png',
         damage: 48,
         title: 'Tajo Lacerante III',
         description: '⚔️ [CORTANTE]: Desgarro supremo que desangra y expone puntos críticos.',
@@ -344,7 +354,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/items/dagas_electrum.png',
+        image: '/assets/skills/edacorn_ataque_furtivo_tier_1.png',
         damage: 16,
         title: 'Ataque Furtivo',
         description: '⚔️ [CORTANTE]: Estocada rápida con dagas gemelas que golpea puntos vitales.',
@@ -355,7 +365,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/items/dagas_plata.png',
+        image: '/assets/skills/edacorn_ataque_furtivo_tier_2.png',
         damage: 29,
         title: 'Danza de Dagas II',
         description: '⚔️ [CORTANTE]: Combinación veloz de cortes que fractura la defensa enemiga.',
@@ -368,7 +378,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/items/dagas_oro.png',
+        image: '/assets/skills/edacorn_ataque_furtivo_tier_3.png',
         damage: 52,
         title: 'Asalto Fantasmal III',
         description: '⚔️ [FUERZA / CORTANTE]: Embestida con alas esmeralda que desgarra al rival con golpe crítico garantizado.',
@@ -493,7 +503,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/inspiracion_bardica_tier_1.png',
+        image: '/assets/skills/arlem_inspiracion_tier_1.png',
         damage: 10,
         title: 'Inspiración Bárdica',
         description: '🎶 [BARDO]: Toca un arpegio afinado en su laúd y eleva +1 rango todas las cartas en mano.',
@@ -506,7 +516,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/inspiracion_bardica_tier_2.png',
+        image: '/assets/skills/arlem_inspiracion_tier_2.png',
         damage: 22,
         title: 'Crescendo Virtuoso II',
         description: '🎶 [BARDO]: Melodía vibrante de laúd que eleva todas las cartas en mano +1 rango y confiere +25% ATK.',
@@ -519,7 +529,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/inspiracion_bardica_tier_3.png',
+        image: '/assets/skills/arlem_inspiracion_tier_3.png',
         damage: 38,
         title: 'Sinfonía Heroica III',
         description: '🎶 [BARDO SUPREMO]: Acordes magistrales con laúd que elevan todas las cartas en mano al rango máximo (Oro).',
@@ -541,7 +551,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/items/curacion.png',
+        image: '/assets/skills/arlem_curacion_tier_1.png',
         damage: 0,
         heal: 45,
         title: 'Balada Serena',
@@ -553,7 +563,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/items/curacion.png',
+        image: '/assets/skills/arlem_curacion_tier_2.png',
         damage: 0,
         heal: 90,
         title: 'Canto del Manantial II',
@@ -565,7 +575,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/items/curacion.png',
+        image: '/assets/skills/arlem_curacion_tier_3.png',
         damage: 0,
         heal: 180,
         title: 'Réquiem del Renacer III',
@@ -588,7 +598,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/items/boton_espada_clean.png',
+        image: '/assets/skills/arlem_estocada_tier_1.png',
         damage: 18,
         title: 'Estocada de Rapier',
         description: '🤺 [PERFORANTE]: Precisa y elegante estocada con su fina ropera al compás de la música.',
@@ -599,7 +609,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/items/boton_espada_clean.png',
+        image: '/assets/skills/arlem_estocada_tier_2.png',
         damage: 34,
         title: 'Finta y Hendidura II',
         description: '🤺 [PERFORANTE]: Finta engañosa de bardo seguida de una penetrante estocada que fractura la defensa enemiga.',
@@ -612,7 +622,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/items/boton_espada_clean.png',
+        image: '/assets/skills/arlem_estocada_tier_3.png',
         damage: 60,
         title: 'Danza de Ropera III',
         description: '🤺 [PERFORANTE SUPREMO]: Ráfaga virtuosa de estocadas de rapier con crítico letal y ruptura defensiva.',
@@ -636,7 +646,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/golpe_hacha.png',
+        image: '/assets/skills/pepe_ataque_tier_1.png',
         damage: 18,
         title: 'Hachazo Hendiente',
         description: '⚔️ [CORTANTE]: Golpe directo con el hacha pesada de Pepe Loux.',
@@ -647,7 +657,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/golpe_hacha.png',
+        image: '/assets/skills/pepe_ataque_tier_2.png',
         damage: 34,
         title: 'Tajo de Hacha II',
         description: '⚔️ [CORTANTE]: Hachazo vertical pesado que fractura la armadura del enemigo.',
@@ -660,7 +670,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/golpe_hacha.png',
+        image: '/assets/skills/pepe_ataque_tier_3.png',
         damage: 62,
         title: 'Hendidura Devastadora III',
         description: '⚔️ [CORTANTE SUPREMO]: Hachazo demoledor de veterano con crítico garantizado y desgarro.',
@@ -683,7 +693,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/golpe_de_remo.png',
+        image: '/assets/skills/pepe_remo_tier_1.png',
         damage: 15,
         title: 'Golpe de Remo',
         description: '🚣‍♂️ [CONTUNDENTE]: Pepe estrella un remo macizo contra el rival. ¡Aturde al enemigo 1 turno, pero el impacto aturde también a Pepe!',
@@ -696,7 +706,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/golpe_de_remo.png',
+        image: '/assets/skills/pepe_remo_tier_2.png',
         damage: 30,
         title: 'Remazo de la Costa II',
         description: '🚣‍♂️ [CONTUNDENTE]: Remazo de gran impacto que noquea al enemigo 1 turno y rompe su guardia (Pepe queda aturdido 1T).',
@@ -710,7 +720,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/golpe_de_remo.png',
+        image: '/assets/skills/pepe_remo_tier_3.png',
         damage: 52,
         title: 'Impacto Naufragio III',
         description: '🚣‍♂️ [CONTUNDENTE SUPREMO]: Golpe brutal con la quilla que aturde al enemigo 2 turnos (Pepe queda aturdido 1 turno).',
@@ -733,7 +743,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/items/Defense.png',
+        image: '/assets/skills/pepe_escudo_tier_1.png',
         damage: 0,
         title: 'Guardia del Escudo',
         description: '🛡️ [BALUARTE]: Pepe alza su gran escudo. Obtiene barrera de 50 PV y 75% de resistencia a todo daño este turno.',
@@ -746,7 +756,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/items/Defense.png',
+        image: '/assets/skills/pepe_escudo_tier_2.png',
         damage: 0,
         title: 'Muralla Inquebrantable II',
         description: '🛡️ [BALUARTE]: Levanta un muro defensivo impenetrable. Barrera de 100 PV y 80% de reducción de daño por 1 turno.',
@@ -759,7 +769,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/items/Defense.png',
+        image: '/assets/skills/pepe_escudo_tier_3.png',
         damage: 0,
         title: 'Fortaleza del Bastión III',
         description: '🛡️ [BALUARTE SUPREMO]: Se convierte en una fortaleza andante. Barrera de 180 PV y 90% de reducción de daño.',
@@ -783,7 +793,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/aistudio/martillo_de_guerra_8845aea4.png',
+        image: '/assets/skills/chispo_martillo_tier_1.png',
         damage: 22,
         title: 'Martillazo de Guerra',
         description: '🔨 [CONTUNDENTE]: Descarga un brutal golpe con su pesado martillo de guerra forjado en oro (22 DMG).',
@@ -794,7 +804,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/aistudio/martillo_de_guerra_de_plata_d2e6353c.png',
+        image: '/assets/skills/chispo_martillo_tier_2.png',
         damage: 42,
         title: 'Martillo Bendito II',
         description: '🔨 [RUPTURA]: Embiste con su martillo impregnado en luz sagrada, fracturando armaduras enemigas.',
@@ -807,7 +817,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/aistudio/martillo_de_guerra_de_oro_b5f2d8a4.png',
+        image: '/assets/skills/chispo_martillo_tier_3.png',
         damage: 75,
         title: 'Maza Celestial III',
         description: '🔨 [IMPACTO SÍSMICO]: Salto alado y aplastamiento demoledor que aturde al rival y destruye sus defensas.',
@@ -830,7 +840,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/rezo_divino_tier_1.png',
+        image: '/assets/skills/chispo_rezo_tier_1.png',
         damage: 0,
         heal: 20,
         title: 'Luz Divina',
@@ -845,7 +855,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/rezo_divino_tier_2.png',
+        image: '/assets/skills/chispo_rezo_tier_2.png',
         damage: 0,
         heal: 45,
         title: 'Resplandor Celestial II',
@@ -861,7 +871,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/rezo_divino_tier_3.png',
+        image: '/assets/skills/chispo_rezo_tier_3.png',
         damage: 0,
         heal: 90,
         title: 'Gloria del Paladín III',
@@ -886,7 +896,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/smite_celestial.png',
+        image: '/assets/skills/chispo_smite_tier_1.png',
         damage: 26,
         title: 'Castigo Divino',
         description: '⚡ [ROBO DE ORBE]: Descarga el castigo divino con su martillo causando 26 DMG radiante y roba 1 orbe de definitiva para el equipo.',
@@ -897,7 +907,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/smite_celestial_tier_2.png',
+        image: '/assets/skills/chispo_smite_tier_2.png',
         damage: 48,
         title: 'Castigo Divino II - Juicio',
         description: '⚡ [ROBO & QUIEBRA]: Rayo de fuego sagrado inflige 48 DMG, roba 1 orbe de ulti y reduce el ataque del enemigo.',
@@ -910,7 +920,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/smite_celestial_tier_3.png',
+        image: '/assets/skills/chispo_smite_tier_3.png',
         damage: 82,
         title: 'Castigo Divino III - Ira de los Dioses',
         description: '⚡ [COLAPSO CELESTIAL]: Castigo celestial supremo de 82 DMG que roba 2 orbes de definitiva, drena el medidor rival y lo ciega.',
@@ -935,7 +945,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/giovani_plumas.png',
+        image: '/assets/skills/giovani_plumas_tier_1.png',
         damage: 18,
         title: 'Plumas Sombrías',
         description: '🪶 [SOMBRA]: Lanza tres plumas afiladas como dagas imbuidas de magia oscura penetrante.',
@@ -946,7 +956,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/giovani_plumas.png',
+        image: '/assets/skills/giovani_plumas_tier_2.png',
         damage: 35,
         title: 'Dardos de Ocaso II',
         description: '🪶 [SOMBRA]: Ráfaga de plumas oscuras perforantes que aplican desgarro y debilidad.',
@@ -959,7 +969,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/giovani_plumas.png',
+        image: '/assets/skills/giovani_plumas_tier_3.png',
         damage: 60,
         title: 'Tormenta de Plumaje Negro III',
         description: '🪶 [SOMBRA SUPREMA]: Lluvia torrencial de plumas de sombra que desgarra al rival con daño crítico severo.',
@@ -981,7 +991,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/giovani_treta.png',
+        image: '/assets/skills/giovani_treta_tier_1.png',
         damage: 12,
         title: 'Escamoteo Sombrío',
         description: '🃏 [BRIBÓN]: Rápido juego de manos con monedas oscuras que confunde al enemigo y roba concentración (+20% ATK).',
@@ -995,7 +1005,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/giovani_treta.png',
+        image: '/assets/skills/giovani_treta_tier_2.png',
         damage: 24,
         heal: 20,
         title: 'Truco del Tahúr II',
@@ -1010,7 +1020,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/giovani_treta.png',
+        image: '/assets/skills/giovani_treta_tier_3.png',
         damage: 45,
         title: 'Jaque de Sombras III',
         description: '🃏 [BRIBÓN SUPREMO]: Jugada maestra clandestina: Confiere +1 Orbe definitiva, aturde al rival y garantiza golpe crítico.',
@@ -1033,7 +1043,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/giovani_tomo.png',
+        image: '/assets/skills/giovani_tomo_tier_1.png',
         damage: 20,
         title: 'Llama Arcana Violeta',
         description: '📖 [GRIMORIO]: Lee un verso arcano prohibido desatando una llamarada violeta profana.',
@@ -1044,7 +1054,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/giovani_tomo.png',
+        image: '/assets/skills/giovani_tomo_tier_2.png',
         damage: 38,
         heal: 25,
         title: 'Pacto del Ocaso II',
@@ -1056,7 +1066,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/giovani_tomo.png',
+        image: '/assets/skills/giovani_tomo_tier_3.png',
         damage: 65,
         heal: 50,
         title: 'Vórtice del Grimorio III',
@@ -1079,7 +1089,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/prometeo_fire_bolt.png',
+        image: '/assets/skills/prometeo_fire_bolt_tier_1.png',
         damage: 22,
         title: 'Fire Bolt',
         description: '🔥 [PROYECTIL]: Dispara una saeta ígnea concentrada de alta velocidad que inflige 22 DMG de fuego.',
@@ -1092,7 +1102,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/prometeo_fire_bolt.png',
+        image: '/assets/skills/prometeo_fire_bolt_tier_2.png',
         damage: 44,
         title: 'Fire Bolt II - Saeta Abrasadora',
         description: '🔥 [PERFORANTE]: Saeta ígnea penetrante que quema la armadura del rival (44 DMG) y reduce su defensa.',
@@ -1106,7 +1116,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/prometeo_fire_bolt.png',
+        image: '/assets/skills/prometeo_fire_bolt_tier_3.png',
         damage: 78,
         title: 'Fire Bolt III - Ráfaga de Ceniza',
         description: '🔥 [LANZAÍGNEA SUPREMA]: Impacto piromántico crítico que desintegra defensas e inflige 78 DMG con quemadura severa.',
@@ -1129,7 +1139,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/prometeo_espada_verde.png',
+        image: '/assets/skills/prometeo_espada_verde_tier_1.png',
         damage: 26,
         title: 'Espada de Fuego Verde',
         description: '🗡️ [FUEGO & CORTE]: Taja con su espada envuelta en llamas esmeralda (26 DMG) y abre una herida sangrante (Hemorragia).',
@@ -1143,7 +1153,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/prometeo_espada_verde.png',
+        image: '/assets/skills/prometeo_espada_verde_tier_2.png',
         damage: 50,
         title: 'Espada Verde II - Tajo Sangriento',
         description: '🗡️ [RITO DE SANGRE]: Desata la magia de sangre en su hoja esmeralda. Causa 50 DMG y aplica hemorragia profunda.',
@@ -1157,7 +1167,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/prometeo_espada_verde.png',
+        image: '/assets/skills/prometeo_espada_verde_tier_3.png',
         damage: 88,
         title: 'Espada Verde III - Rito de Sangre Esmeralda',
         description: '🗡️ [CORTE VORAZ]: Salto implacable con arco de fuego verde titánico que desangra masivamente al enemigo e incendia su esencia.',
@@ -1180,7 +1190,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/prometeo_bola_fuego.png',
+        image: '/assets/skills/prometeo_bola_fuego_tier_1.png',
         damage: 30,
         title: 'Bola de Fuego',
         description: '💥 [ÁREA ÍGNEA]: Detona un orbe colosal de fuego primordial infligiendo 30 DMG ígneo envolvente.',
@@ -1193,7 +1203,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/prometeo_bola_fuego.png',
+        image: '/assets/skills/prometeo_bola_fuego_tier_2.png',
         damage: 58,
         title: 'Bola de Fuego II - Magma Ardiente',
         description: '💥 [EXPLOSIÓN DEVASTADORA]: Estallido masivo de magma hirviente que envuelve al enemigo causando 58 DMG y ceguera por humo.',
@@ -1207,7 +1217,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/prometeo_bola_fuego.png',
+        image: '/assets/skills/prometeo_bola_fuego_tier_3.png',
         damage: 96,
         title: 'Bola de Fuego III - Infierno Cataclísmico',
         description: '💥 [INFIERNO SUPREMO]: Invocación de un sol abrasador volcánico que aniquila la zona con 96 DMG masivo y reduce el ataque enemigo.',
@@ -1232,7 +1242,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/kairon_tiro_doble.png',
+        image: '/assets/skills/kairon_tiro_doble_tier_1.png',
         damage: 22,
         title: 'Tiro Doble',
         description: '🎯 [DOBLE DISPARO]: Dos tiros rápidos uno detrás de otro con sus pistolas duales (22 DMG perforante).',
@@ -1245,7 +1255,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/kairon_tiro_doble.png',
+        image: '/assets/skills/kairon_tiro_doble_tier_2.png',
         damage: 46,
         title: 'Tiro Doble II - Cadencia Mortal',
         description: '🎯 [RAFAGA CERTERA]: Dos impactos perforantes consecutivos en puntos vitales (46 DMG) que desgarran la armadura.',
@@ -1259,7 +1269,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/kairon_tiro_doble.png',
+        image: '/assets/skills/kairon_tiro_doble_tier_3.png',
         damage: 82,
         title: 'Tiro Doble III - Balas Fantasma',
         description: '🎯 [BALAS DE PLATA]: Dos proyectiles hipersónicos secuenciales que perforan la defensa enemiga (82 DMG) e inmovilizan con aturdimiento.',
@@ -1283,7 +1293,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/kairon_disparo_dual.png',
+        image: '/assets/skills/kairon_disparo_dual_tier_1.png',
         damage: 28,
         title: 'Disparo Dual',
         description: '💥 [FOGONAZO SIMULTÁNEO]: Dispara con ambas pistolas al unísono, desatando una lluvia de plomo y pólvora (28 DMG).',
@@ -1296,7 +1306,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/kairon_disparo_dual.png',
+        image: '/assets/skills/kairon_disparo_dual_tier_2.png',
         damage: 54,
         title: 'Disparo Dual II - Descarga de Pólvora',
         description: '💥 [DOBLE CAÑÓN]: Potente descarga simultánea a quemarropa (54 DMG) que ciega al oponente con humo y quema por pólvora.',
@@ -1310,7 +1320,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/kairon_disparo_dual.png',
+        image: '/assets/skills/kairon_disparo_dual_tier_3.png',
         damage: 94,
         title: 'Disparo Dual III - Tempestad de Plomo',
         description: '💥 [BARRERA DE FUEGO]: Doble fogonazo devastador a máxima potencia (94 DMG) que desorienta y debilita el ataque rival.',
@@ -1334,7 +1344,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/kairon_espadazo_largo.png',
+        image: '/assets/skills/kairon_espadazo_largo_tier_1.png',
         damage: 32,
         title: 'Espadazo de Acero',
         description: '⚔️ [TAJO DE ESPADA LARGA]: Desenvaina su espada larga y propina un brutal mandoble en arco cortante (32 DMG).',
@@ -1347,7 +1357,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/kairon_espadazo_largo.png',
+        image: '/assets/skills/kairon_espadazo_largo_tier_2.png',
         damage: 62,
         title: 'Espadazo de Acero II - Hendidura Voraz',
         description: '⚔️ [CORTE PROFUNDO]: Asesta un espadazo descendente de tremenda violencia (62 DMG) que desgarra la defensa y desangra.',
@@ -1362,7 +1372,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/kairon_espadazo_largo.png',
+        image: '/assets/skills/kairon_espadazo_largo_tier_3.png',
         damage: 105,
         title: 'Espadazo de Acero III - Juicio del Acero Glacial',
         description: '⚔️ [MANDOBLE SUPREMO]: Salto frontal con estela astral cortante (105 DMG) que mutila la armadura y aturde al oponente.',
@@ -1387,7 +1397,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/ragnavaldr_doble_lanza.png',
+        image: '/assets/skills/ragnavaldr_doble_lanza_tier_1.png',
         damage: 26,
         title: 'Estocada de Lanzas I',
         description: '🔱 [PERFORANTE]: Embestida frontal salvaje clavando ambas lanzas al unísono (26 DMG).',
@@ -1400,7 +1410,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/ragnavaldr_doble_lanza.png',
+        image: '/assets/skills/ragnavaldr_doble_lanza_tier_2.png',
         damage: 52,
         title: 'Estocada de Lanzas II - Furia de Sílex',
         description: '🔱 [EMPALAMIENTO VORAZ]: Clava ambas lanzas atravesando armaduras (52 DMG) y desgarrando la defensa.',
@@ -1414,7 +1424,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/ragnavaldr_doble_lanza.png',
+        image: '/assets/skills/ragnavaldr_doble_lanza_tier_3.png',
         damage: 98,
         title: 'Estocada de Lanzas III - Masacre Bárbara',
         description: '🔱 [MASACRE PRIMORDIAL]: Salto devastador clavando las dos lanzas con toda la potencia muscular (98 DMG) y desangrado masivo.',
@@ -1438,7 +1448,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/ragnavaldr_furia.png',
+        image: '/assets/skills/ragnavaldr_furia_tier_1.png',
         damage: 0,
         title: 'Furia Druídica I - Rugido Primitivo',
         description: '🔥 [FURIA TOTAL]: Entra en furia salvaje. Otorga +20% de daño y +15% de resistencia a todos los héroes durante 2 turnos.',
@@ -1452,7 +1462,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/ragnavaldr_furia.png',
+        image: '/assets/skills/ragnavaldr_furia_tier_2.png',
         damage: 0,
         title: 'Furia Druídica II - Sangre de los Antiguos',
         description: '🔥 [FERVOR SALVAJE]: Potencia el frenesí en combate. Otorga +35% de daño y +25% de resistencia a todos los héroes durante 2 turnos.',
@@ -1466,7 +1476,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/ragnavaldr_furia.png',
+        image: '/assets/skills/ragnavaldr_furia_tier_3.png',
         damage: 0,
         title: 'Furia Druídica III - Avatar del Páramo',
         description: '🔥 [AVATAR DEL PÁRAMO]: Rugido apocalíptico que enciende la sangre aliada. Otorga +50% de daño y +35% de resistencia a todos los héroes durante 3 turnos.',
@@ -1489,7 +1499,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/ragnavaldr_cuchillo_hielo.png',
+        image: '/assets/skills/ragnavaldr_cuchillo_hielo_tier_1.png',
         damage: 28,
         title: 'Cuchillo de Hielo I - Filo Glacial',
         description: '❄️ [HIELO]: Conjura un afilado cuchillo de hielo desde el cielo que cae en picado e inflige 28 de daño gélido (solo daño).',
@@ -1500,7 +1510,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/ragnavaldr_cuchillo_hielo.png',
+        image: '/assets/skills/ragnavaldr_cuchillo_hielo_tier_2.png',
         damage: 55,
         title: 'Cuchillo de Hielo II - Congelación Rápida',
         description: '❄️ [CONGELACIÓN]: Enorme estalactita gélida cae desde las nubes (55 DMG). ¡El enemigo queda congelado y PIERDE 1 TURNO!',
@@ -1514,7 +1524,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/ragnavaldr_cuchillo_hielo.png',
+        image: '/assets/skills/ragnavaldr_cuchillo_hielo_tier_3.png',
         damage: 96,
         title: 'Cuchillo de Hielo III - Cero Absoluto',
         description: '🧊 [CONGELACIÓN PROFUNDA]: Daga glacial titánica aplasta al objetivo (96 DMG). ¡El enemigo queda sepultado en hielo y PIERDE 2 TURNOS!',
@@ -1538,7 +1548,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/inspiracion_bardica_tier_1.png',
+        image: '/assets/skills/roxanne_inspiracion_tier_1.png',
         damage: 0,
         title: 'Inspiración Bárdica I',
         description: '🎶 [BARDA DE LA LIRA]: Roxanne tañe su lira dorada con magia rosada y sube de tier 1 carta de la mano al seleccionarla (+1 Rango).',
@@ -1549,7 +1559,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/inspiracion_bardica_tier_2.png',
+        image: '/assets/skills/roxanne_inspiracion_tier_2.png',
         damage: 0,
         title: 'Inspiración Bárdica II - Crescendo Armónico',
         description: '🎶 [ARPEGIO ARMONIOSO]: Acorde vibrante de lira que sube de tier 2 cartas de la mano al seleccionarla (+1 Rango a cada una).',
@@ -1560,7 +1570,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/inspiracion_bardica_tier_3.png',
+        image: '/assets/skills/roxanne_inspiracion_tier_3.png',
         damage: 0,
         title: 'Inspiración Bárdica III - Sinfonía Virtuosa',
         description: '🎶 [SINFONÍA DE LA VIXEN]: Clímax celestial con estallido de notas rosadas que sube de tier 4 cartas de la mano (+1 Rango a toda la mano).',
@@ -1628,7 +1638,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/roxanne_estocada.png',
+        image: '/assets/skills/roxanne_estocada_tier_1.png',
         damage: 24,
         title: 'Estocada Sonora I',
         description: '🗡️ [ESGRIMA Y MAGIA ROSADA]: Estocada precisa de rapier envuelta en espirales sónicas (24 DMG).',
@@ -1641,7 +1651,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/roxanne_estocada.png',
+        image: '/assets/skills/roxanne_estocada_tier_2.png',
         damage: 48,
         title: 'Estocada Sonora II - Duelo Virtuoso',
         description: '🗡️ [ESTOCADA VIBRANTE]: Rápido envite de rapier que quiebra la armadura enemiga (48 DMG) y desgarra su defensa.',
@@ -1655,7 +1665,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/roxanne_estocada.png',
+        image: '/assets/skills/roxanne_estocada_tier_3.png',
         damage: 86,
         title: 'Estocada Sonora III - Danza de Rapier',
         description: '🗡️ [DANZA DE RAPIER]: Ráfaga de fintas y estocadas con estallido de acordes mágicos rosados (86 DMG) y desgarro masivo.',
@@ -1668,6 +1678,291 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       },
     },
   },
+  // --- BARLED'S COMBAT DECK (TROVADOR DE LA LANZA Y EL OUD) ---
+  barled_inspiracion: {
+    id: 'barled_inspiracion',
+    name: 'Inspiración Bárdica',
+    type: 'buff',
+    sfx: 'powerup',
+    dndDamageType: 'force',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/barled_inspiracion_tier_1.png',
+        damage: 0,
+        title: 'Inspiración Bárdica I',
+        description: '🎶 [OUD ÁRABE]: Barled rasguea su Oud y sube de tier 1 carta de la mano al seleccionarla (+1 Rango).',
+        gachaEffectBadge: '🎶 Inspiración • 1 Carta sube +1 Rango',
+        gachaEffectsApplied: [],
+        dndDamageType: 'force',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/barled_inspiracion_tier_2.png',
+        damage: 0,
+        title: 'Inspiración Bárdica II - Maqam Resonante',
+        description: '🎶 [ACORDE DEL OUD]: Melodía envolvente que sube de tier 2 cartas de la mano al seleccionarla (+1 Rango a cada una).',
+        gachaEffectBadge: '🎶 Inspiración II • 2 Cartas suben +1 Rango',
+        gachaEffectsApplied: [],
+        dndDamageType: 'force',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/barled_inspiracion_tier_3.png',
+        damage: 0,
+        title: 'Inspiración Bárdica III - Virtuoso del Oud',
+        description: '🎶 [SINFONÍA DEL OUD]: Clímax musical que sube de tier 4 cartas de la mano (+1 Rango a toda la mano).',
+        gachaEffectBadge: '🎶 Sinfonía del Oud • 4 Cartas suben +1 Rango',
+        gachaEffectsApplied: [],
+        dndDamageType: 'force',
+      },
+    },
+  },
+  barled_fuego_feerico: {
+    id: 'barled_fuego_feerico',
+    name: 'Fuego Feérico',
+    type: 'magic',
+    sfx: 'laser',
+    dndDamageType: 'radiant',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/barled_fuego_feerico_tier_1.png',
+        damage: 14,
+        title: 'Fuego Feérico I',
+        description: '✨ [DEBUFF EN ÁREA]: Lanza destellos feéricos con su lanza y Oud a todos los enemigos. Reciben +15% más de daño durante 2 turnos.',
+        gachaEffectBadge: '✨ Fuego Feérico (2T) • Todos los enemigos +15% Daño Recibido',
+        gachaEffectsApplied: [
+          { type: 'faerie_fire', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'radiant',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/barled_fuego_feerico_tier_2.png',
+        damage: 28,
+        title: 'Fuego Feérico II - Resplandor Arcano',
+        description: '✨ [DEBUFF EN ÁREA II]: Fuego feérico violeta que marca a todos los enemigos, haciéndoles recibir +20% más de daño durante 2 turnos.',
+        gachaEffectBadge: '✨ Fuego Feérico II (2T) • Todos los enemigos +20% Daño Recibido',
+        gachaEffectsApplied: [
+          { type: 'faerie_fire', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'radiant',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/barled_fuego_feerico_tier_3.png',
+        damage: 46,
+        title: 'Fuego Feérico III - Supernova Feérica',
+        description: '✨ [DEBUFF EN ÁREA III]: Estallido feérico deslumbrante sobre todos los enemigos. Reciben +25% más de daño durante 3 turnos.',
+        gachaEffectBadge: '✨ Fuego Feérico III (3T) • Todos los enemigos +25% Daño Recibido',
+        gachaEffectsApplied: [
+          { type: 'faerie_fire', duration: 3, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'radiant',
+      },
+    },
+  },
+  barled_curacion: {
+    id: 'barled_curacion',
+    name: 'Curación en Masa',
+    type: 'buff',
+    sfx: 'powerup',
+    dndDamageType: 'radiant',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/barled_curacion_tier_1.png',
+        damage: 0,
+        heal: 45,
+        title: 'Curación en Masa I',
+        description: '💚 [HIMNO DEL OUD]: Acordes curativos en masa que restauran 45 PV al instante (igual que Arlem).',
+        gachaEffectBadge: '💚 Curación en Masa • Restaura 45 PV',
+        gachaEffectsApplied: [],
+        dndDamageType: 'radiant',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/barled_curacion_tier_2.png',
+        damage: 0,
+        heal: 90,
+        title: 'Curación en Masa II - Coro Vital',
+        description: '💚 [HIMNO DEL OUD II]: Melodía en masa que restaura 90 PV y purifica debuffs y aflicciones.',
+        gachaEffectBadge: '💚 Curación en Masa (90 PV) + Purificación de Debuffs',
+        gachaEffectsApplied: [],
+        dndDamageType: 'radiant',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/barled_curacion_tier_3.png',
+        damage: 0,
+        heal: 180,
+        title: 'Curación en Masa III - Sinfonía del Renacer',
+        description: '💚 [HIMNO SUPREMO]: Gran solo de Oud que restaura 180 PV, purifica todas las aflicciones y otorga celeridad.',
+        gachaEffectBadge: '💚 Curación en Masa (180 PV) + Purificación Total + Celeridad',
+        gachaEffectsApplied: [
+          { type: 'haste', duration: 2, stacks: 1, target: 'hero' },
+        ],
+        dndDamageType: 'radiant',
+      },
+    },
+  },
+  // --- RAXXAR'S COMBAT DECK (LEONÍN DE LA HOJA CARMESÍ) ---
+  raxxar_espada: {
+    id: 'raxxar_espada',
+    name: 'Tajo de Espada Rúnica',
+    type: 'attack',
+    sfx: 'attack',
+    dndDamageType: 'slashing',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/raxxar_espada_tier_1.png',
+        damage: 28,
+        title: 'Tajo Rúnico I',
+        description: '⚔️ [HOJA CARMESÍ]: Raxxar embiste con su espadón de runas sangrientas e inflige 28 DMG cortante + Sangrado.',
+        gachaEffectBadge: '⚔️ Espadón Rúnico • 28 DMG + Sangrado',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'slashing',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/raxxar_espada_tier_2.png',
+        damage: 56,
+        title: 'Tajo Rúnico II - Hendidura Carmesí',
+        description: '⚔️ [FILO SANGRIENTO II]: Potente arco carmesí que desgarra la guardia enemiga (56 DMG) + Sangrado II y Ruptura DEF.',
+        gachaEffectBadge: '⚔️ Hendidura Carmesí • 56 DMG + Sangrado II + Ruptura DEF',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 2, stacks: 2, target: 'enemy' },
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'slashing',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/raxxar_espada_tier_3.png',
+        damage: 98,
+        title: 'Tajo Rúnico III - Guadaña de Sangre',
+        description: '⚔️ [FILO SUPREMO]: Tajo devastador envuelto en aura carmesí que parte defensas (98 DMG), provoca Laceración y Ruptura DEF II.',
+        gachaEffectBadge: '⚔️ Guadaña de Sangre • 98 DMG + Laceración + Ruptura DEF II',
+        gachaEffectsApplied: [
+          { type: 'laceration', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+        ],
+        dndDamageType: 'slashing',
+      },
+    },
+  },
+  raxxar_escudo: {
+    id: 'raxxar_escudo',
+    name: 'Escudo Antidisturbios Rúnico',
+    type: 'buff',
+    sfx: 'skill',
+    dndDamageType: 'force',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/raxxar_escudo_tier_1.png',
+        damage: 0,
+        title: 'Escudo Antidisturbios I',
+        description: '🛡️ [MORFOSIS DE ESPADA]: La espada se transforma en un pesado escudo antidisturbios rúnico (+70 Escudo PV y 75% reducción de daño 1T).',
+        gachaEffectBadge: '🛡️ Escudo Táctico (+70 PV) • 75% Reducción DMG (1T)',
+        gachaEffectsApplied: [],
+        dndDamageType: 'force',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/raxxar_escudo_tier_2.png',
+        damage: 0,
+        title: 'Escudo Antidisturbios II - Muro Carmesí',
+        description: '🛡️ [MORFOSIS REFORZADA]: Barrera antidisturbios reforzada (+140 Escudo PV, 80% reducción de daño y purifica debuffs).',
+        gachaEffectBadge: '🛡️ Muro Carmesí (+140 PV) • 80% Reducción + Purificación',
+        gachaEffectsApplied: [],
+        dndDamageType: 'force',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/raxxar_escudo_tier_3.png',
+        damage: 0,
+        title: 'Escudo Antidisturbios III - Égida Inexpugnable',
+        description: '🛡️ [MORFOSIS SUPREMA]: Fortaleza táctica (+240 Escudo PV, 90% reducción de daño 2T, purificación total y +ATK rúnico).',
+        gachaEffectBadge: '🛡️ Égida (+240 PV) • 90% Reducción (2T) + Purificación + +ATK',
+        gachaEffectsApplied: [
+          { type: 'atk_buff', duration: 2, stacks: 2, target: 'hero' },
+        ],
+        dndDamageType: 'force',
+      },
+    },
+  },
+  raxxar_lanza: {
+    id: 'raxxar_lanza',
+    name: 'Lanza de Magia Sangrienta',
+    type: 'attack',
+    sfx: 'laser',
+    dndDamageType: 'piercing',
+    tiers: {
+      1: {
+        tier: 1,
+        frameName: 'Bronce',
+        image: '/assets/skills/raxxar_lanza_tier_1.png',
+        damage: 32,
+        title: 'Lanza Sangrienta I',
+        description: '🩸 [LANZA TRANSFORMADA]: La espada adopta forma de lanza envuelta en magia de sangre e impacta a distancia (32 DMG) + Sangrado.',
+        gachaEffectBadge: '🩸 Lanza de Sangre • 32 DMG Perforante + Sangrado',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+      2: {
+        tier: 2,
+        frameName: 'Plata',
+        image: '/assets/skills/raxxar_lanza_tier_2.png',
+        damage: 64,
+        title: 'Lanza Sangrienta II - Venablo Carmesí',
+        description: '🩸 [VENABLO DE SANGRE]: Lanza arrojadiza en espiral escarlata que atraviesa blindajes (64 DMG) + Sangrado II y Ruptura DEF.',
+        gachaEffectBadge: '🩸 Venablo Carmesí • 64 DMG + Sangrado II + Ruptura DEF',
+        gachaEffectsApplied: [
+          { type: 'bleed', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'def_break', duration: 2, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+      3: {
+        tier: 3,
+        frameName: 'Oro',
+        image: '/assets/skills/raxxar_lanza_tier_3.png',
+        damage: 112,
+        title: 'Lanza Sangrienta III - Juicio Escarlata',
+        description: '🩸 [IMPACTO SUPREMO]: Proyectil carmesí devastador que empala al enemigo (112 DMG), inflige Laceración, Ruptura DEF y Aturde 1T.',
+        gachaEffectBadge: '🩸 Juicio Escarlata • 112 DMG + Laceración + Aturdir (1T)',
+        gachaEffectsApplied: [
+          { type: 'laceration', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'def_break', duration: 3, stacks: 2, target: 'enemy' },
+          { type: 'stun', duration: 1, stacks: 1, target: 'enemy' },
+        ],
+        dndDamageType: 'piercing',
+      },
+    },
+  },
+
   // --- SMURPH DRACO'S COMBAT DECK (HECHICERO DRACÓNICO) ---
   smurph_aterrizaje_heroico: {
     id: 'smurph_aterrizaje_heroico',
@@ -1679,7 +1974,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/smurph_aterrizaje_heroico.png',
+        image: '/assets/skills/smurph_aterrizaje_heroico_tier_1.png',
         damage: 38,
         title: 'Vuelo y Aterrizaje Heroico',
         description: '🦅 [VUELO & ATERRIZAJE]: Smurph se eleva hacia arriba haciéndose invisible por 1 turno (inmune a daño). Al final del turno cae en picado y ataca al guardia con un brutal aterrizaje superheroico contra el suelo (38 DMG).',
@@ -1692,7 +1987,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/smurph_aterrizaje_heroico.png',
+        image: '/assets/skills/smurph_aterrizaje_heroico_tier_2.png',
         damage: 74,
         title: 'Aterrizaje Heroico II - Impacto Sísmico',
         description: '🦅 [SUPERHERO LANDING II]: Ascenso invisible a las nubes. Cae con violencia demoledora estrellándose contra el suelo (74 DMG), quebrando la armadura del guardia y aturdiéndolo.',
@@ -1706,7 +2001,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/smurph_aterrizaje_heroico.png',
+        image: '/assets/skills/smurph_aterrizaje_heroico_tier_3.png',
         damage: 125,
         title: 'Aterrizaje Heroico III - Colapso Dracónico',
         description: '🦅 [COLAPSO SUPREMO]: Despegue supersónico invisible inmune a todo daño. Cae como un meteoro en aterrizaje superheroico perfecto causando 125 DMG en un cráter eléctrico masivo.',
@@ -1729,7 +2024,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/smurph_bolas_fuego.png',
+        image: '/assets/skills/smurph_bolas_fuego_tier_1.png',
         damage: 28,
         title: 'Bolas de Fuego Dracónicas',
         description: '🔥 [FUEGO DRACÓNICO]: Dispara múltiples esferas de fuego dracónico que impactan al guardia infligiendo 28 DMG ígneo y quemadura persistente.',
@@ -1742,7 +2037,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/smurph_bolas_fuego.png',
+        image: '/assets/skills/smurph_bolas_fuego_tier_2.png',
         damage: 56,
         title: 'Bolas de Fuego II - Ráfaga Ígnea',
         description: '🔥 [ANDANADA MAGMÁTICA]: Lanza una ráfaga arrolladora de meteoros ígneos que calcinan al rival (56 DMG) y reducen su poder de ataque.',
@@ -1756,7 +2051,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/smurph_bolas_fuego.png',
+        image: '/assets/skills/smurph_bolas_fuego_tier_3.png',
         damage: 94,
         title: 'Bolas de Fuego III - Tormenta Piromántica',
         description: '🔥 [CATACLISMO ÍGNEO]: Bombardeo masivo de orbes solares dracónicos que desintegran la defensa enemiga (94 DMG) e incendian el campo de batalla.',
@@ -1779,7 +2074,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/smurph_aliento_rayo.png',
+        image: '/assets/skills/smurph_aliento_rayo_tier_1.png',
         damage: 32,
         title: 'Aliento de Rayo',
         description: '⚡ [RELÁMPAGO BUCAL]: Abre las fauces y exhala un rayo eléctrico continuo de alta potencia que electrocuta al objetivo causando 32 DMG de rayo.',
@@ -1792,7 +2087,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/smurph_aliento_rayo.png',
+        image: '/assets/skills/smurph_aliento_rayo_tier_2.png',
         damage: 64,
         title: 'Aliento de Rayo II - Descarga Voltaica',
         description: '⚡ [DESCARGA VOLTAICA]: Haz crepitante de plasma eléctrico exhalado desde la garganta que atraviesa las armaduras (64 DMG) con choque severo.',
@@ -1807,7 +2102,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/smurph_aliento_rayo.png',
+        image: '/assets/skills/smurph_aliento_rayo_tier_3.png',
         damage: 105,
         title: 'Aliento de Rayo III - Tormenta de Relámpagos',
         description: '⚡ [HAZ DRACÓNICO TITÁNICO]: Emisión atronadora de relámpagos celestes concentrados desde su boca (105 DMG), paralizando y quebrando al guardia por completo.',
@@ -1893,7 +2188,13 @@ export type CombatVfxType =
   | 'medusa_sting'
   | 'roxanne_inspiracion'
   | 'roxanne_velada'
-  | 'roxanne_estocada';
+  | 'roxanne_estocada'
+  | 'barled_inspiracion'
+  | 'barled_fuego_feerico'
+  | 'barled_curacion'
+  | 'raxxar_espada'
+  | 'raxxar_escudo'
+  | 'raxxar_lanza';
 
 export interface CombatVfxState {
   type: CombatVfxType;
@@ -3077,7 +3378,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       maxHp: 38,
       width: 131,
       height: 180,
-      scaleClass: 'w-[131px] h-[180px]',
+      scaleClass: 'w-[101px] h-[139px]',
       isBoss: false,
       isSemiboss: false,
       normalSkill: {
@@ -3147,7 +3448,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       maxHp: 34,
       width: 131,
       height: 180,
-      scaleClass: 'w-[131px] h-[180px]',
+      scaleClass: 'w-[101px] h-[139px]', // mismo tamaño que el goblin de dagas
       isBoss: false,
       isSemiboss: false,
       normalSkill: {
@@ -3211,7 +3512,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       maxHp: 56,
       width: 131,
       height: 180,
-      scaleClass: 'w-[131px] h-[180px]',
+      scaleClass: 'w-[101px] h-[139px]', // mismo tamaño que el goblin de dagas
       isBoss: false,
       isSemiboss: true,
       normalSkill: {
@@ -3275,7 +3576,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       maxHp: 52,
       width: 131,
       height: 180,
-      scaleClass: 'w-[131px] h-[180px]',
+      scaleClass: 'w-[101px] h-[139px]', // mismo tamaño que el goblin de dagas
       isBoss: true,
       isSemiboss: false,
       normalSkill: {
@@ -3339,7 +3640,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       maxHp: 160,
       width: 176,
       height: 240,
-      scaleClass: 'w-[176px] h-[240px]',
+      scaleClass: 'w-[264px] h-[360px]', // Devorador: 1.5x (0.5 más grande)
       isBoss: true,
       isSemiboss: false,
       hasPhaseTwo: true,
@@ -3411,7 +3712,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       maxHp: 220,
       width: 191,
       height: 262,
-      scaleClass: 'w-[191px] h-[262px]',
+      scaleClass: 'w-[287px] h-[393px]', // Devorador fase 2: 1.5x (0.5 más grande)
       isBoss: true,
       isSemiboss: false,
       hasPhaseTwo: false,
@@ -4698,7 +4999,26 @@ export const CombatView: React.FC = () => {
   // Cada enemigo que cae suelta un saquito en el campo y su botin entra en el
   // inventario al instante: oro siempre y, a veces, un material de su tabla.
   const [lootSacks, setLootSacks] = useState<LootSackDrop[]>([]);
+  // Espejo de los saquitos activos: el cambio de enemigo espera a que se disuelvan.
+  const lootSacksRef = useRef<LootSackDrop[]>([]);
+  useEffect(() => {
+    lootSacksRef.current = lootSacks;
+  }, [lootSacks]);
   const droppedUidsRef = useRef<Set<string>>(new Set());
+
+  // No cambiamos de enemigo mientras el saquito del derrotado aún se disuelve:
+  // el jugador sigue viendo al enemigo que acaba de caer hasta que el botín desaparece.
+  const switchTargetAfterLoot = useCallback((nextIdx: number, deadUid: string) => {
+    const attempt = (tries: number) => {
+      const stillOnField = lootSacksRef.current.some((sack) => sack.key.startsWith(deadUid));
+      if (stillOnField && tries < 60) {
+        window.setTimeout(() => attempt(tries + 1), 80);
+        return;
+      }
+      setSelectedEnemyIdx((prev) => (activeEnemiesRef.current[prev]?.uid === deadUid ? nextIdx : prev));
+    };
+    attempt(0);
+  }, []);
   const lootLayerRef = useRef<HTMLDivElement | null>(null);
   const grantGoldRef = useRef(addGold);
   grantGoldRef.current = addGold;
@@ -4816,7 +5136,6 @@ export const CombatView: React.FC = () => {
   const isEnemyAshDissolving = targetEnemy.isAshDissolving;
 
   const [bossTransitioning, setBossTransitioning] = useState<boolean>(false);
-  const [turnSkippedBanner, setTurnSkippedBanner] = useState<string | null>(null);
 
   // Hero Stats (Magordito) - 100 HP
   const MAX_HERO_HP = 100;
@@ -4882,6 +5201,43 @@ export const CombatView: React.FC = () => {
       '/assets/skills/smurph_aterrizaje_heroico.png',
       '/assets/skills/smurph_bolas_fuego.png',
       '/assets/skills/smurph_aliento_rayo.png',
+      '/assets/skills/barled_inspiracion_tier_1.png',
+      '/assets/skills/barled_inspiracion_tier_2.png',
+      '/assets/skills/barled_inspiracion_tier_3.png',
+      '/assets/skills/barled_fuego_feerico_tier_1.png',
+      '/assets/skills/barled_fuego_feerico_tier_2.png',
+      '/assets/skills/barled_fuego_feerico_tier_3.png',
+      '/assets/skills/barled_curacion_tier_1.png',
+      '/assets/skills/barled_curacion_tier_2.png',
+      '/assets/skills/barled_curacion_tier_3.png',
+      '/assets/skills/raxxar_espada_tier_1.png',
+      '/assets/skills/raxxar_espada_tier_2.png',
+      '/assets/skills/raxxar_espada_tier_3.png',
+      '/assets/skills/raxxar_escudo_tier_1.png',
+      '/assets/skills/raxxar_escudo_tier_2.png',
+      '/assets/skills/raxxar_escudo_tier_3.png',
+      '/assets/skills/raxxar_lanza_tier_1.png',
+      '/assets/skills/raxxar_lanza_tier_2.png',
+      '/assets/skills/raxxar_lanza_tier_3.png',
+      '/assets/combat/barled_idle.png',
+      '/assets/combat/barled_hurt.png',
+      '/assets/combat/barled_attack.png',
+      '/assets/combat/barled_cast.png',
+      '/assets/combat/raxxar_idle.png',
+      '/assets/combat/raxxar_hurt.png',
+      '/assets/combat/raxxar_attack.png',
+      '/assets/combat/raxxar_shield.png',
+      '/assets/combat/raxxar_spear.png',
+      '/assets/combat/barled_vfx_inspiracion.png',
+      '/assets/combat/barled_vfx_destello.png',
+      '/assets/combat/barled_vfx_feerico.png',
+      '/assets/combat/raxxar_vfx_tajo.png',
+      '/assets/combat/raxxar_vfx_rayo_sangre.png',
+      '/assets/combat/raxxar_vfx_zap.png',
+      '/assets/combat/raxxar_vfx_zzzt.png',
+      '/assets/combat/raxxar_vfx_tzzzk.png',
+      '/assets/combat/raxxar_vfx_impacto.png',
+      '/assets/combat/raxxar_vfx_escudo.png',
     ];
     sprites.forEach((src) => {
       const img = new Image();
@@ -4934,12 +5290,33 @@ export const CombatView: React.FC = () => {
   const isKaironCombat = activeCombatHeroId === 'kairon';
   const isRagnavaldrCombat = activeCombatHeroId === 'ragnavaldr';
 
+  const isBarledCombat = activeCombatHeroId === 'barled';
+  const isRaxxarCombat = activeCombatHeroId === 'raxxar';
+  const isMagorditoCombat =
+    activeCombatHeroId === 'magordito' ||
+    (!isSmurphCombat &&
+      !isRoxanneCombat &&
+      !isBarledCombat &&
+      !isRaxxarCombat &&
+      !isEdacornCombat &&
+      !isPepeCombat &&
+      !isArlemCombat &&
+      !isChispoCombat &&
+      !isGiovaniCombat &&
+      !isPrometeoCombat &&
+      !isKaironCombat &&
+      !isRagnavaldrCombat);
+
   const [isEdacornStealthed, setIsEdacornStealthed] = useState<boolean>(false);
   const [edacornCounter, setEdacornCounter] = useState<{ active: boolean; damage: number } | null>(null);
+  // Un instante de pose de ataque justo cuando la réplica conecta
+  const [edacornStrikePose, setEdacornStrikePose] = useState<boolean>(false);
 
   const getHeroName = (): string => {
     if (isSmurphCombat) return 'Smurph Draco';
     if (isRoxanneCombat) return 'Roxanne';
+    if (isBarledCombat) return 'Barled';
+    if (isRaxxarCombat) return 'Raxxar';
     if (isRagnavaldrCombat) return 'Ragnavaldr';
     if (isKaironCombat) return 'Kairon';
     if (isPrometeoCombat) return 'Prometeo';
@@ -4954,6 +5331,8 @@ export const CombatView: React.FC = () => {
   const getHeroSplashartUrl = (): string => {
     if (isSmurphCombat) return '/assets/portraits/smurph_draco.png';
     if (isRoxanneCombat) return '/assets/portraits/roxanne.png';
+    if (isBarledCombat) return '/assets/portraits/barled.png';
+    if (isRaxxarCombat) return '/assets/portraits/raxxar.png';
     if (isRagnavaldrCombat) return '/assets/portraits/ragnavaldr.png';
     if (isKaironCombat) return '/assets/portraits/kairon.png';
     if (isPrometeoCombat) return '/assets/portraits/prometeo.png';
@@ -4971,6 +5350,12 @@ export const CombatView: React.FC = () => {
     }
     if (heroId === 'roxanne') {
       return ['roxanne_inspiracion', 'roxanne_velada', 'roxanne_estocada'];
+    }
+    if (heroId === 'barled') {
+      return ['barled_inspiracion', 'barled_fuego_feerico', 'barled_curacion'];
+    }
+    if (heroId === 'raxxar') {
+      return ['raxxar_espada', 'raxxar_escudo', 'raxxar_lanza'];
     }
     if (heroId === 'ragnavaldr') {
       return ['ragnavaldr_doble_lanza', 'ragnavaldr_furia', 'ragnavaldr_cuchillo_hielo'];
@@ -4998,7 +5383,6 @@ export const CombatView: React.FC = () => {
     }
     return [
       'rayo_necrotico',
-      'dios_oscuro',
       'drenar_maldiciones',
       'fortalecer_marioneta',
     ];
@@ -5137,6 +5521,51 @@ export const CombatView: React.FC = () => {
       return '/assets/combat/roxanne_idle.png';
     }
 
+    // 0.05 Barled: Bardo con Lanza y Oud (Laúd Árabe)
+    if (isBarledCombat) {
+      if (heroAnimation === 'hit' || isHeroHitShaking) {
+        return '/assets/combat/barled_hurt.png';
+      }
+      if (heroCastSkill) {
+        switch (heroCastSkill) {
+          case 'barled_fuego_feerico':
+            return '/assets/combat/barled_attack.png';
+          case 'barled_inspiracion':
+          case 'barled_curacion':
+            return '/assets/combat/barled_cast.png';
+          default:
+            return '/assets/combat/barled_attack.png';
+        }
+      }
+      if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
+        return '/assets/combat/barled_attack.png';
+      }
+      return '/assets/combat/barled_idle.png';
+    }
+
+    // 0.08 Raxxar: Leonín Rojo con Espada Rúnica Morfable (Espada / Escudo Antidisturbios / Lanza Sangrienta)
+    if (isRaxxarCombat) {
+      if (heroAnimation === 'hit' || isHeroHitShaking) {
+        return '/assets/combat/raxxar_hurt.png';
+      }
+      if (heroCastSkill) {
+        switch (heroCastSkill) {
+          case 'raxxar_espada':
+            return '/assets/combat/raxxar_attack.png';
+          case 'raxxar_escudo':
+            return '/assets/combat/raxxar_shield.png';
+          case 'raxxar_lanza':
+            return '/assets/combat/raxxar_spear.png';
+          default:
+            return '/assets/combat/raxxar_attack.png';
+        }
+      }
+      if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
+        return '/assets/combat/raxxar_attack.png';
+      }
+      return '/assets/combat/raxxar_idle.png';
+    }
+
     // 0.1 Ragnavaldr: Bárbaro Druida con dos lanzas
     if (isRagnavaldrCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
@@ -5258,6 +5687,15 @@ export const CombatView: React.FC = () => {
 
     // 3. Edacorn: Idle, Hurt & Per-Skill transparent combat sprites (without spectral wings)
     if (isEdacornCombat) {
+      // Postura de contraataque armada: manda sobre cualquier otra pose (atacar, recibir
+      // golpe o castear) hasta que Edacorn responda con la réplica.
+      if (edacornCounter?.active) {
+        return '/assets/combat/edacorn_cast_contraataque.png';
+      }
+      // Golpe de réplica: pose de ataque
+      if (edacornStrikePose) {
+        return '/assets/combat/edacorn_attack.png';
+      }
       if (heroAnimation === 'hit' || isHeroHitShaking) {
         return '/assets/combat/edacorn_hurt.png';
       }
@@ -5354,6 +5792,93 @@ export const CombatView: React.FC = () => {
     return '/assets/combat/magordito_idle.png';
   };
 
+  /**
+   * Punto de apoyo medido de cada sprite (c = centro del torso, b = línea de los pies).
+   * Desplaza el sprite, ya escalado, para que ese punto caiga justo en el centro de la sombra,
+   * sin importar cuánto alarguen el recorte el arma, la capa o los efectos de la pose.
+   */
+  const getSpriteAnchorTransform = (url: string, scale: number): string => {
+    const anchor = SPRITE_ANCHOR[url] ?? { c: 0.5, b: 1 };
+    const dx = (0.5 - anchor.c) * scale * 100;
+    const dy = (1 - anchor.b) * scale * 100;
+    return `translateX(${dx.toFixed(3)}%) translateY(${dy.toFixed(3)}%)`;
+  };
+
+  /**
+   * Mide en pantalla al enemigo activo (cuerpo, cabeza y tamaño) para que los efectos de ataque
+   * del héroe se adapten a él en lugar de usar coordenadas fijas.
+   */
+  const measureEnemyVfxFrame = (): EnemyVfxFrame => {
+    const wrapper = document.querySelector('[data-enemy-sprite]') as HTMLElement | null;
+    const host = wrapper?.parentElement as HTMLElement | null;
+    const img = wrapper?.querySelector('img:not([data-enemy-shadow])') as HTMLImageElement | null;
+    if (!wrapper || !host) return DEFAULT_ENEMY_FRAME;
+    const hostRect = host.getBoundingClientRect();
+    if (!hostRect.width || !hostRect.height) return DEFAULT_ENEMY_FRAME;
+    const rect = (img ?? wrapper).getBoundingClientRect();
+    const anchor = SPRITE_ANCHOR[img?.getAttribute('src') ?? ''] ?? { c: 0.5, b: 1, hx: 0.5, hy: 0.15 };
+    const toX = (px: number) => (px - hostRect.left) / hostRect.width;
+    const toY = (py: number) => (py - hostRect.top) / hostRect.height;
+    const footY = toY(rect.top + anchor.b * rect.height);
+    const headX = toX(rect.left + anchor.hx * rect.width);
+    const headY = toY(rect.top + anchor.hy * rect.height);
+    return {
+      x: toX(rect.left + anchor.c * rect.width),
+      y: (footY + headY) / 2,
+      headX,
+      headY,
+      height: rect.height / hostRect.height,
+      width: rect.width / hostRect.width,
+    };
+  };
+
+  /** Escala base del héroe por complexión: no depende de la pose ni del arma. */
+  const getHeroBodyBaseScale = (): number => {
+    if (isPepeCombat) return 0.60375; // enano: ~40% más pequeño que el resto (0.575 + un 5%)
+    if (isBarledCombat) return 0.94875; // Barled: ~26,5% más grande que el resto de humanos (0.8625 + un 10%)
+    if (isEdacornCombat) return 0.825; // Edacorn: un 10% más grande que el resto de humanos
+    if (isPrometeoCombat) return 0.8625; // Prometeo: un 15% más grande que el resto de humanos
+    if (isKaironCombat || isArlemCombat || isRoxanneCombat || isGiovaniCombat) {
+      return 0.75; // héroes humanos o de talla humana: 25% más pequeños
+    }
+    return 1;
+  };
+
+  /**
+   * Escala final del sprite de héroe: solo la complexión del héroe, idéntica en idle, ataque,
+   * skill y daño. Se comprobó midiendo la cabeza de las 66 poses (misma escala, pies alineados,
+   * rejilla de 20 px): la cabeza mide lo mismo en todas dentro de ±5 %, así que no hay ninguna
+   * pose que deba escalarse aparte y el personaje nunca cambia de tamaño al cambiar de pose.
+   */
+  const getHeroSpriteRenderScale = (): number => getHeroBodyBaseScale();
+
+  /**
+   * Desplazamiento del sprite del héroe hasta el centro de su sombra (en % de su propio tamaño).
+   * Se aplica con la propiedad CSS `translate`, que sí puede animarse.
+   */
+  const getHeroSpriteTranslate = (): string => {
+    const url = getHeroSpriteUrl();
+    const scale = getHeroSpriteRenderScale();
+    const anchor = SPRITE_ANCHOR[url] ?? { c: 0.5, b: 1 };
+    const dx = (0.5 - anchor.c) * scale * 100;
+    const dy = (1 - anchor.b) * scale * 100;
+    // La propiedad CSS `translate` usa "x y", no translateX()/translateY().
+    return `${dx.toFixed(3)}% ${dy.toFixed(3)}%`;
+  };
+
+  /**
+   * Escala del sprite del héroe. Se aplica con la propiedad CSS `scale`, que NO está en la
+   * transición: al cambiar de pose el tamaño cambia de golpe y nunca se ve un zoom animado.
+   */
+  const getHeroSpriteScale = (): string => String(getHeroSpriteRenderScale());
+
+  /** Transformación del sprite enemigo: siempre apoyado en el centro de su sombra. */
+  const getEnemySpriteTransform = (enemy: ChamberEnemyState): string => {
+    const url = getEnemySpriteUrl(enemy);
+    const s = getEnemyStateSpriteScale(enemy.spriteUrl, url);
+    return `${getSpriteAnchorTransform(url, s)} scale(${s})`;
+  };
+
   const getEnemySpriteUrl = (enemy: ChamberEnemyState): string => {
     if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
       return enemy.hurtSpriteUrl || enemy.spriteUrl;
@@ -5387,6 +5912,7 @@ export const CombatView: React.FC = () => {
     setWaveClearBanner(null);
     setIsEdacornStealthed(false);
     setEdacornCounter(null);
+    setEdacornStrikePose(false);
     heroHandsRef.current = {};
     const initHeroHand = createInitialHandForHero(activeCombatHeroIdRef.current);
     heroHandsRef.current[activeCombatHeroIdRef.current] = initHeroHand;
@@ -5508,6 +6034,34 @@ export const CombatView: React.FC = () => {
   const [slashEffect, setSlashEffect] = useState<'none' | 'lightning' | 'shockwave' | 'drain'>('none');
   const [activeVfx, setActiveVfx] = useState<CombatVfxState>({ type: 'none', tier: 1 });
 
+  const [enemyVfxFrame, setEnemyVfxFrame] = useState<EnemyVfxFrame>(DEFAULT_ENEMY_FRAME);
+
+  // Antes de cada ataque o skill se vuelve a medir al enemigo: si cambia de tamaño, posición o
+  // sprite, los efectos apuntan a su cuerpo y a su cabeza reales.
+  useEffect(() => {
+    if (!heroCastSkill && activeVfx.type === 'none' && !isUltimateCinematicActive) return;
+    setEnemyVfxFrame(measureEnemyVfxFrame());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [heroCastSkill, activeVfx.type, targetEnemy?.uid]);
+
+  /**
+   * Shader rosa de Roxanne: se dibuja encima de su sprite al usar Velada Encantadora o
+   * Inspiración Bárdica y gana intensidad en cada tier (tinte más fuerte, aura más amplia
+   * y pulsación más rápida). Va junto al aura de esos skills, no en su lugar.
+   */
+  const roxannePinkShaderTier =
+    isRoxanneCombat && (heroCastSkill === 'roxanne_velada' || heroCastSkill === 'roxanne_inspiracion')
+      ? Math.min(3, Math.max(1, activeVfx.tier || 1))
+      : 0;
+
+
+  // Contador que reinicia los overlays cuando se repite la misma habilidad.
+  const vfxSequenceRef = useRef(0);
+  const magorditoVfxKey = useMemo(() => {
+    vfxSequenceRef.current += 1;
+    return vfxSequenceRef.current;
+  }, [activeVfx.type, activeVfx.tier, heroCastSkill]);
+
   // AAA Gacha Camera Shake & Impact Flash (Tiered Intensities)
   const [screenShake, setScreenShake] = useState<'none' | 'light' | 'medium' | 'heavy'>('none');
   const [screenFlash, setScreenFlash] = useState<'cyan' | 'purple' | 'gold' | 'red' | 'green' | null>(null);
@@ -5519,8 +6073,6 @@ export const CombatView: React.FC = () => {
   const [foodShieldHp, setFoodShieldHp] = useState<number>(0);
 
   // D&D 5e Damage Compendium & Tactical Procs State
-  const [showDndCodex, setShowDndCodex] = useState<boolean>(false);
-  const [selectedDndCodexType, setSelectedDndCodexType] = useState<DndDamageType>('fire');
   const [dndProcBanner, setDndProcBanner] = useState<{
     text: string;
     color: string;
@@ -5542,7 +6094,6 @@ export const CombatView: React.FC = () => {
     );
   };
   const [heroConditions, setHeroConditions] = useState<ActiveGachaEffect[]>([]);
-  const [selectedConditionTooltip, setSelectedConditionTooltip] = useState<ActiveGachaEffect | null>(null);
 
   // Status Effect Animation Triggers (Pokémon style: one-shot on turn start or on application)
   const [heroStatusTrigger, setHeroStatusTrigger] = useState<number>(0);
@@ -5603,6 +6154,7 @@ export const CombatView: React.FC = () => {
       badgeColor?: string
     ) => {
       const id = ++floatingIdRef.current;
+      if (isHeal && /\d/.test(text)) sound.playSFX('heal');
       setFloatingTexts((prev) => [
         ...prev,
         { id, text, isEnemy, isHeal, tier, isCrit: isCrit || tier === 3, slotIndex, dndType, badgeText, badgeColor },
@@ -5727,9 +6279,7 @@ export const CombatView: React.FC = () => {
     activeEnemiesRef.current = [...activeEnemiesRef.current, newMinion];
     setActiveEnemies((prev) => [...prev, newMinion]);
     sound.playSFX('necrotic');
-    setTurnSkippedBanner('🕷️ ¡El Zancudo Espectral se estremece al recibir daño e invoca una cría!');
     setTimeout(() => {
-      setTurnSkippedBanner(null);
     }, 2200);
   }, [sound]);
 
@@ -5741,7 +6291,7 @@ export const CombatView: React.FC = () => {
       sound.playSFX('critical');
       setScreenFlash('gold');
       setTimeout(() => setScreenFlash(null), 350);
-      spawnFloating('★ ¡DEFINITIVO CARGADO! ★', false, false, 3, true);
+
       const ultCard: ActiveCombatCard = {
         instanceId: `ult_${Date.now()}`,
         skillId: 'cataclismo_astral',
@@ -5768,7 +6318,7 @@ export const CombatView: React.FC = () => {
           setTimeout(() => {
             setNewlyGainedOrbIdx(null);
           }, 950);
-          spawnFloating(`+${amount} Orbe Definitivo`, false, true);
+
           if (next >= MAX_ULTIMATE_ORBS) {
             setTimeout(() => {
               checkGrantUltimateCard();
@@ -5866,7 +6416,7 @@ export const CombatView: React.FC = () => {
         const gorrakSlot = activeEnemiesRef.current.findIndex((e) => e.uid === gorrakBoss.uid);
         setTimeout(() => {
           spawnFloating(
-            `+${healAmt} PV (¡ZAMPADO!)`,
+            `+${healAmt}`,
             true,
             true,
             3,
@@ -5879,17 +6429,7 @@ export const CombatView: React.FC = () => {
         }, 120);
 
         setTimeout(() => {
-          spawnFloating(
-            '¡Gorrak te quitó el banquete!',
-            false,
-            false,
-            2,
-            false,
-            undefined,
-            'force',
-            '🍽️ PLATO ROBADO',
-            '#f59e0b'
-          );
+
         }, 220);
 
         setDndProcBanner({
@@ -5907,19 +6447,19 @@ export const CombatView: React.FC = () => {
       if (def.immediateHeal) {
         heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + def.immediateHeal);
         setHeroHp(heroHpRef.current);
-        spawnFloating(`+${def.immediateHeal} PV`, false, true);
+        spawnFloating(`+${def.immediateHeal}`, false, true);
       }
 
       // 2. Immediate Ultimate Gauge (Panes de Ajo: +2 Orbes Definitivos)
       if (def.ultGaugeBonus) {
         addUltimateOrb(def.ultGaugeBonus);
-        spawnFloating(`+${def.ultGaugeBonus} Ulti ⚡`, false, true);
+
       }
 
       // 3. Protective Shield (Pizza)
       if (def.shieldHp) {
         setFoodShieldHp(def.shieldHp);
-        spawnFloating(`+${def.shieldHp} Escudo 🛡️`, false, true);
+
       }
 
       // 4. Purify CC Debuffs (Tortilla / Sushi)
@@ -5992,6 +6532,7 @@ export const CombatView: React.FC = () => {
 
   // Refill hand back to 4 cards at the start of each player turn, strictly with the active hero's cards
   const refillHandToFull = useCallback(() => {
+    sound.playSFX('draw');
     const currentHero = activeCombatHeroIdRef.current;
     const heroPool = getHeroCardPool(currentHero);
     setHand((prev) => {
@@ -6052,7 +6593,6 @@ export const CombatView: React.FC = () => {
     setSlashEffect('none');
     setBattleState('idle');
     setMergeAnim(null);
-    setSelectedConditionTooltip(null);
     setActiveVfx({ type: 'none', tier: 1 });
     setBossTransitioning(false);
     setWaveClearBanner(null);
@@ -6234,12 +6774,6 @@ export const CombatView: React.FC = () => {
               hobThumbUrl = sp.idleSprite;
               hobTitle = sp.title;
               sound.playSFX(hobPhase === 2 ? 'powerup' : 'critical');
-              setTurnSkippedBanner(
-                hobPhase === 2
-                  ? '💣 ¡¡FASE 2!! ¡EL HOGGOBLIN DESENFUNDA SUS GRANADAS ALQUÍMICAS!'
-                  : '💥 ¡¡FASE 3!! ¡EL HOGGOBLIN CARGA SU TRABUCO DE FUEGO IMPERIAL!'
-              );
-              setTimeout(() => setTurnSkippedBanner(null), 3000);
             }
           } else {
             updatedHp = Math.max(0, updatedHp - dotDamage);
@@ -6358,7 +6892,7 @@ export const CombatView: React.FC = () => {
         const healAmt = activeFoodBuff.regenPerTurn;
         heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healAmt);
         setHeroHp(heroHpRef.current);
-        spawnFloating(`+${healAmt} PV (Ramen)`, false, true);
+        spawnFloating(`+${healAmt}`, false, true);
         sound.playSFX('coin');
       }
 
@@ -6367,8 +6901,6 @@ export const CombatView: React.FC = () => {
         setHeroTwitching(true);
         setTimeout(() => setHeroTwitching(false), 900);
         sound.playSFX('necrotic');
-        setTurnSkippedBanner(`¡Turno omitido por ${skipReason}!`);
-        setTimeout(() => setTurnSkippedBanner(null), 2200);
 
         queueStatusNotification({
           icon: '⚡',
@@ -6433,8 +6965,6 @@ export const CombatView: React.FC = () => {
         isSemiboss: false,
       };
 
-      setTurnSkippedBanner('💥 ¡¡RUPTURA DE CORAZA!! FASE 2: ¡FRENESÍ QUITINOSO!');
-      setTimeout(() => setTurnSkippedBanner(null), 3000);
 
       setTimeout(() => {
         setActiveEnemies([devoradorP2Enemy]);
@@ -7312,9 +7842,7 @@ export const CombatView: React.FC = () => {
     const isFrozen = actingEnemy.conditions.some((c) => c.type === 'frozen');
     if (isFrozen) {
       sound.playSFX('laser');
-      setTurnSkippedBanner(`❄️ ¡${actingEnemy.name} está CONGELADO y pierde el turno!`);
-      setTimeout(() => setTurnSkippedBanner(null), 2000);
-      spawnFloating('❄️ CONGELADO', true, false, 2, false, selectedEnemyIdx, 'cold', 'CONGELACIÓN', '#38bdf8');
+
       setTimeout(finalizeEnemyPhase, 600);
       return;
     }
@@ -7326,9 +7854,7 @@ export const CombatView: React.FC = () => {
 
     if (isCC) {
       sound.playSFX('necrotic');
-      setTurnSkippedBanner(`⚡ ¡${actingEnemy.name} está INCAPACITADO y pierde el turno!`);
-      setTimeout(() => setTurnSkippedBanner(null), 2000);
-      spawnFloating('💫 INCAPACITADO', true, false, 2, false, selectedEnemyIdx, 'bludgeoning', 'ATURDIDO', '#d97706');
+
       setTimeout(finalizeEnemyPhase, 500);
       return;
     }
@@ -7371,8 +7897,6 @@ export const CombatView: React.FC = () => {
         `💖 ¡ENCANTADO! SE ATACA A SÍ MISMO${extraDmgPercent > 0 ? ' (+10% ATK)' : ''}`,
         '#ec4899'
       );
-      setTurnSkippedBanner(`💖 ¡${actingEnemy.name} sucumbe a la VELADA ENCANTADORA y se ataca a sí mismo (-${selfDmg} PV)!`);
-      setTimeout(() => setTurnSkippedBanner(null), 2500);
 
       // Decrement charm turns remaining
       setActiveEnemies((prev) =>
@@ -7408,8 +7932,6 @@ export const CombatView: React.FC = () => {
       );
       triggerEnemyHitReaction('psychic');
       spawnFloating(`-${selfDmg}`, true, false, 2, true, selectedEnemyIdx, 'psychic', '🧠 AUTOLESIÓN', '#f43f5e');
-      setTurnSkippedBanner(`🧠 ¡${actingEnemy.name} sufre COLAPSO MENTAL y se ataca a sí mismo (-${selfDmg} PV)!`);
-      setTimeout(() => setTurnSkippedBanner(null), 2200);
       setTimeout(finalizeEnemyPhase, 650);
       return;
     }
@@ -7432,17 +7954,7 @@ export const CombatView: React.FC = () => {
     if (actingEnemy.configId === 'mineral_descarga') {
       sound.playSFX('drain');
       const minSlot = activeEnemiesRef.current.findIndex((e) => e.uid === actingEnemy.uid);
-      spawnFloating(
-        '⚡ Disipando estática...',
-        true,
-        false,
-        1,
-        false,
-        minSlot >= 0 ? minSlot : undefined,
-        'thunder',
-        '⚡ MINERAL INERTE',
-        '#38bdf8'
-      );
+
       setTimeout(finalizeEnemyPhase, 600);
       return;
     }
@@ -7635,7 +8147,7 @@ export const CombatView: React.FC = () => {
           target: 'hero',
           isBuff: true,
         });
-        spawnFloating('¡EVADIDO EN VUELO!', false, false, 2, false, undefined, 'force', '🦅 SOBREVUELO', '#38bdf8');
+
         setActiveEnemyAttackVisual(null);
         setTimeout(finalizeEnemyPhase, 450);
         return;
@@ -7650,7 +8162,7 @@ export const CombatView: React.FC = () => {
           target: 'hero',
           isBuff: true,
         });
-        spawnFloating('¡EVADIDO EN SIGILO!', false, false, 2, false, undefined, 'force', '👻 INTANGIBLE', '#10b981');
+
         setIsEdacornStealthed(false);
         setActiveEnemyAttackVisual(null);
         setTimeout(finalizeEnemyPhase, 450);
@@ -7666,7 +8178,8 @@ export const CombatView: React.FC = () => {
           target: 'hero',
           isBuff: true,
         });
-        spawnFloating('¡ESQUIVADO! (Tortilla)', false, false);
+        sound.playSFX('miss');
+
         setActiveFoodBuff((prev) => (prev ? { ...prev, evadeNextHit: false } : null));
         setActiveEnemyAttackVisual(null);
         setTimeout(finalizeEnemyPhase, 450);
@@ -7717,18 +8230,18 @@ export const CombatView: React.FC = () => {
         const reductionPct = heroShield.stacks >= 3 ? 0.90 : heroShield.stacks === 2 ? 0.80 : 0.75;
         const reducedDmg = Math.max(1, Math.round(dmg * (1 - reductionPct)));
         dmg = reducedDmg;
-        spawnFloating(`🛡️ -${Math.round(reductionPct * 100)}% RESISTENCIA`, false, true, 2, false, undefined, 'force', 'BALUARTE', '#38bdf8');
+
       }
 
       // Food Protective Barrier / Shield
       if (foodShieldHp > 0) {
         if (foodShieldHp >= dmg) {
           setFoodShieldHp((prev) => prev - dmg);
-          spawnFloating(`🛡️ Absorbe ${dmg}`, false, true);
+
           dmg = 0;
         } else {
           dmg -= foodShieldHp;
-          spawnFloating(`🛡️ Escudo roto (-${foodShieldHp})`, false, true);
+
           setFoodShieldHp(0);
         }
       }
@@ -7781,9 +8294,13 @@ export const CombatView: React.FC = () => {
       spawnFloating(`-${dmg}`, false, false);
 
       // Edacorn Counterattack (Contraataque): Immediate Riposte
-      if (isEdacornCombat && edacornCounter && edacornCounter.active) {
+      // Solo responde si el ataque del enemigo le quita vida de verdad (si el daño queda
+      // absorbido por escudo/comida, la guardia sigue armada esperando un golpe real)
+      if (isEdacornCombat && edacornCounter && edacornCounter.active && dmg > 0) {
         const counterDmg = edacornCounter.damage;
         setEdacornCounter(null);
+        // La pose de ataque entra en el mismo instante del impacto enemigo: sin frame de idle/hurt
+        setEdacornStrikePose(true);
         setTimeout(() => {
           sound.playSFX('critical');
           setHeroAnimation('lunge');
@@ -7823,7 +8340,8 @@ export const CombatView: React.FC = () => {
           setTimeout(() => {
             setHeroAnimation('idle');
             setHeroCastSkill(null);
-          }, 350);
+            setEdacornStrikePose(false);
+          }, 520);
         }, 180);
       }
 
@@ -7889,33 +8407,13 @@ export const CombatView: React.FC = () => {
 
             // Floating text on hero losing orbs
             setTimeout(() => {
-              spawnFloating(
-                `-${actualStolen} Orbe${actualStolen > 1 ? 's' : ''} Definitiva`,
-                false,
-                false,
-                2,
-                false,
-                undefined,
-                'force',
-                '⚡ ROBO DE ENERGÍA',
-                '#f59e0b'
-              );
+
             }, 120);
 
             // Floating text on boss gaining orbs
             const bossSlot = activeEnemiesRef.current.findIndex((e) => e.uid === actingEnemy.uid);
             setTimeout(() => {
-              spawnFloating(
-                `+${actualStolen} Orbe Ulti`,
-                true,
-                true,
-                2,
-                false,
-                bossSlot >= 0 ? bossSlot : undefined,
-                'radiant',
-                '⚡ ORBE ROBADO',
-                '#fbbf24'
-              );
+
             }, 240);
 
             // Si el jugador tenía la definitiva cargada y le roban orbes, la carta de definitivo debe desaparecer de inmediato
@@ -7923,17 +8421,7 @@ export const CombatView: React.FC = () => {
               setHand((prevHand) => prevHand.filter((c) => c.skillId !== 'cataclismo_astral'));
               sound.playSFX('drain');
               setTimeout(() => {
-                spawnFloating(
-                  '⚡ ¡Definitivo Descargado!',
-                  false,
-                  false,
-                  2,
-                  false,
-                  undefined,
-                  'force',
-                  '❌ CARTA DISIPADA',
-                  '#ef4444'
-                );
+
               }, 320);
             }
 
@@ -7985,6 +8473,7 @@ export const CombatView: React.FC = () => {
           });
         }
       } else if (skill.condition) {
+        sound.playSFX('debuff');
         const cond = skill.condition;
         setHeroConditions((prev) => {
           const res = stackGachaEffect(prev, cond.type, cond.duration, cond.stacks, 1, cond.title);
@@ -8040,7 +8529,7 @@ export const CombatView: React.FC = () => {
     if (battleState !== 'idle' || enemyHp <= 0) return;
 
     sound.playBGM();
-    sound.playSFX('powerup');
+    sound.playSFX('ultimate');
     setBattleState('player_acting');
     setUltimateOrbs(0);
 
@@ -8102,7 +8591,7 @@ export const CombatView: React.FC = () => {
         sound.playSFX('critical');
         setScreenShake('heavy');
         triggerEnemyHitReaction('radiant');
-        spawnFloating('★ 35,200 CRIT! ★', true, false, 3, true);
+        spawnFloating('35,200', true, false, 3, true);
       }, 960);
 
       // FINAL BURST & APOCALYPTIC IMPACT (Phase 4)
@@ -8115,7 +8604,7 @@ export const CombatView: React.FC = () => {
         setScreenShake('heavy');
         setScreenFlash('gold');
         triggerEnemyHitReaction('force');
-        spawnFloating('★ 135,400 OVERKILL! ★', true, false, 3, true);
+        spawnFloating('135,400', true, false, 3, true);
 
         // FGO PHASE 5: TOTAL DAMAGE & OVERKILL DISPLAY
         setTimeout(() => {
@@ -8147,12 +8636,6 @@ export const CombatView: React.FC = () => {
 
               if (hobRes.phaseChanged) {
                 const sp = HOBGOBLIN_SKILLS_BY_PHASE[nextPhase];
-                setTurnSkippedBanner(
-                  nextPhase === 2
-                    ? '💣 ¡¡FASE 2!! ¡EL HOGGOBLIN DESENFUNDA SUS GRANADAS ALQUÍMICAS!'
-                    : '💥 ¡¡FASE 3!! ¡EL HOGGOBLIN CARGA SU TRABUCO DE FUEGO IMPERIAL!'
-                );
-                setTimeout(() => setTurnSkippedBanner(null), 3000);
                 return {
                   ...e,
                   hp: nextHp,
@@ -8198,7 +8681,7 @@ export const CombatView: React.FC = () => {
               const stillAlive = activeEnemiesRef.current.filter((e) => e.hp > 0 && !e.isAshDissolving);
               if (stillAlive.length > 0 && target && !stillAlive.some((e) => e.uid === target.uid)) {
                 const nextIdx = activeEnemiesRef.current.findIndex((e) => e.uid === stillAlive[0].uid);
-                if (nextIdx >= 0) setSelectedEnemyIdx(nextIdx);
+                if (nextIdx >= 0) switchTargetAfterLoot(nextIdx, target.uid);
               }
               setTimeout(() => {
                 executeEnemyTurn();
@@ -8232,6 +8715,9 @@ export const CombatView: React.FC = () => {
 
     const skillDef = SKILL_DEFINITIONS[card.skillId];
     if (!skillDef) return;
+
+    // Efecto de sonido propio de este ataque y de este personaje
+    sound.playSFX(getCardCombatSfx(card.skillId, activeCombatHeroId));
 
     const tierInfo = skillDef.tiers[card.tier];
 
@@ -8281,7 +8767,7 @@ export const CombatView: React.FC = () => {
     // Edacorn story cards mechanics
     if (card.skillId === 'sigilo') {
       setIsEdacornStealthed(true);
-      spawnFloating('👻 ¡SIGILO ESMERALDA!', false, true, card.tier, false, undefined, 'force', 'INVISIBILIDAD', '#10b981');
+
       queueStatusNotification({
         icon: '👻',
         title: 'Sigilo Esmeralda Activado',
@@ -8292,7 +8778,7 @@ export const CombatView: React.FC = () => {
     } else if (card.skillId === 'contraataque') {
       const counterDmg = card.tier === 3 ? 55 : card.tier === 2 ? 36 : 22;
       setEdacornCounter({ active: true, damage: counterDmg });
-      spawnFloating('🛡️ ¡CONTRAATAQUE PREPARADO!', false, true, card.tier, false, undefined, 'piercing', 'PARADA', '#38bdf8');
+
       queueStatusNotification({
         icon: '🛡️',
         title: 'Postura de Contraataque',
@@ -8311,7 +8797,7 @@ export const CombatView: React.FC = () => {
             tier: (Math.min(3, c.tier + (card.tier >= 3 ? 2 : 1)) as 1 | 2 | 3),
           }))
       );
-      spawnFloating('⭐ ¡ASCENSO DE RANGO!', false, true, card.tier, false, undefined, 'force', 'RANK UP', '#eab308');
+
       queueStatusNotification({
         icon: '⭐',
         title: '¡Ascenso de Rango!',
@@ -8337,17 +8823,7 @@ export const CombatView: React.FC = () => {
           return c;
         });
       });
-      spawnFloating(
-        `🎶 ¡INSPIRACIÓN +${numCardsToUpgrade} CARTA${numCardsToUpgrade > 1 ? 'S' : ''}!`,
-        false,
-        true,
-        card.tier,
-        false,
-        undefined,
-        'force',
-        'RANK UP',
-        '#ec4899'
-      );
+
       queueStatusNotification({
         icon: '🎶',
         title: 'Inspiración Bárdica',
@@ -8376,17 +8852,7 @@ export const CombatView: React.FC = () => {
           };
         })
       );
-      spawnFloating(
-        `💖 ¡ENCANTADO (${turns}T)${extraDmgText}!`,
-        true,
-        false,
-        card.tier,
-        false,
-        selectedEnemyIdx,
-        'psychic',
-        '💖 VELADA ENCANTADORA',
-        '#ec4899'
-      );
+
       queueStatusNotification({
         icon: '💖',
         title: 'Velada Encantadora',
@@ -8403,7 +8869,7 @@ export const CombatView: React.FC = () => {
       spawnFloating(`+${healAmount}`, false, true, card.tier, false, undefined, 'radiant', '💚 SANACIÓN PURA', '#10b981');
       if (card.tier >= 2) {
         setHeroConditions((prev) => prev.filter((c) => c.isBuff));
-        spawnFloating('✨ PURIFICADO', false, true, card.tier, false, undefined, 'radiant', 'PURIFICACIÓN', '#38bdf8');
+
       }
       queueStatusNotification({
         icon: '💚',
@@ -8417,7 +8883,7 @@ export const CombatView: React.FC = () => {
       setHeroConditions((prev) =>
         stackGachaEffect(prev, 'stun', 1, 1, 1, 'Impacto Remo').updatedEffects
       );
-      spawnFloating('💫 ¡PEPE ATURDIDO (1T)!', false, false, 1, false, undefined, 'bludgeoning', 'AUTOGOLPE', '#f97316');
+
       queueStatusNotification({
         icon: '🚣‍♂️',
         title: '¡Golpe de Remo!',
@@ -8433,7 +8899,7 @@ export const CombatView: React.FC = () => {
       setHeroConditions((prev) =>
         stackGachaEffect(prev, 'def_buff', 1, card.tier, 3, 'Baluarte de Pepe').updatedEffects
       );
-      spawnFloating(`🛡️ +${shieldAmount} ESCUDO`, false, true, card.tier, false, undefined, 'force', 'GRAN RESISTENCIA', '#38bdf8');
+
       queueStatusNotification({
         icon: '🛡️',
         title: 'Baluarte de Pepe',
@@ -8450,7 +8916,7 @@ export const CombatView: React.FC = () => {
       if (healAmount > 0) {
         heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healAmount);
         setHeroHp(heroHpRef.current);
-        spawnFloating(`+${healAmount} PV`, false, true, card.tier, false, undefined, 'radiant', 'LUZ SAGRADA', '#10b981');
+        spawnFloating(`+${healAmount}`, false, true, card.tier, false, undefined, 'radiant', 'LUZ SAGRADA', '#10b981');
       }
       setHeroConditions((prev) => {
         let updated = stackGachaEffect(prev, 'atk_buff', card.tier >= 3 ? 3 : 2, card.tier, 3, 'Luz Divina').updatedEffects;
@@ -8463,17 +8929,7 @@ export const CombatView: React.FC = () => {
         }
         return updated;
       });
-      spawnFloating(
-        shieldAmount > 0 ? `✨ +${shieldAmount} BARRERA DIVINA` : '✨ ¡LUZ DIVINA (+ATK / +DEF)!',
-        false,
-        true,
-        card.tier,
-        false,
-        undefined,
-        'radiant',
-        'BENDICIÓN',
-        '#facc15'
-      );
+
       queueStatusNotification({
         icon: '✨',
         title: 'Luz Divina',
@@ -8494,7 +8950,7 @@ export const CombatView: React.FC = () => {
         )
       );
       addUltimateOrb(orbsStolen);
-      spawnFloating(`⚡ ¡ROBA ${orbsStolen} ORBE${orbsStolen > 1 ? 'S' : ''} DE ULTI!`, false, true, card.tier, false, undefined, 'radiant', 'CASTIGO DIVINO', '#facc15');
+
       queueStatusNotification({
         icon: '⚡',
         title: '¡Castigo Divino!',
@@ -8524,7 +8980,7 @@ export const CombatView: React.FC = () => {
       if (healAmount > 0) {
         heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healAmount);
         setHeroHp(heroHpRef.current);
-        spawnFloating(`+${healAmount} PV`, false, true, card.tier, false, undefined, 'radiant', 'SANACIÓN', '#10b981');
+        spawnFloating(`+${healAmount}`, false, true, card.tier, false, undefined, 'radiant', 'SANACIÓN', '#10b981');
       }
       setHeroConditions((prev) => {
         let updated = stackGachaEffect(prev, 'atk_buff', card.tier >= 3 ? 3 : 2, card.tier, 3, 'Égida Alada').updatedEffects;
@@ -8534,7 +8990,7 @@ export const CombatView: React.FC = () => {
         }
         return updated;
       });
-      spawnFloating(shieldAmount > 0 ? `🛡️ +${shieldAmount} BARRERA ALADA` : '🪶 ¡CELERIDAD ALADA!', false, true, card.tier, false, undefined, 'force', 'ÉGIDA', '#facc15');
+
       queueStatusNotification({
         icon: '🪶',
         title: 'Égida Alada',
@@ -8560,12 +9016,12 @@ export const CombatView: React.FC = () => {
       sound.playSFX('powerup');
       if (card.tier === 3) {
         addUltimateOrb(1);
-        spawnFloating('⚡ +1 ORBE DEFINITIVA', false, true, 3, false, undefined, 'necrotic', 'ROBO ARCANO', '#a855f7');
+
       }
       if (card.tier >= 2) {
         heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + 20);
         setHeroHp(heroHpRef.current);
-        spawnFloating('+20 PV', false, true, card.tier, false, undefined, 'radiant', 'ESCAMOTEO', '#10b981');
+        spawnFloating('+20', false, true, card.tier, false, undefined, 'radiant', 'ESCAMOTEO', '#10b981');
       }
       setHeroConditions((prev) => {
         let updated = stackGachaEffect(prev, 'atk_buff', 2, card.tier, 3, 'Treta del Bribón').updatedEffects;
@@ -8588,7 +9044,7 @@ export const CombatView: React.FC = () => {
       if (drainAmount > 0) {
         heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + drainAmount);
         setHeroHp(heroHpRef.current);
-        spawnFloating(`+${drainAmount} PV DRENADOS`, false, true, card.tier, false, undefined, 'necrotic', 'DRENAJE VITAL', '#a855f7');
+        spawnFloating(`+${drainAmount}`, false, true, card.tier, false, undefined, 'necrotic', 'DRENAJE VITAL', '#a855f7');
       }
       queueStatusNotification({
         icon: '📖',
@@ -8640,7 +9096,7 @@ export const CombatView: React.FC = () => {
         tier: card.tier,
         targetEnemyUid: targetEnemy?.uid,
       });
-      spawnFloating('🦅 ¡VUELO DRACÓNICO!', false, true, card.tier, false, undefined, 'force', 'INVISIBILIDAD Y VUELO', '#38bdf8');
+
       queueStatusNotification({
         icon: '🦅',
         title: 'Vuelo Dracónico Iniciado',
@@ -8682,8 +9138,8 @@ export const CombatView: React.FC = () => {
         updated = stackGachaEffect(updated, 'def_buff', duration, defStacks, 3, 'Resistencia Druídica').updatedEffects;
         return updated;
       });
-      spawnFloating('🔥 ¡FURIA DRUÍDICA!', false, true, card.tier, false, undefined, 'force', 'FRENESÍ COLECTIVO', '#ef4444');
-      spawnFloating(`🛡️ +${card.tier * 20}% RESISTENCIA`, false, true, card.tier, false, undefined, 'force', 'PIEL DE PIEDRA', '#38bdf8');
+
+
       queueStatusNotification({
         icon: '🔥',
         title: '¡Furia Druídica Primordial!',
@@ -8882,9 +9338,10 @@ export const CombatView: React.FC = () => {
       }
       let target = activeEnemiesRef.current[selectedEnemyIdx];
       if (!target || target.hp <= 0 || target.isAshDissolving) {
+        const fallenUid = target?.uid ?? activeEnemiesRef.current[selectedEnemyIdx]?.uid ?? '';
         target = aliveList[0];
         const nextIdx = activeEnemiesRef.current.findIndex((e) => e.uid === target.uid);
-        if (nextIdx >= 0) setSelectedEnemyIdx(nextIdx);
+        if (nextIdx >= 0) switchTargetAfterLoot(nextIdx, fallenUid);
       }
       if (!target) {
         setBattleState('idle');
@@ -8926,7 +9383,7 @@ export const CombatView: React.FC = () => {
       if (isPrometeoCombat && enemyHasBlood) {
         const bloodHunterBonus = Math.max(1, Math.round(baseDmg * 0.10));
         baseDmg += bloodHunterBonus;
-        spawnFloating(`🩸 +${bloodHunterBonus} (SED DE SANGRE +10%)`, false, true, card.tier, false, undefined, 'necrotic', 'BLOOD HUNTER', '#ef4444');
+
         queueStatusNotification({
           icon: '🩸',
           title: 'Pasiva: Cazador de Sangre',
@@ -9034,17 +9491,7 @@ export const CombatView: React.FC = () => {
               : e
           )
         );
-        spawnFloating(
-          `-${enemyDrainAmount} Orbe Definitivo`,
-          true,
-          false,
-          2,
-          false,
-          targetSlot >= 0 ? targetSlot : undefined,
-          'thunder',
-          '⚡ DRENAJE ASTRAL',
-          '#f59e0b'
-        );
+
       }
 
       // Special Objective Mechanic: Atacar el Mineral Conductor baja orbes de definitiva al Titán Melenudo
@@ -9064,33 +9511,13 @@ export const CombatView: React.FC = () => {
         );
 
         sound.playSFX('drain');
-        spawnFloating(
-          '⚡ ¡DESCARGA DISIPADA!',
-          true,
-          false,
-          2,
-          false,
-          targetSlot >= 0 ? targetSlot : undefined,
-          'thunder',
-          '⚡ PARARRAYOS',
-          '#38bdf8'
-        );
+
 
         const titanSlot = activeEnemiesRef.current.findIndex(
           (e) => e.configId === 'semiboss_melenudo' && e.hp > 0 && !e.isAshDissolving
         );
         setTimeout(() => {
-          spawnFloating(
-            `-${mineralDrain} Orbe${mineralDrain > 1 ? 's' : ''} Ulti`,
-            true,
-            false,
-            2,
-            false,
-            titanSlot >= 0 ? titanSlot : undefined,
-            'thunder',
-            '⚡ VOLTAJE DRENADO',
-            '#f59e0b'
-          );
+
         }, 180);
 
         queueStatusNotification({
@@ -9135,12 +9562,6 @@ export const CombatView: React.FC = () => {
 
           sound.playSFX(targetHobPhase === 2 ? 'powerup' : 'critical');
           setScreenShake('heavy');
-          setTurnSkippedBanner(
-            targetHobPhase === 2
-              ? '💣 ¡¡FASE 2!! ¡EL HOGGOBLIN DESENFUNDA SUS GRANADAS ALQUÍMICAS!'
-              : '💥 ¡¡FASE 3!! ¡EL HOGGOBLIN CARGA SU TRABUCO DE FUEGO IMPERIAL!'
-          );
-          setTimeout(() => setTurnSkippedBanner(null), 3000);
           queueStatusNotification({
             icon: targetHobPhase === 2 ? '💣' : '💥',
             title: targetHobPhase === 2 ? '¡Fase 2: Granadas!' : '¡Fase 3: Trabuco!',
@@ -9339,17 +9760,7 @@ export const CombatView: React.FC = () => {
         }
         return next;
       });
-      spawnFloating(
-        `🎶 ¡CARTA SELECCIONADA SUBE DE RANGO!`,
-        false,
-        true,
-        cardFrom.tier,
-        false,
-        undefined,
-        'force',
-        'RANK UP',
-        '#ec4899'
-      );
+
       queueStatusNotification({
         icon: '🎶',
         title: 'Inspiración Bárdica',
@@ -9370,7 +9781,7 @@ export const CombatView: React.FC = () => {
       // 1. COMBINACIÓN DE RANGO (RANK UP MERGE)
       sound.playSFX('upgrade');
       addUltimateOrb(1);
-      spawnFloating('★ FUSIÓN ★', false, false, 2);
+
       const newTier = (cardFrom.tier + 1) as 2 | 3;
       const targetSlotAfterSplice = toIdx > fromIdx ? toIdx - 1 : toIdx;
 
@@ -10400,7 +10811,7 @@ export const CombatView: React.FC = () => {
       {/* ========================================================================= */}
       {/* 1. TOP HEADER: BOSS HEALTH BAR, 5 ORBS & PORTRAIT */}
       <div
-        className="relative z-20 w-[calc(100%+36px)] -mx-[18px] min-h-[58px] py-2 px-5 flex flex-col justify-center shadow-lg shrink-0 overflow-hidden"
+        className="relative z-20 w-[calc(100%+36px)] -mx-[18px] min-h-[58px] py-2 px-5 flex flex-col justify-center shadow-lg shrink-0 overflow-visible"
         style={{
           backgroundImage: 'url(/assets/aistudio/image_b8a81806.png)',
           backgroundSize: '112% 115%',
@@ -10520,6 +10931,34 @@ export const CombatView: React.FC = () => {
                 className="absolute inset-0 w-full h-full object-fill pointer-events-none z-10"
               />
             </div>
+
+            {/* Efectos de estado del enemigo: fuera del marco, colgando bajo su barra de vida */}
+            {enemyConditions.length > 0 && (
+              <div className="absolute -bottom-9 left-1 z-30 flex items-center gap-1.5 pointer-events-none">
+                {enemyConditions.map((cond) => (
+                  <div
+                    key={cond.id}
+                    className={`relative w-6 h-6 rounded-md border flex items-center justify-center backdrop-blur-md ${
+                      cond.isBuff
+                        ? 'bg-slate-950/85 border-emerald-400/70 shadow-[0_0_8px_rgba(52,211,153,0.4)]'
+                        : 'bg-slate-950/85 border-rose-500/70 shadow-[0_0_8px_rgba(244,63,94,0.4)]'
+                    }`}
+                  >
+                    <span className="text-[11px] select-none filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                      {toSingleEmoji(cond.icon)}
+                    </span>
+                    {cond.stacks > 1 && (
+                      <span className="absolute -top-1.5 -right-1 px-1 py-0.2 rounded-full bg-amber-400 text-slate-950 text-[8px] font-black font-mono leading-none shadow-sm border border-slate-900">
+                        {cond.stacks}
+                      </span>
+                    )}
+                    <span className="absolute -bottom-1.5 -right-1 px-1 py-0.2 rounded-full bg-slate-900/90 text-stone-200 text-[8px] font-bold font-mono leading-none border border-white/20">
+                      {cond.turnsRemaining}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Dynamic Boss Portrait */}
@@ -10549,6 +10988,25 @@ export const CombatView: React.FC = () => {
             : ''
         }`}
       >
+        {/* Línea limpia de la Velada Encantadora de Roxanne: une al héroe con el enemigo encantado */}
+        {targetEnemy.conditions.some((c) => c.type === 'charmed') && (
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none z-[15]"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M 30 61 Q 54 38 78 56"
+              fill="none"
+              stroke="#f472b6"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+              className="animate-[charmLineGlow_1.8s_ease-in-out_infinite]"
+              style={{ filter: 'drop-shadow(0 0 6px rgba(236,72,153,0.85))' }}
+            />
+          </svg>
+        )}
         {/* Arena Cave / Mansion / Forest / Sealed Gates / Bandits Ambush Background */}
         <img
           src={
@@ -10601,36 +11059,34 @@ export const CombatView: React.FC = () => {
         {/* Discreet Retreat / Exit in top-left corner */}
         <button
           onClick={handleRetreatAndClaim}
-          title="Retirarse a la aldea"
-          className="absolute top-2 left-2 z-30 w-7 h-7 rounded-full bg-black/60 hover:bg-black/90 border border-amber-900/60 text-amber-300/80 hover:text-amber-200 text-xs flex items-center justify-center shadow-md backdrop-blur-xs cursor-pointer transition-all active:scale-90 font-mono"
+          className="absolute top-[62px] right-[92px] z-30 w-7 h-7 rounded-full bg-black/60 hover:bg-black/90 border border-amber-900/60 text-amber-300/80 hover:text-amber-200 text-xs flex items-center justify-center shadow-md backdrop-blur-xs cursor-pointer transition-all active:scale-90 font-mono"
         >
           ✕
         </button>
 
 
-        {/* Tactical Multi-Enemy Formation Roster (Interactive Switch) */}
+        {/* Tactical Multi-Enemy Formation Roster (solo informativo: el jugador no puede cambiar de objetivo) */}
         {activeEnemies.length > 1 && (
-          <div className="absolute top-2 right-2 z-30 flex items-center gap-1.5 p-1 rounded-xl bg-slate-950/90 border border-amber-900/70 shadow-xl backdrop-blur-xs select-none">
+          <div className="absolute top-2 right-2 z-30 flex items-center gap-1.5 p-1 rounded-xl bg-slate-950/90 border border-amber-900/70 shadow-xl backdrop-blur-xs select-none pointer-events-none">
             {activeEnemies.map((enemy, idx) => {
               const isSelected = idx === selectedEnemyIdx;
               const isDead = enemy.hp <= 0 || enemy.isAshDissolving;
               const hpPct = Math.max(0, Math.min(100, (enemy.hp / enemy.maxHp) * 100));
               const isMineral = enemy.configId === 'mineral_descarga';
               return (
-                <button
+                <div
                   key={enemy.uid}
-                  type="button"
-                  onClick={() => !isDead && switchActiveEnemy(idx)}
-                  className={`relative w-8 h-8 rounded-lg overflow-hidden border transition-all duration-200 cursor-pointer ${
+                  role="img"
+                  aria-label={enemy.name}
+                  className={`relative w-8 h-8 rounded-lg overflow-hidden border transition-all duration-200 ${
                     isSelected
                       ? isMineral
                         ? 'border-cyan-300 ring-2 ring-cyan-400/80 scale-110 shadow-[0_0_14px_#38bdf8] bg-cyan-950/60'
                         : 'border-yellow-400 ring-2 ring-yellow-400/80 scale-105 shadow-[0_0_12px_#f59e0b] bg-amber-950/40'
                       : isDead
-                      ? 'border-stone-800 opacity-35 grayscale bg-black/80 cursor-not-allowed'
-                      : 'border-stone-700/80 bg-stone-900/85 hover:scale-105'
+                      ? 'border-stone-800 opacity-35 grayscale bg-black/80'
+                      : 'border-stone-700/80 bg-stone-900/85'
                   }`}
-                  title={`${enemy.name} (${enemy.hp}/${enemy.maxHp} PV) ${isMineral ? '• Golpea para drenar ulti al Titán' : ''}`}
                 >
                   <img src={enemy.thumbUrl} alt={enemy.name} className="w-full h-full object-contain p-0.5 pointer-events-none" />
                   {/* HP Mini Bar */}
@@ -10655,7 +11111,7 @@ export const CombatView: React.FC = () => {
                       ☠️
                     </div>
                   )}
-                </button>
+                </div>
               );
             })}
           </div>
@@ -10679,36 +11135,6 @@ export const CombatView: React.FC = () => {
             </div>
           ))}
         </div>
-
-        {/* ARAKNOIDE GACHA ACTIVE STATUS TRAY (CLEAN COMPACT STATUS TOKENS) */}
-        {enemyConditions.length > 0 && (
-          <div className="absolute top-1.5 right-20 z-30 flex items-center gap-1.5 justify-end">
-            {enemyConditions.map((cond) => (
-              <button
-                key={cond.id}
-                onClick={() => setSelectedConditionTooltip(cond)}
-                title={`${cond.name} (${cond.isBuff ? 'Buff' : 'Debuff'}): ${cond.turnsRemaining} Turnos`}
-                className={`group relative w-7 h-7 rounded-lg border flex items-center justify-center transition-all duration-200 hover:scale-115 active:scale-95 cursor-pointer backdrop-blur-md ${
-                  cond.isBuff
-                    ? 'bg-slate-950/85 border-emerald-400/70 shadow-[0_0_10px_rgba(52,211,153,0.4)]'
-                    : 'bg-slate-950/85 border-rose-500/70 shadow-[0_0_10px_rgba(244,63,94,0.4)]'
-                }`}
-              >
-                <span className="text-sm select-none filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-                  {toSingleEmoji(cond.icon)}
-                </span>
-                {cond.stacks > 1 && (
-                  <span className="absolute -top-1.5 -right-1 px-1 py-0.2 rounded-full bg-amber-400 text-slate-950 text-[8px] font-black font-mono leading-none shadow-sm border border-slate-900">
-                    {cond.stacks}
-                  </span>
-                )}
-                <span className="absolute -bottom-1.5 -right-1 px-1 py-0.2 rounded-full bg-slate-900/90 text-stone-200 text-[8px] font-bold font-mono leading-none border border-white/20">
-                  {cond.turnsRemaining}
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
 
         {/* Tier 3 Dramatic Cinematic Dark Contrast Vignette */}
         {tier3Cinematic && (
@@ -10766,17 +11192,12 @@ export const CombatView: React.FC = () => {
             }`}
           >
             {/* Clean Cartoon Damage and Heal Indicator (Zero Icons) */}
-            {item.isHeal && (
-              <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-950/85 border border-emerald-400/80 shadow-[0_0_12px_#10b981]">
-                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-300">Sanación</span>
-              </div>
-            )}
 
             <span
               style={item.badgeColor ? { color: item.badgeColor, textShadow: `0 0 16px ${item.badgeColor}` } : undefined}
               className={item.tier === 3 ? 'text-3xl font-black drop-shadow-[0_2px_8px_rgba(0,0,0,1)]' : item.tier === 2 ? 'text-2xl font-black drop-shadow-[0_2px_6px_rgba(0,0,0,1)]' : 'text-xl font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,1)]'}
             >
-              {item.isCrit ? `★ ${item.text} ★` : item.text}
+              {item.text}
             </span>
           </div>
         ))}
@@ -10791,11 +11212,13 @@ export const CombatView: React.FC = () => {
                 ? 'translateY(-340px) scale(0.85)'
                 : isSmurphLandingAction
                 ? 'translateY(0px) scale(1.15)'
+                : edacornCounter?.active
+                ? undefined // en guardia de contraataque no avanza ni cambia de pose
                 : heroAnimation === 'lunge'
-                ? 'translateX(35px) scale(1.04)'
+                ? 'translateX(35px)' // avanza al atacar, sin zoom
                 : undefined,
           }}
-          className={`absolute left-[6.5%] w-[149px] h-[256px] flex items-end justify-center transition-all duration-300 z-10 ${
+          className={`absolute left-[6.5%] w-[149px] h-[256px] flex items-end justify-center transition-all duration-300 z-30 ${
             isHeroHitShaking
               ? 'animate-[heroHitShake_0.42s_cubic-bezier(0.2,0.8,0.2,1)_forwards]'
               : heroTwitching
@@ -10807,7 +11230,14 @@ export const CombatView: React.FC = () => {
           <img
             src="/assets/aistudio/sombra_6ce1cba3.png"
             alt="Sombra"
-            className={`absolute -bottom-[10px] left-1/2 transform -translate-x-1/2 w-[142px] h-[20px] object-fill pointer-events-none z-0 transition-all duration-500 ${
+            style={{
+              // La sombra va atada al cuerpo del héroe (complexión), no a la pose, así que no
+              // cambia de tamaño al atacar ni al lanzar skills.
+              width: Math.round(142 * getHeroBodyBaseScale()),
+              height: Math.round(20 * getHeroBodyBaseScale()),
+              bottom: -Math.round(10 * getHeroBodyBaseScale()),
+            }}
+            className={`absolute left-1/2 transform -translate-x-1/2 w-[142px] h-[20px] object-fill pointer-events-none z-0 transition-all duration-500 ${
               isHeroAshDissolving ? 'opacity-0' : isSmurphAirborne ? 'opacity-15 scale-50' : 'opacity-50'
             }`}
           />
@@ -10841,9 +11271,14 @@ export const CombatView: React.FC = () => {
 
             <img
               key="hero-sprite-img"
+              style={{
+                translate: getHeroSpriteTranslate(),
+                scale: getHeroSpriteScale(),
+                transformOrigin: 'bottom center',
+              }}
               src={getHeroSpriteUrl()}
               alt={getHeroName()}
-              className={`relative h-full w-auto shrink-0 max-w-none max-h-[256px] object-contain pointer-events-none z-10 transition-all duration-300 ${
+              className={`relative h-full w-auto shrink-0 max-w-none max-h-[256px] object-contain pointer-events-none z-10 transition-[translate,opacity,filter] duration-300 ${
                 isHeroAshDissolving
                   ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
                   : isHeroHitShaking
@@ -10861,23 +11296,171 @@ export const CombatView: React.FC = () => {
                   : ''
               }`}
             />
+
+            {/* Roxanne: shader rosa por encima del sprite (velada / inspiración), más épico por tier */}
+            {roxannePinkShaderTier > 0 && (
+              <div
+                className="absolute inset-0 flex items-end justify-center pointer-events-none z-20"
+                style={{
+                  animation: `roxannePinkShaderPulse ${
+                    roxannePinkShaderTier === 3 ? 1.3 : roxannePinkShaderTier === 2 ? 2.0 : 2.7
+                  }s ease-in-out infinite`,
+                }}
+              >
+                <img
+                  src={getHeroSpriteUrl()}
+                  alt=""
+                  aria-hidden
+                  style={{
+                    translate: getHeroSpriteTranslate(),
+                    scale: getHeroSpriteScale(),
+                    transformOrigin: 'bottom center',
+                    filter: [
+                      'sepia(1)',
+                      'hue-rotate(288deg)',
+                      'saturate(5)',
+                      'brightness(1.15)',
+                      `drop-shadow(0 0 ${
+                        roxannePinkShaderTier === 3 ? 26 : roxannePinkShaderTier === 2 ? 15 : 8
+                      }px rgba(244, 114, 182, ${
+                        roxannePinkShaderTier === 3 ? 1 : roxannePinkShaderTier === 2 ? 0.8 : 0.55
+                      }))`,
+                    ].join(' '),
+                    opacity: roxannePinkShaderTier === 3 ? 0.78 : roxannePinkShaderTier === 2 ? 0.62 : 0.46,
+                    mixBlendMode: 'screen',
+                  }}
+                  className="relative h-full w-auto shrink-0 max-w-none max-h-[256px] object-contain transition-opacity duration-300"
+                />
+              </div>
+            )}
           </div>
         </div>
 
-        {/* ========================================================================= */}
-        {/* CARTOON FX REMASTER - ANIMATED SPRITE COMBAT VFX OVERLAY                  */}
-        {/* No spell particles (activeSkillVfx=null, activeEnemyAttack=null)           */}
-        {/* Hit reactions and whiteout impact flashes remain active                   */}
-        {/* ========================================================================= */}
-        <CartoonFxAnimatedSpriteOverlay
-          activeSkillVfx={null}
-          activeEnemyAttack={null}
-          heroHitKey={heroHitKey}
-          enemyHitKey={enemyHitKey}
-          heroImpactDamageType={heroImpactDamageType}
-          enemyImpactDamageType={enemyImpactDamageType}
-        />
 
+                {/* SKILL VFX OVERLAYS POR HÉROE (CARTOON FX REMASTER) */}
+        {/* MAGORDITO SKILL VFX OVERLAY */}
+        {isMagorditoCombat && (
+          <MagorditoSkillVfxOverlay
+            enemyFrame={enemyVfxFrame}
+            skillType={activeVfx.type !== 'none' ? activeVfx.type : heroCastSkill}
+            tier={activeVfx.tier}
+            enemySpriteUrl={targetEnemy ? getEnemySpriteUrl(targetEnemy) : null}
+            vfxKey={magorditoVfxKey}
+          />
+        )}
+
+        {/* ARLEM SKILL VFX OVERLAY */}
+        {isArlemCombat && (
+          <ArlemSkillVfxOverlay
+            enemyFrame={enemyVfxFrame}
+            skillType={activeVfx.type !== 'none' ? activeVfx.type : heroCastSkill}
+            tier={activeVfx.tier}
+            vfxKey={magorditoVfxKey}
+          />
+        )}
+
+        {/* PEPE LOUX SKILL VFX OVERLAY */}
+        {isPepeCombat && (
+          <PepeSkillVfxOverlay
+            enemyFrame={enemyVfxFrame}
+            skillType={activeVfx.type !== 'none' ? activeVfx.type : heroCastSkill}
+            tier={activeVfx.tier}
+            vfxKey={magorditoVfxKey}
+          />
+        )}
+
+        {/* EDACORN SKILL VFX OVERLAY */}
+        {isEdacornCombat && (
+          <EdacornSkillVfxOverlay
+            enemyFrame={enemyVfxFrame}
+            skillType={activeVfx.type !== 'none' ? activeVfx.type : heroCastSkill}
+            tier={activeVfx.tier}
+            isStealthed={isEdacornStealthed}
+            vfxKey={magorditoVfxKey}
+          />
+        )}
+
+        {/* GIOVANI VÁZQUEZ SKILL VFX OVERLAY */}
+        {isGiovaniCombat && (
+          <GiovaniSkillVfxOverlay
+            enemyFrame={enemyVfxFrame}
+            skillType={activeVfx.type !== 'none' ? activeVfx.type : heroCastSkill}
+            tier={activeVfx.tier}
+            vfxKey={magorditoVfxKey}
+          />
+        )}
+
+        {/* PROMETEO SKILL VFX OVERLAY */}
+        {isPrometeoCombat && (
+          <PrometeoSkillVfxOverlay
+            enemyFrame={enemyVfxFrame}
+            skillType={activeVfx.type !== 'none' ? activeVfx.type : heroCastSkill}
+            tier={activeVfx.tier}
+            vfxKey={magorditoVfxKey}
+          />
+        )}
+
+        {/* KAIRON SKILL VFX OVERLAY */}
+        {isKaironCombat && (
+          <KaironSkillVfxOverlay
+            enemyFrame={enemyVfxFrame}
+            skillType={activeVfx.type !== 'none' ? activeVfx.type : heroCastSkill}
+            tier={activeVfx.tier}
+            vfxKey={magorditoVfxKey}
+          />
+        )}
+
+        {/* BARLED SKILL VFX OVERLAY */}
+        {isBarledCombat && (
+          <BarledSkillVfxOverlay
+            enemyFrame={enemyVfxFrame}
+            skillType={activeVfx.type !== 'none' ? activeVfx.type : heroCastSkill}
+            tier={activeVfx.tier}
+            vfxKey={magorditoVfxKey}
+          />
+        )}
+
+        {/* RAXXAR SKILL VFX OVERLAY */}
+        {isRaxxarCombat && (
+          <RaxxarSkillVfxOverlay
+            enemyFrame={enemyVfxFrame}
+            skillType={activeVfx.type !== 'none' ? activeVfx.type : heroCastSkill}
+            tier={activeVfx.tier}
+            vfxKey={magorditoVfxKey}
+          />
+        )}
+
+        {/* RAGNAVALDR SKILL VFX OVERLAY */}
+        {isRagnavaldrCombat && (
+          <RagnavaldrSkillVfxOverlay
+            enemyFrame={enemyVfxFrame}
+            skillType={activeVfx.type !== 'none' ? activeVfx.type : heroCastSkill}
+            tier={activeVfx.tier}
+            vfxKey={magorditoVfxKey}
+          />
+        )}
+
+        {/* SMURPH DRACO SKILL VFX OVERLAY */}
+        {isSmurphCombat && (
+          <SmurphSkillVfxOverlay
+            enemyFrame={enemyVfxFrame}
+            skillType={activeVfx.type !== 'none' ? activeVfx.type : heroCastSkill}
+            tier={activeVfx.tier}
+            vfxKey={magorditoVfxKey}
+          />
+        )}
+
+        {/* ROXANNE SKILL VFX OVERLAY */}
+        {isRoxanneCombat && (
+          <RoxanneSkillVfxOverlay
+            enemyFrame={enemyVfxFrame}
+            skillType={activeVfx.type !== 'none' ? activeVfx.type : heroCastSkill}
+            tier={activeVfx.tier}
+            vfxKey={magorditoVfxKey}
+          />
+        )}
+
+        {/* ENEMY ATTACK VFX (desactivado temporalmente) */}
         {/* SINGLE ACTIVE ENEMY IN ARENA (1 vs 1 Pokemon Style, Stably Mounted) */}
         {targetEnemy && (
           <div
@@ -10912,7 +11495,13 @@ export const CombatView: React.FC = () => {
               src="/assets/aistudio/sombra_6ce1cba3.png"
               alt="Sombra"
               data-enemy-shadow=""
-              className={`absolute -bottom-2.5 left-1/2 transform -translate-x-1/2 w-[140px] h-[18px] object-fill pointer-events-none z-0 transition-opacity duration-1000 ${
+              style={{
+                // Igual que el héroe: la sombra sigue al sprite de la pose (escala y línea de pies).
+                width: Math.round(140 * getEnemyStateSpriteScale(targetEnemy.spriteUrl, getEnemySpriteUrl(targetEnemy))),
+                height: Math.round(18 * getEnemyStateSpriteScale(targetEnemy.spriteUrl, getEnemySpriteUrl(targetEnemy))),
+                bottom: -Math.round(9 * getEnemyStateSpriteScale(targetEnemy.spriteUrl, getEnemySpriteUrl(targetEnemy))),
+              }}
+              className={`absolute left-1/2 transform -translate-x-1/2 object-fill pointer-events-none z-0 transition-opacity duration-1000 ${
                 targetEnemy.isAshDissolving || targetEnemy.hp <= 0 ? 'opacity-0' : 'opacity-50'
               }`}
             />
@@ -10927,11 +11516,13 @@ export const CombatView: React.FC = () => {
                   )}
                   <span
                     className="relative flex h-full shrink-0 items-end justify-center"
-                    style={{ transform: `scale(${getEnemyStateSpriteScale(targetEnemy.spriteUrl, getEnemySpriteUrl(targetEnemy))})`, transformOrigin: 'bottom center' }}
+                    style={{ transform: getEnemySpriteTransform(targetEnemy), transformOrigin: 'bottom center' }}
                   >
                     <img
                       key={`enemy-medusa-img-${targetEnemy.uid}`}
                       src={getEnemySpriteUrl(targetEnemy)}
+
+                      style={targetEnemy.conditions.some((c) => c.type === 'charmed') ? { filter: 'sepia(1) saturate(3.5) hue-rotate(275deg) brightness(1.08) drop-shadow(0 0 16px rgba(236,72,153,0.9))' } : undefined}
                       alt="Medusa Abisal"
                       className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
                         targetEnemy.isAshDissolving
@@ -10987,11 +11578,13 @@ export const CombatView: React.FC = () => {
 
                   <span
                     className="relative flex h-full shrink-0 items-end justify-center"
-                    style={{ transform: `scale(${getEnemyStateSpriteScale(targetEnemy.spriteUrl, getEnemySpriteUrl(targetEnemy))})`, transformOrigin: 'bottom center' }}
+                    style={{ transform: getEnemySpriteTransform(targetEnemy), transformOrigin: 'bottom center' }}
                   >
                     <img
                       key={`enemy-sprite-img-${targetEnemy.uid}`}
                       src={getEnemySpriteUrl(targetEnemy)}
+
+                      style={targetEnemy.conditions.some((c) => c.type === 'charmed') ? { filter: 'sepia(1) saturate(3.5) hue-rotate(275deg) brightness(1.08) drop-shadow(0 0 16px rgba(236,72,153,0.9))' } : undefined}
                       alt={targetEnemy.name}
                       className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
                         targetEnemy.isAshDissolving
@@ -11061,7 +11654,6 @@ export const CombatView: React.FC = () => {
                   type="button"
                   onClick={() => switchActiveEnemy(titanIdx)}
                   className="group relative flex flex-col items-center cursor-pointer transition-transform hover:scale-105 active:scale-95 focus:outline-none"
-                  title="Fijar objetivo en el Titán Melenudo"
                 >
                   <div className="relative w-16 h-20 flex items-center justify-center opacity-85 group-hover:opacity-100">
                     <img
@@ -11094,7 +11686,6 @@ export const CombatView: React.FC = () => {
                 type="button"
                 onClick={() => switchActiveEnemy(mineralIdx)}
                 className="group relative flex flex-col items-center cursor-pointer transition-transform hover:scale-110 active:scale-95 focus:outline-none"
-                title="Mineral Conductor: Golpéalo para disipar energía y bajar orbes de definitiva al Titán"
               >
                 {/* Sombra de la gema */}
                 <div className="absolute -bottom-2 w-14 h-3 rounded-full bg-cyan-950/80 blur-xs pointer-events-none" />
@@ -11195,20 +11786,6 @@ export const CombatView: React.FC = () => {
           </div>
         )}
 
-        {/* Turn Skipped CC Warning Banner */}
-        {turnSkippedBanner && (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none animate-[statusToastEnter_2s_ease-out_forwards]">
-            <div className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-950/95 via-yellow-900/95 to-amber-950/95 border-2 border-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.95)] text-center whitespace-nowrap">
-              <div className="text-sm font-black text-amber-200 flex items-center justify-center gap-2">
-                <span className="text-lg animate-spin">⚡</span>
-                <span>¡TURNO DEL JUGADOR OMITIDO POR {turnSkippedBanner}!</span>
-              </div>
-              <div className="text-[11px] font-bold text-yellow-300 mt-0.5">
-                ¡El enemigo ataca 2 veces seguidas!
-              </div>
-            </div>
-          </div>
-        )}
 
 
         {/* ========================================================================= */}
@@ -11432,7 +12009,7 @@ export const CombatView: React.FC = () => {
       >
         {/* MAGORDITO GACHA ACTIVE STATUS TRAY (CLEAN COMPACT STATUS TOKENS) */}
         {(heroConditions.length > 0 || activeFoodBuff) && (
-          <div className="absolute -top-3.5 left-[100px] z-30 flex items-center gap-1.5 flex-wrap">
+          <div className="absolute -top-9 left-7 z-30 flex items-center gap-1.5 flex-wrap">
             {activeFoodBuff && (
               <button
                 key="active-food-buff"
@@ -11441,8 +12018,7 @@ export const CombatView: React.FC = () => {
                   sound.playSFX('click');
                   setShowInventoryModal(true);
                 }}
-                title={`${activeFoodBuff.name} (${activeFoodBuff.foodEffectBadge}): ${activeFoodBuff.detailedEffect}${foodShieldHp > 0 ? ` | Escudo: ${foodShieldHp} PV` : ''}`}
-                className="group relative w-7 h-7 rounded-lg border border-amber-400/90 bg-slate-950/85 shadow-[0_0_10px_rgba(245,158,11,0.5)] flex items-center justify-center transition-all duration-200 hover:scale-115 active:scale-95 cursor-pointer backdrop-blur-md"
+                className="group relative w-7 h-7 rounded-lg border border-amber-400/90 bg-slate-950/85 shadow-[0_0_10px_rgba(245,158,11,0.5)] flex items-center justify-center transition-all duration-200 hover:scale-115 active:scale-95 backdrop-blur-md"
               >
                 <img
                   src={activeFoodBuff.icon}
@@ -11463,9 +12039,7 @@ export const CombatView: React.FC = () => {
             {heroConditions.map((cond) => (
               <button
                 key={cond.id}
-                onClick={() => setSelectedConditionTooltip(cond)}
-                title={`${cond.name} (${cond.isBuff ? 'Buff' : 'Debuff'}): ${cond.turnsRemaining} Turnos`}
-                className={`group relative w-7 h-7 rounded-lg border flex items-center justify-center transition-all duration-200 hover:scale-115 active:scale-95 cursor-pointer backdrop-blur-md ${
+                className={`group relative w-7 h-7 rounded-lg border flex items-center justify-center transition-all duration-200 hover:scale-115 active:scale-95 backdrop-blur-md ${
                   cond.isBuff
                     ? 'bg-slate-950/85 border-emerald-400/70 shadow-[0_0_10px_rgba(52,211,153,0.4)]'
                     : 'bg-slate-950/85 border-rose-500/70 shadow-[0_0_10px_rgba(244,63,94,0.4)]'
@@ -11488,8 +12062,7 @@ export const CombatView: React.FC = () => {
         )}
 
         {/* Party Switcher: Quick swap between party heroes */}
-        <div className="absolute -top-7 left-3 flex items-center gap-1.5 z-40 bg-stone-950/85 px-2.5 py-1 rounded-full border border-amber-600/40 shadow-xl backdrop-blur-xs">
-          <span className="text-[9px] font-black tracking-wider text-amber-300 uppercase mr-0.5">Héroe:</span>
+        <div className="absolute -top-7 right-8 flex items-center gap-1.5 z-40">
           {partyHeroesList.map((heroId) => {
             const isActive =
               activeCombatHeroId === heroId ||
@@ -11504,6 +12077,10 @@ export const CombatView: React.FC = () => {
                 ? '/assets/portraits/roxanne.png'
                 : heroId === 'ragnavaldr'
                 ? '/assets/portraits/ragnavaldr.png'
+                : heroId === 'barled'
+                ? '/assets/portraits/barled.png'
+                : heroId === 'raxxar'
+                ? '/assets/portraits/raxxar.png'
                 : heroId === 'kairon'
                 ? '/assets/portraits/kairon.png'
                 : heroId === 'chispo_deez' || heroId === 'chispo'
@@ -11526,6 +12103,10 @@ export const CombatView: React.FC = () => {
                 ? 'Roxanne'
                 : heroId === 'ragnavaldr'
                 ? 'Ragnavaldr'
+                : heroId === 'barled'
+                ? 'Barled'
+                : heroId === 'raxxar'
+                ? 'Raxxar'
                 : heroId === 'kairon'
                 ? 'Kairon'
                 : heroId === 'chispo_deez' || heroId === 'chispo'
@@ -11551,7 +12132,6 @@ export const CombatView: React.FC = () => {
                     ? 'border-yellow-400 scale-120 shadow-[0_0_8px_#facc15]'
                     : 'border-stone-600 opacity-60 hover:opacity-100 hover:scale-110'
                 }`}
-                title={`Cambiar a ${heroLabel}`}
               >
                 <img src={heroPortrait} alt={heroLabel} className="w-full h-full object-cover" />
               </button>
@@ -11559,13 +12139,15 @@ export const CombatView: React.FC = () => {
           })}
         </div>
 
-        {/* Hero Upper-Body Splashart */}
-        <div className="relative -ml-2 -mt-4 w-[96px] h-[96px] shrink-0 z-30 drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] pointer-events-none">
-          <img
-            src={getHeroSplashartUrl()}
-            alt={getHeroName()}
-            className="w-full h-full object-contain object-bottom filter drop-shadow-[0_3px_8px_rgba(0,0,0,0.95)]"
-          />
+        {/* Hero Portrait: marco azulado que contiene el retrato, junto a los orbes de ulti y la barra de vida */}
+        <div className="relative w-[54px] h-[54px] shrink-0 z-30 pointer-events-none">
+          <div className="absolute inset-0 rounded-lg overflow-hidden border-2 border-[#1d4e74] bg-[#06131d] shadow-[0_0_10px_rgba(56,189,248,0.35),0_4px_10px_rgba(0,0,0,0.85),inset_0_0_12px_rgba(0,0,0,0.9)]">
+            <img
+              src={getHeroSplashartUrl()}
+              alt={getHeroName()}
+              className="w-full h-full object-cover object-top ring-1 ring-inset ring-sky-200/25"
+            />
+          </div>
         </div>
 
         {/* Hero Right Column: 5 Golden Orbs (Above) + Health Bar (Clean without text) */}
@@ -11961,103 +12543,6 @@ export const CombatView: React.FC = () => {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* 9. GACHA RPG TACTICAL EFFECT INSPECTOR MODAL                              */}
-      {/* ========================================================================= */}
-      {selectedConditionTooltip && (
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in zoom-in-95">
-          <div
-            className={`relative w-full max-w-[340px] p-5 rounded-2xl border-2 shadow-2xl flex flex-col items-center ${selectedConditionTooltip.bgColor} ${selectedConditionTooltip.borderColor}`}
-            style={{ boxShadow: `0 0 35px ${selectedConditionTooltip.glowColor}` }}
-          >
-            <button
-              onClick={() => setSelectedConditionTooltip(null)}
-              className="absolute top-3 right-3 text-stone-400 hover:text-white cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-3xl">{selectedConditionTooltip.icon}</span>
-              <div className="flex flex-col text-left">
-                <h3 className={`font-serif font-black text-lg ${selectedConditionTooltip.color}`}>
-                  {selectedConditionTooltip.name}
-                </h3>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-300">
-                  {selectedConditionTooltip.isBuff
-                    ? 'Mejora Táctica (Buff)'
-                    : 'Alteración de Estado (Debuff)'}
-                </span>
-              </div>
-            </div>
-
-            {/* Badges for Stacks and Remaining Turns */}
-            <div className="w-full flex items-center justify-center gap-2 my-2 py-1 px-3 bg-black/50 rounded-lg border border-white/10 font-mono text-xs">
-              <span className="text-amber-300 font-bold">
-                Duración: {selectedConditionTooltip.turnsRemaining} {selectedConditionTooltip.turnsRemaining === 1 ? 'Turno' : 'Turnos'}
-              </span>
-              <span className="text-stone-500">•</span>
-              <span className="text-white font-black bg-white/20 px-1.5 py-0.5 rounded">
-                Acumulación: x{selectedConditionTooltip.stacks} / {selectedConditionTooltip.maxStacks}
-              </span>
-            </div>
-
-            {/* Dynamic Combat Impact Box */}
-            <div className="w-full p-2.5 bg-black/60 rounded-xl border border-white/10 text-left my-2 flex flex-col gap-1">
-              <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider flex items-center gap-1">
-                <Swords className="w-3.5 h-3.5" /> Efecto en Combate:
-              </span>
-              <p className="text-xs text-stone-100 font-semibold leading-relaxed">
-                {(selectedConditionTooltip.type === 'poison' || selectedConditionTooltip.type === 'poisoned') &&
-                  `Daño de veneno por turno (DoT): Inflige ${8 * selectedConditionTooltip.stacks} PV al inicio de cada ronda. Acumulable hasta 5 veces.`}
-                {(selectedConditionTooltip.type === 'atk_down' || selectedConditionTooltip.type === 'frightened') &&
-                  `Ataque debilitado: Reduce el daño de todos los ataques infligidos por el objetivo un ${Math.min(50, 25 + (selectedConditionTooltip.stacks - 1) * 10)}%.`}
-                {(selectedConditionTooltip.type === 'def_break' || selectedConditionTooltip.type === 'prone') &&
-                  `Ruptura de defensa: La coraza queda expuesta. Recibe +${Math.min(65, 35 + (selectedConditionTooltip.stacks - 1) * 15)}% de daño adicional de todas las cartas.`}
-                {(selectedConditionTooltip.type === 'paralyze' || selectedConditionTooltip.type === 'paralyzed') &&
-                  `¡Parálisis voltaica total! La unidad pierde su acción en el turno y los impactos que recibe son impactos CRÍTICOS garantizados.`}
-                {(selectedConditionTooltip.type === 'stun' || selectedConditionTooltip.type === 'stunned') &&
-                  `Aturdimiento completo (Hard CC): La unidad queda incapacitada y pierde su turno de acción.`}
-                {(selectedConditionTooltip.type === 'blind' || selectedConditionTooltip.type === 'blinded') &&
-                  `Ceguera de seda: 45% de probabilidad de que los ataques fallen por completo (indicador MISS).`}
-                {(selectedConditionTooltip.type === 'atk_buff') &&
-                  `Ataque potenciado: Multiplicador ofensivo de +${25 + (selectedConditionTooltip.stacks - 1) * 20}% al daño de todas las habilidades.`}
-                {(selectedConditionTooltip.type === 'haste') &&
-                  `Ímpetu táctico: +25% daño saliente y 25% de probabilidad de evasión completa ante ataques rivales.`}
-                {(selectedConditionTooltip.type === 'regen' || selectedConditionTooltip.type === 'blessed') &&
-                  `Regeneración vital sostenida (HoT): Restaura ${8 * selectedConditionTooltip.stacks} PV al iniciar cada fase de combate.`}
-                {(selectedConditionTooltip.type === 'def_buff') &&
-                  `Defensa rúnica: Mitiga el daño recibido de todos los ataques en un 30%.`}
-              </p>
-            </div>
-
-            {/* Tactical Gacha Summary */}
-            <div className="w-full p-2.5 bg-black/40 rounded-xl border border-white/5 text-left mb-3">
-              <span className="text-[9px] font-bold uppercase text-stone-400 block mb-0.5">
-                Mecánica Gacha Táctica:
-              </span>
-              <p className="text-[10px] text-stone-300 italic leading-snug">
-                {GACHA_EFFECTS_CATALOG[selectedConditionTooltip.type]?.tacticalDesc ||
-                  selectedConditionTooltip.description}
-              </p>
-            </div>
-
-            <button
-              onClick={() => setSelectedConditionTooltip(null)}
-              className="w-full py-2 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 10. D&D 5E DAMAGE TYPES COMPENDIUM MODAL */}
-      <DndDamageCodexModal
-        isOpen={showDndCodex}
-        onClose={() => setShowDndCodex(false)}
-        initialType={selectedDndCodexType}
-      />
     </div>
   );
 };

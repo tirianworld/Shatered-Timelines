@@ -1,5 +1,5 @@
 import React from 'react';
-import { soundManager } from '../services/audioService';
+import { sound } from '../services/soundService';
 import {
   Flame,
   Sparkles,
@@ -39,7 +39,7 @@ export const Navigation: React.FC<NavigationProps> = ({ currentTab, onSelectTab 
   ];
 
   const handleTabClick = (tab: TabType) => {
-    soundManager.playClick();
+    sound.playSFX('click');
     onSelectTab(tab);
   };
 

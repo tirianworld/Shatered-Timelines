@@ -1,0 +1,8 @@
+{
+  "appId": "com.cddgacha.app",
+  "appName": "CDD Gacha",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": false
+  }
+}

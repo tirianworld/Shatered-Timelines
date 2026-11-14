@@ -28,6 +28,7 @@ export type GachaEffectType =
   | 'decay'       // Necrótico: Marchitamiento vital
   | 'holy_blind'  // Radiante: Ceguera divina por resplandor
   | 'chill'       // Frío: Escarcha acumulable hacia congelación
+  | 'faerie_fire' // Fuego Feérico: El enemigo recibe +15%/+20%/+25% más de daño según el Tier
   // Aliases for backwards compatibility:
   | 'poisoned'
   | 'frightened'
@@ -604,6 +605,23 @@ export const GACHA_EFFECTS_CATALOG: Record<string, GachaEffectMeta> = {
     bgColor: 'bg-amber-950/80',
     glowColor: '#fbbf24',
     particleType: 'blind',
+  },
+  faerie_fire: {
+    type: 'faerie_fire',
+    canonicalType: 'faerie_fire',
+    name: 'Faerie Fire',
+    nameEs: 'Fuego Feérico',
+    category: 'debuff',
+    shortDesc: 'Resplandor feérico: Aumenta el daño recibido un +15% (Tier I), +20% (Tier II) o +25% (Tier III).',
+    tacticalDesc: 'Llamas feéricas arcanas de Barled que envuelven a todos los enemigos y exponen sus puntos débiles, incrementando todo el daño recibido un +15% en Tier I, +20% en Tier II y +25% en Tier III.',
+    isBuff: false,
+    maxStacks: 1,
+    icon: '✨',
+    color: 'text-fuchsia-300',
+    borderColor: 'border-fuchsia-400',
+    bgColor: 'bg-fuchsia-950/90',
+    glowColor: '#e879f9',
+    particleType: 'def_break',
   },
 };
 

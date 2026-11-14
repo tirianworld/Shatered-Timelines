@@ -36,7 +36,7 @@ export interface MapInteractiveLocation {
 }
 
 export const WorldMapView: React.FC = () => {
-  const { navigateTo, setSelectedCombatMissionId } = useGame();
+  const { navigateTo, setPendingMissionLaunch } = useGame();
   const [selectedLocation, setSelectedLocation] = useState<MapInteractiveLocation | null>(null);
 
   // Base dimensions matching icespear_map_8551bb2c (2048 x 1255 ratio = 1.6318)
@@ -216,8 +216,8 @@ export const WorldMapView: React.FC = () => {
       actionLabel: '¡Socorrer a las Tieflings!',
       actionIcon: 'swords',
       action: () => {
-        setSelectedCombatMissionId('evento_asalto_orco');
-        navigateTo('story');
+        setPendingMissionLaunch({ missionId: 'evento_asalto_orco', destination: 'story' });
+        navigateTo('party');
       },
       quickLinks: [
         {
@@ -243,8 +243,8 @@ export const WorldMapView: React.FC = () => {
       actionLabel: '¡Repeler a los Bandidos!',
       actionIcon: 'swords',
       action: () => {
-        setSelectedCombatMissionId('evento_emboscada_bandidos');
-        navigateTo('story');
+        setPendingMissionLaunch({ missionId: 'evento_emboscada_bandidos', destination: 'story' });
+        navigateTo('party');
       },
       quickLinks: [
         {

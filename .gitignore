@@ -17,3 +17,10 @@ coverage/
 .logs/
 
 artifacts/
+
+# Salidas de build de Android y temporales
+/android/app/build/
+/android/build/
+/android/.gradle/
+/android/local.properties
+.tmp_*

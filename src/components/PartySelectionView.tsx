@@ -1,17 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
 import { Check, X } from 'lucide-react';
 import { CANONICAL_HEROES_LIST, CanonicalHeroItem } from './HeroesView';
 
-const STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v3';
+const STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v4';
+const LEGACY_STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v3';
+const REFERENCE_PARTY = ['edacorn', 'arlem_diaz', 'magordito', 'pepe_loux'];
 
 interface PartySelectionViewProps {
   onClose?: () => void;
 }
 
 export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose }) => {
-  const { team, setEntireTeam, goBack } = useGame();
+  const {
+    team,
+    setEntireTeam,
+    goBack,
+    heroes: ownedHeroes,
+    pendingMissionLaunch,
+    setPendingMissionLaunch,
+    setSelectedCombatMissionId,
+    navigateTo,
+  } = useGame();
+
+  // Los equipos solo admiten héroes desbloqueados.
+  const ownedHeroIds = useMemo(() => new Set(ownedHeroes.map((h) => h.id)), [ownedHeroes]);
 
   // 5 Party Presets (each with 4 slots)
   const [parties, setParties] = useState<(string | null)[][]>(() => {
@@ -40,6 +54,14 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
 
   const [activePreset, setActivePreset] = useState<number>(0);
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
+
+  // Al abrir la pestaña, sincroniza el equipo de combate con el preset inicial
+  // descartando cualquier héroe que no esté desbloqueado.
+  useEffect(() => {
+    const first = parties[0] || [];
+    const safe = first.map((id) => (id && ownedHeroIds.has(id) ? id : null));
+    setEntireTeam(safe.some((id) => id) ? safe : [...REFERENCE_PARTY]);
+  }, []);
 
   // Current active 4-hero slots
   const currentSlots = parties[activePreset] || [null, null, null, null];
@@ -135,6 +157,19 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
       setSelectedSlotIndex(null);
     }
   };
+
+  // Confirma el equipo y arranca la misión que quedó pendiente al elegirla.
+  const handleConfirmMission = () => {
+    if (!pendingMissionLaunch) return;
+    sound.playSFX('click');
+    const { missionId, destination } = pendingMissionLaunch;
+    setSelectedCombatMissionId(missionId);
+    setPendingMissionLaunch(null);
+    // Sustituye el selector en el historial: "Volver" desde la misión regresa a la lista.
+    navigateTo(destination, true);
+  };
+
+  const hasHeroInParty = currentSlots.some((id) => id !== null);
 
   return (
     <div className="relative w-full h-full flex flex-col select-none overflow-hidden bg-[#1c0803]">
@@ -241,7 +276,7 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
           {/* Scrollable Hero Cards Area */}
           <div className="flex-1 w-full overflow-y-auto no-scrollbar pt-0.5">
             <div className="grid grid-cols-5 gap-1 sm:gap-1.5 pb-2">
-              {CANONICAL_HEROES_LIST.map((hero) => {
+              {CANONICAL_HEROES_LIST.filter((h) => ownedHeroIds.has(h.id)).map((hero) => {
                 const inTeam = currentSlots.includes(hero.id);
 
                 return (
@@ -289,6 +324,24 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
           </div>
         </div>
       </div>
+
+      {/* 4. CONFIRMAR EQUIPO Y ENTRAR A LA MISIÓN ELEGIDA */}
+      {pendingMissionLaunch && (
+        <div className="relative z-10 mx-3 mb-2 shrink-0">
+          <button
+            type="button"
+            onClick={handleConfirmMission}
+            disabled={!hasHeroInParty}
+            className={`w-full rounded-xl border-2 py-2.5 font-serif font-black text-sm tracking-wide transition-all duration-150 active:scale-[0.98] ${
+              hasHeroInParty
+                ? 'bg-gradient-to-b from-[#f59e0b] to-[#b45309] border-[#fbbf24] text-[#2b0d04] shadow-[0_4px_14px_rgba(245,158,11,0.45)] cursor-pointer hover:from-[#fbbf24] hover:to-[#d97706]'
+                : 'bg-[#2b0d04] border-[#6d2a0e] text-stone-500 cursor-not-allowed'
+            }`}
+          >
+            {hasHeroInParty ? 'Comenzar misión' : 'Elige al menos un héroe'}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

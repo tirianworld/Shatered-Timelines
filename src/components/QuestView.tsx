@@ -23,7 +23,7 @@ export const QuestView: React.FC = () => {
     isMissionCompleted,
     activeQuestChapter,
     setActiveQuestChapter,
-    setSelectedCombatMissionId,
+    setPendingMissionLaunch,
     navigateTo,
     addGold,
     addCrystals,
@@ -326,7 +326,8 @@ export const QuestView: React.FC = () => {
 
   const handleLaunchMission = (mission: QuestMission, forceStory = false) => {
     sound.playSFX('click');
-    if (
+
+    const playsStory =
       (mission.id === 'm1_tirano' ||
         mission.id === 'm2_robo' ||
         mission.id === 'm3_bosque' ||
@@ -336,36 +337,27 @@ export const QuestView: React.FC = () => {
         mission.id === 'm9_emboscada_ferton' ||
         mission.id === 'm10_hobgoblin_boss' ||
         mission.isStory) &&
-      (!questProgress.completedMissions.includes(mission.id) || forceStory || mission.isStory)
-    ) {
-      if (forceStory && questProgress.completedMissions.includes(mission.id)) {
-        if (mission.id === 'm10_hobgoblin_boss') {
-          setSelectedCombatMissionId('m10_hobgoblin_boss_epilogo');
-        } else if (mission.id === 'm9_emboscada_ferton') {
-          setSelectedCombatMissionId('m9_emboscada_ferton_epilogo');
-        } else if (mission.id === 'm2_robo') {
-          setSelectedCombatMissionId('m2_robo_epilogo');
-        } else if (mission.id === 'm3_bosque') {
-          setSelectedCombatMissionId('m3_bosque_epilogo');
-        } else if (mission.id === 'm4_puertas_selladas') {
-          setSelectedCombatMissionId('m4_puertas_selladas_epilogo');
-        } else if (mission.id === 'm3_cuevas_rojo') {
-          setSelectedCombatMissionId('m3_cuevas_rojo_epilogo');
-        } else if (mission.id === 'm4_cuevas_azul') {
-          setSelectedCombatMissionId('m4_cuevas_azul_epilogo');
-        } else if (mission.id === 'm5_cuevas_zancudo') {
-          setSelectedCombatMissionId('m5_cuevas_zancudo_epilogo');
-        } else {
-          setSelectedCombatMissionId(mission.id);
-        }
-      } else {
-        setSelectedCombatMissionId(mission.id);
-      }
-      navigateTo('story');
-      return;
+      (!questProgress.completedMissions.includes(mission.id) || forceStory || mission.isStory);
+
+    // Misiones ya vistas que se repiten pasan a su versión epílogo.
+    let missionId = mission.id;
+    if (playsStory && forceStory && questProgress.completedMissions.includes(mission.id)) {
+      const epilogues: Record<string, string> = {
+        m10_hobgoblin_boss: 'm10_hobgoblin_boss_epilogo',
+        m9_emboscada_ferton: 'm9_emboscada_ferton_epilogo',
+        m2_robo: 'm2_robo_epilogo',
+        m3_bosque: 'm3_bosque_epilogo',
+        m4_puertas_selladas: 'm4_puertas_selladas_epilogo',
+        m3_cuevas_rojo: 'm3_cuevas_rojo_epilogo',
+        m4_cuevas_azul: 'm4_cuevas_azul_epilogo',
+        m5_cuevas_zancudo: 'm5_cuevas_zancudo_epilogo',
+      };
+      missionId = epilogues[mission.id] ?? mission.id;
     }
-    setSelectedCombatMissionId(mission.id);
-    navigateTo('combat');
+
+    // Toda misión pasa primero por el selector de héroes.
+    setPendingMissionLaunch({ missionId, destination: playsStory ? 'story' : 'combat' });
+    navigateTo('party');
   };
 
   const handleClaimChest = () => {

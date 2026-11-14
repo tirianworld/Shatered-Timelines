@@ -16,6 +16,8 @@ import { CombatView } from './components/CombatView';
 import { PatrolView } from './components/PatrolView';
 import { InventoryView } from './components/InventoryView';
 import { MailboxModal } from './components/MailboxModal';
+import { DailyRewardsModal } from './components/DailyRewardsModal';
+import { NewPlayerEventModal } from './components/NewPlayerEventModal';
 import { OptionsModal } from './components/OptionsModal';
 import { GitHubDataManagerModal } from './components/GitHubDataManagerModal';
 import { PlayGamesModal } from './components/PlayGamesModal';
@@ -165,6 +167,8 @@ const GameContent: React.FC = () => {
 
         {/* Global Modals */}
         <MailboxModal />
+        <DailyRewardsModal />
+        <NewPlayerEventModal />
         <OptionsModal />
         <PlayGamesModal
           isOpen={isPlayGamesOpen}

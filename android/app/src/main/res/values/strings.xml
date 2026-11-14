@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">CDD Gacha</string>
+    <string name="title_activity_main">CDD Gacha</string>
+    <string name="package_name">com.cddgacha.app</string>
+    <string name="custom_url_scheme">com.cddgacha.app</string>
+</resources>

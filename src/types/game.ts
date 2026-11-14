@@ -53,7 +53,7 @@ export interface HeroStats {
 export interface EquipmentItem {
   id: string;
   name: string;
-  type: 'weapon' | 'armor' | 'accessory' | 'ring';
+  type: 'weapon' | 'armor' | 'accessory' | 'ring' | 'helmet';
   rarity: HeroRarity;
   stats: Partial<HeroStats>;
   level: number;
@@ -83,10 +83,24 @@ export interface Hero {
   equipped: {
     weapon?: EquipmentItem;
     armor?: EquipmentItem;
+    helmet?: EquipmentItem;
+    ring?: EquipmentItem;
     accessory?: EquipmentItem;
   };
   inPatrol?: boolean;
 }
+
+
+/** Arma rara que puede salir en una tirada de gacha como relleno. */
+export interface GachaWeapon {
+  id: string;
+  name: string;
+  icon: string;
+  rarity: HeroRarity;
+}
+
+/** Entrada de una tirada, en el orden en que se revela. */
+export type GachaEntry = { kind: 'hero'; hero: Hero } | { kind: 'weapon'; weapon: GachaWeapon };
 
 export interface SummonBanner {
   id: string;

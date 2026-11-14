@@ -1,7 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Hero, SummonBanner, PatrolMission, InventoryItem, EquipmentItem } from '../types/game';
-import { INITIAL_HEROES } from '../data/heroesData';
-import { BANNERS, PATROLS, INITIAL_INVENTORY, INITIAL_EQUIPMENT, SHOP_ITEMS } from '../data/gameContent';
+import { Hero, SummonBanner, GachaEntry, PatrolMission, InventoryItem, EquipmentItem } from '../types/game';
+import { INITIAL_HEROES, STARTER_HERO_IDS, getHeroById } from '../data/heroesData';
+import {
+  NEW_PLAYER_EVENT_DAYS,
+  NEW_PLAYER_EVENT_STEPS,
+  NEW_PLAYER_HERO_CHOICES,
+} from '../data/newPlayerEventData';
+import { BANNERS, PATROLS, INITIAL_INVENTORY, INITIAL_EQUIPMENT, SHOP_ITEMS, GACHA_WEAPONS } from '../data/gameContent';
+import { DAILY_REWARDS } from '../data/dailyRewardsData';
+import { DAILY_PRESENTERS, DEFAULT_PRESENTER_ID } from '../data/dailyRewardPresenters';
 import { sound } from '../services/soundService';
 import { safeStorage, safeGetJSON } from '../utils/storage';
 import { playGames } from '../services/playGamesService';
@@ -38,6 +45,11 @@ export interface ShelfItem {
   effectValue?: number;
 }
 
+export type PendingMissionLaunch = {
+  missionId: string;
+  destination: 'story' | 'combat';
+};
+
 interface GameContextType {
   gold: number;
   summonCrystals: number;
@@ -67,10 +79,12 @@ interface GameContextType {
   getMaterialCount: (icon: string, name?: string) => number;
   deductMaterials: (requirements: { icon: string; name?: string; count: number }[]) => boolean;
   equipment: EquipmentItem[];
+  /** Inventario de equipo completo: piezas equipables + objetos de la estantería (forjados/comprados). */
+  getOwnedEquipment: () => EquipmentItem[];
   activePatrols: ActivePatrol[];
   currentTab: string;
   setCurrentTab: (tab: string) => void;
-  navigateTo: (tab: string) => void;
+  navigateTo: (tab: string, replacePrev?: boolean) => void;
   goBack: () => void;
   activeSanctuary: 'icespear' | 'mercado_negro';
   setActiveSanctuary: (sanctuary: 'icespear' | 'mercado_negro') => void;
@@ -89,6 +103,9 @@ interface GameContextType {
   completeAllMissions: () => void;
   selectedCombatMissionId: string | null;
   setSelectedCombatMissionId: (id: string | null) => void;
+  // Misión elegida que espera a que el jugador confirme su equipo en el selector de héroes.
+  pendingMissionLaunch: PendingMissionLaunch | null;
+  setPendingMissionLaunch: (launch: PendingMissionLaunch | null) => void;
   // Mailbox & Options
   isMailboxOpen: boolean;
   setIsMailboxOpen: (open: boolean) => void;
@@ -100,6 +117,31 @@ interface GameContextType {
   openPlayGames: () => void;
   mailItems: MailItem[];
   claimMailReward: (id: string) => void;
+  // Recompensas diarias
+  isDailyRewardsOpen: boolean;
+  setIsDailyRewardsOpen: (open: boolean) => void;
+  dailyRewardAvailable: boolean;
+  dailyRewardDay: number;
+  dailyRewardStreak: number;
+  dailyRewardClaimedToday: boolean;
+  dailyRewardTotalClaims: number;
+  dailyRewardPresenterId: string;
+  setDailyRewardPresenter: (presenterId: string) => void;
+  claimDailyReward: () => boolean;
+  // Evento de Bienvenida (nuevos jugadores)
+  isNewPlayerEventOpen: boolean;
+  openNewPlayerEvent: () => void;
+  closeNewPlayerEvent: () => void;
+  maybeOpenNewPlayerEventAfterDaily: () => void;
+  newPlayerEventClaimedCount: number;
+  newPlayerEventUnlockedSteps: number;
+  newPlayerEventClaimable: number;
+  newPlayerEventDaysLeft: number;
+  newPlayerEventChosenHeroId: string | null;
+  newPlayerEventFinished: boolean;
+  claimNewPlayerEventStep: () => boolean;
+  chooseNewPlayerEventHero: (heroId: string) => boolean;
+  unlockHero: (heroId: string) => boolean;
   // Forge navigation state
   forgeCategory: string;
   setForgeCategory: (cat: string) => void;
@@ -110,17 +152,21 @@ interface GameContextType {
   addCrystals: (amt: number) => void;
   addAstralShards: (amt: number) => void;
   setTeamSlot: (slotIndex: number, heroId: string | null) => void;
-  setEntireTeam: (newTeam: (string | null)[]) => void;
-  summon: (bannerId: string, count: number) => { pulled: Hero[]; duplicates: number; bonusCoins: number };
+  setEntireTeam: (heroIds: (string | null)[]) => void;
+  summon: (bannerId: string, count: number) => { pulled: Hero[]; duplicates: number; bonusCoins: number; entries: GachaEntry[] };
   levelUpHero: (heroId: string) => boolean;
   startPatrol: (patrolId: string, heroIds: string[]) => boolean;
   claimPatrol: (patrolId: string) => boolean;
   equipHeroItem: (heroId: string, equipId: string) => void;
-  unequipHeroItem: (heroId: string, slot: 'weapon' | 'armor' | 'accessory') => void;
+  unequipHeroItem: (heroId: string, slot: 'weapon' | 'armor' | 'helmet' | 'ring' | 'accessory') => void;
   upgradeEquipmentItem: (equipId: string) => boolean;
   forgeNewEquipment: (type: 'weapon' | 'armor' | 'ring') => boolean;
+  /** Guarda en el inventario de equipo una pieza fabricada en la forja. */
+  addForgedEquipment: (item: Omit<EquipmentItem, 'id'>) => EquipmentItem;
   buyShopItem: (itemId: string) => boolean;
   useInventoryItem: (itemId: string, heroId?: string) => boolean;
+  /** Sube una estrella gastando los materiales indicados y el oro del Despertar. */
+  awakenHero: (heroId: string, materials: { id: string; count: number }[], goldCost: number) => boolean;
   setHeroes: React.Dispatch<React.SetStateAction<Hero[]>>;
   banners: SummonBanner[];
   setBanners: React.Dispatch<React.SetStateAction<SummonBanner[]>>;
@@ -181,6 +227,37 @@ const DEFAULT_MAIL: MailItem[] = [
   },
 ];
 
+interface NewPlayerEventSave {
+  startDate: string | null;
+  claimedCount: number;
+  chosenHeroId: string | null;
+  lastShownDate: string | null;
+}
+
+interface DailyRewardSave {
+  lastClaimDate: string | null;
+  streak: number;
+  totalClaims: number;
+  presenterId: string;
+}
+
+/** Clave de fecha local (YYYY-MM-DD) para saber si ya se reclamó hoy. */
+function localDateKey(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/** Días completos entre dos claves de fecha local (YYYY-MM-DD). */
+function daysBetweenKeys(fromKey: string, toKey: string): number {
+  const [fy, fm, fd] = fromKey.split('-').map(Number);
+  const [ty, tm, td] = toKey.split('-').map(Number);
+  const from = Date.UTC(fy, fm - 1, fd);
+  const to = Date.UTC(ty, tm - 1, td);
+  return Math.round((to - from) / 86400000);
+}
+
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -235,7 +312,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [heroes, setHeroes] = useState<Hero[]>(() => {
     const saved = safeGetJSON<Hero[] | null>(`${STORAGE_KEY}_heroes`, null);
     if (!saved || !Array.isArray(saved) || saved.length === 0) {
-      return INITIAL_HEROES;
+      // Partida nueva: solo los héroes iniciales desbloqueados.
+      return INITIAL_HEROES.filter((h) => STARTER_HERO_IDS.includes(h.id));
     }
     // Rehydrate saved heroes ensuring all required fields (skills, stats, equipped) exist
     const rehydrated = saved.map((h) => {
@@ -254,6 +332,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
             ? h.skills
             : canonical.skills,
         title: canonical.title,
+        // El atributo y el rango son datos de diseño, no de progresión: manda el catálogo.
+        rarity: canonical.rarity,
+        attribute: canonical.attribute,
         bio: canonical.bio,
         quote: canonical.quote,
         equipped: h.equipped && typeof h.equipped === 'object' ? h.equipped : {},
@@ -271,12 +352,17 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (Array.isArray(saved) && saved.length === 4) {
       return saved.map((id) => (typeof id === 'string' ? id : null));
     }
-    return ['edacorn', 'kairon', 'roxanne', 'magordito'];
+    return ['edacorn', 'arlem_diaz', 'magordito', 'pepe_loux'];
   });
 
   const [inventory, setInventory] = useState<InventoryItem[]>(() => {
     const saved = safeGetJSON<InventoryItem[] | null>(`${STORAGE_KEY}_inventory`, null);
-    return Array.isArray(saved) ? saved : INITIAL_INVENTORY;
+    if (!Array.isArray(saved)) return INITIAL_INVENTORY;
+    // Las pociones de EXP viejas se sustituyen por los cinco frascos nuevos.
+    const obsolete = ['xp_potion_small', 'xp_potion_large'];
+    const kept = saved.filter((item) => !obsolete.includes(item.id));
+    const missing = INITIAL_INVENTORY.filter((item) => !kept.some((own) => own.id === item.id));
+    return missing.length > 0 ? [...kept, ...missing] : kept;
   });
 
   // Persistent shelf inventory: persists purchased and crafted items
@@ -327,6 +413,83 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         priceGold: 150,
       });
     }
+
+    // Materiales de sastrería: sin ellos las skins no se pueden fabricar.
+    const skinSeeds: ShelfItem[] = [
+      {
+        id: 'mat_libro_sagrado',
+        name: 'Libro Sagrado',
+        category: 'materials',
+        count: 2,
+        icon: '/assets/heropage/skinmat_libro.png',
+        rarity: 'SR',
+        description: 'Tomo encuadernado en cuero que sirve de patrón para prendas rituales.',
+        priceGold: 300,
+      },
+      {
+        id: 'mat_arapos',
+        name: 'Montón de Arapos',
+        category: 'materials',
+        count: 5,
+        icon: '/assets/heropage/skinmat_arapos.png',
+        rarity: 'R',
+        description: 'Jirones de tela gastada que sirven para coser atuendos.',
+        priceGold: 80,
+      },
+      {
+        id: 'mat_polvo_hadas',
+        name: 'Polvo de Hadas',
+        category: 'materials',
+        count: 4,
+        icon: '/assets/heropage/skinmat_polvo_hadas.png',
+        rarity: 'SR',
+        description: 'Polvo irisado que da brillo y color a los tejidos encantados.',
+        priceGold: 250,
+      },
+      {
+        id: 'mat_paquetes_sospechosos',
+        name: 'Paquetes Sospechosos',
+        category: 'materials',
+        count: 3,
+        icon: '/assets/heropage/skinmat_paquetes.png',
+        rarity: 'R',
+        description: 'Bultos de contrabando con los avíos que no se encuentran en la sastrería.',
+        priceGold: 120,
+      },
+      {
+        id: 'mat_colmillos',
+        name: 'Colmillos Desgastados',
+        category: 'materials',
+        count: 3,
+        icon: '/assets/heropage/skinmat_colmillo.png',
+        rarity: 'SR',
+        description: 'Colmillos huecos que se usan como adornos de piel.',
+        priceGold: 200,
+      },
+      {
+        id: 'mat_fragmentos_oseos',
+        name: 'Fragmentos Óseos',
+        category: 'materials',
+        count: 4,
+        icon: '/assets/heropage/skinmat_huesos.png',
+        rarity: 'R',
+        description: 'Restos de hueso para remaches y hebillas.',
+        priceGold: 100,
+      },
+      {
+        id: 'mat_talisman_orco',
+        name: 'Talismán de Jefe Orco',
+        category: 'materials',
+        count: 2,
+        icon: '/assets/heropage/skinmat_talisman.png',
+        rarity: 'SSR',
+        description: 'Tótem de guerra orco, imprescindible para imitar su aspecto.',
+        priceGold: 800,
+      },
+    ];
+    skinSeeds.forEach((seed) => {
+      if (!items.some((it) => it.id === seed.id)) items.push(seed);
+    });
 
     const hasMangoLanza = items.some((it) => it.id === 'mango_lanza' || it.name.toLowerCase().includes('lanza'));
     if (!hasMangoLanza) {
@@ -578,9 +741,33 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const [selectedCombatMissionId, setSelectedCombatMissionId] = useState<string | null>('m2_robo');
+  const [pendingMissionLaunch, setPendingMissionLaunch] = useState<PendingMissionLaunch | null>(null);
 
   const [isMailboxOpen, setIsMailboxOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+  const [isDailyRewardsOpen, setIsDailyRewardsOpen] = useState(false);
+  const [isNewPlayerEventOpen, setIsNewPlayerEventOpen] = useState(false);
+  const [newPlayerEventSave, setNewPlayerEventSave] = useState<NewPlayerEventSave>(() => {
+    const saved = safeGetJSON<Partial<NewPlayerEventSave> | null>(`${STORAGE_KEY}_new_player_event_v1`, null);
+    return {
+      startDate: typeof saved?.startDate === 'string' ? saved.startDate : null,
+      claimedCount: typeof saved?.claimedCount === 'number' && saved.claimedCount >= 0 ? saved.claimedCount : 0,
+      chosenHeroId: typeof saved?.chosenHeroId === 'string' ? saved.chosenHeroId : null,
+      lastShownDate: typeof saved?.lastShownDate === 'string' ? saved.lastShownDate : null,
+    };
+  });
+  const [dailyRewardSave, setDailyRewardSave] = useState<DailyRewardSave>(() => {
+    const saved = safeGetJSON<Partial<DailyRewardSave> | null>(`${STORAGE_KEY}_daily_rewards_v1`, null);
+    return {
+      lastClaimDate: typeof saved?.lastClaimDate === 'string' ? saved.lastClaimDate : null,
+      streak: typeof saved?.streak === 'number' && saved.streak >= 0 ? saved.streak : 0,
+      totalClaims: typeof saved?.totalClaims === 'number' && saved.totalClaims >= 0 ? saved.totalClaims : 0,
+      presenterId:
+        typeof saved?.presenterId === 'string' && DAILY_PRESENTERS.some((p) => p.id === saved.presenterId)
+          ? (saved.presenterId as string)
+          : DEFAULT_PRESENTER_ID,
+    };
+  });
   const [isPlayGamesOpen, setIsPlayGamesOpen] = useState(false);
 
   const openPlayGames = () => {
@@ -709,8 +896,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sound.playSFX('click');
   };
 
-  const setEntireTeam = (newTeam: (string | null)[]) => {
-    setTeam(newTeam);
+  const setEntireTeam = (heroIds: (string | null)[]) => {
+    // Solo héroes desbloqueados pueden formar parte del equipo.
+    const owned = new Set(heroes.map((h) => h.id));
+    const next = heroIds.slice(0, 4).map((id) => (id && owned.has(id) ? id : null));
+    while (next.length < 4) next.push(null);
+    setTeam(next);
   };
 
   const summon = (bannerId: string, count: number) => {
@@ -719,7 +910,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (astralShards < cost) {
       sound.playSFX('hurt');
-      return { pulled: [], duplicates: 0, bonusCoins: 0 };
+      return { pulled: [], duplicates: 0, bonusCoins: 0, entries: [] };
     }
 
     setAstralShards((prev) => Math.max(0, prev - cost));
@@ -727,12 +918,33 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sound.playSFX('gacha_pull');
 
     const pulled: Hero[] = [];
+    const entries: GachaEntry[] = [];
     let duplicates = 0;
     let bonusCoins = 0;
 
     const availablePool = INITIAL_HEROES;
+    // El banner de latentes rellena las tiradas con armas raras.
+    const weaponsEnabled = banner.id === 'banner_latentes';
 
     for (let i = 0; i < count; i++) {
+      // El último hueco de una tirada múltiple siempre es un héroe asegurado.
+      const guaranteedSlot = count > 1 && i === count - 1;
+
+      if (weaponsEnabled && !guaranteedSlot && Math.random() < 0.22) {
+        const weapon = GACHA_WEAPONS[Math.floor(Math.random() * GACHA_WEAPONS.length)];
+        entries.push({ kind: 'weapon', weapon });
+        addShelfItem({
+          id: weapon.id,
+          name: weapon.name,
+          icon: weapon.icon,
+          category: 'equipment',
+          rarity: weapon.rarity,
+          priceGold: weapon.rarity === 'SSR' ? 900 : 450,
+          description: 'Arma rara obtenida en el Banner de Latentes.',
+        });
+        continue;
+      }
+
       const roll = Math.random();
       let targetRarity: 'UR' | 'SSR' | 'SR' | 'R' = 'R';
 
@@ -750,15 +962,17 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       let pool = availablePool.filter((h) => h.rarity === targetRarity);
       if (pool.length === 0) pool = availablePool;
 
-      // 50% chance to pick featured if matches rarity
+      // Los destacados salen con más peso, sobre todo en el hueco asegurado
       const featuredMatches = pool.filter((h) => banner.featuredHeroIds.includes(h.id));
-      let picked: Hero;
-      if (featuredMatches.length > 0 && Math.random() < 0.5) {
+      let picked: Hero | undefined;
+      if (featuredMatches.length > 0 && Math.random() < (guaranteedSlot ? 0.7 : 0.5)) {
         picked = featuredMatches[Math.floor(Math.random() * featuredMatches.length)];
       } else {
         picked = pool[Math.floor(Math.random() * pool.length)];
       }
+      if (!picked) continue;
 
+      entries.push({ kind: 'hero', hero: picked });
       pulled.push(picked);
     }
 
@@ -805,7 +1019,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     }, 100);
 
-    return { pulled, duplicates, bonusCoins };
+    return { pulled, duplicates, bonusCoins, entries };
   };
 
   const levelUpHero = (heroId: string): boolean => {
@@ -908,9 +1122,44 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return true;
   };
 
+  /** Deduce la categoría de una pieza a partir de su nombre (objetos de la estantería). */
+  const guessEquipmentType = (name: string, icon: string): EquipmentItem['type'] => {
+    const text = `${name} ${icon}`.toLowerCase();
+    if (/casco|yelmo|corona|capucha|sombrero|celada/.test(text)) return 'helmet';
+    if (/armadura|coraza|peto|pechera|cota|malla|t[uú]nica|escudo|faldar/.test(text)) return 'armor';
+    if (/anillo|sortija|sello/.test(text)) return 'ring';
+    if (/amuleto|talism[aá]n|abalorio|colgante|collar|brazal|guante|pendiente/.test(text)) return 'accessory';
+    return 'weapon';
+  };
+
+  /** Une el equipo equipable con los objetos de categoría 'equipment' de la estantería. */
+  const getOwnedEquipment = (): EquipmentItem[] => {
+    const known = new Set(equipment.map((e) => e.name.trim().toLowerCase()));
+    const fromShelf: EquipmentItem[] = shelfInventory
+      .filter((it) => it.category === 'equipment' && !known.has(it.name.trim().toLowerCase()))
+      .map((it) => ({
+        id: `shelf_${it.id}`,
+        name: it.name,
+        type: guessEquipmentType(it.name, it.icon),
+        rarity: (it.rarity ?? 'R') as EquipmentItem['rarity'],
+        level: 1,
+        icon: it.icon,
+        description: it.description ?? 'Objeto guardado en el inventario.',
+        stats: {},
+      }));
+    return [...equipment, ...fromShelf];
+  };
+
   const equipHeroItem = (heroId: string, equipId: string) => {
-    const item = equipment.find((e) => e.id === equipId);
-    if (!item) return;
+    let item = equipment.find((e) => e.id === equipId);
+    if (!item) {
+      // Piezas que solo viven en la estantería: al equiparlas pasan a ser equipo real.
+      const fromShelf = getOwnedEquipment().find((e) => e.id === equipId);
+      if (!fromShelf) return;
+      const real: EquipmentItem = { ...fromShelf, id: `forged_${Date.now()}_${Math.random().toString(36).slice(2, 7)}` };
+      setEquipment((prev) => [...prev, real]);
+      item = real;
+    }
 
     setHeroes((prev) =>
       prev.map((h) => {
@@ -918,6 +1167,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const newEquipped = { ...h.equipped };
         if (item.type === 'weapon') newEquipped.weapon = item;
         else if (item.type === 'armor') newEquipped.armor = item;
+        else if (item.type === 'helmet') newEquipped.helmet = item;
+        else if (item.type === 'ring') newEquipped.ring = item;
         else newEquipped.accessory = item;
 
         return { ...h, equipped: newEquipped };
@@ -926,7 +1177,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sound.playSFX('click');
   };
 
-  const unequipHeroItem = (heroId: string, slot: 'weapon' | 'armor' | 'accessory') => {
+  const unequipHeroItem = (heroId: string, slot: 'weapon' | 'armor' | 'helmet' | 'ring' | 'accessory') => {
     setHeroes((prev) =>
       prev.map((h) => {
         if (h.id !== heroId) return h;
@@ -940,8 +1191,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const upgradeEquipmentItem = (equipId: string): boolean => {
     const item = equipment.find((e) => e.id === equipId);
-    if (!item) return false;
-    const cost = item.level * 400;
+    // Las piezas que solo están en la estantería también se pueden mejorar: pasan a equipo real.
+    const fromShelf = item ? undefined : getOwnedEquipment().find((e) => e.id === equipId);
+    const base = item ?? fromShelf;
+    if (!base) return false;
+
+    const cost = base.level * 400;
     if (gold < cost) {
       sound.playSFX('hurt');
       return false;
@@ -950,6 +1205,25 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setGold((prev) => prev - cost);
     sound.playSFX('upgrade');
     playGames.unlockAchievement('ach_forge_master');
+
+    const upgraded: EquipmentItem = {
+      ...base,
+      level: base.level + 1,
+      stats: {
+        ...base.stats,
+        attack: base.stats.attack ? Math.round(base.stats.attack * 1.15) : undefined,
+        defense: base.stats.defense ? Math.round(base.stats.defense * 1.15) : undefined,
+        hp: base.stats.hp ? Math.round(base.stats.hp * 1.15) : undefined,
+      },
+    };
+
+    if (fromShelf) {
+      setEquipment((prev) => [
+        ...prev,
+        { ...upgraded, id: `forged_${Date.now()}_${Math.random().toString(36).slice(2, 7)}` },
+      ]);
+      return true;
+    }
 
     setEquipment((prev) =>
       prev.map((e) => {
@@ -1019,6 +1293,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return true;
   };
 
+  const addForgedEquipment = (forged: Omit<EquipmentItem, 'id'>): EquipmentItem => {
+    const item: EquipmentItem = {
+      ...forged,
+      id: `forged_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    };
+    setEquipment((prev) => [...prev, item]);
+    return item;
+  };
+
   const buyShopItem = (itemId: string): boolean => {
     const item = SHOP_ITEMS.find((s) => s.id === itemId);
     if (!item) return false;
@@ -1038,7 +1321,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setAstralShards((prev) => prev + 900);
     } else if (item.id === 'shop_potions_pack') {
       setInventory((prev) =>
-        prev.map((i) => (i.id === 'xp_potion_large' ? { ...i, count: i.count + 5 } : i))
+        prev.map((i) => (i.id === 'xp_potion_3' ? { ...i, count: i.count + 5 } : i))
       );
     } else if (item.id === 'shop_lingotes_pack') {
       setInventory((prev) =>
@@ -1090,6 +1373,34 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setInventory((prev) =>
       prev.map((i) => (i.id === itemId ? { ...i, count: i.count - 1 } : i)).filter((i) => i.count > 0)
     );
+    return true;
+  };
+
+  const awakenHero = (heroId: string, materials: { id: string; count: number }[], goldCost: number): boolean => {
+    const hero = heroes.find((h) => h.id === heroId);
+    if (!hero || (hero.stars ?? 1) >= 5) return false;
+
+    const hasMaterials = materials.every(
+      (m) => m.count > 0 && (inventory.find((i) => i.id === m.id)?.count ?? 0) >= m.count
+    );
+    if (!hasMaterials || gold < goldCost) {
+      sound.playSFX('hurt');
+      return false;
+    }
+
+    if (goldCost > 0) setGold((prev) => prev - goldCost);
+    setInventory((prev) =>
+      prev
+        .map((item) => {
+          const spend = materials.find((m) => m.id === item.id);
+          return spend ? { ...item, count: item.count - spend.count } : item;
+        })
+        .filter((item) => item.count > 0)
+    );
+    setHeroes((prev) =>
+      prev.map((h) => (h.id === heroId ? { ...h, stars: Math.min(5, (h.stars ?? 1) + 1) } : h))
+    );
+    sound.playSFX('upgrade');
     return true;
   };
 
@@ -1414,8 +1725,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setGold(3500);
     setSummonCrystals(1000);
     setAstralShards(120);
-    setHeroes(INITIAL_HEROES.filter((h) => ['kairon', 'edacorn', 'roxanne', 'magordito'].includes(h.id)));
-    setTeam(['edacorn', 'kairon', 'roxanne', 'magordito']);
+    setHeroes(INITIAL_HEROES.filter((h) => STARTER_HERO_IDS.includes(h.id)));
+    setTeam(['edacorn', 'arlem_diaz', 'magordito', 'pepe_loux']);
     setInventory(INITIAL_INVENTORY);
     setShelfInventory([]);
     setEquipment(INITIAL_EQUIPMENT);
@@ -1427,6 +1738,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       allMissionsCompleted: false,
     }));
     setMailItems(DEFAULT_MAIL);
+    setDailyRewardSave({ lastClaimDate: null, streak: 0, totalClaims: 0, presenterId: DEFAULT_PRESENTER_ID });
+    setNewPlayerEventSave({ startDate: null, claimedCount: 0, chosenHeroId: null, lastShownDate: null });
+    setIsNewPlayerEventOpen(false);
+    setIsDailyRewardsOpen(false);
   };
 
   const restoreGameState = (data: any): boolean => {
@@ -1449,14 +1764,16 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const navigateTo = (tab: string) => {
+  const navigateTo = (tab: string, replacePrev = false) => {
     sound.playSFX('click');
-    setHistoryStack((prev) => [...prev, tab]);
+    setHistoryStack((prev) => (replacePrev && prev.length > 1 ? [...prev.slice(0, -1), tab] : [...prev, tab]));
     setCurrentTab(tab);
   };
 
   const goBack = () => {
     sound.playSFX('click');
+    // Salir del selector de héroes cancela la misión pendiente.
+    setPendingMissionLaunch(null);
     if (currentTab === 'forge' || currentTab === 'potions') {
       if (forgeSubcategory) {
         setForgeSubcategory(null);
@@ -1581,6 +1898,141 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     safeStorage.setItem(`${STORAGE_KEY}_mail`, JSON.stringify(mailItems));
   }, [mailItems]);
 
+  // ====== Recompensas diarias (ciclo de 7 días) ======
+  const dailyTodayKey = localDateKey();
+  const dailyYesterdayKey = localDateKey(new Date(Date.now() - 24 * 60 * 60 * 1000));
+  const dailyRewardClaimedToday = dailyRewardSave.lastClaimDate === dailyTodayKey;
+  // La racha solo sigue viva si el último reclamo fue hoy o ayer.
+  const dailyStreakAlive =
+    !!dailyRewardSave.lastClaimDate &&
+    (dailyRewardSave.lastClaimDate === dailyTodayKey || dailyRewardSave.lastClaimDate === dailyYesterdayKey);
+  const dailyRewardStreak = dailyStreakAlive ? dailyRewardSave.streak : 0;
+  const dailyCycleLength = DAILY_REWARDS.length;
+  // Día que se muestra: si ya reclamó hoy, el que reclamó; si no, el siguiente de la racha.
+  const dailyRewardDay = dailyRewardClaimedToday
+    ? ((Math.max(1, dailyRewardStreak) - 1) % dailyCycleLength) + 1
+    : (dailyRewardStreak % dailyCycleLength) + 1;
+  const dailyRewardAvailable = !dailyRewardClaimedToday;
+
+  useEffect(() => {
+    safeStorage.setItem(`${STORAGE_KEY}_daily_rewards_v1`, JSON.stringify(dailyRewardSave));
+  }, [dailyRewardSave]);
+
+  const claimDailyReward = (): boolean => {
+    if (dailyRewardClaimedToday) return false;
+    const reward = DAILY_REWARDS.find((r) => r.day === dailyRewardDay) ?? DAILY_REWARDS[0];
+    if (!reward) return false;
+    if (reward.gold) addGold(reward.gold);
+    if (reward.crystals) addCrystals(reward.crystals);
+    reward.items?.forEach((item) => addShelfItem({ ...item }));
+    setDailyRewardSave((prev) => ({
+      ...prev,
+      lastClaimDate: dailyTodayKey,
+      streak: dailyRewardStreak + 1,
+      totalClaims: prev.totalClaims + 1,
+    }));
+    sound.playSFX('victory');
+    return true;
+  };
+
+  const setDailyRewardPresenter = (presenterId: string) => {
+    if (!DAILY_PRESENTERS.some((p) => p.id === presenterId)) return;
+    setDailyRewardSave((prev) => ({ ...prev, presenterId }));
+  };
+
+  // ====== Evento de Bienvenida para nuevos jugadores (14 días) ======
+  const newPlayerEventStart = newPlayerEventSave.startDate;
+  const newPlayerEventDaysSinceStart = newPlayerEventStart
+    ? Math.max(0, daysBetweenKeys(newPlayerEventStart, dailyTodayKey))
+    : 0;
+  const newPlayerEventExpired = !!newPlayerEventStart && newPlayerEventDaysSinceStart >= NEW_PLAYER_EVENT_DAYS;
+  // Cada día desbloquea un paso; si el evento caduca, se abren todos los pendientes.
+  const newPlayerEventUnlockedSteps = newPlayerEventExpired
+    ? NEW_PLAYER_EVENT_DAYS
+    : Math.min(NEW_PLAYER_EVENT_DAYS, newPlayerEventDaysSinceStart + 1);
+  const newPlayerEventClaimedCount = Math.min(newPlayerEventSave.claimedCount, NEW_PLAYER_EVENT_DAYS);
+  const newPlayerEventClaimable = Math.max(0, newPlayerEventUnlockedSteps - newPlayerEventClaimedCount);
+  const newPlayerEventFinished = newPlayerEventClaimedCount >= NEW_PLAYER_EVENT_DAYS;
+  const newPlayerEventDaysLeft = newPlayerEventStart
+    ? Math.max(0, NEW_PLAYER_EVENT_DAYS - newPlayerEventDaysSinceStart)
+    : NEW_PLAYER_EVENT_DAYS;
+
+  useEffect(() => {
+    safeStorage.setItem(`${STORAGE_KEY}_new_player_event_v1`, JSON.stringify(newPlayerEventSave));
+  }, [newPlayerEventSave]);
+
+  const unlockHero = (heroId: string): boolean => {
+    const base = getHeroById(heroId);
+    if (!base) return false;
+    setHeroes((prev) =>
+      prev.some((h) => h.id === heroId)
+        ? prev
+        : [...prev, { ...base, level: 1, currentXp: 0, xpToNextLevel: 100, equipped: {} }]
+    );
+    return true;
+  };
+
+  const openNewPlayerEvent = () => {
+    sound.playSFX('click');
+    setNewPlayerEventSave((prev) => ({
+      ...prev,
+      startDate: prev.startDate ?? dailyTodayKey,
+      lastShownDate: dailyTodayKey,
+    }));
+    setIsNewPlayerEventOpen(true);
+  };
+
+  const closeNewPlayerEvent = () => {
+    sound.playSFX('click');
+    setIsNewPlayerEventOpen(false);
+  };
+
+  /** Al cerrar las Recompensas Diarias se ofrece el evento si queda algo por reclamar. */
+  const maybeOpenNewPlayerEventAfterDaily = () => {
+    if (newPlayerEventFinished) return;
+    if (newPlayerEventClaimable <= 0) return;
+    if (newPlayerEventSave.lastShownDate === dailyTodayKey) return;
+    setNewPlayerEventSave((prev) => ({
+      ...prev,
+      startDate: prev.startDate ?? dailyTodayKey,
+      lastShownDate: dailyTodayKey,
+    }));
+    setIsNewPlayerEventOpen(true);
+  };
+
+  const claimNewPlayerEventStep = (): boolean => {
+    const index = newPlayerEventSave.claimedCount;
+    if (index >= NEW_PLAYER_EVENT_DAYS) return false;
+    if (newPlayerEventUnlockedSteps <= index) return false;
+    const step = NEW_PLAYER_EVENT_STEPS[index];
+    if (!step || step.heroChoice) return false;
+    if (step.gold) addGold(step.gold);
+    if (step.crystals) addCrystals(step.crystals);
+    step.items?.forEach((item) => addShelfItem({ ...item }));
+    setNewPlayerEventSave((prev) => ({
+      ...prev,
+      startDate: prev.startDate ?? dailyTodayKey,
+      claimedCount: prev.claimedCount + 1,
+    }));
+    sound.playSFX('coin');
+    return true;
+  };
+
+  const chooseNewPlayerEventHero = (heroId: string): boolean => {
+    if (newPlayerEventSave.claimedCount !== NEW_PLAYER_EVENT_DAYS - 1) return false;
+    if (newPlayerEventUnlockedSteps < NEW_PLAYER_EVENT_DAYS) return false;
+    if (!NEW_PLAYER_HERO_CHOICES.some((choice) => choice.id === heroId)) return false;
+    if (!unlockHero(heroId)) return false;
+    setNewPlayerEventSave((prev) => ({
+      ...prev,
+      startDate: prev.startDate ?? dailyTodayKey,
+      claimedCount: NEW_PLAYER_EVENT_DAYS,
+      chosenHeroId: heroId,
+    }));
+    sound.playSFX('victory');
+    return true;
+  };
+
   useEffect(() => {
     safeStorage.setItem(`${STORAGE_KEY}_player_name`, JSON.stringify(playerName));
   }, [playerName]);
@@ -1620,6 +2072,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         completeAllMissions,
         selectedCombatMissionId,
         setSelectedCombatMissionId,
+        pendingMissionLaunch,
+        setPendingMissionLaunch,
         isMailboxOpen,
         setIsMailboxOpen,
         isOptionsOpen,
@@ -1629,6 +2083,29 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         openPlayGames,
         mailItems,
         claimMailReward,
+        isDailyRewardsOpen,
+        setIsDailyRewardsOpen,
+        dailyRewardAvailable,
+        dailyRewardDay,
+        dailyRewardStreak,
+        dailyRewardClaimedToday,
+        dailyRewardTotalClaims: dailyRewardSave.totalClaims,
+        dailyRewardPresenterId: dailyRewardSave.presenterId,
+        setDailyRewardPresenter,
+        claimDailyReward,
+        isNewPlayerEventOpen,
+        openNewPlayerEvent,
+        closeNewPlayerEvent,
+        maybeOpenNewPlayerEventAfterDaily,
+        newPlayerEventClaimedCount,
+        newPlayerEventUnlockedSteps,
+        newPlayerEventClaimable,
+        newPlayerEventDaysLeft,
+        newPlayerEventChosenHeroId: newPlayerEventSave.chosenHeroId,
+        newPlayerEventFinished,
+        claimNewPlayerEventStep,
+        chooseNewPlayerEventHero,
+        unlockHero,
         forgeCategory,
         setForgeCategory,
         forgeSubcategory,
@@ -1643,11 +2120,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         startPatrol,
         claimPatrol,
         equipHeroItem,
+        getOwnedEquipment,
         unequipHeroItem,
         upgradeEquipmentItem,
         forgeNewEquipment,
+        addForgedEquipment,
         buyShopItem,
         useInventoryItem,
+        awakenHero,
         setHeroes,
         banners,
         setBanners,

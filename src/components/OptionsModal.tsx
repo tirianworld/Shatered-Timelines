@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
-import { Volume2, VolumeX, RotateCcw, User, Info, X, Smartphone, Download, Package, Gamepad2, Trophy, Cloud, CheckCheck } from 'lucide-react';
+import { Volume2, VolumeX, RotateCcw, User, Info, X, Smartphone, Download, Package, Gamepad2, Trophy, Cloud, CheckCheck, Gift, Star } from 'lucide-react';
 import { usePWAInstall } from '../hooks/usePWAInstall';
 import { playGames } from '../services/playGamesService';
 
@@ -17,6 +17,15 @@ export const OptionsModal: React.FC = () => {
     openPlayGames,
     questProgress,
     completeAllMissions,
+    setIsDailyRewardsOpen,
+    dailyRewardAvailable,
+    dailyRewardDay,
+    dailyRewardStreak,
+    openNewPlayerEvent,
+    newPlayerEventClaimable,
+    newPlayerEventDaysLeft,
+    newPlayerEventFinished,
+    newPlayerEventClaimedCount,
   } = useGame();
 
   const { isInstallable, isInstalled, install } = usePWAInstall();
@@ -182,6 +191,63 @@ export const OptionsModal: React.FC = () => {
               alt="Inventario"
               className="w-full h-full object-contain filter drop-shadow-md"
             />
+          </button>
+        </div>
+
+        {/* Recompensas Diarias */}
+        <div className="bg-[#1b0a04] border border-[#521c08] rounded-xl p-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 text-xs font-bold text-amber-200 min-w-0">
+            <Gift className="w-4 h-4 text-amber-400 shrink-0" />
+            <div className="min-w-0">
+              <span className="block truncate">Recompensas Diarias</span>
+              <p className="text-[10px] font-medium text-stone-400 leading-tight">
+                {dailyRewardAvailable
+                  ? `Día ${dailyRewardDay} disponible · racha de ${dailyRewardStreak} días`
+                  : `Reclamado hoy · racha de ${dailyRewardStreak} días`}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              sound.playSFX('click');
+              setIsOptionsOpen(false);
+              setIsDailyRewardsOpen(true);
+            }}
+            className={`shrink-0 px-3 py-1 rounded-lg text-xs font-bold cursor-pointer border transition-all ${
+              dailyRewardAvailable
+                ? 'bg-amber-600 hover:bg-amber-500 text-black border-amber-400 animate-pulse'
+                : 'bg-stone-800 hover:bg-stone-700 text-stone-300 border-stone-700'
+            }`}
+          >
+            {dailyRewardAvailable ? 'Reclamar' : 'Ver'}
+          </button>
+        </div>
+
+        {/* Evento de Bienvenida */}
+        <div className="bg-[#1b0a04] border border-[#521c08] rounded-xl p-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 text-xs font-bold text-amber-200 min-w-0">
+            <Star className="w-4 h-4 text-amber-400 shrink-0" />
+            <div className="min-w-0">
+              <span className="block truncate">Evento de Bienvenida</span>
+              <p className="text-[10px] font-medium text-stone-400 leading-tight">
+                {newPlayerEventFinished
+                  ? 'Completado · héroe reclamado'
+                  : `${newPlayerEventClaimedCount}/14 días · ${newPlayerEventClaimable} por reclamar · ${newPlayerEventDaysLeft} ${newPlayerEventDaysLeft === 1 ? 'día' : 'días'} restantes`}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              setIsOptionsOpen(false);
+              openNewPlayerEvent();
+            }}
+            className={`shrink-0 px-3 py-1 rounded-lg text-xs font-bold cursor-pointer border transition-all ${
+              newPlayerEventClaimable > 0 && !newPlayerEventFinished
+                ? 'bg-amber-600 hover:bg-amber-500 text-black border-amber-400 animate-pulse'
+                : 'bg-stone-800 hover:bg-stone-700 text-stone-300 border-stone-700'
+            }`}
+          >
+            {newPlayerEventClaimable > 0 && !newPlayerEventFinished ? 'Reclamar' : 'Ver'}
           </button>
         </div>
 

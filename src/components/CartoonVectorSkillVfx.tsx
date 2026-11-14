@@ -1,10 +1,6 @@
 import React from 'react';
 
 export type CartoonSkillType =
-  | 'rayo_necrotico'
-  | 'dios_oscuro'
-  | 'drenar_maldiciones'
-  | 'fortalecer_marioneta'
   | 'martillo_titan'
   | 'estocada_sombra'
   | 'llamarada_infernal'
@@ -55,7 +51,7 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
   // Determine target positioning: covers the exact silhouette of Hero or Enemy
   const isHeroTarget =
     target === 'hero' ||
-    (target === undefined && (isEnemy || type === 'fortalecer_marioneta'));
+    (target === undefined && isEnemy);
   const isScreenTarget = target === 'screen' || type === 'cataclismo_astral';
 
   const containerClasses = isScreenTarget
@@ -138,37 +134,6 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
         }
       `}</style>
 
-      {/* ===================================================================== */}
-      {/* 1. RAYO DE MAGORDITO (COMBINACIÓN DE 3 VÍDEOS CFXR)                   */}
-      {/* ===================================================================== */}
-      {(type === 'rayo_necrotico' || type === 'rayo_voltaico' || type === 'rayo') && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <video
-            src="/assets/aistudio/Electric_Variants_CFXR_Lightning_Strike___Impact__Green__46fae418.webm"
-            autoPlay
-            playsInline
-            muted
-            className="absolute -top-10 w-[310px] h-[340px] object-contain filter drop-shadow-[0_0_26px_#22c55e]"
-            style={{ mixBlendMode: 'screen' }}
-          />
-          <video
-            src="/assets/aistudio/Impacts_Variants_CFXR_Hit_D_3D__Cyan__0ead4fe4.webm"
-            autoPlay
-            playsInline
-            muted
-            className="absolute bottom-2 w-[270px] h-[270px] object-contain filter drop-shadow-[0_0_28px_#06b6d4]"
-            style={{ mixBlendMode: 'screen' }}
-          />
-          <video
-            src="/assets/aistudio/Misc_Variants_CFXR4_Hit_Pow_Cartoon__Blue-Cyan__626d44c0.webm"
-            autoPlay
-            playsInline
-            muted
-            className="absolute bottom-4 w-[280px] h-[280px] object-contain filter drop-shadow-[0_0_26px_#38bdf8]"
-            style={{ mixBlendMode: 'screen' }}
-          />
-        </div>
-      )}
 
       {/* ===================================================================== */}
       {/* 2. RAYO VOLTAICO (SUTIL RELÁMPAGO VECTORIAL Y ARCO ELÉCTRICO)           */}
@@ -228,9 +193,9 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
       )}
 
       {/* ===================================================================== */}
-      {/* 2. DIOS OSCURO (RUNA ARCANA Y CALAVERA ESPECTRAL SUTIL)               */}
+      {/* 2. SOMBRAS ENEMIGAS (RUNA ARCANA Y CALAVERA ESPECTRAL SUTIL)          */}
       {/* ===================================================================== */}
-      {(type === 'dios_oscuro' || type === 'shadow_needle' || type === 'void_miasma' || type === 'araknoide_death') && (
+      {(type === 'shadow_needle' || type === 'void_miasma' || type === 'araknoide_death') && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Runa arcana oscura Kenney magic_04 */}
           <img
@@ -250,31 +215,9 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
       )}
 
       {/* ===================================================================== */}
-      {/* 3. DRENAR MALDICIONES (VÓRTICE DE VIDA SUTIL)                         */}
+      {/* 4. GARRAS (TAJO VECTORIAL ELEGANTE)                                   */}
       {/* ===================================================================== */}
-      {type === 'drenar_maldiciones' && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          {/* Vórtice de succión Kenney twirl_03 */}
-          <img
-            src="/assets/particles/twirl_03.png"
-            alt=""
-            className="absolute inset-0 w-full h-full object-contain animate-[proVfxSpinFast_0.8s_ease-out_forwards] filter drop-shadow-[0_0_20px_#10b981] opacity-80"
-            style={{ mixBlendMode: 'screen' }}
-          />
-          {/* Esfera de plasma Phaser plasmaball */}
-          <img
-            src="/assets/phaser/plasmaball.png"
-            alt=""
-            className="absolute w-[140px] h-[140px] object-contain animate-[proVfxPop_0.75s_ease-out_forwards] filter drop-shadow-[0_0_20px_#34d399] hue-rotate-[90deg] opacity-85"
-            style={{ mixBlendMode: 'screen' }}
-          />
-        </div>
-      )}
-
-      {/* ===================================================================== */}
-      {/* 4. FORTALECER MARIONETA / GARRAS (TAJO VECTORIAL ELEGANTE)            */}
-      {/* ===================================================================== */}
-      {(type === 'fortalecer_marioneta' || type === 'araknoide_claw' || type === 'crimson_claw') && (
+      {(type === 'araknoide_claw' || type === 'crimson_claw') && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Anime Vector Slash Path SVG */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none animate-[proVfxSlashA_0.45s_ease-out_forwards]">
