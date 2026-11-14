@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="sparkGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#fef08a"/>
+      <stop offset="75%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </radialGradient>
+  </defs>
+  <!-- 4-point cartoon diamond spark with bold outline -->
+  <path d="M64 12 Q64 52 104 64 Q64 76 64 116 Q64 76 24 64 Q64 52 64 12 Z"
+        fill="url(#sparkGrad)"
+        stroke="#450a0a"
+        stroke-width="6"
+        stroke-linejoin="round"/>
+  <!-- Highlight inner pop -->
+  <path d="M64 30 Q64 56 86 64 Q64 72 64 98 Q64 72 42 64 Q64 56 64 30 Z"
+        fill="#ffffff"
+        opacity="0.85"/>
+  <circle cx="64" cy="64" r="7" fill="#ffffff"/>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="skullGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#9333ea"/>
+      <stop offset="50%" stop-color="#6b21a8"/>
+      <stop offset="100%" stop-color="#3b0764"/>
+    </linearGradient>
+    <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#67e8f9"/>
+      <stop offset="70%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#0e7490"/>
+    </radialGradient>
+  </defs>
+  <!-- Smoke Skull Silhouette -->
+  <path d="M64 12 C34 12 24 38 24 62 C24 78 34 88 42 92 C42 102 46 112 52 114 C56 116 72 116 76 114 C82 112 86 102 86 92 C94 88 104 78 104 62 C104 38 94 12 64 12 Z"
+        fill="url(#skullGrad)"
+        stroke="#1e1b4b"
+        stroke-width="6"
+        stroke-linejoin="round"/>
+  <!-- Cranium Highlight -->
+  <path d="M40 26 C48 18 80 18 88 26 C82 22 52 22 40 26 Z"
+        fill="#c084fc"
+        opacity="0.8"/>
+  <!-- Left Eye Socket -->
+  <ellipse cx="46" cy="58" rx="11" ry="14" fill="#0f172a" stroke="#1e1b4b" stroke-width="3" transform="rotate(-6 46 58)"/>
+  <ellipse cx="46" cy="58" rx="7" ry="9" fill="url(#eyeGlow)"/>
+  <circle cx="48" cy="56" r="2.5" fill="#ffffff"/>
+  <!-- Right Eye Socket -->
+  <ellipse cx="82" cy="58" rx="11" ry="14" fill="#0f172a" stroke="#1e1b4b" stroke-width="3" transform="rotate(6 82 58)"/>
+  <ellipse cx="82" cy="58" rx="7" ry="9" fill="url(#eyeGlow)"/>
+  <circle cx="84" cy="56" r="2.5" fill="#ffffff"/>
+  <!-- Nose cavity -->
+  <polygon points="64,68 59,78 69,78" fill="#0f172a"/>
+  <!-- Teeth / Jaw slits -->
+  <line x1="56" y1="96" x2="56" y2="108" stroke="#1e1b4b" stroke-width="4" stroke-linecap="round"/>
+  <line x1="64" y1="96" x2="64" y2="108" stroke="#1e1b4b" stroke-width="4" stroke-linecap="round"/>
+  <line x1="72" y1="96" x2="72" y2="108" stroke="#1e1b4b" stroke-width="4" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="elecGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="45%" stop-color="#a5f3fc"/>
+      <stop offset="80%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </radialGradient>
+  </defs>
+  <!-- 8-Point Comic Spark with thick outline -->
+  <path d="M64 6 L72 48 L114 36 L80 64 L122 72 L80 80 L98 120 L64 88 L34 120 L48 80 L6 72 L48 64 L14 36 L56 48 Z"
+        fill="url(#elecGrad)"
+        stroke="#0c4a6e"
+        stroke-width="5"
+        stroke-linejoin="round"/>
+  <!-- Bright Inner Star -->
+  <polygon points="64,26 70,52 96,44 76,64 102,68 76,74 88,98 64,78 44,98 52,74 26,68 52,64 32,44 58,52"
+           fill="#ffffff"
+           opacity="0.9"/>
+  <circle cx="64" cy="64" r="8" fill="#ffffff"/>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+  </defs>
+  <!-- Main Cloud Puff Body -->
+  <path d="M42 96 C24 96 14 82 18 64 C20 50 32 40 46 42 C52 26 76 22 88 36 C98 32 112 40 114 54 C118 70 108 96 86 96 Z"
+        fill="url(#cloudGrad)"
+        stroke="#334155"
+        stroke-width="5"
+        stroke-linejoin="round"/>
+  <!-- Cel-Shade Bottom Dark Arc -->
+  <path d="M28 84 C38 92 64 94 92 88 C96 78 88 72 74 74 C56 76 40 76 28 84 Z"
+        fill="#64748b"
+        opacity="0.45"/>
+  <!-- Specular top puff highlights -->
+  <path d="M48 46 C56 36 72 34 82 42" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="34" cy="56" r="4" fill="#ffffff" opacity="0.8"/>
+</svg>
