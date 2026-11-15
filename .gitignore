@@ -24,3 +24,6 @@ artifacts/
 /android/.gradle/
 /android/local.properties
 .tmp_*
+
+# Toolchains locales de build
+.tools/

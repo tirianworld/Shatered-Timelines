@@ -14,6 +14,8 @@ import { INITIAL_HEROES } from '../data/heroesData';
 
 const A = '/assets/heropage';
 
+
+
 type HeroTab = 'descripcion' | 'equipo' | 'nivel' | 'despertar' | 'skins';
 type EquipmentCategory = 'helmet' | 'armor' | 'weapon' | 'ring' | 'accessory';
 
@@ -1777,13 +1779,13 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
   );
 
   return createPortal(
-    <div className="fixed inset-0 z-[90] flex justify-center bg-[#1a0a04] select-none animate-fade-in">
-      <div className="relative w-full max-w-[440px] h-full flex flex-col overflow-hidden bg-[#1a0a04]">
+    <div className="fixed inset-0 z-[90] flex flex-col overflow-hidden bg-[#1c0803] select-none animate-fade-in">
+      <div className="relative w-full max-w-[560px] h-full mx-auto flex flex-col overflow-hidden bg-[#1c0803]">
         {/* Barra superior del juego */}
         <GameHeader onBack={onClose} />
 
         {/* Páginas del héroe (arriba, como el menú del juego) */}
-        <div className="relative z-20 flex items-stretch gap-[3px] px-1.5 py-1 bg-[#240d05] border-b-2 border-[#3d1405]">
+        <div className="relative z-20 flex items-stretch gap-[3px] px-1.5 py-1 bg-[#240e06] border-b-2 border-[#3d1405]">
           {PAGES.map((p) => {
             const active = p.id === tab;
             return (
@@ -1804,7 +1806,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         </div>
 
         {/* Página */}
-        <div className="relative flex-1 min-h-0 flex items-center justify-center overflow-hidden bg-[#1c0a04]">
+        <div className="relative flex-1 min-h-0 flex items-center justify-center overflow-hidden bg-[#1c0803]">
           <div
             className="relative h-full max-w-full"
             style={{ aspectRatio: `${page.width} / ${Math.round(page.height * (1 - page.cropTop))}` }}

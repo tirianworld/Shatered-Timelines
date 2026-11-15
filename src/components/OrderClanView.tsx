@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useGame } from '../context/GameContext';
 import { clanService } from '../services/clanService';
 import { realtime } from '../services/realtimeService';
@@ -33,6 +33,14 @@ import { ForgeMaskedSlider } from './ForgeMaskedSlider';
 import { OrderEmblem } from './OrderEmblem';
 import { DEFAULT_EMBLEM, decodeEmblem, encodeEmblem, PALETTES, SHAPES, SYMBOLS } from '../utils/orderEmblems';
 import type { EmblemSelection } from '../utils/orderEmblems';
+import { safeStorage } from '../utils/storage';
+import {
+  ORDER_HQ_INTRO_MISSION_ID,
+  ORDER_HQ_INTRO_SEEN_KEY,
+  ORDER_HQ_TUTORIAL_DONE_KEY,
+  ORDER_HQ_TUTORIAL_FINAL,
+  ORDER_HQ_TUTORIAL_STEPS,
+} from '../data/orderHqIntroData';
 
 const ORDER_COST = 10000;
 const MAX_MEMBERS = 30;
@@ -77,7 +85,7 @@ const renderActivityIcon = (type: string) => {
 type TabKey = 'members' | 'perks' | 'leaderboard' | 'explore';
 
 export const OrderClanView: React.FC = () => {
-  const { gold, addGold } = useGame();
+  const { gold, addGold, navigateTo, setSelectedCombatMissionId } = useGame();
 
   const [clan, setClan] = useState<ClanData | null>(clanService.getCurrentClan());
   const [allClans, setAllClans] = useState<ClanData[]>(clanService.getAllClans());
@@ -101,6 +109,15 @@ export const OrderClanView: React.FC = () => {
   const [emblemTarget, setEmblemTarget] = useState<'clan' | 'new'>('clan');
   const [draftEmblem, setDraftEmblem] = useState<EmblemSelection>(DEFAULT_EMBLEM);
   const [newClanEmblem, setNewClanEmblem] = useState<EmblemSelection>(DEFAULT_EMBLEM);
+
+  // Tutorial de la Sede: aparece la primera vez, justo después de la cinemática de Nala.
+  const [hqTutorialStep, setHqTutorialStep] = useState<number>(() => {
+    const introSeen = safeStorage.getItem(ORDER_HQ_INTRO_SEEN_KEY) === 'seen';
+    const tutorialDone = safeStorage.getItem(ORDER_HQ_TUTORIAL_DONE_KEY) === 'done';
+    return introSeen && !tutorialDone ? 0 : -1;
+  });
+  const hqIntroLaunched = useRef(false);
+  const [hqTypedText, setHqTypedText] = useState('');
 
   useEffect(() => {
     const unsubscribeClan = clanService.subscribe((updated) => {
@@ -133,6 +150,49 @@ export const OrderClanView: React.FC = () => {
       document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, []);
+
+  // Primera visita a la sede: Nala presenta el mundo posterior al conjuro (una sola vez).
+  useEffect(() => {
+    if (hqIntroLaunched.current) return;
+    if (safeStorage.getItem(ORDER_HQ_INTRO_SEEN_KEY) === 'seen') return;
+    hqIntroLaunched.current = true;
+    safeStorage.setItem(ORDER_HQ_INTRO_SEEN_KEY, 'seen');
+    setSelectedCombatMissionId(ORDER_HQ_INTRO_MISSION_ID);
+    navigateTo('story');
+  }, [navigateTo, setSelectedCombatMissionId]);
+
+  const finishHqTutorial = () => {
+    safeStorage.setItem(ORDER_HQ_TUTORIAL_DONE_KEY, 'done');
+    setHqTutorialStep(-1);
+  };
+
+  // La cinemática de Nala escribe su línea letra a letra, como las misiones.
+  const hqTutorialIsFinal = hqTutorialStep >= ORDER_HQ_TUTORIAL_STEPS.length;
+  const hqTutorialFullText =
+    hqTutorialStep < 0
+      ? ''
+      : hqTutorialIsFinal
+      ? ORDER_HQ_TUTORIAL_FINAL.text
+      : ORDER_HQ_TUTORIAL_STEPS[hqTutorialStep].text;
+
+  useEffect(() => {
+    if (hqTutorialStep < 0) {
+      setHqTypedText('');
+      return;
+    }
+    setHqTypedText('');
+    let index = 0;
+    const timer = setInterval(() => {
+      index += 2;
+      setHqTypedText(hqTutorialFullText.slice(0, index));
+      if (index >= hqTutorialFullText.length) clearInterval(timer);
+    }, 18);
+    return () => clearInterval(timer);
+  }, [hqTutorialStep, hqTutorialFullText]);
+
+  const completeHqTyping = () => {
+    if (hqTypedText.length < hqTutorialFullText.length) setHqTypedText(hqTutorialFullText);
+  };
 
   // Los cambios de otros jugadores llegan por el canal en tiempo real, sin recargar.
   useEffect(() => realtime.subscribe('orders', () => {
@@ -400,18 +460,26 @@ export const OrderClanView: React.FC = () => {
           ]
         ).map(({ key, label, icon: Icon, badge }) => {
           const isActive = activeTab === key;
+          const isTutorialTarget =
+            hqTutorialStep >= 0 &&
+            hqTutorialStep < ORDER_HQ_TUTORIAL_STEPS.length &&
+            ORDER_HQ_TUTORIAL_STEPS[hqTutorialStep].tab === key;
           return (
             <button
               key={key}
+              data-order-tab={key}
               onClick={() => {
                 sound.playSFX('click');
                 setActiveTab(key);
+                if (isTutorialTarget) {
+                  setHqTutorialStep((prev) => prev + 1);
+                }
               }}
               className={`flex-1 min-w-[68px] h-[34px] rounded-lg flex items-center justify-center gap-1 px-1.5 cursor-pointer transition-all active:scale-95 ${
                 isActive
                   ? 'bg-gradient-to-b from-[#f59f42] to-[#db7c1e] border border-[#f8b465] shadow-[0_0_12px_rgba(245,158,11,0.5)]'
                   : 'bg-[#251007] border border-[#4a2211] text-[#a89b91] hover:text-stone-200'
-              }`}
+              } ${isTutorialTarget ? 'ring-2 ring-amber-300 ring-offset-2 ring-offset-[#1b0a04] animate-pulse' : ''}`}
             >
               <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#1c0800]' : 'text-stone-400'}`} />
               <span className={`text-[10.5px] font-serif whitespace-nowrap ${isActive ? 'font-black text-[#1c0800]' : 'font-bold'}`}>
@@ -1192,6 +1260,98 @@ export const OrderClanView: React.FC = () => {
               >
                 Cancelar
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CINEMÁTICA DEL TUTORIAL: NALA PRESENTA LA SEDE */}
+      {hqTutorialStep >= 0 && (
+        <div className="fixed inset-0 z-40 pointer-events-none select-none animate-fade-in">
+          {/* Oscurecido cinematográfico sobre la sede (las pestañas siguen visibles y activas) */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-black/10" />
+
+          {/* Nala en escena (busto de novela visual, encuadrado entre las pestañas y el panel) */}
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-[26%] w-[310px] h-[250px] overflow-hidden pointer-events-none">
+            <img
+              src="/assets/portraits/nala.png"
+              alt="Nala"
+              onError={(event) => {
+                event.currentTarget.style.visibility = 'hidden';
+              }}
+              className="absolute left-1/2 -translate-x-1/2 top-0 w-[340px] max-w-none object-contain drop-shadow-[0_12px_36px_rgba(0,0,0,0.95)]"
+            />
+          </div>
+
+          {/* Panel de diálogo auténtico de las misiones */}
+          <div className="absolute inset-x-0 bottom-0 h-[248px] sm:h-[268px] pointer-events-auto">
+            <div className="relative w-full h-full bg-gradient-to-t from-black via-[#0d0401] to-[#0d0401]/95">
+              <img
+                src="/assets/items/panel_dialogo_idl.png"
+                alt="Panel de Diálogo"
+                className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none drop-shadow-[0_-4px_20px_rgba(0,0,0,0.98)]"
+              />
+
+              {/* Placa de nombre (pergamino dorado) */}
+              <div className="absolute left-[3.2%] top-[3%] w-[36%] h-[20%] flex flex-col justify-center items-center text-center px-1 pointer-events-none select-none z-10">
+                <span className="font-serif font-black text-[12px] sm:text-[14px] uppercase tracking-wide text-[#381303] leading-none drop-shadow-[0_1px_0_rgba(255,240,200,0.85)] truncate max-w-full">
+                  Nala
+                </span>
+                <span className="text-[7.5px] sm:text-[8.5px] font-sans font-bold uppercase tracking-wider text-[#632408] leading-tight truncate max-w-full mt-0.5">
+                  Jefa de la Sede de Gremios de Icespear
+                </span>
+              </div>
+
+              {/* Saltar cinemática */}
+              <button
+                type="button"
+                onClick={finishHqTutorial}
+                className="absolute right-[3%] top-[4%] z-20 px-2 py-1 rounded-md border border-[#8a4a1c] bg-[#2a1005]/80 text-[9px] font-black uppercase tracking-wider text-amber-200/90 hover:text-amber-100 cursor-pointer"
+              >
+                Saltar
+              </button>
+
+              {/* Texto con máquina de escribir (clic para completar la línea) */}
+              <div
+                onClick={completeHqTyping}
+                className="absolute left-[5%] right-[8%] top-[22%] bottom-[17%] flex flex-col justify-start overflow-y-auto no-scrollbar pointer-events-auto z-10 px-1 pt-0.5 cursor-pointer"
+              >
+                <p className="font-sans text-[#fef3c7] font-semibold text-[13px] sm:text-[14px] leading-[1.44] drop-shadow-[0_1px_2px_rgba(0,0,0,0.98)] tracking-wide break-words">
+                  {hqTypedText}
+                  {hqTypedText.length < hqTutorialFullText.length && (
+                    <span className="inline-block w-1.5 h-3.5 bg-amber-400 ml-1 animate-pulse align-middle" />
+                  )}
+                </p>
+              </div>
+
+              {/* Pie: progreso, instrucción y cierre */}
+              <div className="absolute left-[5%] right-[8%] bottom-[4%] h-[11%] flex items-center justify-between gap-2 z-20">
+                <div className="flex items-center gap-1 shrink-0">
+                  {ORDER_HQ_TUTORIAL_STEPS.map((step, idx) => (
+                    <span
+                      key={step.tab}
+                      className={`h-1.5 w-4 rounded-full ${idx <= hqTutorialStep ? 'bg-amber-400' : 'bg-amber-900/70'}`}
+                    />
+                  ))}
+                  <span
+                    className={`h-1.5 w-4 rounded-full ${hqTutorialIsFinal ? 'bg-amber-400' : 'bg-amber-900/70'}`}
+                  />
+                </div>
+                <span className="flex-1 text-center text-[9px] font-mono uppercase tracking-wider text-amber-200/75 leading-tight">
+                  {hqTutorialIsFinal ? ORDER_HQ_TUTORIAL_FINAL.title : 'Toca la pestaña resaltada'}
+                </span>
+                {hqTutorialIsFinal ? (
+                  <button
+                    type="button"
+                    onClick={finishHqTutorial}
+                    className="px-3 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-400 text-stone-950 font-serif font-black text-[10.5px] shadow hover:scale-[1.02] active:scale-95 transition-transform cursor-pointer shrink-0"
+                  >
+                    Terminar
+                  </button>
+                ) : (
+                  <span className="w-[52px] shrink-0" />
+                )}
+              </div>
             </div>
           </div>
         </div>

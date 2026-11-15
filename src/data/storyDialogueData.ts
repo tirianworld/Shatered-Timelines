@@ -27,7 +27,8 @@ export type CharacterId =
   | 'orco_musculado'
   | 'orco_regordete'
   | 'hobgoblin_capataz'
-  | 'guarda_negro';
+  | 'guarda_negro'
+  | 'nala';
 
 export type EmotionType =
   | 'angry'
@@ -84,7 +85,8 @@ export const CHARACTER_PROFILES: Record<CharacterId, CharacterProfile> = {
     avatar: '/assets/portraits/Arlem Díaz icono.png',
     poses: {
       lute: '/assets/items/Arlem Díaz.png',
-      crossed: '/assets/items/arlem idl cruzado de brazos.png',
+      // Antes era el Arlem monje (túnica marrón); ahora las cinemáticas usan al bardo.
+      crossed: '/assets/items/Arlem Díaz.png',
       nuca: '/assets/items/arlem idl pose mano nuca.png',
       capa: '/assets/items/arlem capa.png',
     },
@@ -488,6 +490,22 @@ export const CHARACTER_PROFILES: Record<CharacterId, CharacterProfile> = {
       translateY: '-translate-y-[12%]',
     },
   },
+  nala: {
+    id: 'nala',
+    name: 'Nala',
+    title: 'Jefa de la Sede de Gremios de Icespear',
+    characterClass: 'Guardiana',
+    race: 'Leonina',
+    accentColor: '#d4a373',
+    avatar: '/assets/portraits/nala.png',
+    poses: {
+      default: '/assets/portraits/nala.png',
+    },
+    framing: {
+      height: 'h-[520px] sm:h-[570px]',
+      translateY: '-translate-y-[14%]',
+    },
+  },
   goryn: {
     id: 'goryn',
     name: 'Goryn',
@@ -621,10 +639,18 @@ export const CHARACTER_PROFILES: Record<CharacterId, CharacterProfile> = {
 
 export const formatDialogueText = (raw: string): string => {
   if (!raw) return '';
-  return raw
+  const cleaned = raw
     .replace(/\*.*?\*/g, '')
     .replace(/\(.*?\)/g, '')
     .replace(/\[.*?\]/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+  if (cleaned) return cleaned;
+  // Hay líneas susurradas o de acotación que van enteras dentro de *...*, (...), [...]: al
+  // quitarlas el bocadillo se quedaba vacío. Si no queda nada, se muestra el contenido sin
+  // los signos de la acotación en vez de un cuadro en blanco.
+  return raw
+    .replace(/[()[\]*]/g, '')
     .replace(/\s{2,}/g, ' ')
     .trim();
 };

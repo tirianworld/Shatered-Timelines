@@ -11,6 +11,9 @@ export interface EnemyVfxFrame {
   /** Alto y ancho del sprite respecto al área de combate. */
   height: number;
   width: number;
+  /** Punta del arma dentro del sprite (0..1), medida sobre su canal alfa. */
+  tipFx?: number;
+  tipFy?: number;
 }
 
 // Valores de referencia: el enemigo "estándar" (un guardia de Icespear) para el que estaban

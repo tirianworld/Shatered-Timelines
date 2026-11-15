@@ -110,7 +110,7 @@ const GameContent: React.FC = () => {
         />
 
         {/* Top Wood Header with Plaque, Spoke Wheel, Gold, Crystals & Mail - Hidden on full-screen combat, story & cooking view */}
-        {!['combat', 'story', 'cooking'].includes(currentTab) && <GameHeader />}
+        {!['combat', 'story', 'cooking', 'potions'].includes(currentTab) && <GameHeader />}
 
         {/* Central Dynamic View Area */}
         <main className="relative flex-1 w-full overflow-hidden flex flex-col z-10 bg-transparent">
@@ -137,7 +137,13 @@ const GameContent: React.FC = () => {
                 const fromKitchenMonsters = selectedCombatMissionId === 'cocina_monstruos';
                 const fromForge = selectedCombatMissionId === 'forja_goryn';
                 const fromBotica = selectedCombatMissionId === 'botica_raxxar';
+                const fromOrderHq = selectedCombatMissionId === 'sede_nala';
                 setSelectedCombatMissionId(null);
+                if (fromOrderHq) {
+                  // Vuelve a la Sede deshaciendo la entrada de la cinemática.
+                  goBack();
+                  return;
+                }
                 if (fromForge || fromBotica) {
                   // Vuelve al taller deshaciendo la entrada de la cinemática,
                   // para que "Volver" no reabra la historia de la misión 1.

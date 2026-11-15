@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
 import { launchConfetti } from '../utils/confetti';
+import { SPRITE_POSE_SCALE } from '../data/spriteContentRatio';
 import {
   STORY_TIRANO_DIALOGUE,
   STORY_ROBO_DIALOGUE,
@@ -43,6 +44,7 @@ import {
 } from '../data/kitchenIntroData';
 import { FORGE_INTRO_MISSION_ID, GORYN_FORGE_DIALOGUE } from '../data/forgeIntroData';
 import { BOTICA_INTRO_MISSION_ID, RAXXAR_BOTICA_DIALOGUE } from '../data/boticaIntroData';
+import { NALA_ORDER_HQ_DIALOGUE, ORDER_HQ_INTRO_MISSION_ID } from '../data/orderHqIntroData';
 import {
   Volume2,
   VolumeX,
@@ -209,11 +211,14 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
   const isKitchenMonstersIntro = selectedCombatMissionId === KITCHEN_MONSTERS_INTRO_MISSION_ID;
   const isForgeIntro = selectedCombatMissionId === FORGE_INTRO_MISSION_ID;
   const isBoticaIntro = selectedCombatMissionId === BOTICA_INTRO_MISSION_ID;
+  const isOrderHqIntro = selectedCombatMissionId === ORDER_HQ_INTRO_MISSION_ID;
 
   const rawDialogueLines = isKitchenMonstersIntro
     ? PACO_MONSTERS_DIALOGUE
     : isBoticaIntro
     ? RAXXAR_BOTICA_DIALOGUE
+    : isOrderHqIntro
+    ? NALA_ORDER_HQ_DIALOGUE
     : isForgeIntro
     ? GORYN_FORGE_DIALOGUE
     : isKitchenIntro
@@ -390,9 +395,12 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
   const autoPlayTimerRef = useRef<NodeJS.Timeout | null>(null);
   const typewriterTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Música propia de las cinemáticas (aventura épica), distinta de la del combate.
+  const CINEMATIC_BGM = '/assets/audio/cinematic_adventure.mp3';
+
   // Background audio setup
   useEffect(() => {
-    sound.initBGM('/assets/audio/blades_of_the_astral_gate.mp3');
+    sound.initBGM(CINEMATIC_BGM);
     sound.playBGM();
     return () => {
       sound.stopBGM();
@@ -411,31 +419,6 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       setTimeout(() => setScreenFlash(null), 350);
     }
 
-    // Play thematic SFX
-    if (currentLine.soundEffect) {
-      switch (currentLine.soundEffect) {
-        case 'slam':
-        case 'furious':
-          sound.playSFX('critical');
-          break;
-        case 'roar':
-          sound.playSFX('dark_god');
-          break;
-        case 'drink':
-        case 'laugh':
-          sound.playSFX('powerup');
-          break;
-        case 'fanfare':
-          sound.playSFX('victory');
-          break;
-        case 'whisper':
-          sound.playSFX('merge');
-          break;
-        default:
-          sound.playSFX('click');
-          break;
-      }
-    }
   }, [currentLineIndex, currentLine]);
 
   // Typewriter effect
@@ -489,13 +472,11 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
     // Advance to next line
     if (currentLineIndex < dialogueLines.length - 1) {
-      sound.playSFX('click');
       setCurrentLineIndex((prev) => prev + 1);
     } else {
       if (isAldeaEpilogue || isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue || isFertonEpilogue) {
         handleCompleteStory();
       } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isRoboMission || isBosqueMission || isPuertasMission || isEmboscadaMission || isAsaltoOrcoMission || isFuriaCarmesiMission || (isFertonMission && !isFertonEpilogue)) {
-        sound.playSFX('critical');
         setScreenFlash(isFertonMission ? 'gold' : isTitanMission ? 'gold' : isZancudoMission ? 'purple' : isCavernaAzulMission ? 'cyan' : isFuriaCarmesiMission ? 'cyan' : 'red');
         setBattleTransitionAlert(true);
         setTimeout(() => {
@@ -509,6 +490,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         finishForgeIntro();
       } else if (isBoticaIntro) {
         finishBoticaIntro();
+      } else if (isOrderHqIntro) {
+        finishOrderHqIntro();
       } else {
         handleCompleteStory();
       }
@@ -518,6 +501,10 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
   const handleCompleteStory = () => {
     // Las bienvenidas del fogón y de la forja no son misiones: nunca deben
     // completar la misión 1 ni repartir sus recompensas.
+    if (isOrderHqIntro) {
+      finishOrderHqIntro();
+      return;
+    }
     if (isForgeIntro) {
       finishForgeIntro();
       return;
@@ -531,7 +518,6 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       return;
     }
 
-    sound.playSFX('victory');
     launchConfetti();
     setIsStoryCompleted(true);
     setIsAutoPlay(false);
@@ -859,6 +845,10 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       finishBoticaIntro();
       return;
     }
+    if (isOrderHqIntro) {
+      finishOrderHqIntro();
+      return;
+    }
     if (isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isMinasHistoriaMission || isEmboscadaEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isAsaltoOrcoEpilogue) {
       handleCompleteStory();
     } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isEmboscadaMission || isRoboMission || isBosqueMission || isPuertasMission || isFuriaCarmesiMission) {
@@ -876,18 +866,15 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
   const handleToggleAutoPlay = (e: React.MouseEvent) => {
     e.stopPropagation();
-    sound.playSFX('click');
     setIsAutoPlay((prev) => !prev);
   };
 
   const handleOpenBacklog = (e: React.MouseEvent) => {
     e.stopPropagation();
-    sound.playSFX('click');
     setIsBacklogOpen(true);
   };
 
   const handleStartCombatAfterStory = () => {
-    sound.playSFX('click');
     if (isTitanMission) {
       setSelectedCombatMissionId('m6_cuevas_titan');
     } else if (isZancudoMission) {
@@ -924,7 +911,6 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
   // La bienvenida de Paco no es una misión: al terminar se vuelve directo al fogón.
   const finishKitchenIntro = () => {
-    sound.playSFX('click');
     if (onFinish) {
       onFinish();
     } else {
@@ -934,7 +920,6 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
   // La charla de la cocina exótica tampoco es una misión: vuelve al Fogón.
   const finishKitchenMonstersIntro = () => {
-    sound.playSFX('click');
     if (onFinish) {
       onFinish();
     } else {
@@ -944,7 +929,6 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
   // La bienvenida de Goryn tampoco es una misión: al terminar se vuelve a la forja.
   const finishForgeIntro = () => {
-    sound.playSFX('click');
     if (onFinish) {
       onFinish();
     } else {
@@ -954,7 +938,6 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
   // La bienvenida de Raxxar tampoco es una misión: al terminar se vuelve a la botica.
   const finishBoticaIntro = () => {
-    sound.playSFX('click');
     if (onFinish) {
       onFinish();
     } else {
@@ -962,8 +945,16 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     }
   };
 
+  // La presentación de Nala tampoco es una misión: al terminar se vuelve a la Sede de Orden.
+  const finishOrderHqIntro = () => {
+    if (onFinish) {
+      onFinish();
+    } else {
+      navigateTo('order');
+    }
+  };
+
   const handleReturnToQuests = () => {
-    sound.playSFX('click');
     if (isAsaltoOrcoEpilogue || isEmboscadaEpilogue) {
       setSelectedCombatMissionId(null);
       navigateTo('world');
@@ -1106,6 +1097,10 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               <img
                 src={exitPoseUrl}
                 alt={exitProf.name}
+                style={{
+                  scale: String(SPRITE_POSE_SCALE[exitPoseUrl] ?? 1),
+                  transformOrigin: 'bottom center',
+                }}
                 onError={(event) => {
                   event.currentTarget.style.visibility = 'hidden';
                 }}
@@ -1161,6 +1156,14 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               <img
                 src={activePoseUrl}
                 alt={activeProf.name}
+                style={
+                  !isTitanSleeping
+                    ? {
+                        scale: String(SPRITE_POSE_SCALE[activePoseUrl] ?? 1),
+                        transformOrigin: 'bottom center',
+                      }
+                    : undefined
+                }
                 onError={(event) => {
                   event.currentTarget.style.visibility = 'hidden';
                 }}
@@ -1319,6 +1322,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 ? '¿Saltar la bienvenida de Goryn?'
                 : isBoticaIntro
                 ? '¿Saltar la bienvenida de Raxxar?'
+                : isOrderHqIntro
+                ? '¿Saltar la presentación de Nala?'
                 : isRoboMission
                 ? '¿Saltar Diálogo e Iniciar Combate?'
                 : '¿Saltar Prólogo de Historia?'}
@@ -1332,6 +1337,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 ? 'Pasarás directamente al tutorial de forja: Goryn te dejará el material y el oro para la Espada de Hierro y te señalará qué tocar.'
                 : isBoticaIntro
                 ? 'Pasarás directamente al tutorial de la botica: Raxxar te dejará los materiales y el oro para la Poción de Vida Menor y te señalará qué tocar.'
+                : isOrderHqIntro
+                ? 'Pasarás directamente a la Sede de Orden, donde Nala te señalará qué pestaña tocar para aprender a usar la sede.'
                 : isRoboMission
                 ? 'Saltarás la escena cómica del asalto a la mansión y comenzarás de inmediato el combate contra las 4 oleadas de la guardia urbana en el callejón.'
                 : 'Completarás la escena narrativa, firmarás el contrato del Capitán Gabriel y desbloquearás la batalla contra Cryovain.'}

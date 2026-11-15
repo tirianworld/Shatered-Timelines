@@ -40,6 +40,10 @@ import { RagnavaldrSkillVfxOverlay } from './RagnavaldrSkillVfxOverlay';
 import { RaxxarSkillVfxOverlay } from './RaxxarSkillVfxOverlay';
 import { RoxanneSkillVfxOverlay } from './RoxanneSkillVfxOverlay';
 import { SmurphSkillVfxOverlay } from './SmurphSkillVfxOverlay';
+import {
+  EnemyAttackVfxOverlay,
+  type ActiveEnemyAttackVfxState,
+} from './EnemyAttackVfxOverlay';
 import { AshDisintegrationEffect } from './AshDisintegrationEffect';
 import { CombatInventoryModal } from './CombatInventoryModal';
 import {
@@ -50,7 +54,16 @@ import { loadTavernCookingStock, saveTavernCookingStock } from '../data/cookingD
 import { SPRITE_POSE_SCALE } from '../data/spriteContentRatio';
 import { SPRITE_ANCHOR } from '../data/spriteAnchor';
 import { DEFAULT_ENEMY_FRAME, type EnemyVfxFrame } from '../utils/enemyVfxFrame';
-import { getCardCombatSfx } from '../data/combatSfx';
+import { getSpriteWeaponTip } from '../utils/spriteAlphaTrim';
+import { findAutoMergePair, resolveAutoMerges } from '../utils/autoMergeHand';
+import { getCombatVoice } from '../data/combatSfx';
+import {
+  STATUS_VFX_ASSETS,
+  StatusConditionsVfxOverlay,
+  StatusShadersSvgDefs,
+  getStatusSpriteShaderFilter,
+  normalizeConditionKey,
+} from './StatusConditionsVfxOverlay';
 
 export interface GachaSkillEffectApplication {
   type: GachaEffectType;
@@ -303,7 +316,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Definitivo',
-        image: '/assets/skills/smite_celestial_tier_3.png',
+        image: '/assets/skills/magordito_ultimate.png',
         damage: 95,
         title: '★ Cataclismo Astral ★',
         description: '🔮 [FUERZA]: MOVIMIENTO DEFINITIVO: Pura energía arcana. Ignora el 100% de escudos y aturde.',
@@ -317,7 +330,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Definitivo',
-        image: '/assets/skills/smite_celestial_tier_3.png',
+        image: '/assets/skills/magordito_ultimate.png',
         damage: 95,
         title: '★ Cataclismo Astral ★',
         description: '🔮 [FUERZA]: MOVIMIENTO DEFINITIVO: Desata furia cósmica ineludible.',
@@ -331,7 +344,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Definitivo',
-        image: '/assets/skills/smite_celestial_tier_3.png',
+        image: '/assets/skills/magordito_ultimate.png',
         damage: 95,
         title: '★ Cataclismo Astral ★',
         description: '🔮 [FUERZA]: MOVIMIENTO DEFINITIVO: Desata furia cósmica ineludible.',
@@ -2418,22 +2431,22 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     isBoss: false,
     isSemiboss: false,
     normalSkill: {
-      name: 'Mandíbula Descuartizadora',
-      desc: 'Muerde con voracidad desgarrando la carne y aplicando laceración.',
+      name: 'Cortes de Tenazas',
+      desc: 'Asesta dos veloces tajos carmesís en cruz dejando estelas cortantes como espadas.',
       damage: [10, 14],
       vfx: 'araknoide_claw',
       sfx: 'attack',
-      dndDamageType: 'piercing',
+      dndDamageType: 'slashing',
       condition: {
         type: 'laceration',
         duration: 2,
         stacks: 1,
-        title: 'Desgarro Voraz',
+        title: 'Desgarro de Tenazas',
       },
     },
     specialSkill: {
-      name: 'Festín Sanguinario',
-      desc: 'Se nutre de restos frescos devorando con saña y aumentando su ataque.',
+      name: 'Pinzazo Desgarrador',
+      desc: 'Asesta un doble corte rojizo feroz con sus tenazas afiladas.',
       damage: [13, 17],
       vfx: 'araknoide_claw',
       sfx: 'skill',
@@ -2446,15 +2459,15 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       },
     },
     ultimateSkill: {
-      name: 'Dentellada Brutal',
-      desc: 'Salto violento con todas las fauces abiertas infligiendo gran daño.',
+      name: 'Tajo Brutal de Tenazas',
+      desc: 'Embestida feroz con dobles cortes carmesís que desgarran al objetivo.',
       damage: 22,
-      dndDamageType: 'piercing',
+      dndDamageType: 'slashing',
       condition: {
         type: 'stun',
         duration: 1,
         stacks: 1,
-        title: 'Mordisco Paralizante',
+        title: 'Corte Paralizante',
       },
     },
     rewards: {
@@ -2488,38 +2501,38 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     isBoss: false,
     isSemiboss: false,
     normalSkill: {
-      name: 'Salva de Espinas',
-      desc: 'Dispara púas quitinosas afiladas como estiletes.',
+      name: 'Puñetazo Telaraña',
+      desc: 'Descarga un potente golpe de puño con onda expansiva de telaraña rojiza.',
       damage: [11, 15],
-      vfx: 'shadow_needle',
-      sfx: 'laser',
-      dndDamageType: 'piercing',
+      vfx: 'araknoide_claw',
+      sfx: 'attack',
+      dndDamageType: 'bludgeoning',
       condition: {
         type: 'def_break',
         duration: 2,
         stacks: 1,
-        title: 'Puntada Perforante',
+        title: 'Impacto Quebrantador',
       },
     },
     specialSkill: {
-      name: 'Empalamiento Óseo',
-      desc: 'Carga frontal enterrando sus aguijones de quitina.',
+      name: 'Impacto Arácnido Carmesí',
+      desc: 'Golpea con ambos puños liberando una explosión de seda rojiza.',
       damage: [14, 18],
-      vfx: 'shadow_needle',
-      sfx: 'attack',
-      dndDamageType: 'piercing',
+      vfx: 'araknoide_claw',
+      sfx: 'skill',
+      dndDamageType: 'bludgeoning',
       condition: {
         type: 'poison',
         duration: 2,
         stacks: 1,
-        title: 'Púa Tóxica',
+        title: 'Telaraña Ponzoñosa',
       },
     },
     ultimateSkill: {
-      name: 'Erupción de Púas Carmesí',
-      desc: 'Detonación de aguijones que satura el área de combate.',
+      name: 'Cataclismo de Puño y Telaraña',
+      desc: 'Puñetazo colosal envuelto en telaraña carmesí que destruye la defensa.',
       damage: 25,
-      dndDamageType: 'piercing',
+      dndDamageType: 'bludgeoning',
       condition: {
         type: 'def_break',
         duration: 2,
@@ -2558,38 +2571,38 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     isBoss: false,
     isSemiboss: false,
     normalSkill: {
-      name: 'Escupitajo Cáustico',
-      desc: 'Lanza chorros de ácido corrosivo caliente desde su abdomen.',
+      name: 'Doble Estocada de Patas',
+      desc: 'Dispara ráfagas de aire triangular rojizo desde ambas patas delanteras como dos lanzas.',
       damage: [9, 13],
-      vfx: 'araknoide_silk',
-      sfx: 'drain',
-      dndDamageType: 'acid',
+      vfx: 'araknoide_claw',
+      sfx: 'attack',
+      dndDamageType: 'piercing',
       condition: {
         type: 'poison',
         duration: 3,
         stacks: 1,
-        title: 'Bilis Cáustica',
+        title: 'Filo Ponzoñoso',
       },
     },
     specialSkill: {
-      name: 'Eclosión de Huevos Carmesís',
-      desc: 'Rompe cáscaras carmesís liberando miasma infecto.',
+      name: 'Doble Punzada Arácnida',
+      desc: 'Embiste con múltiples patas como lanzas carmesís perforando al objetivo.',
       damage: [12, 16],
-      vfx: 'araknoide_silk',
+      vfx: 'araknoide_claw',
       sfx: 'skill',
-      dndDamageType: 'poison',
+      dndDamageType: 'piercing',
       condition: {
         type: 'poison',
         duration: 3,
         stacks: 2,
-        title: 'Infección Larvaria',
+        title: 'Perforación Larvaria',
       },
     },
     ultimateSkill: {
-      name: 'Nube de Esporas Carmesís',
-      desc: 'Explosión pestilente de feromonas y ácido del nido.',
+      name: 'Ráfaga de Lanzas Quitinosas',
+      desc: 'Descarga frenética de estocadas de aire triangular carmesí.',
       damage: 21,
-      dndDamageType: 'poison',
+      dndDamageType: 'piercing',
       condition: {
         type: 'paralyze',
         duration: 1,
@@ -3706,13 +3719,13 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       chamberName: 'Puertas de Glimmerstone: Furia Desatada',
       chamberNumber: 1,
       spriteUrl: '/assets/combat/devorador_quitinoso_clean.png',
-      attackSpriteUrl: '/assets/combat/devorador_quitinoso_attack.png',
+      attackSpriteUrl: '/assets/combat/devorador_quitinoso_p2_attack.png',
       hurtSpriteUrl: '/assets/combat/devorador_quitinoso_hurt.png',
       thumbUrl: '/assets/combat/devorador_quitinoso_thumb.png',
       maxHp: 220,
-      width: 191,
-      height: 262,
-      scaleClass: 'w-[287px] h-[393px]', // Devorador fase 2: 1.5x (0.5 más grande)
+      width: 176,
+      height: 240,
+      scaleClass: 'w-[264px] h-[360px]', // Devorador fase 2: normalizado al tamaño de la Fase 1
       isBoss: true,
       isSemiboss: false,
       hasPhaseTwo: false,
@@ -3749,7 +3762,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         desc: 'El devorador desata su furia primordial en un arrebato de aniquilación total.',
         damage: 42,
         sfx: 'dark_god',
-        dndDamageType: 'slashing',
+        dndDamageType: 'piercing',
         condition: {
           type: 'bleed',
           duration: 4,
@@ -4243,8 +4256,8 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       thumbUrl: '/assets/portraits/guarda_negro_alabarda_thumb.png',
       maxHp: 98,
       width: 142,
-      height: 205,
-      scaleClass: 'w-[142px] h-[205px]',
+      height: 195,
+      scaleClass: 'w-[142px] h-[195px]',
       isBoss: false,
       isSemiboss: false,
       normalSkill: {
@@ -4754,9 +4767,8 @@ export interface LootSackDrop {
 /** Escala la pose actual del enemigo para que el personaje mida lo mismo que en su idle.
  *  El factor viene medido del arte (radio de giro de la silueta), asi que no depende de si
  *  la pose es agachada, de pie o esta cayendo. */
-const getEnemyStateSpriteScale = (baseUrl?: string | null, currentUrl?: string | null): number => {
+const getEnemyStateSpriteScale = (_baseUrl?: string | null, currentUrl?: string | null): number => {
   if (!currentUrl) return 1;
-  if (baseUrl === currentUrl) return 1;
   return SPRITE_POSE_SCALE[currentUrl] ?? 1;
 };
 
@@ -5136,6 +5148,10 @@ export const CombatView: React.FC = () => {
   const isEnemyAshDissolving = targetEnemy.isAshDissolving;
 
   const [bossTransitioning, setBossTransitioning] = useState<boolean>(false);
+  const [isDevoradorRoaring, setIsDevoradorRoaring] = useState<boolean>(false);
+  const [isDevoradorRefilling, setIsDevoradorRefilling] = useState<boolean>(false);
+  const isDevoradorTransitioningRef = useRef<boolean>(false);
+  const devoradorTransitionTimersRef = useRef<number[]>([]);
 
   // Hero Stats (Magordito) - 100 HP
   const MAX_HERO_HP = 100;
@@ -5238,6 +5254,18 @@ export const CombatView: React.FC = () => {
       '/assets/combat/raxxar_vfx_tzzzk.png',
       '/assets/combat/raxxar_vfx_impacto.png',
       '/assets/combat/raxxar_vfx_escudo.png',
+      '/assets/combat/devorador_quitinoso_p2_attack.png',
+      '/assets/combat/devorador_quitinoso_roar.png',
+      '/assets/combat/enemy_vfx_devorador_mordisco.png',
+      '/assets/combat/enemy_vfx_devorador_slash.png',
+      '/assets/combat/enemy_vfx_voraz_corte_espada.png',
+      '/assets/combat/enemy_ono_chack.png',
+      '/assets/combat/enemy_ono_screeck.png',
+      '/assets/combat/enemy_ono_scrook.png',
+      '/assets/combat/enemy_vfx_espinoso_web.png',
+      '/assets/combat/enemy_ono_crash.png',
+      '/assets/combat/enemy_ono_crosh.png',
+      '/assets/combat/enemy_vfx_oviparo_lanza.png',
     ];
     sprites.forEach((src) => {
       const img = new Image();
@@ -5342,6 +5370,42 @@ export const CombatView: React.FC = () => {
     if (isPepeCombat) return '/assets/portraits/pepe_loux.png';
     if (isArlemCombat) return '/assets/portraits/arlem_diaz_icono.png';
     return '/assets/aistudio/splashart_magordito_c1637d56.png';
+  };
+
+  const getHeroUltimateCardImage = (heroId: string): string => {
+    switch (heroId) {
+      case 'smurph_draco':
+      case 'smurph':
+        return '/assets/skills/smurph_ultimate.png';
+      case 'roxanne':
+        return '/assets/skills/roxanne_ultimate.png';
+      case 'barled':
+        return '/assets/skills/barled_ultimate.png';
+      case 'raxxar':
+        return '/assets/skills/raxxar_ultimate.png';
+      case 'ragnavaldr':
+        return '/assets/skills/ragnavaldr_ultimate.png';
+      case 'kairon':
+        return '/assets/skills/kairon_ultimate.png';
+      case 'chispo_deez':
+      case 'chispo':
+        return '/assets/skills/chispo_ultimate.png';
+      case 'giovani':
+      case 'giovani_vazquez':
+        return '/assets/skills/giovani_ultimate.png';
+      case 'prometeo':
+        return '/assets/skills/prometeo_ultimate.png';
+      case 'edacorn':
+        return '/assets/skills/edacorn_ultimate.png';
+      case 'pepe_loux':
+        return '/assets/skills/pepe_loux_ultimate.png';
+      case 'arlem':
+      case 'arlem_diaz':
+        return '/assets/skills/arlem_ultimate.png';
+      case 'magordito':
+      default:
+        return '/assets/skills/magordito_ultimate.png';
+    }
   };
 
   const getHeroCardPool = useCallback((heroId: string): string[] => {
@@ -5808,7 +5872,7 @@ export const CombatView: React.FC = () => {
    * Mide en pantalla al enemigo activo (cuerpo, cabeza y tamaño) para que los efectos de ataque
    * del héroe se adapten a él en lugar de usar coordenadas fijas.
    */
-  const measureEnemyVfxFrame = (): EnemyVfxFrame => {
+  const measureEnemyVfxFrame = (withWeaponTip = false): EnemyVfxFrame => {
     const wrapper = document.querySelector('[data-enemy-sprite]') as HTMLElement | null;
     const host = wrapper?.parentElement as HTMLElement | null;
     const img = wrapper?.querySelector('img:not([data-enemy-shadow])') as HTMLImageElement | null;
@@ -5822,7 +5886,7 @@ export const CombatView: React.FC = () => {
     const footY = toY(rect.top + anchor.b * rect.height);
     const headX = toX(rect.left + anchor.hx * rect.width);
     const headY = toY(rect.top + anchor.hy * rect.height);
-    return {
+    const base: EnemyVfxFrame = {
       x: toX(rect.left + anchor.c * rect.width),
       y: (footY + headY) / 2,
       headX,
@@ -5830,27 +5894,34 @@ export const CombatView: React.FC = () => {
       height: rect.height / hostRect.height,
       width: rect.width / hostRect.width,
     };
+    if (!withWeaponTip) return base;
+    // Punta del arma medida sobre el alfa del sprite (aún puede estar cargándose).
+    const tip = getSpriteWeaponTip(img?.getAttribute('src') ?? '');
+    return tip ? { ...base, tipFx: tip.fx, tipFy: tip.fy } : base;
   };
 
   /** Escala base del héroe por complexión: no depende de la pose ni del arma. */
   const getHeroBodyBaseScale = (): number => {
     if (isPepeCombat) return 0.60375; // enano: ~40% más pequeño que el resto (0.575 + un 5%)
     if (isBarledCombat) return 0.94875; // Barled: ~26,5% más grande que el resto de humanos (0.8625 + un 10%)
+    if (isArlemCombat) return 0.825; // Arlem: un 10% más grande que el resto de humanos
     if (isEdacornCombat) return 0.825; // Edacorn: un 10% más grande que el resto de humanos
     if (isPrometeoCombat) return 0.8625; // Prometeo: un 15% más grande que el resto de humanos
-    if (isKaironCombat || isArlemCombat || isRoxanneCombat || isGiovaniCombat) {
+    if (isKaironCombat || isRoxanneCombat || isGiovaniCombat) {
       return 0.75; // héroes humanos o de talla humana: 25% más pequeños
     }
     return 1;
   };
 
   /**
-   * Escala final del sprite de héroe: solo la complexión del héroe, idéntica en idle, ataque,
-   * skill y daño. Se comprobó midiendo la cabeza de las 66 poses (misma escala, pies alineados,
-   * rejilla de 20 px): la cabeza mide lo mismo en todas dentro de ±5 %, así que no hay ninguna
-   * pose que deba escalarse aparte y el personaje nunca cambia de tamaño al cambiar de pose.
+   * Escala final del sprite de héroe: combina la complexión del héroe con la compensación
+   * por pose verificada en SPRITE_POSE_SCALE para que el cuerpo mida exactamente lo mismo
+   * en idle, ataque, daño y habilidades independientemente del padding o efectos del canvas.
    */
-  const getHeroSpriteRenderScale = (): number => getHeroBodyBaseScale();
+  const getHeroSpriteRenderScale = (): number => {
+    const poseScale = SPRITE_POSE_SCALE[getHeroSpriteUrl()] ?? 1;
+    return getHeroBodyBaseScale() * poseScale;
+  };
 
   /**
    * Desplazamiento del sprite del héroe hasta el centro de su sombra (en % de su propio tamaño).
@@ -5880,6 +5951,9 @@ export const CombatView: React.FC = () => {
   };
 
   const getEnemySpriteUrl = (enemy: ChamberEnemyState): string => {
+    if (isDevoradorRoaring && enemy.configId.includes('devorador')) {
+      return '/assets/combat/devorador_quitinoso_roar.png';
+    }
     if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
       return enemy.hurtSpriteUrl || enemy.spriteUrl;
     }
@@ -5899,6 +5973,15 @@ export const CombatView: React.FC = () => {
 
   // Reset combat run cleanly when selectedCombatMissionId changes
   useEffect(() => {
+    devoradorTransitionTimersRef.current.forEach((id) => {
+      window.clearTimeout(id);
+      window.clearInterval(id);
+    });
+    devoradorTransitionTimersRef.current = [];
+    setIsDevoradorRoaring(false);
+    setIsDevoradorRefilling(false);
+    isDevoradorTransitioningRef.current = false;
+
     const initFloor = getInitialFloor();
     setCurrentFloor(initFloor);
     const initialEnemies = createChamberEnemies(initFloor, selectedCombatMissionId);
@@ -5917,6 +6000,14 @@ export const CombatView: React.FC = () => {
     const initHeroHand = createInitialHandForHero(activeCombatHeroIdRef.current);
     heroHandsRef.current[activeCombatHeroIdRef.current] = initHeroHand;
     setHand(initHeroHand);
+
+    return () => {
+      devoradorTransitionTimersRef.current.forEach((id) => {
+        window.clearTimeout(id);
+        window.clearInterval(id);
+      });
+      devoradorTransitionTimersRef.current = [];
+    };
   }, [selectedCombatMissionId, createInitialHandForHero]);
 
 
@@ -5995,6 +6086,68 @@ export const CombatView: React.FC = () => {
       '/assets/combat/arlem_cast_estocada.png',
       '/assets/combat/magordito_idle.png',
       '/assets/combat/magordito_hurt.png',
+      '/assets/combat/magordito_cast_dios.png',
+      '/assets/combat/magordito_cast_rayo.png',
+      '/assets/combat/magordito_cast_slash.png',
+      '/assets/combat/magordito_cast_toxic.png',
+      '/assets/combat/prometeo_idle.png',
+      '/assets/combat/prometeo_hurt.png',
+      '/assets/combat/prometeo_attack.png',
+      '/assets/combat/prometeo_cast.png',
+      '/assets/combat/chispo_idle.png',
+      '/assets/combat/chispo_hurt.png',
+      '/assets/combat/chispo_attack.png',
+      '/assets/combat/chispo_cast.png',
+      '/assets/combat/giovani_idle.png',
+      '/assets/combat/giovani_hurt.png',
+      '/assets/combat/giovani_attack.png',
+      '/assets/combat/giovani_cast.png',
+      '/assets/combat/kairon_idle.png',
+      '/assets/combat/kairon_hurt.png',
+      '/assets/combat/kairon_attack.png',
+      '/assets/combat/kairon_attack_dual.png',
+      '/assets/combat/kairon_cast.png',
+      '/assets/combat/barled_idle.png',
+      '/assets/combat/barled_hurt.png',
+      '/assets/combat/barled_attack.png',
+      '/assets/combat/barled_cast.png',
+      '/assets/combat/ragnavaldr_idle.png',
+      '/assets/combat/ragnavaldr_hurt.png',
+      '/assets/combat/ragnavaldr_attack.png',
+      '/assets/combat/ragnavaldr_cast.png',
+      '/assets/combat/ragnavaldr_furia.png',
+      '/assets/combat/raxxar_idle.png',
+      '/assets/combat/raxxar_hurt.png',
+      '/assets/combat/raxxar_attack.png',
+      '/assets/combat/raxxar_shield.png',
+      '/assets/combat/raxxar_spear.png',
+      '/assets/combat/roxanne_idle.png',
+      '/assets/combat/roxanne_hurt.png',
+      '/assets/combat/roxanne_attack.png',
+      '/assets/combat/roxanne_cast.png',
+      '/assets/combat/smurph_idle.png',
+      '/assets/combat/smurph_hurt.png',
+      '/assets/combat/smurph_attack.png',
+      '/assets/combat/smurph_cast.png',
+      '/assets/combat/smurph_flight.png',
+      '/assets/combat/smurph_landing.png',
+      '/assets/combat/smurph_lightning.png',
+      // Custom Per-Hero Ultimate Cards
+      '/assets/skills/arlem_ultimate.png',
+      '/assets/skills/barled_ultimate.png',
+      '/assets/skills/chispo_ultimate.png',
+      '/assets/skills/edacorn_ultimate.png',
+      '/assets/skills/giovani_ultimate.png',
+      '/assets/skills/kairon_ultimate.png',
+      '/assets/skills/magordito_ultimate.png',
+      '/assets/skills/pepe_loux_ultimate.png',
+      '/assets/skills/prometeo_ultimate.png',
+      '/assets/skills/ragnavaldr_ultimate.png',
+      '/assets/skills/raxxar_ultimate.png',
+      '/assets/skills/roxanne_ultimate.png',
+      '/assets/skills/smurph_ultimate.png',
+      // Status Condition Cartoon VFX Assets
+      ...STATUS_VFX_ASSETS,
     ];
     assetsToPreload.forEach((src) => {
       const img = new Image();
@@ -6094,6 +6247,93 @@ export const CombatView: React.FC = () => {
     );
   };
   const [heroConditions, setHeroConditions] = useState<ActiveGachaEffect[]>([]);
+  const heroConditionsRef = useRef<ActiveGachaEffect[]>([]);
+  heroConditionsRef.current = heroConditions;
+
+  // Sprite refs & sequential turn-start status showcase (one after another, ~450ms each)
+  const heroSpriteImgRef = useRef<HTMLImageElement | null>(null);
+  const enemySpriteImgRef = useRef<HTMLImageElement | null>(null);
+  const [activeHeroStatusShowcase, setActiveHeroStatusShowcase] = useState<{
+    effect: ActiveGachaEffect;
+    key: number;
+    durationMs: number;
+  } | null>(null);
+  const [activeEnemyStatusShowcase, setActiveEnemyStatusShowcase] = useState<{
+    effect: ActiveGachaEffect;
+    key: number;
+    durationMs: number;
+  } | null>(null);
+  const statusShowcaseTimersRef = useRef<number[]>([]);
+  const statusShowcaseSeqRef = useRef(0);
+
+  const clearStatusShowcases = useCallback(() => {
+    statusShowcaseTimersRef.current.forEach((id) => window.clearTimeout(id));
+    statusShowcaseTimersRef.current = [];
+    setActiveHeroStatusShowcase(null);
+    setActiveEnemyStatusShowcase(null);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      statusShowcaseTimersRef.current.forEach((id) => window.clearTimeout(id));
+      statusShowcaseTimersRef.current = [];
+    };
+  }, []);
+
+  const playSequentialStatuses = (
+    effects: ActiveGachaEffect[],
+    setter: React.Dispatch<
+      React.SetStateAction<{
+        effect: ActiveGachaEffect;
+        key: number;
+        durationMs: number;
+      } | null>
+    >,
+    onComplete?: () => void
+  ) => {
+    if (!effects || effects.length === 0) {
+      setter(null);
+      onComplete?.();
+      return;
+    }
+    const seen = new Set<string>();
+    const unique = effects.filter((ef) => {
+      const k = normalizeConditionKey(ef.type) ?? ef.canonicalType ?? ef.type;
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+    if (unique.length === 0) {
+      setter(null);
+      onComplete?.();
+      return;
+    }
+
+    const stepMs = unique.length >= 3 ? 380 : 460;
+    let idx = 0;
+
+    const stepNext = () => {
+      if (idx >= unique.length) {
+        setter(null);
+        onComplete?.();
+        return;
+      }
+      const current = unique[idx++];
+      statusShowcaseSeqRef.current += 1;
+      setter({ effect: current, key: statusShowcaseSeqRef.current, durationMs: stepMs });
+      const tid = window.setTimeout(stepNext, stepMs);
+      statusShowcaseTimersRef.current.push(tid);
+    };
+
+    stepNext();
+  };
+
+  const heroStatusShaderFilter = getStatusSpriteShaderFilter(
+    activeHeroStatusShowcase?.effect ?? null
+  );
+  const enemyStatusShaderFilter = getStatusSpriteShaderFilter(
+    activeEnemyStatusShowcase?.effect ?? null
+  );
 
   // Status Effect Animation Triggers (Pokémon style: one-shot on turn start or on application)
   const [heroStatusTrigger, setHeroStatusTrigger] = useState<number>(0);
@@ -6136,6 +6376,32 @@ export const CombatView: React.FC = () => {
 
   // Reactive Drag State for UI Rendering
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+
+  // Fusión automática: si dos cartas del mismo skill y del mismo tier quedan contiguas en la
+  // mano, se combinan solas en el hueco de la izquierda. Pasa en cualquier momento (también
+  // durante el turno enemigo) y no gasta turno: es una consecuencia pasiva de tenerlas juntas.
+  // La cadena entera (tres o cuatro cartas iguales) se resuelve en una sola fusión.
+  const autoMergeTimerRef = useRef<number | null>(null);
+  useEffect(() => {
+    // No se fusiona a mitad de un arrastre: los índices cambiarían bajo el dedo del jugador.
+    if (dragIndex !== null) return;
+    const currentHand = handRef.current;
+    const pairIdx = findAutoMergePair(currentHand);
+    if (pairIdx === -1) return;
+
+    const resolved = resolveAutoMerges(currentHand);
+    if (resolved.hand.length === currentHand.length) return;
+
+    sound.playSFX('celestial');
+    setMergeAnim({
+      targetSlot: pairIdx,
+      newTier: (resolved.hand[pairIdx]?.tier ?? Math.min(3, currentHand[pairIdx].tier + 1)) as 2 | 3,
+    });
+    if (autoMergeTimerRef.current) window.clearTimeout(autoMergeTimerRef.current);
+    autoMergeTimerRef.current = window.setTimeout(() => setMergeAnim(null), 750);
+
+    setHand(resolved.hand);
+  }, [hand, dragIndex]);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
   const [dragTilt, setDragTilt] = useState<number>(0);
@@ -6194,13 +6460,21 @@ export const CombatView: React.FC = () => {
   // Pokemon-style Tag-Team Switching & Enemy Unique Attacks
   const [enemySwitchState, setEnemySwitchState] = useState<'none' | 'exit' | 'enter'>('none');
   const [pokemonSwitchNotice, setPokemonSwitchNotice] = useState<string | null>(null);
-  const [activeEnemyAttackVisual, setActiveEnemyAttackVisual] = useState<{
-    enemyName: string;
-    skillName: string;
-    skillDesc: string;
-    vfxType: 'crimson_claw' | 'frost_blizzard' | 'shadow_needle' | 'earth_titan' | 'void_miasma' | 'gorgon_lightning';
-    themeColor: string;
-  } | null>(null);
+  const [activeEnemyAttackVisual, setActiveEnemyAttackVisual] =
+    useState<ActiveEnemyAttackVfxState | null>(null);
+
+  // Los proyectiles enemigos nacen en la punta de su arma: se vuelve a medir al enemigo al
+  // empezar su ataque, primero en reposo y luego con la pose de ataque ya aplicada. Se repite
+  // unas cuantas veces porque la medición de la punta por alfa termina un instante después.
+  useEffect(() => {
+    if (!activeEnemyAttackVisual) return;
+    setEnemyVfxFrame(measureEnemyVfxFrame(true));
+    const timers = [40, 90, 160, 260].map((delay) =>
+      window.setTimeout(() => setEnemyVfxFrame(measureEnemyVfxFrame(true)), delay)
+    );
+    return () => timers.forEach((id) => window.clearTimeout(id));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeEnemyAttackVisual?.vfxKey, targetEnemy?.uid]);
 
   const switchActiveEnemy = useCallback(
     (newIdx: number, isAiSwitch = false) => {
@@ -6308,11 +6582,11 @@ export const CombatView: React.FC = () => {
 
   // Charge Ultimate Orbs (+1 on card use, +1 on card merge, +1 on card move) with pulse animation
   const addUltimateOrb = useCallback(
-    (amount: number = 1) => {
+    (amount: number = 1, sfx: string | null = 'coin') => {
       setUltimateOrbs((prev) => {
         const next = Math.min(MAX_ULTIMATE_ORBS, prev + amount);
         if (next > prev) {
-          sound.playSFX('coin');
+          if (sfx) sound.playSFX(sfx);
           // Disparar animación de carga para el nuevo orbe circular obtenido
           setNewlyGainedOrbIdx(next - 1);
           setTimeout(() => {
@@ -6580,6 +6854,7 @@ export const CombatView: React.FC = () => {
     setSelectedEnemyIdx(0);
 
     // Cleanse negative conditions on hero between chambers
+    clearStatusShowcases();
     setHeroConditions((prev) => prev.filter((c) => c.isBuff));
 
     setTurnCounter(1);
@@ -6801,7 +7076,8 @@ export const CombatView: React.FC = () => {
           thumbUrl: hobThumbUrl,
           title: hobTitle,
           conditions: remainingEffects,
-          isAshDissolving: updatedHp <= 0,
+          isAshDissolving:
+            updatedHp <= 0 && !(e.configId === 'devorador_quitinoso' && e.hasPhaseTwo),
         };
       });
 
@@ -6818,7 +7094,11 @@ export const CombatView: React.FC = () => {
         return;
       }
 
-      // 2. Tick down Hero Gacha Effects & resolve hero start-of-turn (Poison DoT)
+      // 2. Snapshot Hero conditions at turn start BEFORE ticking down, then resolve DoT & expiry
+      const heroStartConditions = [...heroConditionsRef.current];
+      // Auras: solo los estados que seguirán con icono en la barra después del tick de este
+      // turno. Los que expiran ahora mismo ya no se muestran, así que no deben tener aura.
+      const heroAuraConditions = tickGachaEffects(heroStartConditions).remainingEffects;
       let willSkipPlayerTurn = false;
       let skipReason = '';
 
@@ -6896,30 +7176,40 @@ export const CombatView: React.FC = () => {
         sound.playSFX('coin');
       }
 
-      // If player is hard CCed, skip turn and enemy acts again
-      if (willSkipPlayerTurn) {
-        setHeroTwitching(true);
-        setTimeout(() => setHeroTwitching(false), 900);
-        sound.playSFX('necrotic');
-
-        queueStatusNotification({
-          icon: '⚡',
-          title: `¡Turno Omitido (${skipReason})!`,
-          detail: 'Magordito no puede actuar. ¡Los enemigos toman un turno consecutivo!',
-          target: 'hero',
-          isBuff: false,
-        });
-
-        setBattleState('enemy_acting');
-        setTimeout(() => {
-          executeEnemyTurn();
-        }, 900);
+      if (heroHpRef.current <= 0) {
+        clearStatusShowcases();
         return;
       }
 
-      // Normal player turn: refill hand to 4 and idle
-      refillHandToFull();
-      setBattleState('idle');
+      // Show Hero's active status effects one after another at the start of Hero's turn
+      playSequentialStatuses(heroAuraConditions, setActiveHeroStatusShowcase, () => {
+        if (heroHpRef.current <= 0) return;
+
+        // If player is hard CCed, skip turn and enemy acts again
+        if (willSkipPlayerTurn) {
+          setHeroTwitching(true);
+          setTimeout(() => setHeroTwitching(false), 900);
+          sound.playSFX('necrotic');
+
+          queueStatusNotification({
+            icon: '⚡',
+            title: `¡Turno Omitido (${skipReason})!`,
+            detail: 'Magordito no puede actuar. ¡Los enemigos toman un turno consecutivo!',
+            target: 'hero',
+            isBuff: false,
+          });
+
+          setBattleState('enemy_acting');
+          setTimeout(() => {
+            executeEnemyTurn();
+          }, 500);
+          return;
+        }
+
+        // Normal player turn: refill hand to 4 and idle
+        refillHandToFull();
+        setBattleState('idle');
+      });
     }, 550);
   };
 
@@ -6930,20 +7220,34 @@ export const CombatView: React.FC = () => {
       (e) => e.configId === 'devorador_quitinoso' && e.hasPhaseTwo
     );
 
-    if (hasDevoradorBoss || selectedCombatMissionId === 'm4_puertas_selladas' && activeEnemiesRef.current.some(e => e.configId === 'devorador_quitinoso')) {
-      sound.playSFX('critical');
-      sound.playSFX('powerup');
-      setBossTransitioning(true);
+    if (hasDevoradorBoss || (selectedCombatMissionId === 'm4_puertas_selladas' && activeEnemiesRef.current.some(e => e.configId === 'devorador_quitinoso'))) {
+      if (isDevoradorTransitioningRef.current) return;
+      isDevoradorTransitioningRef.current = true;
+      devoradorTransitionTimersRef.current.forEach((id) => {
+        window.clearTimeout(id);
+        window.clearInterval(id);
+      });
+      devoradorTransitionTimersRef.current = [];
+
+      setBattleState('enemy_acting');
+      setIsDevoradorRoaring(true);
+      sound.playSFX('roar');
+      setScreenShake('heavy');
       setScreenFlash('red');
-      setTimeout(() => setScreenFlash(null), 450);
+
+      const flashOffId = window.setTimeout(() => setScreenFlash(null), 320);
+      const growlId = window.setTimeout(() => {
+        sound.playSFX('growl');
+        setScreenShake('heavy');
+      }, 280);
 
       const devoradorP2Cfg = DUNGEON_ENEMIES.devorador_quitinoso_p2;
-      const devoradorP2Enemy: ChamberEnemyState = {
+      const devoradorP2Base: ChamberEnemyState = {
         uid: `devorador_p2_${Date.now()}`,
         configId: 'devorador_quitinoso_p2',
         name: devoradorP2Cfg.name,
         title: devoradorP2Cfg.title,
-        hp: devoradorP2Cfg.maxHp,
+        hp: 0,
         maxHp: devoradorP2Cfg.maxHp,
         ultimateOrbs: 0,
         conditions: [],
@@ -6965,15 +7269,43 @@ export const CombatView: React.FC = () => {
         isSemiboss: false,
       };
 
+      const phaseTwoStartId = window.setTimeout(() => {
+        setScreenShake('none');
+        setIsDevoradorRoaring(false);
+        setIsDevoradorRefilling(true);
 
-      setTimeout(() => {
-        setActiveEnemies([devoradorP2Enemy]);
-        activeEnemiesRef.current = [devoradorP2Enemy];
+        activeEnemiesRef.current = [devoradorP2Base];
+        setActiveEnemies([devoradorP2Base]);
         setSelectedEnemyIdx(0);
-        setBossTransitioning(false);
-        refillHandToFull();
-        setBattleState('idle');
-      }, 2000);
+        sound.playSFX('powerup');
+
+        const totalSteps = 16;
+        let step = 0;
+        const refillIntervalId = window.setInterval(() => {
+          step += 1;
+          const nextHp =
+            step >= totalSteps
+              ? devoradorP2Cfg.maxHp
+              : Math.round((devoradorP2Cfg.maxHp * step) / totalSteps);
+          const updatedP2 = { ...devoradorP2Base, hp: nextHp };
+          activeEnemiesRef.current = [updatedP2];
+          setActiveEnemies([updatedP2]);
+
+          if (step >= totalSteps) {
+            window.clearInterval(refillIntervalId);
+            const finishId = window.setTimeout(() => {
+              setIsDevoradorRefilling(false);
+              isDevoradorTransitioningRef.current = false;
+              refillHandToFull();
+              setBattleState('idle');
+            }, 140);
+            devoradorTransitionTimersRef.current.push(finishId);
+          }
+        }, 36);
+        devoradorTransitionTimersRef.current.push(refillIntervalId);
+      }, 1050);
+
+      devoradorTransitionTimersRef.current.push(flashOffId, growlId, phaseTwoStartId);
       return;
     }
 
@@ -7767,6 +8099,7 @@ export const CombatView: React.FC = () => {
   useEffect(() => {
     if (battleState === 'player_acting' || battleState === 'enemy_acting') {
       const timeout = setTimeout(() => {
+        if (isDevoradorTransitioningRef.current) return;
         const alive = activeEnemiesRef.current.filter((e) => e.hp > 0 && !e.isAshDissolving);
         if (alive.length === 0) {
           handleAllEnemiesDefeated();
@@ -7807,36 +8140,55 @@ export const CombatView: React.FC = () => {
       }
     }
 
-    // Tactical Enemy AI Tag-Team Switch: El juego detecta cuándo conviene relevar
-    const aliveBench = activeEnemiesRef.current
-      .map((e, idx) => ({ e, idx }))
-      .filter(({ e, idx }) => idx !== selectedEnemyIdx && e.hp > 0 && !e.isAshDissolving);
+    // Play active enemy's status effects sequentially at the start of the enemy's turn.
+    // Solo los estados con icono visible en la barra del enemigo mostrado: si el actúa es otro
+    // del banquillo, o el estado caducó, su aura no debería reproducirse.
+    const visibleEnemyConditionIds = new Set(
+      (
+        activeEnemiesRef.current.find((e) => e.uid === actingEnemy.uid)?.conditions ??
+        actingEnemy.conditions
+      ).map((c) => c.id)
+    );
+    const enemyTurnEffects = actingEnemy.conditions.filter((c) =>
+      visibleEnemyConditionIds.has(c.id)
+    );
+    playSequentialStatuses(enemyTurnEffects, setActiveEnemyStatusShowcase, () => {
+      // Tactical Enemy AI Tag-Team Switch: El juego detecta cuándo conviene relevar
+      const aliveBench = activeEnemiesRef.current
+        .map((e, idx) => ({ e, idx }))
+        .filter(({ e, idx }) => idx !== selectedEnemyIdx && e.hp > 0 && !e.isAshDissolving);
 
-    if (aliveBench.length > 0) {
-      const activeHpRatio = actingEnemy.hp / actingEnemy.maxHp;
-      const sortedByHp = [...aliveBench].sort((a, b) => (b.e.hp / b.e.maxHp) - (a.e.hp / a.e.maxHp));
-      const healthiestBench = sortedByHp[0];
-      const healthiestRatio = healthiestBench.e.hp / healthiestBench.e.maxHp;
+      if (aliveBench.length > 0) {
+        const activeHpRatio = actingEnemy.hp / actingEnemy.maxHp;
+        const sortedByHp = [...aliveBench].sort((a, b) => (b.e.hp / b.e.maxHp) - (a.e.hp / a.e.maxHp));
+        const healthiestBench = sortedByHp[0];
+        const healthiestRatio = healthiestBench.e.hp / healthiestBench.e.maxHp;
 
-      const hasSevereDebuff = actingEnemy.conditions.some((c) =>
-        c.type === 'paralyzed' || c.type === 'stunned' || c.type === 'poisoned' || c.type === 'frozen' || c.type === 'def_break'
-      );
+        const hasSevereDebuff = actingEnemy.conditions.some((c) =>
+          c.type === 'paralyzed' || c.type === 'stunned' || c.type === 'poisoned' || c.type === 'frozen' || c.type === 'def_break'
+        );
 
-      // Criterio 1: Salud baja del activo (< 40%) y aliado sano en el banquillo (>= 50%)
-      const shouldPreserveLowHp = activeHpRatio < 0.40 && healthiestRatio >= 0.50;
-      // Criterio 2: El activo está incapacitado o con debuffs mientras que el banquillo está libre de estados
-      const shouldSwapAfflicted = hasSevereDebuff && healthiestBench.e.conditions.length === 0 && Math.random() < 0.60;
-      // Criterio 3: Relevo táctico periódico si el aliado tiene mayor porcentaje de vida
-      const tacticalSwap = turnCounter % 3 === 0 && healthiestRatio > activeHpRatio + 0.20 && Math.random() < 0.50;
+        // Criterio 1: Salud baja del activo (< 40%) y aliado sano en el banquillo (>= 50%)
+        const shouldPreserveLowHp = activeHpRatio < 0.40 && healthiestRatio >= 0.50;
+        // Criterio 2: El activo está incapacitado o con debuffs mientras que el banquillo está libre de estados
+        const shouldSwapAfflicted = hasSevereDebuff && healthiestBench.e.conditions.length === 0 && Math.random() < 0.60;
+        // Criterio 3: Relevo táctico periódico si el aliado tiene mayor porcentaje de vida
+        const tacticalSwap = turnCounter % 3 === 0 && healthiestRatio > activeHpRatio + 0.20 && Math.random() < 0.50;
 
-      if (shouldPreserveLowHp || shouldSwapAfflicted || tacticalSwap) {
-        switchActiveEnemy(healthiestBench.idx, true);
-        setTimeout(() => {
-          finalizeEnemyPhase();
-        }, 950);
-        return;
+        if (shouldPreserveLowHp || shouldSwapAfflicted || tacticalSwap) {
+          switchActiveEnemy(healthiestBench.idx, true);
+          setTimeout(() => {
+            finalizeEnemyPhase();
+          }, 950);
+          return;
+        }
       }
-    }
+
+      continueEnemyAction(actingEnemy);
+    });
+  };
+
+  const continueEnemyAction = (actingEnemy: ChamberEnemyState) => {
 
     // Check Freezing (Frío - Congelación Glacial)
     const isFrozen = actingEnemy.conditions.some((c) => c.type === 'frozen');
@@ -7879,7 +8231,8 @@ export const CombatView: React.FC = () => {
             ? {
                 ...e,
                 hp: Math.max(0, e.hp - selfDmg),
-                isAshDissolving: e.hp - selfDmg <= 0,
+                isAshDissolving:
+                  e.hp - selfDmg <= 0 && !(e.configId === 'devorador_quitinoso' && e.hasPhaseTwo),
                 animation: 'hit',
               }
             : e
@@ -7926,7 +8279,12 @@ export const CombatView: React.FC = () => {
       setActiveEnemies((prev) =>
         prev.map((e) =>
           e.uid === actingEnemy.uid
-            ? { ...e, hp: Math.max(0, e.hp - selfDmg), isAshDissolving: e.hp - selfDmg <= 0 }
+            ? {
+                ...e,
+                hp: Math.max(0, e.hp - selfDmg),
+                isAshDissolving:
+                  e.hp - selfDmg <= 0 && !(e.configId === 'devorador_quitinoso' && e.hasPhaseTwo),
+              }
             : e
         )
       );
@@ -7977,10 +8335,14 @@ export const CombatView: React.FC = () => {
     const currentHobPhase = (actingEnemy.hobgoblinPhase || 1) as 1 | 2 | 3;
     const hobPhaseData = HOBGOBLIN_SKILLS_BY_PHASE[currentHobPhase];
 
+    const isDevoradorP2 = actingEnemy.configId === 'devorador_quitinoso_p2';
+
     const skill = actingEnemy.configId === 'hobgoblin_capataz'
       ? (isUlt ? hobPhaseData.ultimate : hobPhaseData.normal)
       : isUlt
       ? enemyCfg.ultimateSkill
+      : isDevoradorP2
+      ? enemyCfg.normalSkill
       : turnCounter % 2 === 0
       ? enemyCfg.specialSkill
       : enemyCfg.normalSkill;
@@ -7997,14 +8359,14 @@ export const CombatView: React.FC = () => {
         attackSfx = isUlt ? 'critical' : 'attack';
         break;
       case 'araknoide_espinoso':
-        vfxType = 'shadow_needle';
-        themeColor = '#ea580c';
-        attackSfx = isUlt ? 'critical' : 'laser';
+        vfxType = 'crimson_claw';
+        themeColor = '#ef4444';
+        attackSfx = isUlt ? 'critical' : 'punch';
         break;
       case 'araknoide_oviparo':
-        vfxType = 'void_miasma';
-        themeColor = '#65a30d';
-        attackSfx = isUlt ? 'dark_god' : 'attack';
+        vfxType = 'crimson_claw';
+        themeColor = '#ef4444';
+        attackSfx = isUlt ? 'critical' : 'attack';
         break;
       case 'araknoide_rojo':
         vfxType = 'crimson_claw';
@@ -8116,6 +8478,16 @@ export const CombatView: React.FC = () => {
           attackSfx = isUlt ? 'critical' : 'bow';
         }
         break;
+      case 'goblin_garrote':
+        vfxType = 'earth_titan';
+        themeColor = '#d97706';
+        attackSfx = 'thud';
+        break;
+      case 'goblin_chaman':
+        vfxType = 'gorgon_lightning';
+        themeColor = '#34d399';
+        attackSfx = 'lightning';
+        break;
       default:
         vfxType = 'crimson_claw';
         themeColor = '#ef4444';
@@ -8123,11 +8495,15 @@ export const CombatView: React.FC = () => {
     }
 
     setActiveEnemyAttackVisual({
-      enemyName: actingEnemy.name,
+      enemyConfigId: actingEnemy.configId,
       skillName: skill.name,
-      skillDesc: skill.desc,
+      dndDamageType: skill.dndDamageType || 'slashing',
       vfxType,
       themeColor,
+      isUlt,
+      isSpecial: !isUlt && !isDevoradorP2 && turnCounter % 2 === 0,
+      hobgoblinPhase: actingEnemy.configId === 'hobgoblin_capataz' ? currentHobPhase : undefined,
+      vfxKey: Date.now(),
     });
 
     sound.playSFX(attackSfx);
@@ -8310,13 +8686,23 @@ export const CombatView: React.FC = () => {
           setActiveEnemies((prev) =>
             prev.map((e) =>
               e.uid === actingEnemy.uid
-                ? { ...e, hp: nextEnemyHp, isAshDissolving: nextEnemyHp <= 0 }
+                ? {
+                    ...e,
+                    hp: nextEnemyHp,
+                    isAshDissolving:
+                      nextEnemyHp <= 0 && !(e.configId === 'devorador_quitinoso' && e.hasPhaseTwo),
+                  }
                 : e
             )
           );
           activeEnemiesRef.current = activeEnemiesRef.current.map((e) =>
             e.uid === actingEnemy.uid
-              ? { ...e, hp: nextEnemyHp, isAshDissolving: nextEnemyHp <= 0 }
+              ? {
+                  ...e,
+                  hp: nextEnemyHp,
+                  isAshDissolving:
+                    nextEnemyHp <= 0 && !(e.configId === 'devorador_quitinoso' && e.hasPhaseTwo),
+                }
               : e
           );
           spawnFloating(
@@ -8661,7 +9047,8 @@ export const CombatView: React.FC = () => {
             return {
               ...e,
               hp: nextHp,
-              isAshDissolving: nextHp <= 0,
+              isAshDissolving:
+                nextHp <= 0 && !(e.configId === 'devorador_quitinoso' && e.hasPhaseTwo),
             };
           });
 
@@ -8717,7 +9104,8 @@ export const CombatView: React.FC = () => {
     if (!skillDef) return;
 
     // Efecto de sonido propio de este ataque y de este personaje
-    sound.playSFX(getCardCombatSfx(card.skillId, activeCombatHeroId));
+    const combatVoice = getCombatVoice(card.skillId, activeCombatHeroId);
+    sound.playCombatSFX(combatVoice.sfx, { rate: combatVoice.rate, volume: combatVoice.volume });
 
     const tierInfo = skillDef.tiers[card.tier];
 
@@ -9594,7 +9982,8 @@ export const CombatView: React.FC = () => {
               hurtSpriteUrl: targetHurtSpriteUrl,
               thumbUrl: targetThumbUrl,
               title: targetTitle,
-              isAshDissolving: isTargetDying,
+              isAshDissolving:
+                isTargetDying && !(e.configId === 'devorador_quitinoso' && e.hasPhaseTwo),
             }
           : e
       );
@@ -9626,7 +10015,8 @@ export const CombatView: React.FC = () => {
               thumbUrl: targetThumbUrl,
               title: targetTitle,
               conditions: updatedConds,
-              isAshDissolving: isTargetDying,
+              isAshDissolving:
+                isTargetDying && !(e.configId === 'devorador_quitinoso' && e.hasPhaseTwo),
             };
           }
           return e;
@@ -9779,8 +10169,9 @@ export const CombatView: React.FC = () => {
 
     if (isRankUpMerge) {
       // 1. COMBINACIÓN DE RANGO (RANK UP MERGE)
-      sound.playSFX('upgrade');
-      addUltimateOrb(1);
+      // Sonido celestial de fusión (sin el tintineo de moneda del orbe)
+      sound.playSFX('celestial');
+      addUltimateOrb(1, null);
 
       const newTier = (cardFrom.tier + 1) as 2 | 3;
       const targetSlotAfterSplice = toIdx > fromIdx ? toIdx - 1 : toIdx;
@@ -10015,7 +10406,7 @@ export const CombatView: React.FC = () => {
     if (!tierInfo) return null;
 
     const isUltimate = card.skillId === 'cataclismo_astral';
-    const dndMeta = DND_DAMAGE_TYPES_REGISTRY[skillDef.dndDamageType];
+    const cardImage = isUltimate ? getHeroUltimateCardImage(activeCombatHeroId) : tierInfo.image;
 
     return (
       <div className={`relative w-full h-full flex flex-col items-center justify-center select-none pointer-events-none rounded-lg overflow-visible ${
@@ -10033,7 +10424,7 @@ export const CombatView: React.FC = () => {
         )}
 
         <img
-          src={tierInfo.image}
+          src={cardImage}
           alt={tierInfo.title}
           draggable={false}
           loading="eager"
@@ -10050,6 +10441,7 @@ export const CombatView: React.FC = () => {
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-between bg-[#290a03] select-none overflow-hidden font-sans">
+      <StatusShadersSvgDefs />
       {/* KEYFRAME ANIMATIONS: IDLE SWAY, DRAGGED PENDULUM, READY-TO-COMBINE HOP, CARTOON COMBINATION BURST */}
       <style>{`
         /* CELESTIAL ULTIMATE KEYFRAMES */
@@ -10547,6 +10939,20 @@ export const CombatView: React.FC = () => {
             transform: translateX(0px);
           }
         }
+        @keyframes devoradorRoarTremor {
+          0%, 100% { transform: translate(0px, 0px) scale(1); }
+          15% { transform: translate(-5px, -3px) scale(1.03); }
+          30% { transform: translate(5px, 2px) scale(1.04); }
+          45% { transform: translate(-4px, 2px) scale(1.035); }
+          60% { transform: translate(4px, -2px) scale(1.04); }
+          75% { transform: translate(-3px, 1px) scale(1.025); }
+          90% { transform: translate(2px, -1px) scale(1.015); }
+        }
+        @keyframes devoradorRoarWave {
+          0% { transform: scale(0.35); opacity: 0.95; }
+          65% { transform: scale(1.25); opacity: 0.55; }
+          100% { transform: scale(1.65); opacity: 0; }
+        }
 
         /* 1. Core Sprite: 100% Solid Pure White Interior with White Core Glow */
         .dnd-impact-sprite-whiteout {
@@ -10978,7 +11384,7 @@ export const CombatView: React.FC = () => {
       {/* ========================================================================= */}
       <div
         ref={arenaRef}
-        className={`relative w-full flex-1 min-h-[300px] flex items-center justify-center overflow-hidden ${
+        className={`relative w-full flex-1 min-h-[300px] flex items-center justify-center overflow-visible ${
           screenShake === 'heavy'
             ? 'animate-[gachaCameraShakeHeavy_0.36s_ease-in-out]'
             : screenShake === 'medium'
@@ -11008,61 +11414,55 @@ export const CombatView: React.FC = () => {
           </svg>
         )}
         {/* Arena Cave / Mansion / Forest / Sealed Gates / Bandits Ambush Background */}
-        <img
-          src={
-            selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm9_emboscada_ferton'
-              ? '/assets/backgrounds/camino_bosque_carromatos.png'
-              : selectedCombatMissionId === 'm5_cuevas_zancudo'
-              ? '/assets/backgrounds/mina_underdark_telaranas.png'
-              : selectedCombatMissionId === 'm4_cuevas_azul'
-              ? '/assets/backgrounds/cueva_congelada.png'
-              : selectedCombatMissionId === 'm3_cuevas_rojo'
-              ? '/assets/backgrounds/cueva_huevos_carmesis.png'
-              : selectedCombatMissionId === 'evento_asalto_orco'
-              ? '/assets/backgrounds/asalto_orco_combate.png'
-              : selectedCombatMissionId === 'evento_emboscada_bandidos'
-              ? '/assets/backgrounds/emboscada_combate.png'
-              : selectedCombatMissionId === 'm4_puertas_selladas'
-              ? '/assets/backgrounds/puertas_selladas_glimmerstone.png'
-              : selectedCombatMissionId === 'm3_bosque'
-              ? '/assets/backgrounds/bosque_icespear.png'
-              : selectedCombatMissionId === 'm2_robo'
-              ? '/assets/backgrounds/icespear_combate_guardias.png'
-              : '/assets/aistudio/image_4daa80e0.png'
-          }
-          alt={
-            selectedCombatMissionId === 'm10_hobgoblin_boss'
-              ? 'Confrontación con el Capataz Hoggoblin de Ferton'
-              : selectedCombatMissionId === 'm9_emboscada_ferton'
-              ? 'Paso Nevado con Carromatos y Guardia Negra de Ferton'
-              : selectedCombatMissionId === 'm5_cuevas_zancudo'
-              ? 'Mina Enana en Ruinas con Telarañas en el Underdark'
-              : selectedCombatMissionId === 'm4_cuevas_azul'
-              ? 'Caverna Congelada de los Acechadores Gélidos'
-              : selectedCombatMissionId === 'm3_cuevas_rojo'
-              ? 'Cueva de Huevos Carmesís'
-              : selectedCombatMissionId === 'evento_asalto_orco'
-              ? 'Asalto Orco en el Paso Helado'
-              : selectedCombatMissionId === 'evento_emboscada_bandidos'
-              ? 'Emboscada de Bandidos en el Vado'
-              : selectedCombatMissionId === 'm4_puertas_selladas'
-              ? 'Puertas Selladas de Glimmerstone'
-              : selectedCombatMissionId === 'm3_bosque'
-              ? 'Bosque Invernal de Icespear'
-              : selectedCombatMissionId === 'm2_robo'
-              ? 'Mansión y Callejón de Icespear'
-              : 'Cueva de Icespear'
-          }
-          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none z-0 filter brightness-[0.98]"
-        />
-
-        {/* Discreet Retreat / Exit in top-left corner */}
-        <button
-          onClick={handleRetreatAndClaim}
-          className="absolute top-[62px] right-[92px] z-30 w-7 h-7 rounded-full bg-black/60 hover:bg-black/90 border border-amber-900/60 text-amber-300/80 hover:text-amber-200 text-xs flex items-center justify-center shadow-md backdrop-blur-xs cursor-pointer transition-all active:scale-90 font-mono"
-        >
-          ✕
-        </button>
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <img
+            src={
+              selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm9_emboscada_ferton'
+                ? '/assets/backgrounds/camino_bosque_carromatos.png'
+                : selectedCombatMissionId === 'm5_cuevas_zancudo'
+                ? '/assets/backgrounds/mina_underdark_telaranas.png'
+                : selectedCombatMissionId === 'm4_cuevas_azul'
+                ? '/assets/backgrounds/cueva_congelada.png'
+                : selectedCombatMissionId === 'm3_cuevas_rojo'
+                ? '/assets/backgrounds/cueva_huevos_carmesis.png'
+                : selectedCombatMissionId === 'evento_asalto_orco'
+                ? '/assets/backgrounds/asalto_orco_combate.png'
+                : selectedCombatMissionId === 'evento_emboscada_bandidos'
+                ? '/assets/backgrounds/emboscada_combate.png'
+                : selectedCombatMissionId === 'm4_puertas_selladas'
+                ? '/assets/backgrounds/puertas_selladas_glimmerstone.png'
+                : selectedCombatMissionId === 'm3_bosque'
+                ? '/assets/backgrounds/bosque_icespear.png'
+                : selectedCombatMissionId === 'm2_robo'
+                ? '/assets/backgrounds/icespear_combate_guardias.png'
+                : '/assets/aistudio/image_4daa80e0.png'
+            }
+            alt={
+              selectedCombatMissionId === 'm10_hobgoblin_boss'
+                ? 'Confrontación con el Capataz Hoggoblin de Ferton'
+                : selectedCombatMissionId === 'm9_emboscada_ferton'
+                ? 'Paso Nevado con Carromatos y Guardia Negra de Ferton'
+                : selectedCombatMissionId === 'm5_cuevas_zancudo'
+                ? 'Mina Enana en Ruinas con Telarañas en el Underdark'
+                : selectedCombatMissionId === 'm4_cuevas_azul'
+                ? 'Caverna Congelada de los Acechadores Gélidos'
+                : selectedCombatMissionId === 'm3_cuevas_rojo'
+                ? 'Cueva de Huevos Carmesís'
+                : selectedCombatMissionId === 'evento_asalto_orco'
+                ? 'Asalto Orco en el Paso Helado'
+                : selectedCombatMissionId === 'evento_emboscada_bandidos'
+                ? 'Emboscada de Bandidos en el Vado'
+                : selectedCombatMissionId === 'm4_puertas_selladas'
+                ? 'Puertas Selladas de Glimmerstone'
+                : selectedCombatMissionId === 'm3_bosque'
+                ? 'Bosque Invernal de Icespear'
+                : selectedCombatMissionId === 'm2_robo'
+                ? 'Mansión y Callejón de Icespear'
+                : 'Cueva de Icespear'
+            }
+            className="w-full h-full object-cover object-center filter brightness-[0.98]"
+          />
+        </div>
 
 
         {/* Tactical Multi-Enemy Formation Roster (solo informativo: el jugador no puede cambiar de objetivo) */}
@@ -11211,7 +11611,7 @@ export const CombatView: React.FC = () => {
               isSmurphAirborne
                 ? 'translateY(-340px) scale(0.85)'
                 : isSmurphLandingAction
-                ? 'translateY(0px) scale(1.15)'
+                ? 'translateY(0px)'
                 : edacornCounter?.active
                 ? undefined // en guardia de contraataque no avanza ni cambia de pose
                 : heroAnimation === 'lunge'
@@ -11270,15 +11670,20 @@ export const CombatView: React.FC = () => {
             )}
 
             <img
+              ref={heroSpriteImgRef}
               key="hero-sprite-img"
               style={{
                 translate: getHeroSpriteTranslate(),
                 scale: getHeroSpriteScale(),
                 transformOrigin: 'bottom center',
+                filter:
+                  !isHeroHitShaking && !isHeroAshDissolving
+                    ? heroStatusShaderFilter
+                    : undefined,
               }}
               src={getHeroSpriteUrl()}
               alt={getHeroName()}
-              className={`relative h-full w-auto shrink-0 max-w-none max-h-[256px] object-contain pointer-events-none z-10 transition-[translate,opacity,filter] duration-300 ${
+              className={`relative h-full w-auto shrink-0 max-w-none max-h-[256px] object-contain pointer-events-none z-10 transition-[opacity,filter] duration-200 ${
                 isHeroAshDissolving
                   ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
                   : isHeroHitShaking
@@ -11333,6 +11738,17 @@ export const CombatView: React.FC = () => {
                 />
               </div>
             )}
+
+            {/* Status Condition Sequential Turn-Start VFX */}
+            <StatusConditionsVfxOverlay
+              activeEffect={activeHeroStatusShowcase?.effect ?? null}
+              cueKey={activeHeroStatusShowcase?.key ?? 0}
+              durationMs={activeHeroStatusShowcase?.durationMs ?? 450}
+              spriteUrl={getHeroSpriteUrl()}
+              spriteImgRef={heroSpriteImgRef}
+              scaleKey={`${getHeroSpriteUrl()}-${getHeroSpriteScale()}-${heroAnimation}-${isSmurphAirborne ? 'air' : 'ground'}`}
+              disabled={isHeroAshDissolving || heroHp <= 0}
+            />
           </div>
         </div>
 
@@ -11460,7 +11876,8 @@ export const CombatView: React.FC = () => {
           />
         )}
 
-        {/* ENEMY ATTACK VFX (desactivado temporalmente) */}
+        {/* ENEMY ATTACK VFX OVERLAY */}
+        <EnemyAttackVfxOverlay activeAttack={activeEnemyAttackVisual} enemyFrame={enemyVfxFrame} />
         {/* SINGLE ACTIVE ENEMY IN ARENA (1 vs 1 Pokemon Style, Stably Mounted) */}
         {targetEnemy && (
           <div
@@ -11475,9 +11892,18 @@ export const CombatView: React.FC = () => {
                   : undefined,
             }}
             className={`absolute right-[5%] bottom-[21%] z-20 ${targetEnemy.scaleClass} flex items-end justify-center transition-all duration-300 ${
-              targetEnemy.hp <= 0 && !targetEnemy.isAshDissolving ? 'pointer-events-none opacity-0' : ''
+              targetEnemy.hp <= 0 &&
+              !targetEnemy.isAshDissolving &&
+              !(
+                targetEnemy.configId.includes('devorador') &&
+                (targetEnemy.hasPhaseTwo || isDevoradorRoaring || isDevoradorRefilling)
+              )
+                ? 'pointer-events-none opacity-0'
+                : ''
             } ${
-              isEnemyHitShaking
+              isDevoradorRoaring && targetEnemy.configId.includes('devorador')
+                ? 'animate-[devoradorRoarTremor_0.34s_ease-in-out_infinite] filter drop-shadow-[0_0_26px_rgba(220,38,38,0.85)]'
+                : isEnemyHitShaking
                 ? 'animate-[enemyHitShake_0.42s_cubic-bezier(0.2,0.8,0.2,1)_forwards]'
                 : enemyTwitching
                 ? 'animate-[pokemonParalysisTwitch_0.8s_ease-in-out] filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]'
@@ -11496,13 +11922,20 @@ export const CombatView: React.FC = () => {
               alt="Sombra"
               data-enemy-shadow=""
               style={{
-                // Igual que el héroe: la sombra sigue al sprite de la pose (escala y línea de pies).
-                width: Math.round(140 * getEnemyStateSpriteScale(targetEnemy.spriteUrl, getEnemySpriteUrl(targetEnemy))),
-                height: Math.round(18 * getEnemyStateSpriteScale(targetEnemy.spriteUrl, getEnemySpriteUrl(targetEnemy))),
-                bottom: -Math.round(9 * getEnemyStateSpriteScale(targetEnemy.spriteUrl, getEnemySpriteUrl(targetEnemy))),
+                // La sombra va atada al cuerpo del enemigo, no a la compensación de la pose ni VFX.
+                width: 140,
+                height: 18,
+                bottom: -9,
               }}
               className={`absolute left-1/2 transform -translate-x-1/2 object-fill pointer-events-none z-0 transition-opacity duration-1000 ${
-                targetEnemy.isAshDissolving || targetEnemy.hp <= 0 ? 'opacity-0' : 'opacity-50'
+                targetEnemy.isAshDissolving ||
+                (targetEnemy.hp <= 0 &&
+                  !(
+                    targetEnemy.configId.includes('devorador') &&
+                    (targetEnemy.hasPhaseTwo || isDevoradorRoaring || isDevoradorRefilling)
+                  ))
+                  ? 'opacity-0'
+                  : 'opacity-50'
               }`}
             />
 
@@ -11519,10 +11952,14 @@ export const CombatView: React.FC = () => {
                     style={{ transform: getEnemySpriteTransform(targetEnemy), transformOrigin: 'bottom center' }}
                   >
                     <img
+                      ref={enemySpriteImgRef}
                       key={`enemy-medusa-img-${targetEnemy.uid}`}
                       src={getEnemySpriteUrl(targetEnemy)}
-
-                      style={targetEnemy.conditions.some((c) => c.type === 'charmed') ? { filter: 'sepia(1) saturate(3.5) hue-rotate(275deg) brightness(1.08) drop-shadow(0 0 16px rgba(236,72,153,0.9))' } : undefined}
+                      style={
+                        !isEnemyHitShaking && !targetEnemy.isAshDissolving && enemyStatusShaderFilter
+                          ? { filter: enemyStatusShaderFilter }
+                          : undefined
+                      }
                       alt="Medusa Abisal"
                       className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
                         targetEnemy.isAshDissolving
@@ -11533,10 +11970,29 @@ export const CombatView: React.FC = () => {
                       }`}
                     />
                   </span>
+                  <StatusConditionsVfxOverlay
+                    activeEffect={activeEnemyStatusShowcase?.effect ?? null}
+                    cueKey={activeEnemyStatusShowcase?.key ?? 0}
+                    durationMs={activeEnemyStatusShowcase?.durationMs ?? 450}
+                    spriteUrl={getEnemySpriteUrl(targetEnemy)}
+                    spriteImgRef={enemySpriteImgRef}
+                    scaleKey={`${targetEnemy.uid}-${getEnemySpriteUrl(targetEnemy)}-${targetEnemy.animation}`}
+                    disabled={targetEnemy.isAshDissolving || targetEnemy.hp <= 0}
+                  />
                 </div>
               ) : (
                 <div className="relative w-full h-full flex items-end justify-center">
                   <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={targetEnemy.width || 135} height={targetEnemy.height || 192} />
+
+                  {isDevoradorRoaring && targetEnemy.configId.includes('devorador') && (
+                    <div className="absolute inset-0 pointer-events-none z-15 flex items-center justify-center">
+                      <div className="w-[240px] h-[240px] rounded-full border-4 border-red-500/80 bg-red-600/15 shadow-[0_0_36px_rgba(239,68,68,0.85)] animate-[devoradorRoarWave_0.55s_ease-out_infinite]" />
+                      <div
+                        className="absolute w-[200px] h-[200px] rounded-full border-2 border-amber-400/75 animate-[devoradorRoarWave_0.55s_ease-out_infinite]"
+                        style={{ animationDelay: '0.22s' }}
+                      />
+                    </div>
+                  )}
 
                   {/* Aura eléctrica del Titán Melenudo que escala con sus orbes de definitiva */}
                   {targetEnemy.configId === 'semiboss_melenudo' && !targetEnemy.isAshDissolving && (
@@ -11581,10 +12037,14 @@ export const CombatView: React.FC = () => {
                     style={{ transform: getEnemySpriteTransform(targetEnemy), transformOrigin: 'bottom center' }}
                   >
                     <img
+                      ref={enemySpriteImgRef}
                       key={`enemy-sprite-img-${targetEnemy.uid}`}
                       src={getEnemySpriteUrl(targetEnemy)}
-
-                      style={targetEnemy.conditions.some((c) => c.type === 'charmed') ? { filter: 'sepia(1) saturate(3.5) hue-rotate(275deg) brightness(1.08) drop-shadow(0 0 16px rgba(236,72,153,0.9))' } : undefined}
+                      style={
+                        !isEnemyHitShaking && !targetEnemy.isAshDissolving && enemyStatusShaderFilter
+                          ? { filter: enemyStatusShaderFilter }
+                          : undefined
+                      }
                       alt={targetEnemy.name}
                       className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
                         targetEnemy.isAshDissolving
@@ -11605,6 +12065,17 @@ export const CombatView: React.FC = () => {
                       }`}
                     />
                   </span>
+
+                  {/* Status Condition Sequential Turn-Start VFX */}
+                  <StatusConditionsVfxOverlay
+                    activeEffect={activeEnemyStatusShowcase?.effect ?? null}
+                    cueKey={activeEnemyStatusShowcase?.key ?? 0}
+                    durationMs={activeEnemyStatusShowcase?.durationMs ?? 450}
+                    spriteUrl={getEnemySpriteUrl(targetEnemy)}
+                    spriteImgRef={enemySpriteImgRef}
+                    scaleKey={`${targetEnemy.uid}-${getEnemySpriteUrl(targetEnemy)}-${targetEnemy.animation}`}
+                    disabled={targetEnemy.isAshDissolving || targetEnemy.hp <= 0}
+                  />
                 </div>
               )}
 
@@ -11617,16 +12088,6 @@ export const CombatView: React.FC = () => {
                     className="w-24 h-24 object-contain filter drop-shadow-[0_0_25px_#38bdf8] rotate-[135deg]"
                   />
                   <div className="w-16 h-16 rounded-full bg-cyan-400/50 blur-lg -mt-10" />
-                </div>
-              )}
-
-              {/* Congelación Glacial: Bloque de hielo puro cuando el enemigo está congelado (Pierde turnos) */}
-              {targetEnemy.conditions.some((c) => c.type === 'frozen') && (
-                <div className="absolute inset-[-10%] pointer-events-none z-30 rounded-2xl bg-cyan-400/25 border-2 border-cyan-200 shadow-[0_0_28px_rgba(56,189,248,0.75)] backdrop-blur-[1px] animate-pulse flex flex-col items-center justify-center">
-                  <span className="text-3xl select-none filter drop-shadow-[0_0_12px_#38bdf8]">🧊</span>
-                  <span className="text-[9px] font-black uppercase tracking-wider text-cyan-200 bg-slate-950/85 px-2.5 py-0.5 rounded-full border border-cyan-300 shadow-md mt-1 font-mono">
-                    CONGELADO
-                  </span>
                 </div>
               )}
             </div>
@@ -12293,12 +12754,25 @@ export const CombatView: React.FC = () => {
             '/assets/cfxr/graphics/cfxr-magic-star-gold.png?v=c3',
             '/assets/skills/rayo_necrotico_spritesheet.png',
             '/assets/skills/rayo_necrotico_impacto.webp',
+            '/assets/skills/arlem_ultimate.png',
+            '/assets/skills/barled_ultimate.png',
+            '/assets/skills/chispo_ultimate.png',
+            '/assets/skills/edacorn_ultimate.png',
+            '/assets/skills/giovani_ultimate.png',
+            '/assets/skills/kairon_ultimate.png',
+            '/assets/skills/magordito_ultimate.png',
+            '/assets/skills/pepe_loux_ultimate.png',
+            '/assets/skills/prometeo_ultimate.png',
+            '/assets/skills/ragnavaldr_ultimate.png',
+            '/assets/skills/raxxar_ultimate.png',
+            '/assets/skills/roxanne_ultimate.png',
+            '/assets/skills/smurph_ultimate.png',
           ].map((src) => (
             <img key={src} src={src} alt="" loading="eager" decoding="sync" />
           ))}
         </div>
 
-        {/* BOTTOM ACTION BUTTONS: [ INVENTARIO ] & [ CHANGE ] */}
+        {/* BOTTOM ACTION BUTTONS: [ INVENTARIO ] & [ HUIR ] */}
         <div className="w-full max-w-[420px] grid grid-cols-2 gap-3 pt-0.5">
           <button
             type="button"
@@ -12315,12 +12789,11 @@ export const CombatView: React.FC = () => {
             type="button"
             onClick={() => {
               sound.playSFX('click');
-              sound.stopBGM();
-              navigateTo('heroes');
+              handleRetreatAndClaim();
             }}
             className="h-[44px] px-3 bg-gradient-to-b from-[#e44901] via-[#c64400] to-[#9d3d01] hover:brightness-110 active:brightness-95 border-[2px] border-[#ff6900] text-white font-black text-[12px] sm:text-[13px] uppercase tracking-wider rounded-[8px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.4),0_3px_6px_rgba(0,0,0,0.7)] cursor-pointer transition-all active:scale-[0.98] text-center flex items-center justify-center select-none"
           >
-            CHANGE
+            HUIR
           </button>
         </div>
       </div>

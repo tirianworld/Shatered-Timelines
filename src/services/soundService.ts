@@ -3,6 +3,28 @@
 // Ya no hay motor de síntesis ni archivos de audio antiguos: si un sonido no existe,
 // simplemente no suena.
 
+/**
+ * Los navegadores conservan el tono por defecto al cambiar `playbackRate`, así que el rate
+ * solo aceleraría el sonido. Desactivando la preservación el rate cambia el tono de verdad
+ * (lo que da a cada héroe su voz propia). Se cubren también los prefijos de Safari.
+ */
+const disablePitchPreservation = (audio: HTMLAudioElement) => {
+  const el = audio as HTMLAudioElement & {
+    mozPreservesPitch?: boolean;
+    webkitPreservesPitch?: boolean;
+  };
+  el.preservesPitch = false;
+  el.mozPreservesPitch = false;
+  el.webkitPreservesPitch = false;
+};
+
+type SfxOptions = {
+  /** Multiplicador de velocidad/tono (1 = original). */
+  rate?: number;
+  /** Multiplicador de volumen (1 = original). */
+  volume?: number;
+};
+
 class SoundService {
   private bgm: HTMLAudioElement | null = null;
   private isMuted: boolean = false;
@@ -111,6 +133,22 @@ class SoundService {
     key: ['key.mp3'],
     chest: ['chest-open.mp3'],
     levelup: ['level-complete.mp3'],
+
+    // Golpes de arma añadidos para el combate (CC0: spritepilot + bigsoundbank)
+    airslash: ['sword-air.mp3'],
+    draw_blade: ['sword-draw.mp3'],
+    parry: ['parry.mp3'],
+    armor: ['armor-hit.mp3'],
+    axe: ['axe-hit.mp3'],
+    dagger: ['dagger-stab.mp3'],
+    combo: ['punch-combo.mp3'],
+    hammer: ['hammer-smash.mp3'],
+    whip: ['whip-crack.mp3'],
+    cataclysm: ['explosion-big.mp3', 'laser-heavy.mp3'],
+    fireball_cast: ['fireball.mp3', 'explosion-small.mp3'],
+    // Fusión de cartas: campanilla celestial (Pixabay, licencia libre). El arpa es
+    // más larga, así que sale de vez en cuando para no encadenar glissandos.
+    celestial: ['celestial_twinkle.mp3', 'celestial_twinkle.mp3', 'celestial_harp.mp3'],
   };
 
   constructor() {
@@ -210,18 +248,35 @@ class SoundService {
   }
 
   /** Reproduce el efecto cartoon de una acción. Si el nombre no existe, no suena nada. */
-  public playSFX(name: string) {
+  public playSFX(name: string, options?: SfxOptions) {
     if (this.isMuted) return;
     const variants = this.ASSET_SFX[name];
     if (!variants || variants.length === 0) return;
     const file = variants[Math.floor(Math.random() * variants.length)];
-    this.playAssetAudio(`/assets/audio/cartoon/${file}`);
+    this.playAssetAudio(`/assets/audio/cartoon/${file}`, options);
   }
 
-  private playAssetAudio(src: string) {
+  /**
+   * SFX de combate: aplica el tono propio del personaje y un pequeño desvío aleatorio
+   * para que dos golpes seguidos del mismo ataque no suenen idénticos.
+   */
+  public playCombatSFX(name: string, options?: SfxOptions) {
+    const jitter = 0.96 + Math.random() * 0.08;
+    this.playSFX(name, {
+      rate: (options?.rate ?? 1) * jitter,
+      volume: options?.volume,
+    });
+  }
+
+  private playAssetAudio(src: string, options?: SfxOptions) {
     try {
       const audio = new Audio(src);
-      audio.volume = Math.min(1, this.volume * 0.85);
+      const rate = Math.max(0.5, Math.min(2, options?.rate ?? 1));
+      if (Math.abs(rate - 1) > 0.001) {
+        audio.playbackRate = rate;
+        disablePitchPreservation(audio);
+      }
+      audio.volume = Math.min(1, this.volume * 0.85 * (options?.volume ?? 1));
       const promise = audio.play();
       if (promise !== undefined) {
         promise.catch(() => {
