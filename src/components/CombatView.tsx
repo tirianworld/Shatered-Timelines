@@ -5152,6 +5152,8 @@ export const CombatView: React.FC = () => {
   const [isDevoradorRefilling, setIsDevoradorRefilling] = useState<boolean>(false);
   const isDevoradorTransitioningRef = useRef<boolean>(false);
   const devoradorTransitionTimersRef = useRef<number[]>([]);
+  const [isZancudoRoaring, setIsZancudoRoaring] = useState<boolean>(false);
+  const zancudoRoarTimersRef = useRef<number[]>([]);
 
   // Hero Stats (Magordito) - 100 HP
   const MAX_HERO_HP = 100;
@@ -5266,6 +5268,15 @@ export const CombatView: React.FC = () => {
       '/assets/combat/enemy_ono_crash.webp',
       '/assets/combat/enemy_ono_crosh.webp',
       '/assets/combat/enemy_vfx_oviparo_lanza.webp',
+      '/assets/combat/enemy_vfx_azul_web_ball.webp',
+      '/assets/combat/enemy_ono_azul_splat.webp',
+      '/assets/combat/enemy_vfx_glacial_slash.webp',
+      '/assets/combat/enemy_ono_glacial_slash.webp',
+      '/assets/combat/enemy_ono_glacial_shlink.webp',
+      '/assets/combat/semiboss_zancudo_clean.webp',
+      '/assets/combat/semiboss_zancudo_attack.webp',
+      '/assets/combat/semiboss_zancudo_roar.webp',
+      '/assets/combat/semiboss_zancudo_hurt.webp',
     ];
     sprites.forEach((src) => {
       const img = new Image();
@@ -5954,6 +5965,9 @@ export const CombatView: React.FC = () => {
     if (isDevoradorRoaring && enemy.configId.includes('devorador')) {
       return '/assets/combat/devorador_quitinoso_roar.webp';
     }
+    if (isZancudoRoaring && enemy.configId === 'semiboss_zancudo') {
+      return '/assets/combat/semiboss_zancudo_roar.webp';
+    }
     if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
       return enemy.hurtSpriteUrl || enemy.spriteUrl;
     }
@@ -5981,6 +5995,9 @@ export const CombatView: React.FC = () => {
     setIsDevoradorRoaring(false);
     setIsDevoradorRefilling(false);
     isDevoradorTransitioningRef.current = false;
+    zancudoRoarTimersRef.current.forEach((id) => window.clearTimeout(id));
+    zancudoRoarTimersRef.current = [];
+    setIsZancudoRoaring(false);
 
     const initFloor = getInitialFloor();
     setCurrentFloor(initFloor);
@@ -6553,8 +6570,18 @@ export const CombatView: React.FC = () => {
     activeEnemiesRef.current = [...activeEnemiesRef.current, newMinion];
     setActiveEnemies((prev) => [...prev, newMinion]);
     sound.playSFX('necrotic');
-    setTimeout(() => {
-    }, 2200);
+
+    // Rugido del Zancudo Espectral al invocar a su cría
+    zancudoRoarTimersRef.current.forEach((id) => window.clearTimeout(id));
+    zancudoRoarTimersRef.current = [];
+    const roarStartId = window.setTimeout(() => {
+      setIsZancudoRoaring(true);
+      sound.playSFX('roar');
+    }, 100);
+    const roarEndId = window.setTimeout(() => {
+      setIsZancudoRoaring(false);
+    }, 530);
+    zancudoRoarTimersRef.current.push(roarStartId, roarEndId);
   }, [sound]);
 
   // Grant the Ultimate Move Card into player's hand when 5 orbs are reached
@@ -11903,6 +11930,8 @@ export const CombatView: React.FC = () => {
             } ${
               isDevoradorRoaring && targetEnemy.configId.includes('devorador')
                 ? 'animate-[devoradorRoarTremor_0.34s_ease-in-out_infinite] filter drop-shadow-[0_0_26px_rgba(220,38,38,0.85)]'
+                : isZancudoRoaring && targetEnemy.configId === 'semiboss_zancudo'
+                ? 'animate-[devoradorRoarTremor_0.34s_ease-in-out_infinite] filter drop-shadow-[0_0_28px_rgba(168,85,247,0.9)]'
                 : isEnemyHitShaking
                 ? 'animate-[enemyHitShake_0.42s_cubic-bezier(0.2,0.8,0.2,1)_forwards]'
                 : enemyTwitching
@@ -11989,6 +12018,16 @@ export const CombatView: React.FC = () => {
                       <div className="w-[240px] h-[240px] rounded-full border-4 border-red-500/80 bg-red-600/15 shadow-[0_0_36px_rgba(239,68,68,0.85)] animate-[devoradorRoarWave_0.55s_ease-out_infinite]" />
                       <div
                         className="absolute w-[200px] h-[200px] rounded-full border-2 border-amber-400/75 animate-[devoradorRoarWave_0.55s_ease-out_infinite]"
+                        style={{ animationDelay: '0.22s' }}
+                      />
+                    </div>
+                  )}
+
+                  {isZancudoRoaring && targetEnemy.configId === 'semiboss_zancudo' && (
+                    <div className="absolute inset-0 pointer-events-none z-15 flex items-center justify-center">
+                      <div className="w-[260px] h-[260px] rounded-full border-4 border-purple-400/85 bg-purple-600/15 shadow-[0_0_40px_rgba(168,85,247,0.9)] animate-[devoradorRoarWave_0.55s_ease-out_infinite]" />
+                      <div
+                        className="absolute w-[210px] h-[210px] rounded-full border-2 border-fuchsia-300/80 animate-[devoradorRoarWave_0.55s_ease-out_infinite]"
                         style={{ animationDelay: '0.22s' }}
                       />
                     </div>
