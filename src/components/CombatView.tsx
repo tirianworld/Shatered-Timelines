@@ -4390,7 +4390,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       missionId: 'm9_emboscada_ferton',
       name: 'Caballero Acorazado de Ferton',
       title: 'Comandante Pretoriano • Coloso de Ébano, Oro y Maza Devastadora',
-      chamberName: 'Oleada 3: Guardia Pretoriana de Ferton',
+      chamberName: 'Oleada 3: Guardia Pretoriana Áurea',
       chamberNumber: 3,
       spriteUrl: '/assets/combat/guarda_negro_pesado_clean.webp',
       attackSpriteUrl: '/assets/combat/guarda_negro_pesado_attack.webp',
@@ -4533,8 +4533,8 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       chamberName: 'Emboscada en el Callejón Trasero',
       chamberNumber: 1,
       spriteUrl: '/assets/combat/hoggoblin_daga_clean.webp',
-      attackSpriteUrl: '/assets/combat/hoggoblin_daga_clean.webp',
-      hurtSpriteUrl: '/assets/combat/hoggoblin_daga_clean.webp',
+      attackSpriteUrl: '/assets/combat/hoggoblin_daga_attack.webp',
+      hurtSpriteUrl: '/assets/combat/hoggoblin_daga_hurt.webp',
       thumbUrl: '/assets/portraits/hoggoblin_daga_thumb.webp',
       maxHp: 115,
       width: 146,
@@ -4603,8 +4603,8 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       chamberName: 'Emboscada en el Callejón Trasero',
       chamberNumber: 1,
       spriteUrl: '/assets/combat/hoggoblin_ballesta_clean.webp',
-      attackSpriteUrl: '/assets/combat/hoggoblin_ballesta_clean.webp',
-      hurtSpriteUrl: '/assets/combat/hoggoblin_ballesta_clean.webp',
+      attackSpriteUrl: '/assets/combat/hoggoblin_ballesta_attack.webp',
+      hurtSpriteUrl: '/assets/combat/hoggoblin_ballesta_hurt.webp',
       thumbUrl: '/assets/portraits/hoggoblin_ballesta_thumb.webp',
       maxHp: 125,
       width: 146,
@@ -4841,7 +4841,7 @@ export const HOBGOBLIN_CHAMBERS: BaseChamber[] = [
 export const FERTON_GUARD_CHAMBERS: BaseChamber[] = [
   { floor: 1, name: 'Oleada 1: Patrulla Negra de Avanzada', isBoss: false, enemyConfigIds: ['guarda_negro_espada', 'guarda_negro_alabarda', 'guarda_negro_ballesta'], missionId: 'm9_emboscada_ferton' },
   { floor: 2, name: 'Oleada 2: Escuadrón Acorazado de Choque', isBoss: false, enemyConfigIds: ['guarda_negro_alabarda', 'guarda_negro_espada', 'guarda_negro_ballesta', 'guarda_negro_espada'], missionId: 'm9_emboscada_ferton' },
-  { floor: 3, name: 'Oleada 3: Guardia Pretoriana de Ferton', isBoss: true, enemyConfigIds: ['guarda_negro_pesado', 'guarda_negro_alabarda', 'guarda_negro_ballesta', 'guarda_negro_espada'], missionId: 'm9_emboscada_ferton' },
+  { floor: 3, name: 'Oleada 3: Guardia Pretoriana Áurea', isBoss: true, enemyConfigIds: ['guarda_negro_pesado', 'guarda_negro_alabarda', 'guarda_negro_ballesta', 'guarda_negro_espada'], missionId: 'm9_emboscada_ferton' },
 ];
 
 export const DEVORADOR_CHAMBERS: BaseChamber[] = [
@@ -5425,6 +5425,18 @@ export const CombatView: React.FC = () => {
       '/assets/combat/enemy_vfx_oviparo_lanza.webp',
       '/assets/combat/enemy_vfx_azul_web_ball.webp',
       '/assets/combat/enemy_ono_azul_splat.webp',
+      // Hoggoblins del Callejón & VFX
+      '/assets/combat/hoggoblin_daga_clean.webp',
+      '/assets/combat/hoggoblin_daga_attack.webp',
+      '/assets/combat/hoggoblin_daga_hurt.webp',
+      '/assets/combat/hoggoblin_ballesta_clean.webp',
+      '/assets/combat/hoggoblin_ballesta_attack.webp',
+      '/assets/combat/hoggoblin_ballesta_hurt.webp',
+      '/assets/aistudio/image_ddc0d845.webp',
+      '/assets/combat/arlem_vfx_slash_gold.webp',
+      '/assets/combat/edacorn_vfx_slosh.webp',
+      '/assets/combat/enemy_vfx_flecha_simple.webp',
+      '/assets/combat/enemy_ono_twang.webp',
       '/assets/combat/enemy_vfx_glacial_slash.webp',
       '/assets/combat/enemy_ono_glacial_slash.webp',
       '/assets/combat/enemy_ono_glacial_shlink.webp',
@@ -8015,7 +8027,7 @@ export const CombatView: React.FC = () => {
       return;
     }
 
-    // Specialized Wave Progression for Los Guardias de Ferton (m9_emboscada_ferton)
+    // Specialized Wave Progression for La Guardia Áurea (m9_emboscada_ferton)
     if (selectedCombatMissionId === 'm9_emboscada_ferton') {
       sound.playSFX('victory');
       launchConfetti();
@@ -8726,6 +8738,16 @@ export const CombatView: React.FC = () => {
         vfxType = 'earth_titan';
         themeColor = '#dc2626';
         attackSfx = isUlt ? 'critical' : 'attack';
+        break;
+      case 'hoggoblin_encapuchado_daga':
+        vfxType = 'crimson_claw';
+        themeColor = '#fbbf24';
+        attackSfx = isUlt ? 'critical' : 'slash';
+        break;
+      case 'hoggoblin_encapuchado_ballesta':
+        vfxType = 'shadow_needle';
+        themeColor = '#fbbf24';
+        attackSfx = isUlt ? 'laser' : 'laser2';
         break;
       case 'hobgoblin_capataz':
         if (currentHobPhase === 1) {
@@ -11707,7 +11729,7 @@ export const CombatView: React.FC = () => {
               selectedCombatMissionId === 'm10_hobgoblin_boss'
                 ? 'Confrontación con el Capataz Hoggoblin de Ferton'
                 : selectedCombatMissionId === 'm9_emboscada_ferton'
-                ? 'Paso Nevado con Carromatos y Guardia Negra de Ferton'
+                ? 'Paso Nevado con Carromatos y Guardia Áurea'
                 : selectedCombatMissionId === 'm5_cuevas_zancudo'
                 ? 'Mina Enana en Ruinas con Telarañas en el Underdark'
                 : selectedCombatMissionId === 'm4_cuevas_azul'
@@ -12475,7 +12497,7 @@ export const CombatView: React.FC = () => {
                     : `¡RONDA ${waveClearBanner.floor} DE 2 SUPERADA!`
                   : selectedCombatMissionId === 'm9_emboscada_ferton'
                   ? waveClearBanner.floor >= 3
-                    ? '¡GUARDIA NEGRA DE FERTON DERROTADA!'
+                    ? '¡GUARDIA ÁUREA DERROTADA!'
                     : `¡OLEADA ${waveClearBanner.floor} DE 3 SUPERADA!`
                   : selectedCombatMissionId === 'm2_robo'
                   ? waveClearBanner.floor >= 4
@@ -13236,7 +13258,7 @@ export const CombatView: React.FC = () => {
               {selectedCombatMissionId === 'm10_hobgoblin_boss' ? (
                 <>Has caído ante el Capataz Hoggoblin de Ferton.</>
               ) : selectedCombatMissionId === 'm9_emboscada_ferton' ? (
-                <>Has caído ante la Guardia Negra de Ferton en la <b className="text-amber-300">Oleada {currentFloor} de 3</b>.</>
+                <>Has caído ante la Guardia Áurea en la <b className="text-amber-300">Oleada {currentFloor} de 3</b>.</>
               ) : selectedCombatMissionId === 'm3_bosque' ? (
                 <>Has caído ante los goblins en la <b className="text-amber-300">Oleada {currentFloor} de 2</b>.</>
               ) : selectedCombatMissionId === 'm2_robo' ? (

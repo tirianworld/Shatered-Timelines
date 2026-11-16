@@ -287,7 +287,7 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
   },
 
-  // === GUARDIA NEGRA DE FERTON ===
+  // === GUARDIA ÁUREA ===
   guarda_negro_espada: {
     mode: 'sword_slash',
     shader: 'gold_slash',
@@ -405,6 +405,28 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     ultOnoSrc: '/assets/combat/enemy_ono_shlink.webp',
     onoGlowColor: 'crimson_tint',
     energyGlint: true,
+  },
+  // === HOGGOBLINS ENCAPUCHADOS (Callejón de Ferton) ===
+  hoggoblin_encapuchado_daga: {
+    mode: 'sword_slash',
+    shader: 'gold_slash',
+    particles: 'sparks',
+    accentColor: '#fbbf24',
+    spriteSrc: '/assets/aistudio/image_ddc0d845.webp',
+    flipImgX: true,
+    onoSrc: '/assets/combat/arlem_vfx_slash_gold.webp',
+    ultOnoSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+    alwaysDoubleSlash: true,
+    alwaysDualOno: true,
+    onoGlowColor: 'gold',
+  },
+  hoggoblin_encapuchado_ballesta: {
+    mode: 'crossbow_bolt',
+    shader: 'none',
+    particles: 'sparks',
+    accentColor: '#fbbf24',
+    spriteSrc: '/assets/combat/enemy_vfx_flecha_simple.webp',
+    onoSrc: '/assets/combat/enemy_ono_twang.webp',
   },
   araknoide_azul: {
     mode: 'ice_shard',

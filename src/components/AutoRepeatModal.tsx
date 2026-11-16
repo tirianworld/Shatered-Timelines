@@ -287,7 +287,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
     items: [
       {
         id: 'insignia_guardia_negra',
-        name: 'Insignia de la Guardia Negra de Ferton',
+        name: 'Insignia de la Guardia Áurea',
         category: 'materials',
         rarity: 'SR',
         icon: '/assets/portraits/guarda_negro_espada_thumb.webp',

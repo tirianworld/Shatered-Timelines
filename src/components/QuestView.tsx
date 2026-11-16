@@ -190,7 +190,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm9_emboscada_ferton',
-      title: 'Los Guardias de Ferton',
+      title: 'La Guardia Áurea',
       iconType: 'skull',
       difficulty: 'Pesadilla',
       description:
@@ -234,6 +234,18 @@ export const QuestView: React.FC = () => {
       portrait: '/assets/portraits/hoggoblin_daga_thumb.webp',
       portraitClass: 'scale-[1.2] translate-y-0.5 object-center',
       stageId: 'stage_callejon_hoggoblins',
+      isStory: true,
+    },
+    {
+      id: 'm10d_mansion_baron',
+      title: 'El Rey de Negro',
+      iconType: 'boss',
+      difficulty: 'Dificil',
+      description:
+        '¡Cinemática del Mercado Negro! Al volver a la mesa de la taberna, el dragonborn negro Warthion guía a Caldo de Dragón por la puerta secreta hacia la antigua mazmorra subterránea y la mansión de Alistar Vandimere, Rey de Negro, quien ordena exterminar brutalmente a Ferton.',
+      portrait: '/assets/portraits/warthion_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_mansion_baron',
       isStory: true,
     },
   ];
@@ -362,6 +374,7 @@ export const QuestView: React.FC = () => {
         mission.id === 'm10_hobgoblin_boss' ||
         mission.id === 'm10b_encuentro_chispo' ||
         mission.id === 'm10c_callejon_hoggoblins' ||
+        mission.id === 'm10d_mansion_baron' ||
         mission.isStory) &&
       (!questProgress.completedMissions.includes(mission.id) || forceStory || mission.isStory);
 
@@ -759,6 +772,7 @@ export const QuestView: React.FC = () => {
 
             const isFertonMission = mission.id === 'm9_emboscada_ferton';
             const isCallejonHoggoblinsMission = mission.id === 'm10c_callejon_hoggoblins';
+            const isBaronMansionMission = mission.id === 'm10d_mansion_baron';
             const isStoryMission =
               (mission.isStory && !isFertonMission && !isCallejonHoggoblinsMission) ||
               mission.id === 'm1_tirano' ||
@@ -805,7 +819,7 @@ export const QuestView: React.FC = () => {
                           JEFE • 2 FASES
                         </span>
                       )}
-                      {isLaberintoMission && (
+                      {(isLaberintoMission || isBaronMansionMission) && (
                         <span className="px-1.5 py-0.2 rounded-full bg-purple-700/90 text-purple-100 font-sans font-black text-[7px] uppercase tracking-wide animate-pulse">
                           CINEMÁTICA
                         </span>
@@ -901,7 +915,24 @@ export const QuestView: React.FC = () => {
                         mission.id === 'm9_emboscada_ferton' ||
                         mission.id === 'm10_hobgoblin_boss' ||
                         mission.id === 'm10b_encuentro_chispo' ||
-                        mission.id === 'm10c_callejon_hoggoblins';
+                        mission.id === 'm10c_callejon_hoggoblins' ||
+                        mission.id === 'm10d_mansion_baron';
+
+                      if (hasStoryBtn && isCompleted && mission.id === 'm10d_mansion_baron') {
+                        return (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleLaunchMission(mission, true);
+                            }}
+                            className="w-[86px] sm:w-[92px] py-1 px-2 rounded-md border border-amber-600/70 bg-[#2b1007] hover:bg-[#3d180c] text-amber-200 hover:text-white text-[8.5px] sm:text-[9px] font-black uppercase tracking-wider shadow active:scale-95 transition-all cursor-pointer text-center"
+                            title="Volver a ver cinemática"
+                          >
+                            VER
+                          </button>
+                        );
+                      }
 
                       if (hasStoryBtn && isCompleted) {
                         return (

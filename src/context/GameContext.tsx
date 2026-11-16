@@ -1815,7 +1815,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         nextChapter = Math.max(prev.chapter, 2);
       } else if (missionId === 'm7_epilogo_aldea') {
         nextChapter = Math.max(prev.chapter, 3);
-      } else if (missionId === 'm10c_callejon_hoggoblins' || missionId === 'm10b_encuentro_chispo' || missionId === 'm10_hobgoblin_boss') {
+      } else if (
+        missionId === 'm10d_mansion_baron' ||
+        missionId === 'm10c_callejon_hoggoblins' ||
+        missionId === 'm10b_encuentro_chispo' ||
+        missionId === 'm10_hobgoblin_boss'
+      ) {
         nextChapter = Math.max(prev.chapter, 4);
       }
       const updated = createQuestProgressState({
@@ -1854,6 +1859,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       'm10_hobgoblin_boss',
       'm10b_encuentro_chispo',
       'm10c_callejon_hoggoblins',
+      'm10d_mansion_baron',
     ];
     // Seed placeholder missions m11..m100 for all future missions and chapters
     for (let i = 11; i <= 100; i++) {

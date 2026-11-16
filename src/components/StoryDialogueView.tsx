@@ -32,6 +32,7 @@ import {
   STORY_CAPITULO3_M10_DIALOGUE,
   STORY_CAPITULO3_M10_EPILOGUE_DIALOGUE,
   STORY_CAPITULO3_CHISPO_DIALOGUE,
+  STORY_CAPITULO3_MANSION_BARON_DIALOGUE,
   STORY_CAPITULO3_M10C_DIALOGUE,
   STORY_CAPITULO3_M10C_EPILOGUE_DIALOGUE,
   CHARACTER_PROFILES,
@@ -150,8 +151,12 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     addCrystals,
     addShelfItem,
     setActiveQuestChapter,
+    isMissionCompleted,
   } = useGame();
 
+  const isBaronMansionMission =
+    selectedCombatMissionId === 'm10d_mansion_baron' ||
+    selectedCombatMissionId === 'm10d_mansion_baron_epilogo';
   const isCallejonHoggoblinsMission =
     selectedCombatMissionId === 'm10c_callejon_hoggoblins' ||
     selectedCombatMissionId === 'm10c_callejon_hoggoblins_epilogo';
@@ -234,6 +239,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     ? GORYN_FORGE_DIALOGUE
     : isKitchenIntro
     ? PACO_FOGON_DIALOGUE
+    : isBaronMansionMission
+    ? STORY_CAPITULO3_MANSION_BARON_DIALOGUE
     : isCallejonHoggoblinsEpilogue
     ? STORY_CAPITULO3_M10C_EPILOGUE_DIALOGUE
     : isCallejonHoggoblinsMission
@@ -491,7 +498,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     if (currentLineIndex < dialogueLines.length - 1) {
       setCurrentLineIndex((prev) => prev + 1);
     } else {
-      if (isAldeaEpilogue || isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue || isFertonEpilogue || isChispoEncuentroMission || isCallejonHoggoblinsEpilogue) {
+      if (isBaronMansionMission || isAldeaEpilogue || isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue || isFertonEpilogue || isChispoEncuentroMission || isCallejonHoggoblinsEpilogue) {
         handleCompleteStory();
       } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isRoboMission || isBosqueMission || isPuertasMission || isEmboscadaMission || isAsaltoOrcoMission || isFuriaCarmesiMission || (isFertonMission && !isFertonEpilogue) || (isCallejonHoggoblinsMission && !isCallejonHoggoblinsEpilogue)) {
         setScreenFlash(isCallejonHoggoblinsMission ? 'red' : isFertonMission ? 'gold' : isTitanMission ? 'gold' : isZancudoMission ? 'purple' : isCavernaAzulMission ? 'cyan' : isFuriaCarmesiMission ? 'cyan' : 'red');
@@ -538,6 +545,26 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     launchConfetti();
     setIsStoryCompleted(true);
     setIsAutoPlay(false);
+
+    if (isBaronMansionMission) {
+      const alreadyCleared = isMissionCompleted('m10d_mansion_baron');
+      completeQuestMission('m10d_mansion_baron', 3);
+      if (!alreadyCleared) {
+        addGold(75000);
+        addCrystals(3000);
+        addShelfItem({
+          id: `sello_rey_negro_vandimere_${Date.now()}`,
+          name: 'Sello Real del Rey de Negro (Vandimere)',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/items/insignia_mercado_negro_app.webp',
+          rarity: 'UR',
+          priceGold: 60000,
+          description: 'Insignia hexagonal de plata y obsidiana entregada por Alistar Vandimere, Rey de Negro y Rey del Mercado Negro, sellando la cacería brutal contra Ferton.',
+        });
+      }
+      return;
+    }
 
     if (isCallejonHoggoblinsEpilogue) {
       completeQuestMission('m10c_callejon_hoggoblins', 3);
@@ -1489,7 +1516,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
             {/* Mission Clear Banner */}
             <div>
               <span className="px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/60 text-[9px] font-black uppercase tracking-widest text-amber-300 inline-block mb-1">
-                {isCapitulo3IntroMission
+                {isBaronMansionMission
+                  ? 'HISTORIA: CAPÍTULO III • EL REY DE NEGRO'
+                  : isCapitulo3IntroMission
                   ? 'HISTORIA: CAPÍTULO III • EL CAMPAMENTO ORCO'
                   : isAldeaEpilogue
                   ? '¡CAPÍTULO II: LAS MINAS DE GLIMMERSTONE COMPLETADO!'
@@ -1522,7 +1551,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   : 'PRÓLOGO DE HISTORIA SUPERADO'}
               </span>
               <h3 className="font-serif font-black text-lg sm:text-xl uppercase text-amber-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                {isCapitulo3IntroMission
+                {isBaronMansionMission
+                  ? '¡PACTO SELLADO CON ALISTAR VANDIMERE!'
+                  : isCapitulo3IntroMission
                   ? '¡LA GRAN FARSA DEL BARDO ILUSIONISTA!'
                   : isAldeaEpilogue
                   ? '¡LA ALDEA ENANA A SALVO Y EL PEÓN ENCADENADO!'
@@ -1555,7 +1586,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   : '¡Contrato de Cryovain Aceptado!'}
               </h3>
               <p className="text-[11px] text-stone-300 leading-snug mt-1">
-                {isCapitulo3IntroMission
+                {isBaronMansionMission
+                  ? 'Warthion guió a Caldo de Dragón desde su mesa de la taberna por la puerta secreta hasta la antigua mazmorra del Mercado Negro. En su mansión, Alistar Vandimere —el Rey de Negro y Rey del Mercado Negro— os ha encomendado exterminar a Ferton con la máxima brutalidad para enviar una advertencia ejemplar.'
+                  : isCapitulo3IntroMission
                   ? '¡Arlem Díaz ha embaucado a los orcos de élite haciéndose pasar por uno de ellos con magia de ilusión! Convencidos de que las minas están calientes y vacías de enanos, los orcos han trasladado todo su campamento al interior mientras esperan a Gromock, dejando libre el paso hacia el Mercado Negro.'
                   : isAldeaEpilogue
                   ? '¡Caldo de Dragón ha devuelto la paz a la aldea subterránea! Las familias enanas eligen quedarse en su verdadero hogar bajo la montaña con las puertas abiertas. Mientras tanto, en las tinieblas del laberinto, la figura encapuchada ha cobrado a su nuevo peón... ¡El engranaje del destino avanza!'
@@ -1599,7 +1632,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 {/* Reward 1: Oro */}
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <span className="font-mono text-xs font-black text-amber-400">
-                    {isCapitulo3IntroMission
+                    {isBaronMansionMission
+                      ? '+75,000'
+                      : isCapitulo3IntroMission
                       ? '+25,000'
                       : isAldeaEpilogue
                       ? '+20,000'
@@ -1636,7 +1671,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 {/* Reward 2: Gemas */}
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <span className="font-mono text-xs font-black text-sky-400">
-                    {isCapitulo3IntroMission
+                    {isBaronMansionMission
+                      ? '+3,000'
+                      : isCapitulo3IntroMission
                       ? '+1,000'
                       : isAldeaEpilogue
                       ? '+800'
@@ -1674,7 +1711,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <img
                     src={
-                      isCapitulo3IntroMission
+                      isBaronMansionMission
+                        ? '/assets/items/insignia_mercado_negro_app.webp'
+                        : isCapitulo3IntroMission
                         ? '/assets/portraits/arlem_orco_thumb.webp'
                         : isAldeaEpilogue || isLaberintoMission
                         ? '/assets/items/llave_laberinto_desactivada.webp'
@@ -1704,7 +1743,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                     className="w-5 h-5 object-contain"
                   />
                   <span className="text-[8px] font-bold uppercase text-amber-300 mt-0.5 truncate max-w-[80px]">
-                    {isCapitulo3IntroMission
+                    {isBaronMansionMission
+                      ? 'SELLO NEGRO'
+                      : isCapitulo3IntroMission
                       ? 'EFIGIE UR'
                       : isAldeaEpilogue
                       ? 'EMBLEMA UR'
@@ -1742,7 +1783,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
             {/* Action Buttons */}
             <div className="space-y-2 pt-1">
-              {!isCallejonHoggoblinsEpilogue && !isChispoEncuentroMission && !isFertonEpilogue && !isCapitulo3IntroMission && !isAldeaEpilogue && !isLaberintoMission && !isRoboEpilogue && !isBosqueEpilogue && !isPuertasEpilogue && !isEmboscadaEpilogue && !isAsaltoOrcoEpilogue && !isFuriaCarmesiEpilogue && !isCavernaAzulEpilogue && !isZancudoEpilogue && (
+              {!isBaronMansionMission && !isCallejonHoggoblinsEpilogue && !isChispoEncuentroMission && !isFertonEpilogue && !isCapitulo3IntroMission && !isAldeaEpilogue && !isLaberintoMission && !isRoboEpilogue && !isBosqueEpilogue && !isPuertasEpilogue && !isEmboscadaEpilogue && !isAsaltoOrcoEpilogue && !isFuriaCarmesiEpilogue && !isCavernaAzulEpilogue && !isZancudoEpilogue && (
                 <button
                   type="button"
                   onClick={handleStartCombatAfterStory}
@@ -1753,7 +1794,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                     {isCallejonHoggoblinsMission
                       ? '¡Enfrentar a los Hoggoblins Encapuchados! (2 Rondas)'
                       : isFertonMission
-                      ? '¡Enfrentar a la Guardia Negra! (3 Oleadas)'
+                      ? '¡Enfrentar a la Guardia Áurea! (3 Oleadas)'
                       : isMinasHistoriaMission
                       ? '¡Iniciar Exterminio: Araknoide Carmesí!'
                       : isAsaltoOrcoMission
@@ -1790,7 +1831,10 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  if (isCallejonHoggoblinsMission || isChispoEncuentroMission || isCapitulo3IntroMission || isFertonMission || isHobgoblinBossMission) {
+                  if (isBaronMansionMission) {
+                    setActiveQuestChapter(4);
+                    handleReturnToQuests();
+                  } else if (isCallejonHoggoblinsMission || isChispoEncuentroMission || isCapitulo3IntroMission || isFertonMission || isHobgoblinBossMission) {
                     setActiveQuestChapter(3);
                     handleReturnToQuests();
                   } else if (isAldeaEpilogue) {
@@ -1806,12 +1850,14 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   }
                 }}
                 className={`w-full py-2.5 bg-gradient-to-r ${
-                  isCapitulo3IntroMission || isAldeaEpilogue || isLaberintoMission || isFuriaCarmesiEpilogue || isPuertasEpilogue
+                  isBaronMansionMission || isCapitulo3IntroMission || isAldeaEpilogue || isLaberintoMission || isFuriaCarmesiEpilogue || isPuertasEpilogue
                     ? 'from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.7)] ring-2 ring-yellow-400/60'
                     : 'from-amber-700 via-amber-600 to-yellow-600 text-stone-950 font-black shadow-md'
                 } hover:brightness-110 rounded-xl text-xs uppercase tracking-wider cursor-pointer transition-all active:scale-95`}
               >
-                {isCallejonHoggoblinsEpilogue
+                {isBaronMansionMission
+                  ? '¡Capítulo III Completado! Ir al Capítulo IV'
+                  : isCallejonHoggoblinsEpilogue
                   ? '¡Callejón Despejado! Volver a Misiones'
                   : isChispoEncuentroMission
                   ? '¡Brindis Celebrado! Volver a Misiones'
