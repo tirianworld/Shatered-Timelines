@@ -39,7 +39,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Rubí',
     category: 'mejora',
     cost: 1000,
-    icon: '/assets/items/rubi_app.png',
+    icon: '/assets/items/rubi_app.webp',
     description: 'Gema imbuida de calor volcánico para despertar habilidades de fuego.',
   },
   {
@@ -47,7 +47,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Diamante',
     category: 'mejora',
     cost: 1000,
-    icon: '/assets/items/diamante_app.png',
+    icon: '/assets/items/diamante_app.webp',
     description: 'Gema indestructible para ascender estrellas de héroes legendarios.',
   },
   // Metals / Fabricación
@@ -56,7 +56,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Lingote de Hierro',
     category: 'fabricacion',
     cost: 200,
-    icon: '/assets/items/lingote_app.png',
+    icon: '/assets/items/lingote_app.webp',
     description: 'Lingote de hierro templado indispensable para forjar espadas y armaduras.',
   },
   {
@@ -64,7 +64,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Mango de Espada',
     category: 'fabricacion',
     cost: 150,
-    icon: '/assets/aistudio/mango_de_espada_ITEM_80f48554.png',
+    icon: '/assets/aistudio/mango_de_espada_ITEM_80f48554.webp',
     description: 'Mango artesanal con guarda de bronce y empuñadura de cuero para forjar espadas.',
   },
   {
@@ -72,7 +72,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Cobre',
     category: 'fabricacion',
     cost: 350,
-    icon: '/assets/items/lingote_cobre_app.png',
+    icon: '/assets/items/lingote_cobre_app.webp',
     description: 'Lingote maleable para forjar armas iniciales y accesorios.',
   },
   {
@@ -80,7 +80,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Plata',
     category: 'fabricacion',
     cost: 500,
-    icon: '/assets/items/lingote_plata_app.png',
+    icon: '/assets/items/lingote_plata_app.webp',
     description: 'Plata bendecida por los sacerdotes del Bastión de Icespear.',
   },
   {
@@ -88,7 +88,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Mango de Lanza',
     category: 'fabricacion',
     cost: 150,
-    icon: '/assets/items/mango_lanza.png',
+    icon: '/assets/items/mango_lanza.webp',
     description: 'Asta resistente reforzada para montar puntas de lanza y tridentes.',
   },
   {
@@ -96,7 +96,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Mango de Hacha y Martillo',
     category: 'fabricacion',
     cost: 150,
-    icon: '/assets/items/mango_hacha_martillo.png',
+    icon: '/assets/items/mango_hacha_martillo.webp',
     description: 'Mango reforzado de madera oscura y engarces de bronce anaranjado para hachas y martillos.',
   },
   {
@@ -104,7 +104,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Fragmento de Quitina',
     category: 'fabricacion',
     cost: 250,
-    icon: '/assets/items/fragmento de quitina.png',
+    icon: '/assets/items/fragmento de quitina.webp',
     description: 'Caparazón orgánico hiperresistente cosechado de colosos de hielo.',
   },
   {
@@ -112,7 +112,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Electrum',
     category: 'fabricacion',
     cost: 650,
-    icon: '/assets/items/lingote_electrum_app.png',
+    icon: '/assets/items/lingote_electrum_app.webp',
     description: 'Aleación noble de oro y plata de gran afinidad arcana.',
   },
   {
@@ -120,7 +120,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Oro Fundido',
     category: 'fabricacion',
     cost: 800,
-    icon: '/assets/items/lingote_oro_app.png',
+    icon: '/assets/items/lingote_oro_app.webp',
     description: 'Lingote macizo para forja de reliquias de la Casa Loux.',
   },
   // Kits / Fabricación
@@ -129,7 +129,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Kit herrería',
     category: 'fabricacion',
     cost: 150,
-    icon: '/assets/items/kit_de_herreria_app.png',
+    icon: '/assets/items/kit_de_herreria_app.webp',
     description: 'Herramientas básicas para temple de aceros y espadas.',
   },
   {
@@ -137,7 +137,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Kit Joyería',
     category: 'fabricacion',
     cost: 150,
-    icon: '/assets/items/kit_de_joyeria_app.png',
+    icon: '/assets/items/kit_de_joyeria_app.webp',
     description: 'Alicates de precisión para engarzar anillos y amuletos.',
   },
   {
@@ -145,7 +145,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Lomo de Grimorio',
     category: 'fabricacion',
     cost: 200,
-    icon: '/assets/items/lomo_libro.png',
+    icon: '/assets/items/lomo_libro.webp',
     description: 'Lomo de cuero reforzado y escamas para encuadernar grimorios.',
   },
   {
@@ -153,7 +153,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Kit de Inscripción',
     category: 'fabricacion',
     cost: 250,
-    icon: '/assets/items/kit_de_inscripcion_app.png',
+    icon: '/assets/items/kit_de_inscripcion_app.webp',
     description: 'Tintas rúnicas, plumas y pergaminos para encantar grimorios.',
   },
   // Food / Comida
@@ -162,7 +162,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Ramen',
     category: 'comida',
     cost: 200,
-    icon: '/assets/items/ramen.png',
+    icon: '/assets/items/ramen.webp',
     description: 'Caldo humeante con fideos y huevo que restaura energía vital.',
   },
   {
@@ -170,7 +170,7 @@ const FIXED_CORE_ITEMS: ShopItem[] = [
     name: 'Panes de ajo',
     category: 'comida',
     cost: 150,
-    icon: '/assets/items/panes_de_ajo.png',
+    icon: '/assets/items/panes_de_ajo.webp',
     description: 'Tostadas crujientes con mantequilla y ajo aromatizado.',
   },
 ];
@@ -183,7 +183,7 @@ const ROTATING_POOLS = {
       name: 'Amatista',
       category: 'mejora' as const,
       cost: 1000,
-      icon: '/assets/items/amatista_app.png',
+      icon: '/assets/items/amatista_app.webp',
       description: 'Cristal prismático para resonar con el portal astral.',
       givesCrystals: 100,
     },
@@ -192,7 +192,7 @@ const ROTATING_POOLS = {
       name: 'Esmeralda',
       category: 'mejora' as const,
       cost: 1000,
-      icon: '/assets/items/esmeralda_app.png',
+      icon: '/assets/items/esmeralda_app.webp',
       description: 'Joya forestal que canaliza la vitalidad de los manantiales.',
     },
     {
@@ -200,7 +200,7 @@ const ROTATING_POOLS = {
       name: 'Zafiro',
       category: 'mejora' as const,
       cost: 1000,
-      icon: '/assets/items/zafiro_app.png',
+      icon: '/assets/items/zafiro_app.webp',
       description: 'Gema de agua profunda para encantar báculos y grimorios.',
     },
     {
@@ -208,7 +208,7 @@ const ROTATING_POOLS = {
       name: 'Gema Recuerdo',
       category: 'mejora' as const,
       cost: 1500,
-      icon: '/assets/items/gema_del_recuerdo.png',
+      icon: '/assets/items/gema_del_recuerdo.webp',
       description: 'Reliquia milenaria que almacena memorias de héroes caídos.',
     },
     {
@@ -216,7 +216,7 @@ const ROTATING_POOLS = {
       name: 'Gema Arcana',
       category: 'mejora' as const,
       cost: 1250,
-      icon: '/assets/items/arcano_gema_app.png',
+      icon: '/assets/items/arcano_gema_app.webp',
       description: 'Condensado de pura energía mística para ascensos arcanos.',
     },
     {
@@ -224,7 +224,7 @@ const ROTATING_POOLS = {
       name: 'Gema Divina',
       category: 'mejora' as const,
       cost: 1400,
-      icon: '/assets/items/divino_gema_app.png',
+      icon: '/assets/items/divino_gema_app.webp',
       description: 'Resplandor bendito otorgado por el Tribunal Sagrado.',
     },
     {
@@ -232,7 +232,7 @@ const ROTATING_POOLS = {
       name: 'Ascuas Salvajes',
       category: 'mejora' as const,
       cost: 850,
-      icon: '/assets/items/ascuas_salvajes.png',
+      icon: '/assets/items/ascuas_salvajes.webp',
       description: 'Fuego indómito de bestias abisales para despertar talentos.',
     },
     {
@@ -240,7 +240,7 @@ const ROTATING_POOLS = {
       name: 'Botella XP III',
       category: 'mejora' as const,
       cost: 600,
-      icon: '/assets/items/botella_experiencia_lvl_3.png',
+      icon: '/assets/items/botella_experiencia_lvl_3.webp',
       description: 'Elixir de sabiduría pura para acelerar el ascenso heroico.',
     },
     {
@@ -248,7 +248,7 @@ const ROTATING_POOLS = {
       name: 'Polvo Onírico',
       category: 'mejora' as const,
       cost: 500,
-      icon: '/assets/items/polvo_onirico.png',
+      icon: '/assets/items/polvo_onirico.webp',
       description: 'Polvo de estrellas que refuerza el espíritu de batalla.',
     },
   ],
@@ -258,7 +258,7 @@ const ROTATING_POOLS = {
       name: 'Electrum',
       category: 'fabricacion' as const,
       cost: 650,
-      icon: '/assets/items/lingote_electrum_app.png',
+      icon: '/assets/items/lingote_electrum_app.webp',
       description: 'Aleación noble de oro y plata de gran afinidad arcana.',
     },
     {
@@ -266,7 +266,7 @@ const ROTATING_POOLS = {
       name: 'Oro Fundido',
       category: 'fabricacion' as const,
       cost: 800,
-      icon: '/assets/items/lingote_oro_app.png',
+      icon: '/assets/items/lingote_oro_app.webp',
       description: 'Lingote macizo para forja de reliquias de la Casa Loux.',
     },
     {
@@ -274,7 +274,7 @@ const ROTATING_POOLS = {
       name: 'Mithrill',
       category: 'fabricacion' as const,
       cost: 1200,
-      icon: '/assets/items/lingote_mithrill_app.png',
+      icon: '/assets/items/lingote_mithrill_app.webp',
       description: 'Metal legendario, liviano como pluma y duro como dragón.',
     },
     {
@@ -282,7 +282,7 @@ const ROTATING_POOLS = {
       name: 'Hierro Estelar',
       category: 'fabricacion' as const,
       cost: 950,
-      icon: '/assets/items/lingote_hierro_estelar_app.png',
+      icon: '/assets/items/lingote_hierro_estelar_app.webp',
       description: 'Hierro caído del firmamento con propiedades antimagia.',
     },
     {
@@ -290,7 +290,7 @@ const ROTATING_POOLS = {
       name: 'Netherita',
       category: 'fabricacion' as const,
       cost: 1800,
-      icon: '/assets/items/lingote_netherita_app.png',
+      icon: '/assets/items/lingote_netherita_app.webp',
       description: 'Lingote forjado en el núcleo abisal, prácticamente indestructible.',
     },
     {
@@ -298,7 +298,7 @@ const ROTATING_POOLS = {
       name: 'Escamas Cryovain',
       category: 'fabricacion' as const,
       cost: 1100,
-      icon: '/assets/items/escamas_de_cryovain.png',
+      icon: '/assets/items/escamas_de_cryovain.webp',
       description: 'Escamas del dragón blanco de las cumbres heladas.',
     },
     {
@@ -306,7 +306,7 @@ const ROTATING_POOLS = {
       name: 'Sedas Exóticas',
       category: 'fabricacion' as const,
       cost: 750,
-      icon: '/assets/items/sedas_exoticas_app.png',
+      icon: '/assets/items/sedas_exoticas_app.webp',
       description: 'Fibras arcanas para túnicas mágicas de hechiceros.',
     },
     {
@@ -314,7 +314,7 @@ const ROTATING_POOLS = {
       name: 'Quitina Fuerte',
       category: 'fabricacion' as const,
       cost: 600,
-      icon: '/assets/items/fragmento_de_quitina.png',
+      icon: '/assets/items/fragmento_de_quitina.webp',
       description: 'Placas resistentes para corazas ligeras de cazador.',
     },
     {
@@ -322,7 +322,7 @@ const ROTATING_POOLS = {
       name: 'Kit Inscripción',
       category: 'fabricacion' as const,
       cost: 150,
-      icon: '/assets/items/kit_de_inscripcion_app.png',
+      icon: '/assets/items/kit_de_inscripcion_app.webp',
       description: 'Tintas rúnicas y pergaminos para encantar grimorios.',
     },
     {
@@ -330,7 +330,7 @@ const ROTATING_POOLS = {
       name: 'Kit Peletería',
       category: 'fabricacion' as const,
       cost: 150,
-      icon: '/assets/items/kit_de_peleteria_app.png',
+      icon: '/assets/items/kit_de_peleteria_app.webp',
       description: 'Agujas y tendones para curtir corazas de cuero y quitina.',
     },
   ],
@@ -340,7 +340,7 @@ const ROTATING_POOLS = {
       name: 'Sushi Dragón',
       category: 'comida' as const,
       cost: 300,
-      icon: '/assets/items/Shushi.png',
+      icon: '/assets/items/Shushi.webp',
       description: 'Rollos frescos de salmón de las profundidades árticas.',
     },
     {
@@ -348,7 +348,7 @@ const ROTATING_POOLS = {
       name: 'Pizza Horno',
       category: 'comida' as const,
       cost: 400,
-      icon: '/assets/items/pizza.png',
+      icon: '/assets/items/pizza.webp',
       description: 'Horneada a leña con queso fundido y orégano silvestre.',
     },
     {
@@ -356,7 +356,7 @@ const ROTATING_POOLS = {
       name: 'Hamburguesa',
       category: 'comida' as const,
       cost: 350,
-      icon: '/assets/items/hamburguesa.png',
+      icon: '/assets/items/hamburguesa.webp',
       description: 'Deliciosa hamburguesa artesanal con carne de las colinas.',
     },
     {
@@ -364,7 +364,7 @@ const ROTATING_POOLS = {
       name: 'Paella Jaime',
       category: 'comida' as const,
       cost: 450,
-      icon: '/assets/items/palla.png',
+      icon: '/assets/items/palla.webp',
       description: 'Arroz al azafrán con marisco fresco cocinado por el chef.',
     },
     {
@@ -372,7 +372,7 @@ const ROTATING_POOLS = {
       name: 'Quesarito',
       category: 'comida' as const,
       cost: 320,
-      icon: '/assets/items/quesarito.png',
+      icon: '/assets/items/quesarito.webp',
       description: 'Burrito tostado rebosante de cuatro quesos fundidos.',
     },
     {
@@ -380,7 +380,7 @@ const ROTATING_POOLS = {
       name: 'McBites Fuego',
       category: 'comida' as const,
       cost: 280,
-      icon: '/assets/items/mcbites.png',
+      icon: '/assets/items/mcbites.webp',
       description: 'Bocados crujientes con especias picantes del desierto.',
     },
     {
@@ -388,7 +388,7 @@ const ROTATING_POOLS = {
       name: 'Arepas Reina',
       category: 'comida' as const,
       cost: 220,
-      icon: '/assets/items/arepas.png',
+      icon: '/assets/items/arepas.webp',
       description: 'Masa de maíz dorada rellena de pollo y aguacate.',
     },
     {
@@ -396,7 +396,7 @@ const ROTATING_POOLS = {
       name: 'Tortitas Dulces',
       category: 'comida' as const,
       cost: 260,
-      icon: '/assets/items/tortitas.png',
+      icon: '/assets/items/tortitas.webp',
       description: 'Torre de tortitas esponjosas bañadas en sirope dorado.',
     },
     {
@@ -404,7 +404,7 @@ const ROTATING_POOLS = {
       name: 'Kebab Especiado',
       category: 'comida' as const,
       cost: 400,
-      icon: '/assets/items/kebab.png',
+      icon: '/assets/items/kebab.webp',
       description: 'Pan de pita relleno de carne asada y salsa tártara.',
     },
     {
@@ -412,7 +412,7 @@ const ROTATING_POOLS = {
       name: 'Tortilla Casera',
       category: 'comida' as const,
       cost: 350,
-      icon: '/assets/items/tortilla_patata.png',
+      icon: '/assets/items/tortilla_patata.webp',
       description: 'Tortilla de patatas tradicional recién cuajada y jugosa.',
     },
   ],
@@ -558,7 +558,7 @@ export const ShopView: React.FC = () => {
           name: 'Rubí',
           category: 'mejora',
           cost: 1000,
-          icon: '/assets/items/rubi_app.png',
+          icon: '/assets/items/rubi_app.webp',
           description: 'Gema imbuida de calor volcánico para despertar habilidades de fuego.',
         },
         {
@@ -566,7 +566,7 @@ export const ShopView: React.FC = () => {
           name: 'Amatista',
           category: 'mejora',
           cost: 1000,
-          icon: '/assets/items/amatista_app.png',
+          icon: '/assets/items/amatista_app.webp',
           description: 'Cristal prismático para resonar con el portal astral.',
         },
         {
@@ -574,7 +574,7 @@ export const ShopView: React.FC = () => {
           name: 'Diamante',
           category: 'mejora',
           cost: 1000,
-          icon: '/assets/items/diamante_app.png',
+          icon: '/assets/items/diamante_app.webp',
           description: 'Gema indestructible para ascender estrellas de héroes legendarios.',
         },
         {
@@ -582,7 +582,7 @@ export const ShopView: React.FC = () => {
           name: 'Esmeralda',
           category: 'mejora',
           cost: 1000,
-          icon: '/assets/items/esmeralda_app.png',
+          icon: '/assets/items/esmeralda_app.webp',
           description: 'Joya forestal que canaliza la vitalidad de los manantiales.',
         },
       ],
@@ -593,7 +593,7 @@ export const ShopView: React.FC = () => {
           name: 'Cobre',
           category: 'fabricacion',
           cost: 350,
-          icon: '/assets/items/lingote_cobre_app.png',
+          icon: '/assets/items/lingote_cobre_app.webp',
           description: 'Lingote maleable para forjar armas iniciales y accesorios.',
         },
         {
@@ -601,7 +601,7 @@ export const ShopView: React.FC = () => {
           name: 'Plata',
           category: 'fabricacion',
           cost: 500,
-          icon: '/assets/items/lingote_plata_app.png',
+          icon: '/assets/items/lingote_plata_app.webp',
           description: 'Plata bendecida por los sacerdotes del Bastión de Icespear.',
         },
         {
@@ -609,7 +609,7 @@ export const ShopView: React.FC = () => {
           name: 'Electrum',
           category: 'fabricacion',
           cost: 650,
-          icon: '/assets/items/lingote_electrum_app.png',
+          icon: '/assets/items/lingote_electrum_app.webp',
           description: 'Aleación noble de oro y plata de gran afinidad arcana.',
         },
         {
@@ -617,7 +617,7 @@ export const ShopView: React.FC = () => {
           name: 'Oro',
           category: 'fabricacion',
           cost: 800,
-          icon: '/assets/items/lingote_oro_app.png',
+          icon: '/assets/items/lingote_oro_app.webp',
           description: 'Lingote macizo para forja de reliquias de la Casa Loux.',
         },
       ],
@@ -628,7 +628,7 @@ export const ShopView: React.FC = () => {
           name: 'Kit herrería',
           category: 'fabricacion',
           cost: 150,
-          icon: '/assets/items/kit_de_herreria_app.png',
+          icon: '/assets/items/kit_de_herreria_app.webp',
           description: 'Herramientas básicas para temple de aceros y espadas.',
         },
         {
@@ -636,7 +636,7 @@ export const ShopView: React.FC = () => {
           name: 'Kit Inscripcio',
           category: 'fabricacion',
           cost: 150,
-          icon: '/assets/items/kit_de_inscripcion_app.png',
+          icon: '/assets/items/kit_de_inscripcion_app.webp',
           description: 'Tintas rúnicas y pergaminos para encantar grimorios.',
         },
         {
@@ -644,7 +644,7 @@ export const ShopView: React.FC = () => {
           name: 'Kit Joyería',
           category: 'fabricacion',
           cost: 150,
-          icon: '/assets/items/kit_de_joyeria_app.png',
+          icon: '/assets/items/kit_de_joyeria_app.webp',
           description: 'Alicates de precisión para engarzar anillos y amuletos.',
         },
         {
@@ -652,7 +652,7 @@ export const ShopView: React.FC = () => {
           name: 'Kit peletería',
           category: 'fabricacion',
           cost: 150,
-          icon: '/assets/items/kit_de_peleteria_app.png',
+          icon: '/assets/items/kit_de_peleteria_app.webp',
           description: 'Agujas y tendones para curtir corazas de cuero y quitina.',
         },
       ],
@@ -683,15 +683,15 @@ export const ShopView: React.FC = () => {
       id: 'bundle_pablo',
       title: 'Ingredientes Extraplanares',
       subtitle: 'Mejora Mágica Avanzada',
-      bannerImage: '/assets/items/baner_pablo.png',
+      bannerImage: '/assets/items/baner_pablo.webp',
       cost: 5000,
       rewardCrystals: 500,
       items: [
-        { name: 'Rubí', count: 5, icon: '/assets/items/rubi_app.png' },
-        { name: 'Amatista', count: 5, icon: '/assets/items/amatista_app.png' },
-        { name: 'Diamante', count: 5, icon: '/assets/items/diamante_app.png' },
-        { name: 'Esmeralda', count: 5, icon: '/assets/items/esmeralda_app.png' },
-        { name: 'Botella XP III', count: 8, icon: '/assets/items/botella_experiencia_lvl_3.png' },
+        { name: 'Rubí', count: 5, icon: '/assets/items/rubi_app.webp' },
+        { name: 'Amatista', count: 5, icon: '/assets/items/amatista_app.webp' },
+        { name: 'Diamante', count: 5, icon: '/assets/items/diamante_app.webp' },
+        { name: 'Esmeralda', count: 5, icon: '/assets/items/esmeralda_app.webp' },
+        { name: 'Botella XP III', count: 8, icon: '/assets/items/botella_experiencia_lvl_3.webp' },
       ],
       description:
         'Lote exclusivo de alquimia celestial preparado por Pablo. Acelera el despertar y las habilidades de tus héroes.',
@@ -700,15 +700,15 @@ export const ShopView: React.FC = () => {
       id: 'bundle_anibal',
       title: 'Materiales Exclusivos',
       subtitle: 'Forja y Metalurgia Real',
-      bannerImage: '/assets/items/banner_anibal.png',
+      bannerImage: '/assets/items/banner_anibal.webp',
       cost: 4500,
       rewardCrystals: 400,
       items: [
-        { name: 'Cobre', count: 10, icon: '/assets/items/lingote_cobre_app.png' },
-        { name: 'Plata', count: 10, icon: '/assets/items/lingote_plata_app.png' },
-        { name: 'Electrum', count: 8, icon: '/assets/items/lingote_electrum_app.png' },
-        { name: 'Oro', count: 6, icon: '/assets/items/lingote_oro_app.png' },
-        { name: 'Kit Herrería', count: 4, icon: '/assets/items/kit_de_herreria_app.png' },
+        { name: 'Cobre', count: 10, icon: '/assets/items/lingote_cobre_app.webp' },
+        { name: 'Plata', count: 10, icon: '/assets/items/lingote_plata_app.webp' },
+        { name: 'Electrum', count: 8, icon: '/assets/items/lingote_electrum_app.webp' },
+        { name: 'Oro', count: 6, icon: '/assets/items/lingote_oro_app.webp' },
+        { name: 'Kit Herrería', count: 4, icon: '/assets/items/kit_de_herreria_app.webp' },
       ],
       description:
         'Compilación de tomos y metales selectos supervisados por Aníbal. Ideal para forjar armamento de alto rango.',
@@ -717,14 +717,14 @@ export const ShopView: React.FC = () => {
       id: 'bundle_jaime',
       title: 'Lote de Alimentos Gourmet',
       subtitle: 'Gran Banquete de la Taberna',
-      bannerImage: '/assets/items/banner_jaime.png',
+      bannerImage: '/assets/items/banner_jaime.webp',
       cost: 3000,
       rewardCrystals: 300,
       items: [
-        { name: 'Ramen', count: 6, icon: '/assets/items/ramen.png' },
-        { name: 'Pizza', count: 4, icon: '/assets/items/pizza.png' },
-        { name: 'Hamburguesa', count: 4, icon: '/assets/items/hamburguesa.png' },
-        { name: 'Panes de Ajo', count: 8, icon: '/assets/items/panes_de_ajo.png' },
+        { name: 'Ramen', count: 6, icon: '/assets/items/ramen.webp' },
+        { name: 'Pizza', count: 4, icon: '/assets/items/pizza.webp' },
+        { name: 'Hamburguesa', count: 4, icon: '/assets/items/hamburguesa.webp' },
+        { name: 'Panes de Ajo', count: 8, icon: '/assets/items/panes_de_ajo.webp' },
       ],
       description:
         'El festín más abundante de Icespear cocinado por Jaime. Restaura el vigor y llena las alforjas de tu grupo.',
@@ -836,7 +836,7 @@ export const ShopView: React.FC = () => {
       <div className="relative w-full aspect-[887/290] shrink-0 select-none overflow-hidden">
         {/* Authentic apothecary shelf artwork (bottles, lantern, skull, potion, chest, beam) */}
         <img
-          src="/assets/backgrounds/tienda_apothecary_shelf.png"
+          src="/assets/backgrounds/tienda_apothecary_shelf.webp"
           alt="Estantería Tienda"
           className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none z-0"
         />
@@ -875,7 +875,7 @@ export const ShopView: React.FC = () => {
             }`}
           >
             <img
-              src="/assets/items/BOTON TIENDA 2.png"
+              src="/assets/items/BOTON TIENDA 2.webp"
               alt="Fondo Botón"
               className="absolute inset-0 w-full h-full object-fill pointer-events-none"
             />
@@ -885,7 +885,7 @@ export const ShopView: React.FC = () => {
             )}
             <div className="relative z-10 flex flex-col items-center justify-center gap-0.5 mt-0.5">
               <img
-                src="/assets/items/moneda_de_moonhaven.png"
+                src="/assets/items/moneda_de_moonhaven.webp"
                 alt="Oro"
                 className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain drop-shadow"
               />
@@ -909,7 +909,7 @@ export const ShopView: React.FC = () => {
             }`}
           >
             <img
-              src="/assets/items/BOTON TIENDA 2.png"
+              src="/assets/items/BOTON TIENDA 2.webp"
               alt="Fondo Botón"
               className="absolute inset-0 w-full h-full object-fill pointer-events-none"
             />
@@ -918,7 +918,7 @@ export const ShopView: React.FC = () => {
             )}
             <div className="relative z-10 flex flex-col items-center justify-center gap-0.5 mt-0.5">
               <img
-                src="/assets/items/icono_mejora_tienda.png"
+                src="/assets/items/icono_mejora_tienda.webp"
                 alt="Mejora"
                 className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain drop-shadow"
               />
@@ -942,7 +942,7 @@ export const ShopView: React.FC = () => {
             }`}
           >
             <img
-              src="/assets/items/BOTON TIENDA 2.png"
+              src="/assets/items/BOTON TIENDA 2.webp"
               alt="Fondo Botón"
               className="absolute inset-0 w-full h-full object-fill pointer-events-none"
             />
@@ -951,7 +951,7 @@ export const ShopView: React.FC = () => {
             )}
             <div className="relative z-10 flex flex-col items-center justify-center gap-0.5 mt-0.5">
               <img
-                src="/assets/items/lingote_plata_app.png"
+                src="/assets/items/lingote_plata_app.webp"
                 alt="Fabricación"
                 className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain drop-shadow"
               />
@@ -975,7 +975,7 @@ export const ShopView: React.FC = () => {
             }`}
           >
             <img
-              src="/assets/items/BOTON TIENDA 2.png"
+              src="/assets/items/BOTON TIENDA 2.webp"
               alt="Fondo Botón"
               className="absolute inset-0 w-full h-full object-fill pointer-events-none"
             />
@@ -984,7 +984,7 @@ export const ShopView: React.FC = () => {
             )}
             <div className="relative z-10 flex flex-col items-center justify-center gap-0.5 mt-0.5">
               <img
-                src="/assets/items/ramen.png"
+                src="/assets/items/ramen.webp"
                 alt="Comida"
                 className="w-5 h-5 sm:w-5.5 sm:h-5.5 object-contain drop-shadow"
               />
@@ -1050,7 +1050,7 @@ export const ShopView: React.FC = () => {
 
                       {/* Item Frame (BOTON TIENDA.png) */}
                       <img
-                        src="/assets/items/BOTON TIENDA.png"
+                        src="/assets/items/BOTON TIENDA.webp"
                         alt="Marco"
                         className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none z-0"
                       />
@@ -1079,13 +1079,13 @@ export const ShopView: React.FC = () => {
                         title={`Comprar por ${item.cost} Oro`}
                       >
                         <img
-                          src="/assets/items/BOTON BOTON TIENDA.png"
+                          src="/assets/items/BOTON BOTON TIENDA.webp"
                           alt="Comprar"
                           className="absolute inset-0 w-full h-full object-fill rounded pointer-events-none"
                         />
                         <div className="relative z-10 flex items-center justify-center gap-1 px-1">
                           <img
-                            src="/assets/items/moneda_de_moonhaven.png"
+                            src="/assets/items/moneda_de_moonhaven.webp"
                             alt="Oro"
                             className="w-3 h-3 sm:w-3.5 sm:h-3.5 object-contain"
                           />
@@ -1204,7 +1204,7 @@ export const ShopView: React.FC = () => {
                 className="flex-1 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-[#1a0802] font-serif font-black text-xs cursor-pointer shadow-lg transition-all flex items-center justify-center gap-1.5"
               >
                 <img
-                  src="/assets/items/moneda_de_moonhaven.png"
+                  src="/assets/items/moneda_de_moonhaven.webp"
                   alt="Oro"
                   className="w-4 h-4 object-contain"
                 />

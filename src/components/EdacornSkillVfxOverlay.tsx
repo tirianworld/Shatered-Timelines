@@ -687,7 +687,7 @@ export const EdacornSkillVfxOverlay: React.FC<EdacornSkillVfxOverlayProps> = ({
           `}</style>
           <div className="absolute left-[1.5%] bottom-[2%] w-[215px] h-[74px] flex items-end justify-center pointer-events-none">
             <img
-              src="/assets/combat/edacorn_vfx_humo.png"
+              src="/assets/combat/edacorn_vfx_humo.webp"
               alt=""
               referrerPolicy="no-referrer"
               className="w-full h-full object-contain animate-[edacornStealthFeetDrift_2.4s_ease-in-out_infinite]"
@@ -818,14 +818,14 @@ export const EdacornSkillVfxOverlay: React.FC<EdacornSkillVfxOverlayProps> = ({
                     >
                       <div className="relative w-[144px] h-[72px] flex items-center justify-center overflow-visible animate-[edacornDaggerCutSlice_0.36s_cubic-bezier(0.16,1,0.3,1)_forwards]">
                         <img
-                          src="/assets/combat/edacorn_vfx_corte.png"
+                          src="/assets/combat/edacorn_vfx_corte.webp"
                           alt=""
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-contain"
                           style={{ filter: corteShaderFilter }}
                         />
                         <img
-                          src="/assets/combat/edacorn_vfx_corte.png"
+                          src="/assets/combat/edacorn_vfx_corte.webp"
                           alt=""
                           referrerPolicy="no-referrer"
                           className="absolute inset-0 w-full h-full object-contain pointer-events-none"
@@ -867,8 +867,8 @@ export const EdacornSkillVfxOverlay: React.FC<EdacornSkillVfxOverlayProps> = ({
                     <img
                       src={
                         ono.kind === 'slosh'
-                          ? '/assets/combat/edacorn_vfx_slosh.png'
-                          : '/assets/combat/edacorn_vfx_slash.png'
+                          ? '/assets/combat/edacorn_vfx_slosh.webp'
+                          : '/assets/combat/edacorn_vfx_slash.webp'
                       }
                       alt={ono.kind === 'slosh' ? 'SLOSH!' : 'SLASH!'}
                       referrerPolicy="no-referrer"
@@ -910,7 +910,7 @@ export const EdacornSkillVfxOverlay: React.FC<EdacornSkillVfxOverlayProps> = ({
             <>
               <div className="absolute left-[0.5%] bottom-[1.5%] w-[230px] h-[82px] flex items-end justify-center pointer-events-none z-20">
                 <img
-                  src="/assets/combat/edacorn_vfx_humo.png"
+                  src="/assets/combat/edacorn_vfx_humo.webp"
                   alt="Humo de Sigilo"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain animate-[edacornSmokeBillowMain_0.92s_cubic-bezier(0.22,1,0.36,1)_forwards]"
@@ -919,7 +919,7 @@ export const EdacornSkillVfxOverlay: React.FC<EdacornSkillVfxOverlayProps> = ({
               </div>
               <div className="absolute left-[4%] bottom-[3.5%] w-[195px] h-[68px] flex items-end justify-center pointer-events-none z-15">
                 <img
-                  src="/assets/combat/edacorn_vfx_humo.png"
+                  src="/assets/combat/edacorn_vfx_humo.webp"
                   alt=""
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain animate-[edacornSmokeBillowSide_0.88s_cubic-bezier(0.22,1,0.36,1)_forwards]"

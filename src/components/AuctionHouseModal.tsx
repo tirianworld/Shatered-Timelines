@@ -402,7 +402,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
       <div className="relative w-full px-3 pt-1 pb-1 shrink-0 flex items-center justify-center">
         <div className="relative w-[94%] max-w-[390px] h-[58px] sm:h-[62px] flex items-center justify-center">
           <img
-            src="/assets/items/cartel_metal.png"
+            src="/assets/items/cartel_metal.webp"
             alt="Casa de Subastas"
             className="absolute inset-0 w-full h-full object-fill pointer-events-none drop-shadow-lg"
           />
@@ -579,7 +579,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                         <div className="flex items-center gap-2.5 min-w-0">
                           <div className="relative w-13 h-13 sm:w-14 sm:h-14 p-1.5 flex items-center justify-center shrink-0">
                             <img
-                              src="/assets/items/boton_tienda_2.png"
+                              src="/assets/items/boton_tienda_2.webp"
                               alt=""
                               className="absolute inset-0 w-full h-full object-fill pointer-events-none drop-shadow"
                             />
@@ -588,7 +588,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                               alt={auction.item.name}
                               className="relative z-10 w-9 h-9 object-contain filter drop-shadow"
                               onError={(e) => {
-                                (e.currentTarget as HTMLImageElement).src = '/assets/items/base item app.png';
+                                (e.currentTarget as HTMLImageElement).src = '/assets/items/base item app.webp';
                               }}
                             />
                             {auction.item.count > 1 && (
@@ -634,7 +634,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                         <div className="flex flex-col items-end gap-1.5 shrink-0">
                           <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-black/70 border border-amber-500/50 text-amber-300 font-mono font-black text-xs">
                             <img
-                              src="/assets/items/moneda_de_moonhaven.png"
+                              src="/assets/items/moneda_de_moonhaven.webp"
                               alt="Oro"
                               className="w-3.5 h-3.5 object-contain filter drop-shadow shrink-0"
                             />
@@ -654,7 +654,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                               }`}
                             >
                               <img
-                                src="/assets/items/boton_boton_tienda.png"
+                                src="/assets/items/boton_boton_tienda.webp"
                                 alt=""
                                 className="absolute inset-0 w-full h-full object-fill pointer-events-none drop-shadow"
                               />
@@ -710,7 +710,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                           }`}
                         >
                           <img
-                            src="/assets/items/boton_tienda_2.png"
+                            src="/assets/items/boton_tienda_2.webp"
                             alt=""
                             className="absolute inset-0 w-full h-full object-fill pointer-events-none"
                           />
@@ -719,7 +719,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                             alt={item.name}
                             className="relative z-10 w-8 h-8 object-contain filter drop-shadow mb-1"
                             onError={(e) => {
-                              (e.currentTarget as HTMLImageElement).src = '/assets/items/base item app.png';
+                              (e.currentTarget as HTMLImageElement).src = '/assets/items/base item app.webp';
                             }}
                           />
                           <span className="relative z-10 text-[8px] text-stone-200 text-center font-black line-clamp-1 w-full px-1">
@@ -739,7 +739,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
               {selectedItemToSell && (
                 <div className="relative p-4 sm:p-5 rounded-2xl shadow-2xl overflow-hidden min-h-[340px] flex flex-col justify-between border border-amber-500/40 bg-[#1e0c05] animate-in fade-in">
                   <img
-                    src="/assets/items/BOTON TIENDA.png"
+                    src="/assets/items/BOTON TIENDA.webp"
                     alt=""
                     className="absolute inset-0 w-full h-full object-fill pointer-events-none drop-shadow-xl opacity-90"
                   />
@@ -749,7 +749,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                     <div className="flex items-center gap-3 pb-2.5 border-b border-amber-500/30">
                       <div className="relative w-14 h-14 p-1.5 flex items-center justify-center shrink-0">
                         <img
-                          src="/assets/items/boton_tienda_2.png"
+                          src="/assets/items/boton_tienda_2.webp"
                           alt=""
                           className="absolute inset-0 w-full h-full object-fill pointer-events-none drop-shadow"
                         />
@@ -803,7 +803,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                         <span>Precio Total en Oro:</span>
                         <span className="font-mono text-xs text-amber-300 font-bold flex items-center gap-1">
                           <img
-                            src="/assets/items/moneda_de_moonhaven.png"
+                            src="/assets/items/moneda_de_moonhaven.webp"
                             alt="Oro"
                             className="w-4 h-4 object-contain"
                           />
@@ -812,7 +812,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                       </label>
                       <div className="relative">
                         <img
-                          src="/assets/items/moneda_de_moonhaven.png"
+                          src="/assets/items/moneda_de_moonhaven.webp"
                           alt="Oro"
                           className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 object-contain filter drop-shadow pointer-events-none"
                         />
@@ -849,13 +849,13 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                       className="relative w-full h-11 flex items-center justify-center cursor-pointer transition-transform active:scale-95 disabled:opacity-50"
                     >
                       <img
-                        src="/assets/items/boton_boton_tienda.png"
+                        src="/assets/items/boton_boton_tienda.webp"
                         alt=""
                         className="absolute inset-0 w-full h-full object-fill pointer-events-none drop-shadow-md"
                       />
                       <span className="relative z-10 font-serif font-black text-stone-950 text-xs sm:text-sm flex items-center gap-1.5 drop-shadow-xs">
                         <img
-                          src="/assets/items/moneda_de_moonhaven.png"
+                          src="/assets/items/moneda_de_moonhaven.webp"
                           alt="Oro"
                           className="w-4 h-4 object-contain"
                         />
@@ -922,7 +922,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                         <div className="flex items-center gap-2.5 min-w-0">
                           <div className="relative w-12 h-12 p-1.5 flex items-center justify-center shrink-0">
                             <img
-                              src="/assets/items/boton_tienda_2.png"
+                              src="/assets/items/boton_tienda_2.webp"
                               alt=""
                               className="absolute inset-0 w-full h-full object-fill pointer-events-none"
                             />
@@ -931,7 +931,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                               alt={auction.item.name}
                               className="relative z-10 w-8 h-8 object-contain"
                               onError={(e) => {
-                                (e.currentTarget as HTMLImageElement).src = '/assets/items/base item app.png';
+                                (e.currentTarget as HTMLImageElement).src = '/assets/items/base item app.webp';
                               }}
                             />
                             {auction.item.count > 1 && (
@@ -959,7 +959,7 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                             </div>
                             <span className="text-[10px] text-amber-300 font-mono flex items-center gap-1">
                               <img
-                                src="/assets/items/moneda_de_moonhaven.png"
+                                src="/assets/items/moneda_de_moonhaven.webp"
                                 alt="Oro"
                                 className="w-3 h-3 object-contain"
                               />
@@ -977,13 +977,13 @@ export const AuctionHouseModal: React.FC<AuctionHouseModalProps> = ({ isOpen, on
                               className="relative h-8 px-3 flex items-center justify-center cursor-pointer transition-transform active:scale-95"
                             >
                               <img
-                                src="/assets/items/boton_boton_tienda.png"
+                                src="/assets/items/boton_boton_tienda.webp"
                                 alt=""
                                 className="absolute inset-0 w-full h-full object-fill pointer-events-none drop-shadow"
                               />
                               <span className="relative z-10 font-serif font-black text-stone-950 text-xs flex items-center gap-1">
                                 <img
-                                  src="/assets/items/moneda_de_moonhaven.png"
+                                  src="/assets/items/moneda_de_moonhaven.webp"
                                   alt="Oro"
                                   className="w-3.5 h-3.5 object-contain"
                                 />

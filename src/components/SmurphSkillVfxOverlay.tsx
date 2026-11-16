@@ -944,7 +944,7 @@ export const SmurphSkillVfxOverlay: React.FC<SmurphSkillVfxOverlayProps> = ({
                     }}
                   >
                     <img
-                      src="/assets/combat/smurph_vfx_fireball.png"
+                      src="/assets/combat/smurph_vfx_fireball.webp"
                       alt="Bola de Fuego Dracónica"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain"
@@ -976,7 +976,7 @@ export const SmurphSkillVfxOverlay: React.FC<SmurphSkillVfxOverlayProps> = ({
                     }}
                   >
                     <img
-                      src="/assets/combat/prometeo_vfx_boom.png"
+                      src="/assets/combat/prometeo_vfx_boom.webp"
                       alt="BOOM!"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain animate-[smurphComicPop_0.46s_cubic-bezier(0.22,1.28,0.36,1)_forwards]"
@@ -1006,14 +1006,14 @@ export const SmurphSkillVfxOverlay: React.FC<SmurphSkillVfxOverlayProps> = ({
                 }}
               >
                 <img
-                  src="/assets/combat/smurph_vfx_rayo.png"
+                  src="/assets/combat/smurph_vfx_rayo.webp"
                   alt="Aliento de Rayo Dracónico"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-fill"
                   style={{ filter: lightningFilter }}
                 />
                 <img
-                  src="/assets/combat/smurph_vfx_rayo.png"
+                  src="/assets/combat/smurph_vfx_rayo.webp"
                   alt=""
                   referrerPolicy="no-referrer"
                   className="absolute inset-0 w-full h-full object-fill pointer-events-none"
@@ -1044,7 +1044,7 @@ export const SmurphSkillVfxOverlay: React.FC<SmurphSkillVfxOverlayProps> = ({
                 }`}
               >
                 <img
-                  src="/assets/combat/smurph_vfx_impacto.png"
+                  src="/assets/combat/smurph_vfx_impacto.webp"
                   alt="Descarga Voltaica"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain animate-[smurphSeismicImpactPop_0.54s_cubic-bezier(0.16,1,0.3,1)_forwards]"
@@ -1068,7 +1068,7 @@ export const SmurphSkillVfxOverlay: React.FC<SmurphSkillVfxOverlayProps> = ({
                     }}
                   >
                     <img
-                      src="/assets/combat/giovani_vfx_zap.png"
+                      src="/assets/combat/giovani_vfx_zap.webp"
                       alt="ZAP!"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain animate-[smurphComicPop_0.46s_cubic-bezier(0.22,1.28,0.36,1)_forwards]"
@@ -1092,7 +1092,7 @@ export const SmurphSkillVfxOverlay: React.FC<SmurphSkillVfxOverlayProps> = ({
                 }`}
               >
                 <img
-                  src="/assets/combat/smurph_vfx_impacto.png"
+                  src="/assets/combat/smurph_vfx_impacto.webp"
                   alt="Impacto Sísmico"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain animate-[smurphSeismicImpactPop_0.6s_cubic-bezier(0.16,1,0.3,1)_forwards]"
@@ -1111,7 +1111,7 @@ export const SmurphSkillVfxOverlay: React.FC<SmurphSkillVfxOverlayProps> = ({
                 }`}
               >
                 <img
-                  src="/assets/combat/smurph_vfx_impacto.png"
+                  src="/assets/combat/smurph_vfx_impacto.webp"
                   alt="Colapso Dracónico"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain animate-[smurphSeismicImpactPop_0.62s_cubic-bezier(0.16,1,0.3,1)_forwards]"
@@ -1127,7 +1127,7 @@ export const SmurphSkillVfxOverlay: React.FC<SmurphSkillVfxOverlayProps> = ({
                 }`}
               >
                 <img
-                  src="/assets/combat/prometeo_vfx_boom.png"
+                  src="/assets/combat/prometeo_vfx_boom.webp"
                   alt="BOOM!"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain animate-[smurphComicPop_0.54s_cubic-bezier(0.22,1.28,0.36,1)_forwards]"

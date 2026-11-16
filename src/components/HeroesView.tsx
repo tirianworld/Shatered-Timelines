@@ -39,9 +39,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Vanguardia de Acero',
     rarity: 'SR',
     attribute: 'Natural',
-    portrait: '/assets/portraits/edacorn_icono.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo natural.png',
+    portrait: '/assets/portraits/edacorn_icono.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo natural.webp',
     level: 1,
     hp: 1380,
     attack: 245,
@@ -55,9 +55,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Paladín Enano Alado',
     rarity: 'SR',
     attribute: 'Divino',
-    portrait: '/assets/portraits/chispo_deez_icono.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo fe.png',
+    portrait: '/assets/portraits/chispo_deez_icono.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo fe.webp',
     level: 1,
     hp: 1450,
     attack: 275,
@@ -71,9 +71,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Guardián Acorazado',
     rarity: 'SR',
     attribute: 'Divino',
-    portrait: '/assets/portraits/kurogame_icono.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo fe.png',
+    portrait: '/assets/portraits/kurogame_icono.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo fe.webp',
     level: 1,
     hp: 1200,
     attack: 260,
@@ -87,9 +87,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Gran Cruzado Veterano',
     rarity: 'SR',
     attribute: 'Natural',
-    portrait: '/assets/portraits/pepe_loux.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo natural.png',
+    portrait: '/assets/portraits/pepe_loux.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo natural.webp',
     level: 1,
     hp: 1450,
     attack: 280,
@@ -103,9 +103,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Campeón de la Flor de Lis',
     rarity: 'SR',
     attribute: 'Arcano',
-    portrait: '/assets/portraits/luminor_icono.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo arcano.png',
+    portrait: '/assets/portraits/luminor_icono.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo arcano.webp',
     level: 1,
     hp: 1100,
     attack: 310,
@@ -119,9 +119,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Señor de la Horda Orco',
     rarity: 'SR',
     attribute: 'Profano',
-    portrait: '/assets/portraits/gromock_icono.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo OSCURO.png',
+    portrait: '/assets/portraits/gromock_icono.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo OSCURO.webp',
     level: 1,
     hp: 1380,
     attack: 295,
@@ -137,9 +137,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Bribón Emplumado',
     rarity: 'SR',
     attribute: 'Profano',
-    portrait: '/assets/portraits/giovani_vazquez_icono.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo OSCURO.png',
+    portrait: '/assets/portraits/giovani_vazquez_icono.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo OSCURO.webp',
     level: 1,
     hp: 980,
     attack: 310,
@@ -153,9 +153,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Señor del Mercado Negro',
     rarity: 'SSR',
     attribute: 'Profano',
-    portrait: '/assets/portraits/el_baron_icono.png',
-    frame: '/assets/ui/marco_ssr.png',
-    orb: '/assets/items/atributo OSCURO.png',
+    portrait: '/assets/portraits/el_baron_icono.webp',
+    frame: '/assets/ui/marco_ssr.webp',
+    orb: '/assets/items/atributo OSCURO.webp',
     level: 1,
     hp: 1400,
     attack: 360,
@@ -169,9 +169,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Sombra Dracónica',
     rarity: 'R',
     attribute: 'Divino',
-    portrait: '/assets/portraits/wrathion_icono.png',
-    frame: '/assets/ui/marco_r.png',
-    orb: '/assets/items/atributo fe.png',
+    portrait: '/assets/portraits/wrathion_icono.webp',
+    frame: '/assets/ui/marco_r.webp',
+    orb: '/assets/items/atributo fe.webp',
     level: 1,
     hp: 850,
     attack: 220,
@@ -185,9 +185,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Drow Asesina',
     rarity: 'R',
     attribute: 'Natural',
-    portrait: '/assets/portraits/widow_icono.png',
-    frame: '/assets/ui/marco_r.png',
-    orb: '/assets/items/atributo natural.png',
+    portrait: '/assets/portraits/widow_icono.webp',
+    frame: '/assets/ui/marco_r.webp',
+    orb: '/assets/items/atributo natural.webp',
     level: 1,
     hp: 820,
     attack: 240,
@@ -201,9 +201,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Cazador de Sangre Ígneo',
     rarity: 'SR',
     attribute: 'Profano',
-    portrait: '/assets/portraits/prometeo.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo OSCURO.png',
+    portrait: '/assets/portraits/prometeo.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo OSCURO.webp',
     level: 1,
     hp: 1180,
     attack: 350,
@@ -219,9 +219,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Pícaro de la Frontera',
     rarity: 'SR',
     attribute: 'Arcano',
-    portrait: '/assets/portraits/barled.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo arcano.png',
+    portrait: '/assets/portraits/barled.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo arcano.webp',
     level: 1,
     hp: 1150,
     attack: 300,
@@ -235,9 +235,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Pistolero Errante',
     rarity: 'SR',
     attribute: 'Natural',
-    portrait: '/assets/portraits/kairon.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo natural.png',
+    portrait: '/assets/portraits/kairon.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo natural.webp',
     level: 1,
     hp: 1200,
     attack: 310,
@@ -251,9 +251,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Bárbaro Druida',
     rarity: 'SR',
     attribute: 'Natural',
-    portrait: '/assets/portraits/ragnavaldr.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo natural.png',
+    portrait: '/assets/portraits/ragnavaldr.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo natural.webp',
     level: 1,
     hp: 1420,
     attack: 305,
@@ -267,9 +267,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Hechicero Dracónico',
     rarity: 'SR',
     attribute: 'Arcano',
-    portrait: '/assets/portraits/smurph_draco.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo arcano.png',
+    portrait: '/assets/portraits/smurph_draco.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo arcano.webp',
     level: 1,
     hp: 1140,
     attack: 345,
@@ -285,9 +285,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Nigromante Oscuro',
     rarity: 'SR',
     attribute: 'Profano',
-    portrait: '/assets/portraits/Magordito.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo OSCURO.png',
+    portrait: '/assets/portraits/Magordito.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo OSCURO.webp',
     level: 1,
     hp: 1350,
     attack: 310,
@@ -301,9 +301,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Búho Sabio Arcano',
     rarity: 'SR',
     attribute: 'Arcano',
-    portrait: '/assets/portraits/alma_fellas.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo arcano.png',
+    portrait: '/assets/portraits/alma_fellas.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo arcano.webp',
     level: 1,
     hp: 950,
     attack: 315,
@@ -317,9 +317,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Barda de la Lira y el Rapier',
     rarity: 'SR',
     attribute: 'Arcano',
-    portrait: '/assets/portraits/roxanne.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo arcano.png',
+    portrait: '/assets/portraits/roxanne.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo arcano.webp',
     level: 1,
     hp: 1040,
     attack: 295,
@@ -333,9 +333,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Monje de los Cien Golpes',
     rarity: 'SR',
     attribute: 'Profano',
-    portrait: '/assets/portraits/arlem_diaz_icono.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo OSCURO.png',
+    portrait: '/assets/portraits/arlem_diaz_icono.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo OSCURO.webp',
     level: 1,
     hp: 1250,
     attack: 300,
@@ -349,9 +349,9 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     title: 'Boticario de Icespear',
     rarity: 'SR',
     attribute: 'Natural',
-    portrait: '/assets/portraits/raxxar.png',
-    frame: '/assets/ui/marco_sr.png',
-    orb: '/assets/items/atributo natural.png',
+    portrait: '/assets/portraits/raxxar.webp',
+    frame: '/assets/ui/marco_sr.webp',
+    orb: '/assets/items/atributo natural.webp',
     level: 1,
     hp: 1100,
     attack: 290,
@@ -383,11 +383,11 @@ export const HeroesView: React.FC = () => {
 
   // 5 Authentic top filter cards: CC, Vida, Damage, Bond, Defense
   const allFilterCards = [
-    { id: 'cc', label: 'CC', img: '/assets/items/Combat Class.png' },
-    { id: 'vida', label: 'Vida', img: '/assets/items/vida_ui.png' },
-    { id: 'damage', label: 'Damage', img: '/assets/items/dano_ui.png' },
-    { id: 'bond', label: 'Bond', img: '/assets/items/recurso_18_4x_ui.png' },
-    { id: 'defense', label: 'Defense', img: '/assets/items/defense_ui.png' },
+    { id: 'cc', label: 'CC', img: '/assets/items/Combat Class.webp' },
+    { id: 'vida', label: 'Vida', img: '/assets/items/vida_ui.webp' },
+    { id: 'damage', label: 'Damage', img: '/assets/items/dano_ui.webp' },
+    { id: 'bond', label: 'Bond', img: '/assets/items/recurso_18_4x_ui.webp' },
+    { id: 'defense', label: 'Defense', img: '/assets/items/defense_ui.webp' },
   ];
 
   // Exactly 4 filter cards visible on the wooden plaque at a time
@@ -449,7 +449,7 @@ export const HeroesView: React.FC = () => {
       <div className="relative w-full h-[72px] sm:h-[80px] overflow-hidden rounded-xl flex items-center justify-between px-2 sm:px-3 shrink-0 shadow-xl border-2 border-[#541e0b] bg-[#3a180b]">
         {/* Carved Wood Plaque Asset (wide wood board) */}
         <img
-          src="/assets/items/recurso_24_4x.png"
+          src="/assets/items/recurso_24_4x.webp"
           alt=""
           className="absolute inset-0 w-full h-[180%] -top-[52%] object-cover pointer-events-none select-none drop-shadow"
         />
@@ -463,7 +463,7 @@ export const HeroesView: React.FC = () => {
           aria-label="Filtro Anterior"
         >
           <img
-            src="/assets/items/recurso_25_4x.png"
+            src="/assets/items/recurso_25_4x.webp"
             alt="Anterior"
             className="w-full h-full object-contain filter drop-shadow scale-x-[-1]"
           />
@@ -507,7 +507,7 @@ export const HeroesView: React.FC = () => {
           aria-label="Siguiente Filtro"
         >
           <img
-            src="/assets/items/recurso_25_4x.png"
+            src="/assets/items/recurso_25_4x.webp"
             alt="Siguiente"
             className="w-full h-full object-contain filter drop-shadow"
           />
@@ -617,21 +617,21 @@ export const HeroesView: React.FC = () => {
       <div className="relative flex-1 w-full rounded-[22px] sm:rounded-[26px] overflow-hidden flex flex-col min-h-0 bg-[#deb77c] shadow-2xl mb-20 sm:mb-22">
         {/* Authentic Parchment Texture Background Asset */}
         <img
-          src="/assets/backgrounds/fondo_personajes.png"
+          src="/assets/backgrounds/fondo_personajes.webp"
           alt=""
           className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none opacity-95"
         />
 
         {/* Authentic Inner Double-Line Looped Border Asset (fondo_basec.png) */}
         <img
-          src="/assets/backgrounds/fondo_basec.png"
+          src="/assets/backgrounds/fondo_basec.webp"
           alt=""
           className="absolute inset-3 w-[calc(100%-24px)] h-[calc(100%-24px)] object-cover pointer-events-none select-none mix-blend-multiply opacity-65 z-0"
         />
 
-        {/* USER FRAME ASSET: MARCO_6770fadb.png enclosing the heroes parchment paper */}
+        {/* USER FRAME ASSET: MARCO_6770fadb.webp enclosing the heroes parchment paper */}
         <img
-          src="/assets/aistudio/MARCO_6770fadb.png"
+          src="/assets/aistudio/MARCO_6770fadb.webp"
           alt="Marco Pergamino"
           className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none z-20 drop-shadow-xl"
         />
@@ -741,7 +741,7 @@ export const HeroesView: React.FC = () => {
           <div className="relative w-full max-w-[380px] h-[82vh] max-h-[680px] flex flex-col">
             {/* Authentic Hero Sheet Background Asset (fondo_personajes_1.png) */}
             <img
-              src="/assets/backgrounds/fondo_personajes_1.png"
+              src="/assets/backgrounds/fondo_personajes_1.webp"
               alt=""
               className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none drop-shadow-2xl"
             />
@@ -757,7 +757,7 @@ export const HeroesView: React.FC = () => {
               title="Cerrar"
             >
               <img
-                src="/assets/ui/sello_cerrar.png"
+                src="/assets/ui/sello_cerrar.webp"
                 alt="Cerrar"
                 className="w-full h-full object-contain filter group-hover:brightness-110 drop-shadow"
               />
@@ -1018,7 +1018,7 @@ export const HeroesView: React.FC = () => {
                   className="relative px-4 py-1.5 text-xs font-black text-amber-950 uppercase tracking-wide cursor-pointer hover:brightness-110 active:scale-95 transition-transform flex items-center justify-center shadow-md"
                 >
                   <img
-                    src="/assets/items/BOTON BOTON TIENDA.png"
+                    src="/assets/items/BOTON BOTON TIENDA.webp"
                     alt=""
                     className="absolute inset-0 w-full h-full object-cover rounded pointer-events-none"
                   />

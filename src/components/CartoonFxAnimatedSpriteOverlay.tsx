@@ -219,14 +219,14 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Floor expanding fire ring */}
               <img
-                src="/assets/cfxr/graphics/cfxr-fire-circle-crisp.png"
+                src="/assets/cfxr/graphics/cfxr-fire-circle-crisp.webp"
                 alt=""
                 className="absolute bottom-4 w-[240px] h-[120px] object-contain animate-[cfxrRingExpand_0.75s_ease-out_forwards] filter drop-shadow-[0_0_24px_#f97316]"
                 style={{ mixBlendMode: 'screen' }}
               />
               {/* Central 8-Frame Animated CFXR Roaring Flame Spritesheet */}
               <CFXRSpriteSheet
-                src="/assets/cfxr/graphics/cfxr-fire-small-anim.png"
+                src="/assets/cfxr/graphics/cfxr-fire-small-anim.webp"
                 cols={4}
                 rows={2}
                 fps={15}
@@ -236,7 +236,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
               />
               {/* 4-Frame Smoke Cloud Plume */}
               <CFXRSpriteSheet
-                src="/assets/cfxr/graphics/cfxr-smoke-cloud-x4.png"
+                src="/assets/cfxr/graphics/cfxr-smoke-cloud-x4.webp"
                 cols={4}
                 rows={1}
                 fps={8}
@@ -291,7 +291,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
 
               {/* Ground Expanding Shockwave Ring */}
               <img
-                src="/assets/cfxr/graphics/cfxr-ring-electric-cyan.png"
+                src="/assets/cfxr/graphics/cfxr-ring-electric-cyan.webp"
                 alt=""
                 className="absolute bottom-2 w-[270px] h-[135px] object-contain animate-[cfxrRingExpand_0.65s_ease-out_forwards] filter drop-shadow-[0_0_24px_#00f7ff] z-10"
                 style={{ mixBlendMode: 'screen' }}
@@ -308,14 +308,14 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Electric Shockwave Ring */}
               <img
-                src="/assets/cfxr/graphics/cfxr-ring-electric-cyan.png"
+                src="/assets/cfxr/graphics/cfxr-ring-electric-cyan.webp"
                 alt=""
                 className="absolute bottom-6 w-[250px] h-[130px] object-contain animate-[cfxrRingExpand_0.65s_ease-out_forwards] filter drop-shadow-[0_0_26px_#00f7ff]"
                 style={{ mixBlendMode: 'screen' }}
               />
               {/* 8-Frame Animated High-Voltage Electric Arc Sheet */}
               <CFXRSpriteSheet
-                src="/assets/cfxr/graphics/cfxr-electric-small-anim-4x2-cyan.png"
+                src="/assets/cfxr/graphics/cfxr-electric-small-anim-4x2-cyan.webp"
                 cols={4}
                 rows={2}
                 fps={18}
@@ -325,7 +325,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
               />
               {/* Additional Electric Arc Burst */}
               <CFXRSpriteSheet
-                src="/assets/cfxr/graphics/cfxr-electric-arc-anim-x4-cyan.png"
+                src="/assets/cfxr/graphics/cfxr-electric-arc-anim-x4-cyan.webp"
                 cols={4}
                 rows={1}
                 fps={14}
@@ -347,8 +347,8 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
               <img
                 src={
                   skillType.includes('claw')
-                    ? '/assets/cfxr/graphics/cfxr-sword-trail-mask-light-crimson.png'
-                    : '/assets/cfxr/graphics/cfxr-sword-trail-mask-light.png'
+                    ? '/assets/cfxr/graphics/cfxr-sword-trail-mask-light-crimson.webp'
+                    : '/assets/cfxr/graphics/cfxr-sword-trail-mask-light.webp'
                 }
                 alt=""
                 className="absolute inset-0 w-full h-full object-contain animate-[cfxrSlashSweepA_0.42s_ease-out_forwards] filter drop-shadow-[0_0_24px_#ef4444]"
@@ -356,20 +356,20 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
               />
               {/* Secondary Cross-Cut Slash Trail Sprite */}
               <img
-                src="/assets/cfxr/graphics/cfxr-sword-trail-mask-light-crimson.png"
+                src="/assets/cfxr/graphics/cfxr-sword-trail-mask-light-crimson.webp"
                 alt=""
                 className="absolute inset-0 w-full h-full object-contain animate-[cfxrSlashSweepB_0.38s_ease-out_forwards] filter drop-shadow-[0_0_22px_#dc2626]"
                 style={{ mixBlendMode: 'screen' }}
               />
               {/* Animated Blood Splash Sprite on Impact */}
               <img
-                src="/assets/cfxr/graphics/cfxr-blood-splash.png"
+                src="/assets/cfxr/graphics/cfxr-blood-splash.webp"
                 alt=""
                 className="absolute w-[180px] h-[180px] object-contain animate-[cfxrBloodBurst_0.48s_ease-out_forwards] filter drop-shadow-[0_0_18px_#b91c1c]"
               />
               {/* Sharp CFXR Hit Spikes */}
               <img
-                src="/assets/cfxr/graphics/cfxr-spikes-impact.png"
+                src="/assets/cfxr/graphics/cfxr-spikes-impact.webp"
                 alt=""
                 className="absolute w-[160px] h-[160px] object-contain animate-[cfxrSpikePop_0.4s_ease-out_forwards] filter drop-shadow-[0_0_20px_#fbbf24]"
                 style={{ mixBlendMode: 'screen' }}
@@ -382,14 +382,14 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Ground Ice Ring Sprite */}
               <img
-                src="/assets/cfxr/graphics/cfxr-ring-ice.png"
+                src="/assets/cfxr/graphics/cfxr-ring-ice.webp"
                 alt=""
                 className="absolute bottom-6 w-[260px] h-[130px] object-contain animate-[cfxrRingExpand_0.7s_ease-out_forwards] filter drop-shadow-[0_0_26px_#38bdf8]"
                 style={{ mixBlendMode: 'screen' }}
               />
               {/* 4-Frame Animated Ice Debris Spritesheet (2x2) */}
               <CFXRSpriteSheet
-                src="/assets/cfxr/graphics/cfxr-debris-ice-2x2.png"
+                src="/assets/cfxr/graphics/cfxr-debris-ice-2x2.webp"
                 cols={2}
                 rows={2}
                 fps={10}
@@ -399,7 +399,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
               />
               {/* Cyan Ice Spikes Impact */}
               <img
-                src="/assets/cfxr/graphics/cfxr-spikes-impact-cyan.png"
+                src="/assets/cfxr/graphics/cfxr-spikes-impact-cyan.webp"
                 alt=""
                 className="absolute bottom-8 w-[200px] h-[200px] object-contain animate-[cfxrSpikePop_0.6s_ease-out_forwards] filter drop-shadow-[0_0_24px_#38bdf8]"
                 style={{ mixBlendMode: 'screen' }}
@@ -412,14 +412,14 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Ground Earth Shockwave */}
               <img
-                src="/assets/cfxr/graphics/cfxr-ring-spikes-revert.png"
+                src="/assets/cfxr/graphics/cfxr-ring-spikes-revert.webp"
                 alt=""
                 className="absolute bottom-6 w-[260px] h-[140px] object-contain animate-[cfxrRingExpand_0.75s_ease-out_forwards] filter drop-shadow-[0_0_24px_#d97706]"
                 style={{ mixBlendMode: 'screen' }}
               />
               {/* 9-Frame Animated Rock Debris Spritesheet (3x3) */}
               <CFXRSpriteSheet
-                src="/assets/cfxr/graphics/cfxr-debris-3x3.png"
+                src="/assets/cfxr/graphics/cfxr-debris-3x3.webp"
                 cols={3}
                 rows={3}
                 fps={14}
@@ -428,7 +428,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
               />
               {/* Erupting Gold Spikes Impact */}
               <img
-                src="/assets/cfxr/graphics/cfxr-spikes-impact-gold.png"
+                src="/assets/cfxr/graphics/cfxr-spikes-impact-gold.webp"
                 alt=""
                 className="absolute bottom-8 w-[220px] h-[220px] object-contain animate-[cfxrSpikePop_0.6s_ease-out_forwards] filter drop-shadow-[0_0_28px_#f59e0b]"
                 style={{ mixBlendMode: 'screen' }}
@@ -446,21 +446,21 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Expanding Crimson/Purple Ripple */}
               <img
-                src="/assets/cfxr/graphics/cfxr-ring-ripple-dissolve-crimson.png"
+                src="/assets/cfxr/graphics/cfxr-ring-ripple-dissolve-crimson.webp"
                 alt=""
                 className="absolute bottom-6 w-[260px] h-[140px] object-contain animate-[cfxrRingExpand_0.8s_ease-out_forwards] filter drop-shadow-[0_0_26px_#7c3aed]"
                 style={{ mixBlendMode: 'screen' }}
               />
               {/* Spinning Dark Runic Aura */}
               <img
-                src="/assets/cfxr/graphics/cfxr-aura-runic-purple.png"
+                src="/assets/cfxr/graphics/cfxr-aura-runic-purple.webp"
                 alt=""
                 className="absolute w-[220px] h-[220px] object-contain animate-[cfxrStarSpin_0.85s_ease-out_forwards] filter drop-shadow-[0_0_30px_#a855f7]"
                 style={{ mixBlendMode: 'screen' }}
               />
               {/* Animated Dissolving Purple Skull */}
               <img
-                src="/assets/cfxr/graphics/cfxr-skull-dissolve-violet.png"
+                src="/assets/cfxr/graphics/cfxr-skull-dissolve-violet.webp"
                 alt=""
                 className="absolute top-2 w-[210px] h-[210px] object-contain animate-[cfxrSkullPop_0.75s_ease-out_forwards] filter drop-shadow-[0_0_32px_#6d28d9]"
                 style={{ mixBlendMode: 'screen' }}
@@ -473,7 +473,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Animated Water/Acid Drop Spritesheet */}
               <CFXRSpriteSheet
-                src="/assets/cfxr/graphics/cfxr-water-drop-blur-anim.png"
+                src="/assets/cfxr/graphics/cfxr-water-drop-blur-anim.webp"
                 cols={2}
                 rows={3}
                 fps={12}
@@ -483,14 +483,14 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
               />
               {/* Popping Toxic Bubbles */}
               <img
-                src="/assets/cfxr/graphics/cfxr-bubble-2.png"
+                src="/assets/cfxr/graphics/cfxr-bubble-2.webp"
                 alt=""
                 className="absolute w-[180px] h-[180px] object-contain animate-[cfxrHitPop_0.6s_ease-out_forwards] filter drop-shadow-[0_0_24px_#34d399]"
                 style={{ mixBlendMode: 'screen' }}
               />
               {/* Splashing Acid */}
               <img
-                src="/assets/cfxr/graphics/cfxr-water-small-splash-stretch.png"
+                src="/assets/cfxr/graphics/cfxr-water-small-splash-stretch.webp"
                 alt=""
                 className="absolute bottom-6 w-[230px] h-[120px] object-contain animate-[cfxrRingExpand_0.6s_ease-out_forwards] filter drop-shadow-[0_0_20px_#22c55e]"
                 style={{ mixBlendMode: 'screen' }}
@@ -503,21 +503,21 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Massive Golden Electric Ring */}
               <img
-                src="/assets/cfxr/graphics/cfxr-ring-electric-gold.png"
+                src="/assets/cfxr/graphics/cfxr-ring-electric-gold.webp"
                 alt=""
                 className="absolute w-[340px] h-[340px] object-contain animate-[cfxrRingExpand_1.1s_ease-out_forwards] filter drop-shadow-[0_0_40px_#f59e0b]"
                 style={{ mixBlendMode: 'screen' }}
               />
               {/* Rotating Celestial Rays Aura */}
               <img
-                src="/assets/cfxr/graphics/cfxr-aura-rays.png"
+                src="/assets/cfxr/graphics/cfxr-aura-rays.webp"
                 alt=""
                 className="absolute w-[360px] h-[360px] object-contain animate-[cfxrStarSpin_1.3s_ease-out_forwards] filter drop-shadow-[0_0_45px_#facc15]"
                 style={{ mixBlendMode: 'screen' }}
               />
               {/* Giant CFXR Magic Star Gold */}
               <img
-                src="/assets/cfxr/graphics/cfxr-magic-star-gold.png"
+                src="/assets/cfxr/graphics/cfxr-magic-star-gold.webp"
                 alt=""
                 className="w-[280px] h-[280px] object-contain animate-[cfxrStarSpin_1.0s_ease-out_forwards] filter drop-shadow-[0_0_50px_#ffffff]"
                 style={{ mixBlendMode: 'screen' }}
@@ -529,19 +529,19 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
           {(skillType === 'roxanne_velada' || skillType === 'roxanne_inspiracion' || skillType?.includes('velada')) && (
             <div className="relative w-full h-full flex items-center justify-center pointer-events-none">
               <img
-                src="/assets/cfxr/graphics/cfxr-ring-electric-violet.png"
+                src="/assets/cfxr/graphics/cfxr-ring-electric-violet.webp"
                 alt=""
                 className="absolute w-[290px] h-[290px] object-contain animate-[cfxrRingExpand_0.85s_ease-out_forwards] filter drop-shadow-[0_0_30px_#ec4899] hue-rotate-[320deg]"
                 style={{ mixBlendMode: 'screen' }}
               />
               <img
-                src="/assets/cfxr/graphics/cfxr-heart.png"
+                src="/assets/cfxr/graphics/cfxr-heart.webp"
                 alt=""
                 className="absolute w-[180px] h-[180px] object-contain animate-[cfxrStarSpin_0.9s_ease-out_forwards] filter drop-shadow-[0_0_35px_#f43f5e] drop-shadow-[0_0_20px_#ec4899]"
                 style={{ mixBlendMode: 'screen' }}
               />
               <img
-                src="/assets/cfxr/graphics/cfxr-heart-break-parts.png"
+                src="/assets/cfxr/graphics/cfxr-heart-break-parts.webp"
                 alt=""
                 className="absolute w-[160px] h-[160px] object-contain animate-[cfxrHitPop_0.8s_ease-out_forwards] filter drop-shadow-[0_0_25px_#ec4899]"
                 style={{ mixBlendMode: 'screen' }}
@@ -553,13 +553,13 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
           {skillType === 'roxanne_estocada' && (
             <div className="relative w-full h-full flex items-center justify-center pointer-events-none">
               <img
-                src="/assets/cfxr/graphics/cfxr-sword-trail-mask-light-crimson.png"
+                src="/assets/cfxr/graphics/cfxr-sword-trail-mask-light-crimson.webp"
                 alt=""
                 className="absolute w-[260px] h-[260px] object-contain animate-[cfxrSlashSweepA_0.6s_ease-out_forwards] filter drop-shadow-[0_0_30px_#ec4899] hue-rotate-[290deg]"
                 style={{ mixBlendMode: 'screen' }}
               />
               <img
-                src="/assets/cfxr/graphics/cfxr-spikes-impact-cyan.png"
+                src="/assets/cfxr/graphics/cfxr-spikes-impact-cyan.webp"
                 alt=""
                 className="absolute bottom-6 w-[200px] h-[200px] object-contain animate-[cfxrSpikePop_0.5s_ease-out_forwards] filter drop-shadow-[0_0_25px_#f43f5e] hue-rotate-[280deg]"
                 style={{ mixBlendMode: 'screen' }}
@@ -586,7 +586,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             {/* FIRE HIT: 8-Frame Flame Burst */}
             {burst.damageType === 'fire' && (
               <CFXRSpriteSheet
-                src="/assets/cfxr/graphics/cfxr-fire-small-anim.png"
+                src="/assets/cfxr/graphics/cfxr-fire-small-anim.webp"
                 cols={4}
                 rows={2}
                 fps={18}
@@ -599,7 +599,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             {/* COLD HIT: 4-Frame Ice Shatter */}
             {burst.damageType === 'cold' && (
               <CFXRSpriteSheet
-                src="/assets/cfxr/graphics/cfxr-debris-ice-2x2.png"
+                src="/assets/cfxr/graphics/cfxr-debris-ice-2x2.webp"
                 cols={2}
                 rows={2}
                 fps={12}
@@ -612,7 +612,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             {/* LIGHTNING HIT: 4-Frame Electric Arc */}
             {burst.damageType === 'lightning' && (
               <CFXRSpriteSheet
-                src="/assets/cfxr/graphics/cfxr-electric-arc-anim-x4-cyan.png"
+                src="/assets/cfxr/graphics/cfxr-electric-arc-anim-x4-cyan.webp"
                 cols={4}
                 rows={1}
                 fps={16}
@@ -626,13 +626,13 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             {(burst.damageType === 'slashing' || burst.damageType === 'piercing') && (
               <div className="relative w-full h-full flex items-center justify-center">
                 <img
-                  src="/assets/cfxr/graphics/cfxr-sword-trail-mask-light-crimson.png"
+                  src="/assets/cfxr/graphics/cfxr-sword-trail-mask-light-crimson.webp"
                   alt=""
                   className="absolute inset-0 w-full h-full object-contain animate-[cfxrSlashSweepA_0.35s_ease-out_forwards] filter drop-shadow-[0_0_20px_#ef4444]"
                   style={{ mixBlendMode: 'screen' }}
                 />
                 <img
-                  src="/assets/cfxr/graphics/cfxr-blood-splash.png"
+                  src="/assets/cfxr/graphics/cfxr-blood-splash.webp"
                   alt=""
                   className="w-[140px] h-[140px] object-contain animate-[cfxrBloodBurst_0.42s_ease-out_forwards]"
                 />
@@ -642,7 +642,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             {/* BLUDGEONING HIT: 9-Frame Rock Impact Debris */}
             {burst.damageType === 'bludgeoning' && (
               <CFXRSpriteSheet
-                src="/assets/cfxr/graphics/cfxr-debris-3x3.png"
+                src="/assets/cfxr/graphics/cfxr-debris-3x3.webp"
                 cols={3}
                 rows={3}
                 fps={16}
@@ -654,7 +654,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             {/* NECROTIC / PSYCHIC HIT: Purple Skull Pop */}
             {(burst.damageType === 'necrotic' || burst.damageType === 'psychic') && (
               <img
-                src="/assets/cfxr/graphics/cfxr-skull-dissolve-violet.png"
+                src="/assets/cfxr/graphics/cfxr-skull-dissolve-violet.webp"
                 alt=""
                 className="w-[160px] h-[160px] object-contain animate-[cfxrSkullPop_0.48s_ease-out_forwards] filter drop-shadow-[0_0_26px_#a855f7]"
                 style={{ mixBlendMode: 'screen' }}
@@ -664,7 +664,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             {/* ACID / POISON HIT: Bubble Splash */}
             {(burst.damageType === 'acid' || burst.damageType === 'poison') && (
               <img
-                src="/assets/cfxr/graphics/cfxr-bubble-2.png"
+                src="/assets/cfxr/graphics/cfxr-bubble-2.webp"
                 alt=""
                 className="w-[160px] h-[160px] object-contain animate-[cfxrHitPop_0.45s_ease-out_forwards] filter drop-shadow-[0_0_22px_#10b981]"
                 style={{ mixBlendMode: 'screen' }}
@@ -674,7 +674,7 @@ export const CartoonFxAnimatedSpriteOverlay: React.FC<CartoonFxAnimatedSpriteOve
             {/* RADIANT / FORCE HIT: Magic Star Flash */}
             {(burst.damageType === 'radiant' || burst.damageType === 'force' || burst.damageType === 'thunder') && (
               <img
-                src="/assets/cfxr/graphics/cfxr-magic-star-gold.png"
+                src="/assets/cfxr/graphics/cfxr-magic-star-gold.webp"
                 alt=""
                 className="w-[160px] h-[160px] object-contain animate-[cfxrStarSpin_0.5s_ease-out_forwards] filter drop-shadow-[0_0_28px_#fbbf24]"
                 style={{ mixBlendMode: 'screen' }}

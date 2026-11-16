@@ -40,17 +40,17 @@ export const MagorditoSkillVfxOverlay: React.FC<MagorditoSkillVfxOverlayProps> =
   // Tier-specific bespoke cartoon sprites (clean & distinct per tier, zero visual clutter)
   const rayoSpriteUrl =
     tier === 3
-      ? '/assets/combat/magordito_vfx_rayo_t3.png'
+      ? '/assets/combat/magordito_vfx_rayo_t3.webp'
       : tier === 2
-      ? '/assets/combat/magordito_vfx_rayo_t2.png'
-      : '/assets/combat/magordito_vfx_rayo.png';
+      ? '/assets/combat/magordito_vfx_rayo_t2.webp'
+      : '/assets/combat/magordito_vfx_rayo.webp';
 
   const impactSpriteUrl =
     tier === 3
-      ? '/assets/combat/magordito_vfx_impacto_aqua_t3.png'
+      ? '/assets/combat/magordito_vfx_impacto_aqua_t3.webp'
       : tier === 2
-      ? '/assets/combat/magordito_vfx_impacto_aqua_t2.png'
-      : '/assets/combat/magordito_vfx_impacto_aqua.png';
+      ? '/assets/combat/magordito_vfx_impacto_aqua_t2.webp'
+      : '/assets/combat/magordito_vfx_impacto_aqua.webp';
 
   // Real-time 60fps Canvas AAA shader-grade particle, lightning-arc, shockwave & siphon engine
   useEffect(() => {
@@ -695,7 +695,7 @@ export const MagorditoSkillVfxOverlay: React.FC<MagorditoSkillVfxOverlayProps> =
                 }`}
               >
                 <img
-                  src="/assets/combat/magordito_vfx_bonk.png"
+                  src="/assets/combat/magordito_vfx_bonk.webp"
                   alt="BONK!"
                   referrerPolicy="no-referrer"
                   className={`w-full h-full object-contain ${

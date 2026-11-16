@@ -69,7 +69,7 @@ const guestProfile = (): PlayGamesProfile => ({
   isGuest: true,
   playerId: GUEST_PLAYER_ID,
   gamerTag: 'Invitado local',
-  avatarUrl: '/assets/portraits/edacorn icono.png',
+  avatarUrl: '/assets/portraits/edacorn icono.webp',
   unlockedAchievementsCount: 0,
   totalAchievementsCount: ACHIEVEMENT_CATALOG.length,
   lastLogin: Date.now(),
@@ -103,7 +103,7 @@ class PlayGamesService {
         this.profile = {
           ...guestProfile(),
           gamerTag: parsed.gamerTag || 'Invitado local',
-          avatarUrl: parsed.avatarUrl || '/assets/portraits/edacorn icono.png',
+          avatarUrl: parsed.avatarUrl || '/assets/portraits/edacorn icono.webp',
         };
       }
     } catch {
@@ -240,7 +240,7 @@ class PlayGamesService {
         isGuest: false,
         playerId: data.player?.playerId || GUEST_PLAYER_ID,
         gamerTag: data.player?.displayName || 'Jugador de Play Games',
-        avatarUrl: data.player?.avatarImageUrl || '/assets/portraits/edacorn icono.png',
+        avatarUrl: data.player?.avatarImageUrl || '/assets/portraits/edacorn icono.webp',
         title: data.player?.title || undefined,
         lastLogin: Date.now(),
         error: null,

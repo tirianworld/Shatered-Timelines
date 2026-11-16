@@ -30,8 +30,8 @@ export const DAILY_PRESENTERS: DailyPresenter[] = [
     id: 'edacorn',
     name: 'Edacorn',
     title: 'Vanguardia de Acero',
-    sprite: '/assets/combat/edacorn_idle.png',
-    portrait: '/assets/portraits/edacorn_icono.png',
+    sprite: '/assets/combat/edacorn_idle.webp',
+    portrait: '/assets/portraits/edacorn_icono.webp',
     accent: '#7dd3fc',
     attribute: 'Hielo',
     lines: {
@@ -50,8 +50,8 @@ export const DAILY_PRESENTERS: DailyPresenter[] = [
     id: 'magordito',
     name: 'Magordito',
     title: 'Nigromante Oscuro',
-    sprite: '/assets/combat/magordito_idle.png',
-    portrait: '/assets/portraits/Magordito.png',
+    sprite: '/assets/combat/magordito_idle.webp',
+    portrait: '/assets/portraits/Magordito.webp',
     accent: '#a78bfa',
     attribute: 'Profano',
     lines: {
@@ -70,8 +70,8 @@ export const DAILY_PRESENTERS: DailyPresenter[] = [
     id: 'pepe_loux',
     name: 'Pepe Loux',
     title: 'Patriarca de la Mansión Loux',
-    sprite: '/assets/combat/pepe_loux_idle.png',
-    portrait: '/assets/portraits/pepe_loux.png',
+    sprite: '/assets/combat/pepe_loux_idle.webp',
+    portrait: '/assets/portraits/pepe_loux.webp',
     accent: '#fbbf24',
     attribute: 'Divino',
     lines: {
@@ -90,8 +90,8 @@ export const DAILY_PRESENTERS: DailyPresenter[] = [
     id: 'arlem_diaz',
     name: 'Arlem Díaz',
     title: 'Bardo Trovador',
-    sprite: '/assets/combat/arlem_idle.png',
-    portrait: '/assets/portraits/arlem_diaz_icono.png',
+    sprite: '/assets/combat/arlem_idle.webp',
+    portrait: '/assets/portraits/arlem_diaz_icono.webp',
     accent: '#86efac',
     attribute: 'Natural',
     lines: {

@@ -116,7 +116,7 @@ const BLOOD_BOLTS_T3: readonly BloodBoltSpec[] = [
 const BOLT_ONOS_T1: readonly BoltOnoSpec[] = [
   {
     delayMs: 70,
-    src: '/assets/combat/raxxar_vfx_zap.png',
+    src: '/assets/combat/raxxar_vfx_zap.webp',
     alt: '¡ZAP!',
     rightPct: 6,
     bottomPct: 49,
@@ -128,7 +128,7 @@ const BOLT_ONOS_T1: readonly BoltOnoSpec[] = [
 const BOLT_ONOS_T2: readonly BoltOnoSpec[] = [
   {
     delayMs: 65,
-    src: '/assets/combat/raxxar_vfx_zap.png',
+    src: '/assets/combat/raxxar_vfx_zap.webp',
     alt: '¡ZAP!',
     rightPct: 12.5,
     bottomPct: 55,
@@ -137,7 +137,7 @@ const BOLT_ONOS_T2: readonly BoltOnoSpec[] = [
   },
   {
     delayMs: 215,
-    src: '/assets/combat/raxxar_vfx_zzzt.png',
+    src: '/assets/combat/raxxar_vfx_zzzt.webp',
     alt: '¡ZZZT!',
     rightPct: 2.5,
     bottomPct: 43,
@@ -149,7 +149,7 @@ const BOLT_ONOS_T2: readonly BoltOnoSpec[] = [
 const BOLT_ONOS_T3: readonly BoltOnoSpec[] = [
   {
     delayMs: 60,
-    src: '/assets/combat/raxxar_vfx_zap.png',
+    src: '/assets/combat/raxxar_vfx_zap.webp',
     alt: '¡ZAP!',
     rightPct: 14,
     bottomPct: 57,
@@ -158,7 +158,7 @@ const BOLT_ONOS_T3: readonly BoltOnoSpec[] = [
   },
   {
     delayMs: 185,
-    src: '/assets/combat/raxxar_vfx_zzzt.png',
+    src: '/assets/combat/raxxar_vfx_zzzt.webp',
     alt: '¡ZZZT!',
     rightPct: 2,
     bottomPct: 47,
@@ -167,7 +167,7 @@ const BOLT_ONOS_T3: readonly BoltOnoSpec[] = [
   },
   {
     delayMs: 315,
-    src: '/assets/combat/raxxar_vfx_tzzzk.png',
+    src: '/assets/combat/raxxar_vfx_tzzzk.webp',
     alt: '¡TZZZK!',
     rightPct: 5.5,
     bottomPct: 36,
@@ -992,14 +992,14 @@ export const RaxxarSkillVfxOverlay: React.FC<RaxxarSkillVfxOverlayProps> = ({
                       }}
                     >
                       <img
-                        src="/assets/combat/raxxar_vfx_tajo.png"
+                        src="/assets/combat/raxxar_vfx_tajo.webp"
                         alt="Tajo Carmesí"
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-contain"
                         style={{ filter: slashFilter }}
                       />
                       <img
-                        src="/assets/combat/raxxar_vfx_tajo.png"
+                        src="/assets/combat/raxxar_vfx_tajo.webp"
                         alt=""
                         referrerPolicy="no-referrer"
                         className="absolute inset-0 w-full h-full object-contain pointer-events-none"
@@ -1038,7 +1038,7 @@ export const RaxxarSkillVfxOverlay: React.FC<RaxxarSkillVfxOverlayProps> = ({
                     }}
                   >
                     <img
-                      src="/assets/combat/edacorn_vfx_slash.png"
+                      src="/assets/combat/edacorn_vfx_slash.webp"
                       alt="SLASH!"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain animate-[raxxarSlashOnoPop_0.46s_cubic-bezier(0.22,1.28,0.36,1)_forwards]"
@@ -1075,7 +1075,7 @@ export const RaxxarSkillVfxOverlay: React.FC<RaxxarSkillVfxOverlayProps> = ({
                     }}
                   >
                     <img
-                      src="/assets/combat/raxxar_vfx_rayo_sangre.png"
+                      src="/assets/combat/raxxar_vfx_rayo_sangre.webp"
                       alt="Rayo de Sangre"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-fill origin-left animate-[raxxarBloodBoltSnap_0.44s_cubic-bezier(0.16,1,0.3,1)_forwards]"
@@ -1107,14 +1107,14 @@ export const RaxxarSkillVfxOverlay: React.FC<RaxxarSkillVfxOverlayProps> = ({
                       }}
                     >
                       <img
-                        src="/assets/combat/raxxar_vfx_impacto.png"
+                        src="/assets/combat/raxxar_vfx_impacto.webp"
                         alt="Impacto Carmesí"
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-contain"
                         style={{ filter: 'url(#raxxar-impact-shader)' }}
                       />
                       <img
-                        src="/assets/combat/raxxar_vfx_impacto.png"
+                        src="/assets/combat/raxxar_vfx_impacto.webp"
                         alt=""
                         referrerPolicy="no-referrer"
                         className="absolute inset-0 w-full h-full object-contain pointer-events-none"

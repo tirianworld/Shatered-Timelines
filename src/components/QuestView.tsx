@@ -55,7 +55,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Facil',
       description:
         'El Capitán Gabriel odia a los aventureros, pero la bestia Cryovain ha masacrado a su guardia.',
-      portrait: '/assets/portraits/capitan_gabriel_clean.png',
+      portrait: '/assets/portraits/capitan_gabriel_clean.webp',
       portraitClass: 'scale-[1.12] translate-y-1 object-center',
       stageId: 'stage_1',
       isStory: true,
@@ -67,7 +67,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Facil',
       description:
         '¡El asalto a la mansión ha salido a la luz! Supera las 4 oleadas de la guardia urbana en el callejón y derrota al Sargento Acorazado.',
-      portrait: '/assets/combat/guardia_pesado_clean.png',
+      portrait: '/assets/combat/guardia_pesado_clean.webp',
       portraitClass: 'scale-[1.88] origin-top translate-y-[2px]',
       stageId: 'stage_2',
       isStory: false,
@@ -79,7 +79,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Normal',
       description:
         '¡Caldo de Dragón huye al bosque invernal! Un viejo vagabundo revela el secreto de la antigua colonia minera de plata de Glimmerstone... ¡emboscada goblin!',
-      portrait: '/assets/combat/goblin_garrote_clean.png',
+      portrait: '/assets/combat/goblin_garrote_clean.webp',
       portraitClass: 'scale-[1.95] origin-top translate-y-[8px]',
       stageId: 'stage_3_bosque',
       isStory: false,
@@ -91,7 +91,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Dificil',
       description:
         '¡Las colosales puertas enanas de Glimmerstone están selladas bajo el hielo! Enfréntate al Devorador Quitinoso en 2 fases para obtener su Coraza y codiciada Carne de Devorador para la cocina.',
-      portrait: '/assets/combat/devorador_quitinoso_clean.png',
+      portrait: '/assets/combat/devorador_quitinoso_clean.webp',
       portraitClass: 'scale-[1.5] origin-top translate-y-[2px]',
       stageId: 'stage_puertas_selladas',
       isStory: false,
@@ -107,7 +107,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Facil',
       description:
         'Caldo de Dragón cruza las Puertas Selladas descubriendo signos de actividad, una colonia enana aislada y un altivo emisario drow.',
-      portrait: '/assets/portraits/enanos_mineros_thumb.png',
+      portrait: '/assets/portraits/enanos_mineros_thumb.webp',
       portraitClass: 'scale-[1.12] translate-y-0.5 object-center',
       stageId: 'stage_cuevas_historia',
       isStory: true,
@@ -119,7 +119,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Normal',
       description:
         'Edacorn penetra en la cámara de cría de las cuevas carmesí y despierta sus alas espectrales. ¡Obtén valiosos Huevos y Larvas de Araknoide para la cocina de la taberna!',
-      portrait: '/assets/portraits/edacorn_alas_thumb.png',
+      portrait: '/assets/portraits/edacorn_alas_thumb.webp',
       portraitClass: 'scale-[1.12] translate-y-0.5 object-center',
       stageId: 'stage_cuevas_rojo',
       isStory: true,
@@ -131,7 +131,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Dificil',
       description:
         'Pepe Loux llega a una caverna congelada y halla a un enano semicongelado mutando por un virus parásito en la roca. ¡Erradica a los 4 acechadores gélidos!',
-      portrait: '/assets/portraits/enano_infectado_thumb.png',
+      portrait: '/assets/portraits/enano_infectado_thumb.webp',
       portraitClass: 'scale-[1.12] translate-y-0.5 object-center',
       stageId: 'stage_cuevas_azul',
       isStory: true,
@@ -143,7 +143,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Dificil',
       description:
         'El grupo se reúne ante la entrada prohibida al corazón de la colonia en el Underdark. Un pacto obligado con el drow y una emboscada con invocaciones os aguardan.',
-      portrait: '/assets/combat/semiboss_zancudo_clean.png',
+      portrait: '/assets/combat/semiboss_zancudo_clean.webp',
       portraitClass: 'scale-[1.8] origin-top translate-y-[10px]',
       stageId: 'stage_cuevas_zancudo',
       isStory: true,
@@ -155,7 +155,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Pesadilla',
       description:
         '¡Penúltima Cinemática de Capítulo! Ante las monumentales puertas arácnidas, Lord Vaelas revela la oscura verdad del artefacto y desata su traición.',
-      portrait: '/assets/portraits/drow_vaelas_llave_thumb.png',
+      portrait: '/assets/portraits/drow_vaelas_llave_thumb.webp',
       portraitClass: 'scale-[1.25] translate-y-0.5 object-center',
       stageId: 'stage_puerta_laberinto',
       isStory: true,
@@ -167,7 +167,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Pesadilla',
       description:
         '¡Cinemática Final y Epílogo del Capítulo 2! Caldo de Dragón llega a la aldea enana para anunciar la verdad y la apertura de las minas. Tras ello, en el laberinto, una misteriosa figura acecha...',
-      portrait: '/assets/portraits/drow_vaelas_despeinado_thumb.png',
+      portrait: '/assets/portraits/drow_vaelas_despeinado_thumb.webp',
       portraitClass: 'scale-[1.25] translate-y-0.5 object-center',
       stageId: 'stage_epilogo_aldea',
       isStory: true,
@@ -183,7 +183,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Facil',
       description:
         '¡Cinemática de Apertura del Capítulo 3! Caldo de Dragón sale de las minas al bosque nevado y divisa un campamento de orcos de élite. Arlem urde una desternillante estratagema con magia de ilusión...',
-      portrait: '/assets/portraits/arlem_orco_thumb.png',
+      portrait: '/assets/portraits/arlem_orco_thumb.webp',
       portraitClass: 'scale-[1.25] translate-y-0.5 object-center',
       stageId: 'stage_intro_capitulo3',
       isStory: true,
@@ -195,7 +195,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Pesadilla',
       description:
         '¡Combate en el Camino Nevado! Una comitiva clandestina con armaduras de ébano y oro carga suministros por orden de un Capataz Hobgoblin: "¡Cargadlas muchachos, Ferton no espera!". ¡Sobrevive a 3 oleadas de lanceros, ballesteros y caballeros acorazados!',
-      portrait: '/assets/portraits/guarda_negro_espada_thumb.png',
+      portrait: '/assets/portraits/guarda_negro_espada_thumb.webp',
       portraitClass: 'scale-[1.25] translate-y-0.5 object-center',
       stageId: 'stage_camino_ferton',
       isStory: true,
@@ -207,7 +207,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Pesadilla',
       description:
         '¡Duelo a Muerte contra el Capataz Hobgoblin! Tras la caída de su guardia, el furioso comandante insulta a sus soldados y se encara con Caldo de Dragón. ¡Una encarnizada boss fight en 3 fases: cuerpo a cuerpo, granadas alquímicas y su letal arma de fuego!',
-      portrait: '/assets/portraits/hobgoblin_capataz_thumb.png',
+      portrait: '/assets/portraits/hobgoblin_capataz_thumb.webp',
       portraitClass: 'scale-[1.25] translate-y-0.5 object-center',
       stageId: 'stage_duelo_hobgoblin',
       isStory: true,
@@ -223,7 +223,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Dificil',
       description:
         'Las ventiscas azotan las laderas escarpadas del Pico Icespear. Criaturas elementales de hielo custodian las sendas prohibidas.',
-      portrait: '/assets/portraits/capitan_gabriel_clean.png',
+      portrait: '/assets/portraits/capitan_gabriel_clean.webp',
       portraitClass: 'scale-[1.12] translate-y-0.5 object-center',
       stageId: 'stage_pico_ascenso',
       isStory: true,
@@ -235,7 +235,7 @@ export const QuestView: React.FC = () => {
       difficulty: 'Pesadilla',
       description:
         'En la cima del Pico Icespear, la colosal bestia alada Cryovain acecha sobre su tesoro congelado. La batalla decisiva.',
-      portrait: '/assets/combat/devorador_quitinoso_clean.png',
+      portrait: '/assets/combat/devorador_quitinoso_clean.webp',
       portraitClass: 'scale-[1.5] origin-top translate-y-[2px]',
       stageId: 'stage_cryovain_boss',
       isStory: false,
@@ -378,7 +378,7 @@ export const QuestView: React.FC = () => {
           name: 'Veta de Plata Pura de Glimmerstone',
           category: 'materials',
           count: 5,
-          icon: '/assets/items/lingote_plata_app.png',
+          icon: '/assets/items/lingote_plata_app.webp',
           rarity: 'SSR',
           priceGold: 5000,
           description: 'Lingotes de plata pura extraídos de las profundidades de Glimmerstone.',
@@ -395,7 +395,7 @@ export const QuestView: React.FC = () => {
           name: 'Estandarte del Clan Colmillo y Vino Especiado',
           category: 'materials',
           count: 1,
-          icon: '/assets/portraits/gromock_icono.png',
+          icon: '/assets/portraits/gromock_icono.webp',
           rarity: 'UR',
           priceGold: 10000,
           description: 'Trofeos reclamados tras el despeje pacífico del campamento orco en los bosques de Icespear.',
@@ -419,19 +419,19 @@ export const QuestView: React.FC = () => {
   return (
     <div className="relative w-full h-full flex flex-col justify-start bg-transparent select-none overflow-hidden">
       {/* 1. AUTHENTIC FULL-BLEED BACKGROUND:
-          - Chapter 1: fondo_icespear_1.png
-          - Chapter 2: image_5518948d.png (User-provided ornate mine background with tracks and lantern)
-          - Chapter 3: image_0fed218e.png (User-provided ornate Mercado Negro board with auction house and fortress)
-          - Chapter 4: fondo_pico_Icespear_0b79dc85.png */}
+          - Chapter 1: fondo_icespear_1.webp
+          - Chapter 2: image_5518948d.webp (User-provided ornate mine background with tracks and lantern)
+          - Chapter 3: image_0fed218e.webp (User-provided ornate Mercado Negro board with auction house and fortress)
+          - Chapter 4: fondo_pico_Icespear_0b79dc85.webp */}
       <img
         src={
           currentChapter === 4
-            ? '/assets/aistudio/fondo_pico_Icespear_0b79dc85.png'
+            ? '/assets/aistudio/fondo_pico_Icespear_0b79dc85.webp'
             : currentChapter === 3
-            ? '/assets/aistudio/image_0fed218e.png'
+            ? '/assets/aistudio/image_0fed218e.webp'
             : currentChapter === 2
-            ? '/assets/aistudio/image_5518948d.png'
-            : '/assets/backgrounds/fondo_icespear_1.png'
+            ? '/assets/aistudio/image_5518948d.webp'
+            : '/assets/backgrounds/fondo_icespear_1.webp'
         }
         alt={
           currentChapter === 4
@@ -460,7 +460,7 @@ export const QuestView: React.FC = () => {
             }`}
           >
             <img
-              src="/assets/items/boton_historia.png"
+              src="/assets/items/boton_historia.webp"
               alt="Capitulo I"
               className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
             />
@@ -484,7 +484,7 @@ export const QuestView: React.FC = () => {
               }`}
             >
               <img
-                src="/assets/items/boton_historia.png"
+                src="/assets/items/boton_historia.webp"
                 alt="Capitulo II"
                 className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
               />
@@ -502,7 +502,7 @@ export const QuestView: React.FC = () => {
               className="relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
             >
               <img
-                src="/assets/items/boton_historia.png"
+                src="/assets/items/boton_historia.webp"
                 alt="Capitulo II Bloqueado"
                 className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
               />
@@ -514,7 +514,7 @@ export const QuestView: React.FC = () => {
               </span>
               {/* Hanging Padlock */}
               <img
-                src="/assets/items/CANDADO.png"
+                src="/assets/items/CANDADO.webp"
                 alt="Bloqueado"
                 className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
               />
@@ -533,7 +533,7 @@ export const QuestView: React.FC = () => {
               }`}
             >
               <img
-                src="/assets/items/boton_historia.png"
+                src="/assets/items/boton_historia.webp"
                 alt="Capitulo III"
                 className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
               />
@@ -552,7 +552,7 @@ export const QuestView: React.FC = () => {
               title="Capítulo III: El Mercado Negro (Bloqueado)"
             >
               <img
-                src="/assets/items/boton_historia.png"
+                src="/assets/items/boton_historia.webp"
                 alt="Capitulo III Bloqueado"
                 className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
               />
@@ -564,7 +564,7 @@ export const QuestView: React.FC = () => {
               </span>
               {/* Hanging Padlock */}
               <img
-                src="/assets/items/CANDADO.png"
+                src="/assets/items/CANDADO.webp"
                 alt="Bloqueado"
                 className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
               />
@@ -588,7 +588,7 @@ export const QuestView: React.FC = () => {
                 src={
                   currentChapter === 4
                     ? '/assets/items/BOTON SELECCIONADO HISTORIA.png'
-                    : '/assets/items/boton_historia.png'
+                    : '/assets/items/boton_historia.webp'
                 }
                 alt="Capitulo IV"
                 className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
@@ -616,7 +616,7 @@ export const QuestView: React.FC = () => {
               title="Capítulo IV: Pico Icespear (Bloqueado)"
             >
               <img
-                src="/assets/items/boton_historia.png"
+                src="/assets/items/boton_historia.webp"
                 alt="Capitulo IV Bloqueado"
                 className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
               />
@@ -628,7 +628,7 @@ export const QuestView: React.FC = () => {
               </span>
               {/* Hanging Padlock */}
               <img
-                src="/assets/items/CANDADO.png"
+                src="/assets/items/CANDADO.webp"
                 alt="Bloqueado"
                 className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
               />
@@ -697,12 +697,12 @@ export const QuestView: React.FC = () => {
             <img
               src={
                 currentChapter === 4
-                  ? '/assets/items/cofre_sellado_mansion.png'
+                  ? '/assets/items/cofre_sellado_mansion.webp'
                   : currentChapter === 3
-                  ? '/assets/items/cofre_sellado_mansion.png'
+                  ? '/assets/items/cofre_sellado_mansion.webp'
                   : currentChapter === 2
-                  ? '/assets/items/cofre_sellado_mansion.png'
-                  : '/assets/items/cofre_de_tintes_app.png'
+                  ? '/assets/items/cofre_sellado_mansion.webp'
+                  : '/assets/items/cofre_de_tintes_app.webp'
               }
               alt="Cofre"
               className="w-8.5 h-8.5 sm:w-9 sm:h-9 object-contain drop-shadow-[0_0_8px_rgba(168,85,247,0.9)]"
@@ -749,7 +749,7 @@ export const QuestView: React.FC = () => {
                   className="relative w-full h-[98px] sm:h-[102px] rounded-xl overflow-hidden flex items-center px-3 sm:px-3.5 py-2 sm:py-2.5 shadow-md shrink-0 border border-transparent cursor-pointer hover:brightness-105 active:scale-[0.99] transition-all"
                 >
                   <img
-                    src="/assets/items/HISTORIA NIVEL BOTON.png"
+                    src="/assets/items/HISTORIA NIVEL BOTON.webp"
                     alt=""
                     className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none z-0"
                   />
@@ -830,8 +830,8 @@ export const QuestView: React.FC = () => {
                         <img
                           src={
                             isCompleted
-                              ? '/assets/items/estrella_mejora.png'
-                              : '/assets/items/estrella_bronce.png'
+                              ? '/assets/items/estrella_mejora.webp'
+                              : '/assets/items/estrella_bronce.webp'
                           }
                           alt=""
                           className="w-3 h-3 sm:w-3.5 sm:h-3.5 object-contain drop-shadow"
@@ -839,8 +839,8 @@ export const QuestView: React.FC = () => {
                         <img
                           src={
                             isCompleted
-                              ? '/assets/items/estrella_mejora.png'
-                              : '/assets/items/estrella_bronce.png'
+                              ? '/assets/items/estrella_mejora.webp'
+                              : '/assets/items/estrella_bronce.webp'
                           }
                           alt=""
                           className="w-3 h-3 sm:w-3.5 sm:h-3.5 object-contain drop-shadow"
@@ -848,8 +848,8 @@ export const QuestView: React.FC = () => {
                         <img
                           src={
                             isCompleted
-                              ? '/assets/items/estrella_mejora.png'
-                              : '/assets/items/estrella_bronce.png'
+                              ? '/assets/items/estrella_mejora.webp'
+                              : '/assets/items/estrella_bronce.webp'
                           }
                           alt=""
                           className="w-3 h-3 sm:w-3.5 sm:h-3.5 object-contain drop-shadow"
@@ -898,7 +898,7 @@ export const QuestView: React.FC = () => {
                               title="Repetir automáticamente con Fragmentos Astrales (10✦)"
                             >
                               <img
-                                src="/assets/items/fragmento_astral.png"
+                                src="/assets/items/fragmento_astral.webp"
                                 alt=""
                                 className="w-2.5 h-2.5 object-contain shrink-0 drop-shadow"
                               />
@@ -921,7 +921,7 @@ export const QuestView: React.FC = () => {
                             title="Repetir automáticamente con Fragmentos Astrales (10✦)"
                           >
                             <img
-                              src="/assets/items/fragmento_astral.png"
+                              src="/assets/items/fragmento_astral.webp"
                               alt=""
                               className="w-3 h-3 object-contain shrink-0 group-hover:scale-110 transition-transform drop-shadow"
                             />
@@ -962,7 +962,7 @@ export const QuestView: React.FC = () => {
                   <div className="w-7 h-7 rounded-full bg-[#1c0a03] mb-1.5" />
                   <div className="absolute bottom-0.5 w-9 h-4.5 rounded-t-full bg-[#1c0a03]" />
                   <img
-                    src="/assets/items/CANDADO.png"
+                    src="/assets/items/CANDADO.webp"
                     alt="Bloqueado"
                     className="absolute w-5 h-5.5 object-contain drop-shadow"
                   />
@@ -980,7 +980,7 @@ export const QuestView: React.FC = () => {
                     BLOQUEADO
                   </span>
                   <img
-                    src="/assets/items/CANDADO.png"
+                    src="/assets/items/CANDADO.webp"
                     alt="Bloqueado"
                     className="w-4 h-4.5 object-contain drop-shadow"
                   />
@@ -1012,8 +1012,8 @@ export const QuestView: React.FC = () => {
               <img
                 src={
                   currentChapter === 2
-                    ? '/assets/items/cofre_sellado_mansion.png'
-                    : '/assets/items/cofre_de_tintes_app.png'
+                    ? '/assets/items/cofre_sellado_mansion.webp'
+                    : '/assets/items/cofre_de_tintes_app.webp'
                 }
                 alt="Cofre de Recompensas"
                 className="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(168,85,247,0.9)]"

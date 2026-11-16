@@ -69,7 +69,7 @@ export const NewPlayerEventModal: React.FC = () => {
     >
       <div className="relative w-full max-w-[420px] max-h-[94vh] flex flex-col overflow-hidden rounded-2xl wood-frame">
         <img
-          src="/assets/ui/nav_bar_wood_background.jpg"
+          src="/assets/ui/nav_bar_wood_background.webp"
           alt=""
           className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none opacity-30 mix-blend-luminosity"
         />
@@ -136,7 +136,7 @@ export const NewPlayerEventModal: React.FC = () => {
                   <img
                     src={
                       NEW_PLAYER_HERO_CHOICES.find((c) => c.id === newPlayerEventChosenHeroId)?.portrait ??
-                      '/assets/portraits/chispo_deez_icono.png'
+                      '/assets/portraits/chispo_deez_icono.webp'
                     }
                     alt="Héroe elegido"
                     className="w-12 h-12 rounded-lg object-cover object-top border border-[#8a4419]"
@@ -232,13 +232,13 @@ export const NewPlayerEventModal: React.FC = () => {
                 <div className="mt-1 flex flex-wrap items-center gap-1">
                   {nextStep?.gold ? (
                     <CurrencyChip
-                      icon="/assets/items/moneda_de_moonhaven.png"
+                      icon="/assets/items/moneda_de_moonhaven.webp"
                       value={`+${nextStep.gold.toLocaleString('es-ES')}`}
                     />
                   ) : null}
                   {nextStep?.crystals ? (
                     <CurrencyChip
-                      icon="/assets/items/gema_del_recuerdo.png"
+                      icon="/assets/items/gema_del_recuerdo.webp"
                       value={`+${nextStep.crystals.toLocaleString('es-ES')}`}
                       tone="crystal"
                     />

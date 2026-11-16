@@ -960,7 +960,7 @@ export const KaironSkillVfxOverlay: React.FC<KaironSkillVfxOverlayProps> = ({
                   }}
                 >
                   <img
-                    src="/assets/combat/kairon_vfx_muzzle.png"
+                    src="/assets/combat/kairon_vfx_muzzle.webp"
                     alt="Fogonazo de Pólvora"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-contain"
@@ -996,7 +996,7 @@ export const KaironSkillVfxOverlay: React.FC<KaironSkillVfxOverlayProps> = ({
                   }}
                 >
                   <img
-                    src="/assets/combat/kairon_vfx_bullet.png"
+                    src="/assets/combat/kairon_vfx_bullet.webp"
                     alt="Proyectil de Revólver"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-contain"
@@ -1034,7 +1034,7 @@ export const KaironSkillVfxOverlay: React.FC<KaironSkillVfxOverlayProps> = ({
                   }}
                 >
                   <img
-                    src="/assets/combat/kairon_vfx_tajo_acero.png"
+                    src="/assets/combat/kairon_vfx_tajo_acero.webp"
                     alt="Espadazo de Acero"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-contain"
@@ -1047,7 +1047,7 @@ export const KaironSkillVfxOverlay: React.FC<KaironSkillVfxOverlayProps> = ({
                     }
                   />
                   <img
-                    src="/assets/combat/kairon_vfx_tajo_acero.png"
+                    src="/assets/combat/kairon_vfx_tajo_acero.webp"
                     alt=""
                     referrerPolicy="no-referrer"
                     className="absolute inset-0 w-full h-full object-contain pointer-events-none"
@@ -1080,9 +1080,9 @@ export const KaironSkillVfxOverlay: React.FC<KaironSkillVfxOverlayProps> = ({
             const isSwordPopup = skillType === 'kairon_espadazo_largo';
             const popupSrc = isSwordPopup
               ? p.goldVariant
-                ? '/assets/combat/arlem_vfx_slash_gold.png'
-                : '/assets/combat/arlem_vfx_slash.png'
-              : '/assets/combat/kairon_vfx_bang.png';
+                ? '/assets/combat/arlem_vfx_slash_gold.webp'
+                : '/assets/combat/arlem_vfx_slash.webp'
+              : '/assets/combat/kairon_vfx_bang.webp';
             return (
               <div
                 key={`kairon-popup-${vfxKey}-${idx}`}

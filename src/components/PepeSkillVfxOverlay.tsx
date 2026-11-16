@@ -37,10 +37,10 @@ export const PepeSkillVfxOverlay: React.FC<PepeSkillVfxOverlayProps> = ({
 
   const hachazoSpriteUrl =
     tier === 3
-      ? '/assets/combat/pepe_vfx_hachazo_t3.png'
+      ? '/assets/combat/pepe_vfx_hachazo_t3.webp'
       : tier === 2
-      ? '/assets/combat/pepe_vfx_hachazo_t2.png'
-      : '/assets/combat/pepe_vfx_hachazo_t1.png';
+      ? '/assets/combat/pepe_vfx_hachazo_t2.webp'
+      : '/assets/combat/pepe_vfx_hachazo_t1.webp';
 
   // Real-time 60fps AAA Canvas Shader Engine (Incandescent Axe Cleaves, Tidal Splash Arcs, Bastion Hex-Dome)
   useEffect(() => {

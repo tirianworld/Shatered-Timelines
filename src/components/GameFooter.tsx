@@ -12,12 +12,12 @@ export const GameFooter: React.FC = () => {
   const { currentTab, navigateTo, setIsOptionsOpen } = useGame();
 
   const navButtons: NavButtonConfig[] = [
-    { id: 'quest', label: 'QUEST', imageSrc: '/assets/items/quest tarot.png' },
-    { id: 'heroes', label: 'HEROES', imageSrc: '/assets/items/recurso_2_4x_ui.png' },
-    { id: 'santuario', label: 'SANTUARIO', imageSrc: '/assets/items/santuario.png' },
-    { id: 'draw', label: 'DRAW', imageSrc: '/assets/items/DRAW BUTTON.png' },
-    { id: 'shop', label: 'SHOP', imageSrc: '/assets/items/recurso_3_4x_ui.png' },
-    { id: 'options', label: 'OPTIONS', imageSrc: '/assets/items/Options Idl.png' },
+    { id: 'quest', label: 'QUEST', imageSrc: '/assets/items/quest tarot.webp' },
+    { id: 'heroes', label: 'HEROES', imageSrc: '/assets/items/recurso_2_4x_ui.webp' },
+    { id: 'santuario', label: 'SANTUARIO', imageSrc: '/assets/items/santuario.webp' },
+    { id: 'draw', label: 'DRAW', imageSrc: '/assets/items/DRAW BUTTON.webp' },
+    { id: 'shop', label: 'SHOP', imageSrc: '/assets/items/recurso_3_4x_ui.webp' },
+    { id: 'options', label: 'OPTIONS', imageSrc: '/assets/items/Options Idl.webp' },
   ];
 
   const handleTabClick = (id: string) => {
@@ -34,7 +34,7 @@ export const GameFooter: React.FC = () => {
       {/* Background Carved Wood Bar Sprite - Extends -left-3, -right-3, and -bottom-2 to flush with all edges */}
       <div className="absolute -left-3 -right-3 -bottom-2 h-[105px] sm:h-[115px] pointer-events-none overflow-hidden flex items-end">
         <img
-          src="/assets/items/baarra_abajo.png"
+          src="/assets/items/baarra_abajo.webp"
           alt=""
           className="w-full h-full object-cover object-bottom drop-shadow-[0_-6px_16px_rgba(0,0,0,0.9)]"
         />

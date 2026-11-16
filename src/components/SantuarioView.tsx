@@ -72,7 +72,7 @@ export const SantuarioView: React.FC = () => {
       <div className="relative w-full h-full min-h-[580px] flex-1 flex flex-col justify-between overflow-hidden select-none">
         {/* Full Cavern Black Market Sanctuary Illustrated Artwork */}
         <img
-          src="/assets/aistudio/image_159218c1.png"
+          src="/assets/aistudio/image_159218c1.webp"
           alt="Santuario Subterráneo del Mercado Negro"
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
         />
@@ -107,7 +107,7 @@ export const SantuarioView: React.FC = () => {
               title="Tributo Subterráneo"
             >
               <img
-                src="/assets/items/Insignia Mercado Negro app.png"
+                src="/assets/items/Insignia Mercado Negro app.webp"
                 alt="Insignia"
                 className="w-full h-full object-contain filter drop-shadow-xl"
               />
@@ -128,7 +128,7 @@ export const SantuarioView: React.FC = () => {
               title="Inventario"
             >
               <img
-                src="/assets/items/Inventary_Button.png"
+                src="/assets/items/Inventary_Button.webp"
                 alt="Inventario"
                 className="w-full h-full object-contain filter drop-shadow-xl"
               />
@@ -189,7 +189,7 @@ export const SantuarioView: React.FC = () => {
             title="Volver al Santuario de Icespear"
           >
             <img
-              src="/assets/backgrounds/icespear SANTUARIO BUTTON.png"
+              src="/assets/backgrounds/icespear SANTUARIO BUTTON.webp"
               alt="Volver al Santuario"
               className="w-16 h-16 sm:w-18 sm:h-18 object-contain filter drop-shadow-2xl"
             />
@@ -340,7 +340,7 @@ export const SantuarioView: React.FC = () => {
     <div className="relative w-full h-full min-h-[580px] flex-1 flex flex-col justify-between overflow-hidden select-none">
       {/* Village Hub Illustrated Artwork with Lights */}
       <img
-        src="/assets/backgrounds/icespear_luces.png"
+        src="/assets/backgrounds/icespear_luces.webp"
         alt="Santuario de Icespear Iluminado"
         className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
       />
@@ -390,7 +390,7 @@ export const SantuarioView: React.FC = () => {
             title="Bendición del Manantial"
           >
             <img
-              src="/assets/items/Insignia Mercado Negro app.png"
+              src="/assets/items/Insignia Mercado Negro app.webp"
               alt="Insignia"
               className="w-full h-full object-contain filter drop-shadow-xl"
             />
@@ -475,7 +475,7 @@ export const SantuarioView: React.FC = () => {
           title="Abrir Mapa del Mundo"
         >
           <img
-            src="/assets/items/WORLD BUTTON.png"
+            src="/assets/items/WORLD BUTTON.webp"
             alt="WORLD"
             className="w-16 h-16 sm:w-18 sm:h-18 object-contain filter drop-shadow-2xl"
           />

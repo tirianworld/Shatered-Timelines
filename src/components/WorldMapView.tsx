@@ -176,7 +176,7 @@ export const WorldMapView: React.FC = () => {
       left: '59.2%',
       widthPercent: 12,
       aspectRatio: '1 / 1',
-      imageSrc: '/assets/backgrounds/icespear_icono_inkarnate.png',
+      imageSrc: '/assets/backgrounds/icespear_icono_inkarnate.webp',
       actionLabel: 'Entrar al Gran Santuario',
       actionIcon: 'mapPin',
       action: () => {
@@ -212,7 +212,7 @@ export const WorldMapView: React.FC = () => {
       left: '36.0%',
       widthPercent: 13,
       aspectRatio: '1 / 1',
-      imageSrc: '/assets/combat/asalto_orco_badge.png',
+      imageSrc: '/assets/combat/asalto_orco_badge.webp',
       actionLabel: '¡Socorrer a las Tieflings!',
       actionIcon: 'swords',
       action: () => {
@@ -239,7 +239,7 @@ export const WorldMapView: React.FC = () => {
       left: '38.0%',
       widthPercent: 13,
       aspectRatio: '1 / 1',
-      imageSrc: '/assets/combat/emboscada_bandidos_badge.png',
+      imageSrc: '/assets/combat/emboscada_bandidos_badge.webp',
       actionLabel: '¡Repeler a los Bandidos!',
       actionIcon: 'swords',
       action: () => {
@@ -278,9 +278,9 @@ export const WorldMapView: React.FC = () => {
         }}
         className="relative will-change-transform pointer-events-auto"
       >
-        {/* World Map Artwork: icespear_map_8551bb2c.jpg */}
+        {/* World Map Artwork: icespear_map_8551bb2c.webp */}
         <img
-          src="/assets/aistudio/icespear_map_8551bb2c.jpg"
+          src="/assets/aistudio/icespear_map_8551bb2c.webp"
           alt="Mapa del Mundo Icespear"
           draggable={false}
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
@@ -340,7 +340,7 @@ export const WorldMapView: React.FC = () => {
           title="Volver al Santuario"
         >
           <img
-            src="/assets/backgrounds/icespear SANTUARIO BUTTON.png"
+            src="/assets/backgrounds/icespear SANTUARIO BUTTON.webp"
             alt="SANTUARIO"
             className="w-16 h-16 sm:w-18 sm:h-18 object-contain filter drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]"
           />

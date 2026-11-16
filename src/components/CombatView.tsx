@@ -112,7 +112,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/magordito_rayo_tier_1.png',
+        image: '/assets/skills/magordito_rayo_tier_1.webp',
         damage: 14,
         title: 'Rayo Voltaico',
         description: '⚡ [RELÁMPAGO]: Rayo verde descendente con impacto 3D y estallido cósmico (+25% crítico).',
@@ -125,7 +125,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/magordito_rayo_tier_2.png',
+        image: '/assets/skills/magordito_rayo_tier_2.webp',
         damage: 27,
         title: 'Rayo Voltaico II',
         description: '⚡ [RELÁMPAGO]: Trueno doble con detonación 3D cian y sobrecarga paralisante.',
@@ -139,7 +139,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/magordito_rayo_tier_3.png',
+        image: '/assets/skills/magordito_rayo_tier_3.webp',
         damage: 48,
         title: 'Rayo Voltaico III',
         description: '⚡ [RELÁMPAGO]: Cataclismo de trueno CFXR y detonación POW con parálisis total garantizada.',
@@ -162,7 +162,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/magordito_dios_tier_1.png',
+        image: '/assets/skills/magordito_dios_tier_1.webp',
         damage: 12,
         title: 'Fragmento Dios Oscuro',
         description: '💀 [NECRÓTICO]: Drenaje vampírico de vitalidad (restaura 35% de vida) y marchitamiento.',
@@ -175,7 +175,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/magordito_dios_tier_2.png',
+        image: '/assets/skills/magordito_dios_tier_2.webp',
         damage: 25,
         title: 'Fragmento Dios Oscuro II',
         description: '💀 [NECRÓTICO]: Sifón de ánimas que erosiona el ataque e inocula marchitamiento.',
@@ -189,7 +189,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/magordito_dios_tier_3.png',
+        image: '/assets/skills/magordito_dios_tier_3.webp',
         damage: 46,
         title: 'Fragmento Dios Oscuro III',
         description: '💀 [NECRÓTICO]: Colapso del alma enemiga con drenaje vampírico supremo.',
@@ -212,7 +212,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/magordito_drenar_tier_1.png',
+        image: '/assets/skills/magordito_drenar_tier_1.webp',
         damage: 8,
         heal: 10,
         title: 'Peste Tóxica',
@@ -226,7 +226,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/magordito_drenar_tier_2.png',
+        image: '/assets/skills/magordito_drenar_tier_2.webp',
         damage: 16,
         heal: 18,
         title: 'Peste Tóxica II',
@@ -240,7 +240,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/magordito_drenar_tier_3.png',
+        image: '/assets/skills/magordito_drenar_tier_3.webp',
         damage: 30,
         heal: 30,
         title: 'Peste Tóxica III',
@@ -264,7 +264,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/magordito_marioneta_tier_1.png',
+        image: '/assets/skills/magordito_marioneta_tier_1.webp',
         damage: 13,
         title: 'Tajo Lacerante',
         description: '⚔️ [CORTANTE]: Laceración que amplifica todo el daño recibido en un +15% por acumulación.',
@@ -278,7 +278,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/magordito_marioneta_tier_2.png',
+        image: '/assets/skills/magordito_marioneta_tier_2.webp',
         damage: 27,
         title: 'Tajo Lacerante II',
         description: '⚔️ [CORTANTE]: Doble laceración en cadena para combos destructivos.',
@@ -292,7 +292,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/magordito_marioneta_tier_3.png',
+        image: '/assets/skills/magordito_marioneta_tier_3.webp',
         damage: 48,
         title: 'Tajo Lacerante III',
         description: '⚔️ [CORTANTE]: Desgarro supremo que desangra y expone puntos críticos.',
@@ -316,7 +316,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Definitivo',
-        image: '/assets/skills/magordito_ultimate.png',
+        image: '/assets/skills/magordito_ultimate.webp',
         damage: 95,
         title: '★ Cataclismo Astral ★',
         description: '🔮 [FUERZA]: MOVIMIENTO DEFINITIVO: Pura energía arcana. Ignora el 100% de escudos y aturde.',
@@ -330,7 +330,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Definitivo',
-        image: '/assets/skills/magordito_ultimate.png',
+        image: '/assets/skills/magordito_ultimate.webp',
         damage: 95,
         title: '★ Cataclismo Astral ★',
         description: '🔮 [FUERZA]: MOVIMIENTO DEFINITIVO: Desata furia cósmica ineludible.',
@@ -344,7 +344,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Definitivo',
-        image: '/assets/skills/magordito_ultimate.png',
+        image: '/assets/skills/magordito_ultimate.webp',
         damage: 95,
         title: '★ Cataclismo Astral ★',
         description: '🔮 [FUERZA]: MOVIMIENTO DEFINITIVO: Desata furia cósmica ineludible.',
@@ -367,7 +367,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/edacorn_ataque_furtivo_tier_1.png',
+        image: '/assets/skills/edacorn_ataque_furtivo_tier_1.webp',
         damage: 16,
         title: 'Ataque Furtivo',
         description: '⚔️ [CORTANTE]: Estocada rápida con dagas gemelas que golpea puntos vitales.',
@@ -378,7 +378,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/edacorn_ataque_furtivo_tier_2.png',
+        image: '/assets/skills/edacorn_ataque_furtivo_tier_2.webp',
         damage: 29,
         title: 'Danza de Dagas II',
         description: '⚔️ [CORTANTE]: Combinación veloz de cortes que fractura la defensa enemiga.',
@@ -391,7 +391,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/edacorn_ataque_furtivo_tier_3.png',
+        image: '/assets/skills/edacorn_ataque_furtivo_tier_3.webp',
         damage: 52,
         title: 'Asalto Fantasmal III',
         description: '⚔️ [FUERZA / CORTANTE]: Embestida con alas esmeralda que desgarra al rival con golpe crítico garantizado.',
@@ -414,7 +414,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/items/edacorn contra ataque.png',
+        image: '/assets/items/edacorn contra ataque.webp',
         damage: 12,
         title: 'Postura de Contraataque',
         description: '🛡️ [RÉPLICA]: Edacorn adopta guardia baja. Si el enemigo ataca, responde instantáneamente con un contragolpe.',
@@ -427,7 +427,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/items/edacorn contra ataque tier 2.png',
+        image: '/assets/items/edacorn contra ataque tier 2.webp',
         damage: 24,
         title: 'Reflejo Letal II',
         description: '🛡️ [RÉPLICA]: Parada perfecta que castiga al agresor con réplica potenciada y desequilibrio.',
@@ -440,7 +440,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/items/edacorn contra ataque tier 3png.png',
+        image: '/assets/items/edacorn contra ataque tier 3png.webp',
         damage: 44,
         title: 'Castigo Espectral III',
         description: '🛡️ [RÉPLICA SUPREMA]: El enemigo cae en la trampa; contraataque fulminante con alas esmeralda.',
@@ -463,7 +463,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/items/edacorn sigilo.png',
+        image: '/assets/items/edacorn sigilo.webp',
         damage: 8,
         title: 'Manto Esmeralda',
         description: '👻 [SIGILO]: Edacorn se vuelve semitransparente. Evita el 100% de los ataques durante 1 turno.',
@@ -476,7 +476,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/items/edacorn sigilo tier 2.png',
+        image: '/assets/items/edacorn sigilo tier 2.webp',
         damage: 16,
         heal: 15,
         title: 'Sigilo Fantasmal II',
@@ -491,7 +491,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/items/edacorn sigilo tier 3.png',
+        image: '/assets/items/edacorn sigilo tier 3.webp',
         damage: 28,
         heal: 25,
         title: 'Inmaterialidad Ancestral III',
@@ -516,7 +516,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/arlem_inspiracion_tier_1.png',
+        image: '/assets/skills/arlem_inspiracion_tier_1.webp',
         damage: 10,
         title: 'Inspiración Bárdica',
         description: '🎶 [BARDO]: Toca un arpegio afinado en su laúd y eleva +1 rango todas las cartas en mano.',
@@ -529,7 +529,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/arlem_inspiracion_tier_2.png',
+        image: '/assets/skills/arlem_inspiracion_tier_2.webp',
         damage: 22,
         title: 'Crescendo Virtuoso II',
         description: '🎶 [BARDO]: Melodía vibrante de laúd que eleva todas las cartas en mano +1 rango y confiere +25% ATK.',
@@ -542,7 +542,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/arlem_inspiracion_tier_3.png',
+        image: '/assets/skills/arlem_inspiracion_tier_3.webp',
         damage: 38,
         title: 'Sinfonía Heroica III',
         description: '🎶 [BARDO SUPREMO]: Acordes magistrales con laúd que elevan todas las cartas en mano al rango máximo (Oro).',
@@ -564,7 +564,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/arlem_curacion_tier_1.png',
+        image: '/assets/skills/arlem_curacion_tier_1.webp',
         damage: 0,
         heal: 45,
         title: 'Balada Serena',
@@ -576,7 +576,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/arlem_curacion_tier_2.png',
+        image: '/assets/skills/arlem_curacion_tier_2.webp',
         damage: 0,
         heal: 90,
         title: 'Canto del Manantial II',
@@ -588,7 +588,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/arlem_curacion_tier_3.png',
+        image: '/assets/skills/arlem_curacion_tier_3.webp',
         damage: 0,
         heal: 180,
         title: 'Réquiem del Renacer III',
@@ -611,7 +611,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/arlem_estocada_tier_1.png',
+        image: '/assets/skills/arlem_estocada_tier_1.webp',
         damage: 18,
         title: 'Estocada de Rapier',
         description: '🤺 [PERFORANTE]: Precisa y elegante estocada con su fina ropera al compás de la música.',
@@ -622,7 +622,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/arlem_estocada_tier_2.png',
+        image: '/assets/skills/arlem_estocada_tier_2.webp',
         damage: 34,
         title: 'Finta y Hendidura II',
         description: '🤺 [PERFORANTE]: Finta engañosa de bardo seguida de una penetrante estocada que fractura la defensa enemiga.',
@@ -635,7 +635,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/arlem_estocada_tier_3.png',
+        image: '/assets/skills/arlem_estocada_tier_3.webp',
         damage: 60,
         title: 'Danza de Ropera III',
         description: '🤺 [PERFORANTE SUPREMO]: Ráfaga virtuosa de estocadas de rapier con crítico letal y ruptura defensiva.',
@@ -659,7 +659,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/pepe_ataque_tier_1.png',
+        image: '/assets/skills/pepe_ataque_tier_1.webp',
         damage: 18,
         title: 'Hachazo Hendiente',
         description: '⚔️ [CORTANTE]: Golpe directo con el hacha pesada de Pepe Loux.',
@@ -670,7 +670,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/pepe_ataque_tier_2.png',
+        image: '/assets/skills/pepe_ataque_tier_2.webp',
         damage: 34,
         title: 'Tajo de Hacha II',
         description: '⚔️ [CORTANTE]: Hachazo vertical pesado que fractura la armadura del enemigo.',
@@ -683,7 +683,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/pepe_ataque_tier_3.png',
+        image: '/assets/skills/pepe_ataque_tier_3.webp',
         damage: 62,
         title: 'Hendidura Devastadora III',
         description: '⚔️ [CORTANTE SUPREMO]: Hachazo demoledor de veterano con crítico garantizado y desgarro.',
@@ -706,7 +706,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/pepe_remo_tier_1.png',
+        image: '/assets/skills/pepe_remo_tier_1.webp',
         damage: 15,
         title: 'Golpe de Remo',
         description: '🚣‍♂️ [CONTUNDENTE]: Pepe estrella un remo macizo contra el rival. ¡Aturde al enemigo 1 turno, pero el impacto aturde también a Pepe!',
@@ -719,7 +719,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/pepe_remo_tier_2.png',
+        image: '/assets/skills/pepe_remo_tier_2.webp',
         damage: 30,
         title: 'Remazo de la Costa II',
         description: '🚣‍♂️ [CONTUNDENTE]: Remazo de gran impacto que noquea al enemigo 1 turno y rompe su guardia (Pepe queda aturdido 1T).',
@@ -733,7 +733,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/pepe_remo_tier_3.png',
+        image: '/assets/skills/pepe_remo_tier_3.webp',
         damage: 52,
         title: 'Impacto Naufragio III',
         description: '🚣‍♂️ [CONTUNDENTE SUPREMO]: Golpe brutal con la quilla que aturde al enemigo 2 turnos (Pepe queda aturdido 1 turno).',
@@ -756,7 +756,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/pepe_escudo_tier_1.png',
+        image: '/assets/skills/pepe_escudo_tier_1.webp',
         damage: 0,
         title: 'Guardia del Escudo',
         description: '🛡️ [BALUARTE]: Pepe alza su gran escudo. Obtiene barrera de 50 PV y 75% de resistencia a todo daño este turno.',
@@ -769,7 +769,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/pepe_escudo_tier_2.png',
+        image: '/assets/skills/pepe_escudo_tier_2.webp',
         damage: 0,
         title: 'Muralla Inquebrantable II',
         description: '🛡️ [BALUARTE]: Levanta un muro defensivo impenetrable. Barrera de 100 PV y 80% de reducción de daño por 1 turno.',
@@ -782,7 +782,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/pepe_escudo_tier_3.png',
+        image: '/assets/skills/pepe_escudo_tier_3.webp',
         damage: 0,
         title: 'Fortaleza del Bastión III',
         description: '🛡️ [BALUARTE SUPREMO]: Se convierte en una fortaleza andante. Barrera de 180 PV y 90% de reducción de daño.',
@@ -806,7 +806,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/chispo_martillo_tier_1.png',
+        image: '/assets/skills/chispo_martillo_tier_1.webp',
         damage: 22,
         title: 'Martillazo de Guerra',
         description: '🔨 [CONTUNDENTE]: Descarga un brutal golpe con su pesado martillo de guerra forjado en oro (22 DMG).',
@@ -817,7 +817,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/chispo_martillo_tier_2.png',
+        image: '/assets/skills/chispo_martillo_tier_2.webp',
         damage: 42,
         title: 'Martillo Bendito II',
         description: '🔨 [RUPTURA]: Embiste con su martillo impregnado en luz sagrada, fracturando armaduras enemigas.',
@@ -830,7 +830,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/chispo_martillo_tier_3.png',
+        image: '/assets/skills/chispo_martillo_tier_3.webp',
         damage: 75,
         title: 'Maza Celestial III',
         description: '🔨 [IMPACTO SÍSMICO]: Salto alado y aplastamiento demoledor que aturde al rival y destruye sus defensas.',
@@ -853,7 +853,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/chispo_rezo_tier_1.png',
+        image: '/assets/skills/chispo_rezo_tier_1.webp',
         damage: 0,
         heal: 20,
         title: 'Luz Divina',
@@ -868,7 +868,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/chispo_rezo_tier_2.png',
+        image: '/assets/skills/chispo_rezo_tier_2.webp',
         damage: 0,
         heal: 45,
         title: 'Resplandor Celestial II',
@@ -884,7 +884,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/chispo_rezo_tier_3.png',
+        image: '/assets/skills/chispo_rezo_tier_3.webp',
         damage: 0,
         heal: 90,
         title: 'Gloria del Paladín III',
@@ -909,7 +909,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/chispo_smite_tier_1.png',
+        image: '/assets/skills/chispo_smite_tier_1.webp',
         damage: 26,
         title: 'Castigo Divino',
         description: '⚡ [ROBO DE ORBE]: Descarga el castigo divino con su martillo causando 26 DMG radiante y roba 1 orbe de definitiva para el equipo.',
@@ -920,7 +920,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/chispo_smite_tier_2.png',
+        image: '/assets/skills/chispo_smite_tier_2.webp',
         damage: 48,
         title: 'Castigo Divino II - Juicio',
         description: '⚡ [ROBO & QUIEBRA]: Rayo de fuego sagrado inflige 48 DMG, roba 1 orbe de ulti y reduce el ataque del enemigo.',
@@ -933,7 +933,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/chispo_smite_tier_3.png',
+        image: '/assets/skills/chispo_smite_tier_3.webp',
         damage: 82,
         title: 'Castigo Divino III - Ira de los Dioses',
         description: '⚡ [COLAPSO CELESTIAL]: Castigo celestial supremo de 82 DMG que roba 2 orbes de definitiva, drena el medidor rival y lo ciega.',
@@ -958,7 +958,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/giovani_plumas_tier_1.png',
+        image: '/assets/skills/giovani_plumas_tier_1.webp',
         damage: 18,
         title: 'Plumas Sombrías',
         description: '🪶 [SOMBRA]: Lanza tres plumas afiladas como dagas imbuidas de magia oscura penetrante.',
@@ -969,7 +969,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/giovani_plumas_tier_2.png',
+        image: '/assets/skills/giovani_plumas_tier_2.webp',
         damage: 35,
         title: 'Dardos de Ocaso II',
         description: '🪶 [SOMBRA]: Ráfaga de plumas oscuras perforantes que aplican desgarro y debilidad.',
@@ -982,7 +982,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/giovani_plumas_tier_3.png',
+        image: '/assets/skills/giovani_plumas_tier_3.webp',
         damage: 60,
         title: 'Tormenta de Plumaje Negro III',
         description: '🪶 [SOMBRA SUPREMA]: Lluvia torrencial de plumas de sombra que desgarra al rival con daño crítico severo.',
@@ -1004,7 +1004,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/giovani_treta_tier_1.png',
+        image: '/assets/skills/giovani_treta_tier_1.webp',
         damage: 12,
         title: 'Escamoteo Sombrío',
         description: '🃏 [BRIBÓN]: Rápido juego de manos con monedas oscuras que confunde al enemigo y roba concentración (+20% ATK).',
@@ -1018,7 +1018,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/giovani_treta_tier_2.png',
+        image: '/assets/skills/giovani_treta_tier_2.webp',
         damage: 24,
         heal: 20,
         title: 'Truco del Tahúr II',
@@ -1033,7 +1033,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/giovani_treta_tier_3.png',
+        image: '/assets/skills/giovani_treta_tier_3.webp',
         damage: 45,
         title: 'Jaque de Sombras III',
         description: '🃏 [BRIBÓN SUPREMO]: Jugada maestra clandestina: Confiere +1 Orbe definitiva, aturde al rival y garantiza golpe crítico.',
@@ -1056,7 +1056,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/giovani_tomo_tier_1.png',
+        image: '/assets/skills/giovani_tomo_tier_1.webp',
         damage: 20,
         title: 'Llama Arcana Violeta',
         description: '📖 [GRIMORIO]: Lee un verso arcano prohibido desatando una llamarada violeta profana.',
@@ -1067,7 +1067,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/giovani_tomo_tier_2.png',
+        image: '/assets/skills/giovani_tomo_tier_2.webp',
         damage: 38,
         heal: 25,
         title: 'Pacto del Ocaso II',
@@ -1079,7 +1079,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/giovani_tomo_tier_3.png',
+        image: '/assets/skills/giovani_tomo_tier_3.webp',
         damage: 65,
         heal: 50,
         title: 'Vórtice del Grimorio III',
@@ -1102,7 +1102,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/prometeo_fire_bolt_tier_1.png',
+        image: '/assets/skills/prometeo_fire_bolt_tier_1.webp',
         damage: 22,
         title: 'Fire Bolt',
         description: '🔥 [PROYECTIL]: Dispara una saeta ígnea concentrada de alta velocidad que inflige 22 DMG de fuego.',
@@ -1115,7 +1115,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/prometeo_fire_bolt_tier_2.png',
+        image: '/assets/skills/prometeo_fire_bolt_tier_2.webp',
         damage: 44,
         title: 'Fire Bolt II - Saeta Abrasadora',
         description: '🔥 [PERFORANTE]: Saeta ígnea penetrante que quema la armadura del rival (44 DMG) y reduce su defensa.',
@@ -1129,7 +1129,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/prometeo_fire_bolt_tier_3.png',
+        image: '/assets/skills/prometeo_fire_bolt_tier_3.webp',
         damage: 78,
         title: 'Fire Bolt III - Ráfaga de Ceniza',
         description: '🔥 [LANZAÍGNEA SUPREMA]: Impacto piromántico crítico que desintegra defensas e inflige 78 DMG con quemadura severa.',
@@ -1152,7 +1152,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/prometeo_espada_verde_tier_1.png',
+        image: '/assets/skills/prometeo_espada_verde_tier_1.webp',
         damage: 26,
         title: 'Espada de Fuego Verde',
         description: '🗡️ [FUEGO & CORTE]: Taja con su espada envuelta en llamas esmeralda (26 DMG) y abre una herida sangrante (Hemorragia).',
@@ -1166,7 +1166,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/prometeo_espada_verde_tier_2.png',
+        image: '/assets/skills/prometeo_espada_verde_tier_2.webp',
         damage: 50,
         title: 'Espada Verde II - Tajo Sangriento',
         description: '🗡️ [RITO DE SANGRE]: Desata la magia de sangre en su hoja esmeralda. Causa 50 DMG y aplica hemorragia profunda.',
@@ -1180,7 +1180,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/prometeo_espada_verde_tier_3.png',
+        image: '/assets/skills/prometeo_espada_verde_tier_3.webp',
         damage: 88,
         title: 'Espada Verde III - Rito de Sangre Esmeralda',
         description: '🗡️ [CORTE VORAZ]: Salto implacable con arco de fuego verde titánico que desangra masivamente al enemigo e incendia su esencia.',
@@ -1203,7 +1203,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/prometeo_bola_fuego_tier_1.png',
+        image: '/assets/skills/prometeo_bola_fuego_tier_1.webp',
         damage: 30,
         title: 'Bola de Fuego',
         description: '💥 [ÁREA ÍGNEA]: Detona un orbe colosal de fuego primordial infligiendo 30 DMG ígneo envolvente.',
@@ -1216,7 +1216,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/prometeo_bola_fuego_tier_2.png',
+        image: '/assets/skills/prometeo_bola_fuego_tier_2.webp',
         damage: 58,
         title: 'Bola de Fuego II - Magma Ardiente',
         description: '💥 [EXPLOSIÓN DEVASTADORA]: Estallido masivo de magma hirviente que envuelve al enemigo causando 58 DMG y ceguera por humo.',
@@ -1230,7 +1230,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/prometeo_bola_fuego_tier_3.png',
+        image: '/assets/skills/prometeo_bola_fuego_tier_3.webp',
         damage: 96,
         title: 'Bola de Fuego III - Infierno Cataclísmico',
         description: '💥 [INFIERNO SUPREMO]: Invocación de un sol abrasador volcánico que aniquila la zona con 96 DMG masivo y reduce el ataque enemigo.',
@@ -1255,7 +1255,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/kairon_tiro_doble_tier_1.png',
+        image: '/assets/skills/kairon_tiro_doble_tier_1.webp',
         damage: 22,
         title: 'Tiro Doble',
         description: '🎯 [DOBLE DISPARO]: Dos tiros rápidos uno detrás de otro con sus pistolas duales (22 DMG perforante).',
@@ -1268,7 +1268,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/kairon_tiro_doble_tier_2.png',
+        image: '/assets/skills/kairon_tiro_doble_tier_2.webp',
         damage: 46,
         title: 'Tiro Doble II - Cadencia Mortal',
         description: '🎯 [RAFAGA CERTERA]: Dos impactos perforantes consecutivos en puntos vitales (46 DMG) que desgarran la armadura.',
@@ -1282,7 +1282,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/kairon_tiro_doble_tier_3.png',
+        image: '/assets/skills/kairon_tiro_doble_tier_3.webp',
         damage: 82,
         title: 'Tiro Doble III - Balas Fantasma',
         description: '🎯 [BALAS DE PLATA]: Dos proyectiles hipersónicos secuenciales que perforan la defensa enemiga (82 DMG) e inmovilizan con aturdimiento.',
@@ -1306,7 +1306,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/kairon_disparo_dual_tier_1.png',
+        image: '/assets/skills/kairon_disparo_dual_tier_1.webp',
         damage: 28,
         title: 'Disparo Dual',
         description: '💥 [FOGONAZO SIMULTÁNEO]: Dispara con ambas pistolas al unísono, desatando una lluvia de plomo y pólvora (28 DMG).',
@@ -1319,7 +1319,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/kairon_disparo_dual_tier_2.png',
+        image: '/assets/skills/kairon_disparo_dual_tier_2.webp',
         damage: 54,
         title: 'Disparo Dual II - Descarga de Pólvora',
         description: '💥 [DOBLE CAÑÓN]: Potente descarga simultánea a quemarropa (54 DMG) que ciega al oponente con humo y quema por pólvora.',
@@ -1333,7 +1333,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/kairon_disparo_dual_tier_3.png',
+        image: '/assets/skills/kairon_disparo_dual_tier_3.webp',
         damage: 94,
         title: 'Disparo Dual III - Tempestad de Plomo',
         description: '💥 [BARRERA DE FUEGO]: Doble fogonazo devastador a máxima potencia (94 DMG) que desorienta y debilita el ataque rival.',
@@ -1357,7 +1357,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/kairon_espadazo_largo_tier_1.png',
+        image: '/assets/skills/kairon_espadazo_largo_tier_1.webp',
         damage: 32,
         title: 'Espadazo de Acero',
         description: '⚔️ [TAJO DE ESPADA LARGA]: Desenvaina su espada larga y propina un brutal mandoble en arco cortante (32 DMG).',
@@ -1370,7 +1370,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/kairon_espadazo_largo_tier_2.png',
+        image: '/assets/skills/kairon_espadazo_largo_tier_2.webp',
         damage: 62,
         title: 'Espadazo de Acero II - Hendidura Voraz',
         description: '⚔️ [CORTE PROFUNDO]: Asesta un espadazo descendente de tremenda violencia (62 DMG) que desgarra la defensa y desangra.',
@@ -1385,7 +1385,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/kairon_espadazo_largo_tier_3.png',
+        image: '/assets/skills/kairon_espadazo_largo_tier_3.webp',
         damage: 105,
         title: 'Espadazo de Acero III - Juicio del Acero Glacial',
         description: '⚔️ [MANDOBLE SUPREMO]: Salto frontal con estela astral cortante (105 DMG) que mutila la armadura y aturde al oponente.',
@@ -1410,7 +1410,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/ragnavaldr_doble_lanza_tier_1.png',
+        image: '/assets/skills/ragnavaldr_doble_lanza_tier_1.webp',
         damage: 26,
         title: 'Estocada de Lanzas I',
         description: '🔱 [PERFORANTE]: Embestida frontal salvaje clavando ambas lanzas al unísono (26 DMG).',
@@ -1423,7 +1423,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/ragnavaldr_doble_lanza_tier_2.png',
+        image: '/assets/skills/ragnavaldr_doble_lanza_tier_2.webp',
         damage: 52,
         title: 'Estocada de Lanzas II - Furia de Sílex',
         description: '🔱 [EMPALAMIENTO VORAZ]: Clava ambas lanzas atravesando armaduras (52 DMG) y desgarrando la defensa.',
@@ -1437,7 +1437,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/ragnavaldr_doble_lanza_tier_3.png',
+        image: '/assets/skills/ragnavaldr_doble_lanza_tier_3.webp',
         damage: 98,
         title: 'Estocada de Lanzas III - Masacre Bárbara',
         description: '🔱 [MASACRE PRIMORDIAL]: Salto devastador clavando las dos lanzas con toda la potencia muscular (98 DMG) y desangrado masivo.',
@@ -1461,7 +1461,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/ragnavaldr_furia_tier_1.png',
+        image: '/assets/skills/ragnavaldr_furia_tier_1.webp',
         damage: 0,
         title: 'Furia Druídica I - Rugido Primitivo',
         description: '🔥 [FURIA TOTAL]: Entra en furia salvaje. Otorga +20% de daño y +15% de resistencia a todos los héroes durante 2 turnos.',
@@ -1475,7 +1475,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/ragnavaldr_furia_tier_2.png',
+        image: '/assets/skills/ragnavaldr_furia_tier_2.webp',
         damage: 0,
         title: 'Furia Druídica II - Sangre de los Antiguos',
         description: '🔥 [FERVOR SALVAJE]: Potencia el frenesí en combate. Otorga +35% de daño y +25% de resistencia a todos los héroes durante 2 turnos.',
@@ -1489,7 +1489,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/ragnavaldr_furia_tier_3.png',
+        image: '/assets/skills/ragnavaldr_furia_tier_3.webp',
         damage: 0,
         title: 'Furia Druídica III - Avatar del Páramo',
         description: '🔥 [AVATAR DEL PÁRAMO]: Rugido apocalíptico que enciende la sangre aliada. Otorga +50% de daño y +35% de resistencia a todos los héroes durante 3 turnos.',
@@ -1512,7 +1512,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/ragnavaldr_cuchillo_hielo_tier_1.png',
+        image: '/assets/skills/ragnavaldr_cuchillo_hielo_tier_1.webp',
         damage: 28,
         title: 'Cuchillo de Hielo I - Filo Glacial',
         description: '❄️ [HIELO]: Conjura un afilado cuchillo de hielo desde el cielo que cae en picado e inflige 28 de daño gélido (solo daño).',
@@ -1523,7 +1523,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/ragnavaldr_cuchillo_hielo_tier_2.png',
+        image: '/assets/skills/ragnavaldr_cuchillo_hielo_tier_2.webp',
         damage: 55,
         title: 'Cuchillo de Hielo II - Congelación Rápida',
         description: '❄️ [CONGELACIÓN]: Enorme estalactita gélida cae desde las nubes (55 DMG). ¡El enemigo queda congelado y PIERDE 1 TURNO!',
@@ -1537,7 +1537,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/ragnavaldr_cuchillo_hielo_tier_3.png',
+        image: '/assets/skills/ragnavaldr_cuchillo_hielo_tier_3.webp',
         damage: 96,
         title: 'Cuchillo de Hielo III - Cero Absoluto',
         description: '🧊 [CONGELACIÓN PROFUNDA]: Daga glacial titánica aplasta al objetivo (96 DMG). ¡El enemigo queda sepultado en hielo y PIERDE 2 TURNOS!',
@@ -1561,7 +1561,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/roxanne_inspiracion_tier_1.png',
+        image: '/assets/skills/roxanne_inspiracion_tier_1.webp',
         damage: 0,
         title: 'Inspiración Bárdica I',
         description: '🎶 [BARDA DE LA LIRA]: Roxanne tañe su lira dorada con magia rosada y sube de tier 1 carta de la mano al seleccionarla (+1 Rango).',
@@ -1572,7 +1572,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/roxanne_inspiracion_tier_2.png',
+        image: '/assets/skills/roxanne_inspiracion_tier_2.webp',
         damage: 0,
         title: 'Inspiración Bárdica II - Crescendo Armónico',
         description: '🎶 [ARPEGIO ARMONIOSO]: Acorde vibrante de lira que sube de tier 2 cartas de la mano al seleccionarla (+1 Rango a cada una).',
@@ -1583,7 +1583,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/roxanne_inspiracion_tier_3.png',
+        image: '/assets/skills/roxanne_inspiracion_tier_3.webp',
         damage: 0,
         title: 'Inspiración Bárdica III - Sinfonía Virtuosa',
         description: '🎶 [SINFONÍA DE LA VIXEN]: Clímax celestial con estallido de notas rosadas que sube de tier 4 cartas de la mano (+1 Rango a toda la mano).',
@@ -1603,7 +1603,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/roxanne_velada_tier_1.png',
+        image: '/assets/skills/roxanne_velada_tier_1.webp',
         damage: 12,
         title: 'Velada Encantadora I',
         description: '💖 [SEDUCCIÓN BÁRDICA]: Encanta al enemigo durante 1 turno. Cuando el enemigo intente atacar, ¡se atacará a sí mismo!',
@@ -1616,7 +1616,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/roxanne_velada_tier_2.png',
+        image: '/assets/skills/roxanne_velada_tier_2.webp',
         damage: 24,
         title: 'Velada Encantadora II - Fascinación Hipnótica',
         description: '💖 [FASCINACIÓN HIPNÓTICA]: Encanta al rival durante 1 turno. Al atacar se autolesiona y el daño recibido aumenta un 10% de su propio ataque.',
@@ -1629,7 +1629,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/roxanne_velada_tier_3.png',
+        image: '/assets/skills/roxanne_velada_tier_3.webp',
         damage: 42,
         title: 'Velada Encantadora III - Trance Fatal',
         description: '💖 [TRANCE DE AMOR FATAL]: Cautiva al rival durante 2 turnos completos. Se autolesiona en cada ataque recibiendo un 10% de daño extra de su ataque.',
@@ -1651,7 +1651,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/roxanne_estocada_tier_1.png',
+        image: '/assets/skills/roxanne_estocada_tier_1.webp',
         damage: 24,
         title: 'Estocada Sonora I',
         description: '🗡️ [ESGRIMA Y MAGIA ROSADA]: Estocada precisa de rapier envuelta en espirales sónicas (24 DMG).',
@@ -1664,7 +1664,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/roxanne_estocada_tier_2.png',
+        image: '/assets/skills/roxanne_estocada_tier_2.webp',
         damage: 48,
         title: 'Estocada Sonora II - Duelo Virtuoso',
         description: '🗡️ [ESTOCADA VIBRANTE]: Rápido envite de rapier que quiebra la armadura enemiga (48 DMG) y desgarra su defensa.',
@@ -1678,7 +1678,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/roxanne_estocada_tier_3.png',
+        image: '/assets/skills/roxanne_estocada_tier_3.webp',
         damage: 86,
         title: 'Estocada Sonora III - Danza de Rapier',
         description: '🗡️ [DANZA DE RAPIER]: Ráfaga de fintas y estocadas con estallido de acordes mágicos rosados (86 DMG) y desgarro masivo.',
@@ -1702,7 +1702,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/barled_inspiracion_tier_1.png',
+        image: '/assets/skills/barled_inspiracion_tier_1.webp',
         damage: 0,
         title: 'Inspiración Bárdica I',
         description: '🎶 [OUD ÁRABE]: Barled rasguea su Oud y sube de tier 1 carta de la mano al seleccionarla (+1 Rango).',
@@ -1713,7 +1713,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/barled_inspiracion_tier_2.png',
+        image: '/assets/skills/barled_inspiracion_tier_2.webp',
         damage: 0,
         title: 'Inspiración Bárdica II - Maqam Resonante',
         description: '🎶 [ACORDE DEL OUD]: Melodía envolvente que sube de tier 2 cartas de la mano al seleccionarla (+1 Rango a cada una).',
@@ -1724,7 +1724,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/barled_inspiracion_tier_3.png',
+        image: '/assets/skills/barled_inspiracion_tier_3.webp',
         damage: 0,
         title: 'Inspiración Bárdica III - Virtuoso del Oud',
         description: '🎶 [SINFONÍA DEL OUD]: Clímax musical que sube de tier 4 cartas de la mano (+1 Rango a toda la mano).',
@@ -1744,7 +1744,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/barled_fuego_feerico_tier_1.png',
+        image: '/assets/skills/barled_fuego_feerico_tier_1.webp',
         damage: 14,
         title: 'Fuego Feérico I',
         description: '✨ [DEBUFF EN ÁREA]: Lanza destellos feéricos con su lanza y Oud a todos los enemigos. Reciben +15% más de daño durante 2 turnos.',
@@ -1757,7 +1757,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/barled_fuego_feerico_tier_2.png',
+        image: '/assets/skills/barled_fuego_feerico_tier_2.webp',
         damage: 28,
         title: 'Fuego Feérico II - Resplandor Arcano',
         description: '✨ [DEBUFF EN ÁREA II]: Fuego feérico violeta que marca a todos los enemigos, haciéndoles recibir +20% más de daño durante 2 turnos.',
@@ -1770,7 +1770,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/barled_fuego_feerico_tier_3.png',
+        image: '/assets/skills/barled_fuego_feerico_tier_3.webp',
         damage: 46,
         title: 'Fuego Feérico III - Supernova Feérica',
         description: '✨ [DEBUFF EN ÁREA III]: Estallido feérico deslumbrante sobre todos los enemigos. Reciben +25% más de daño durante 3 turnos.',
@@ -1792,7 +1792,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/barled_curacion_tier_1.png',
+        image: '/assets/skills/barled_curacion_tier_1.webp',
         damage: 0,
         heal: 45,
         title: 'Curación en Masa I',
@@ -1804,7 +1804,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/barled_curacion_tier_2.png',
+        image: '/assets/skills/barled_curacion_tier_2.webp',
         damage: 0,
         heal: 90,
         title: 'Curación en Masa II - Coro Vital',
@@ -1816,7 +1816,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/barled_curacion_tier_3.png',
+        image: '/assets/skills/barled_curacion_tier_3.webp',
         damage: 0,
         heal: 180,
         title: 'Curación en Masa III - Sinfonía del Renacer',
@@ -1840,7 +1840,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/raxxar_espada_tier_1.png',
+        image: '/assets/skills/raxxar_espada_tier_1.webp',
         damage: 28,
         title: 'Tajo Rúnico I',
         description: '⚔️ [HOJA CARMESÍ]: Raxxar embiste con su espadón de runas sangrientas e inflige 28 DMG cortante + Sangrado.',
@@ -1853,7 +1853,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/raxxar_espada_tier_2.png',
+        image: '/assets/skills/raxxar_espada_tier_2.webp',
         damage: 56,
         title: 'Tajo Rúnico II - Hendidura Carmesí',
         description: '⚔️ [FILO SANGRIENTO II]: Potente arco carmesí que desgarra la guardia enemiga (56 DMG) + Sangrado II y Ruptura DEF.',
@@ -1867,7 +1867,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/raxxar_espada_tier_3.png',
+        image: '/assets/skills/raxxar_espada_tier_3.webp',
         damage: 98,
         title: 'Tajo Rúnico III - Guadaña de Sangre',
         description: '⚔️ [FILO SUPREMO]: Tajo devastador envuelto en aura carmesí que parte defensas (98 DMG), provoca Laceración y Ruptura DEF II.',
@@ -1890,7 +1890,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/raxxar_escudo_tier_1.png',
+        image: '/assets/skills/raxxar_escudo_tier_1.webp',
         damage: 0,
         title: 'Escudo Antidisturbios I',
         description: '🛡️ [MORFOSIS DE ESPADA]: La espada se transforma en un pesado escudo antidisturbios rúnico (+70 Escudo PV y 75% reducción de daño 1T).',
@@ -1901,7 +1901,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/raxxar_escudo_tier_2.png',
+        image: '/assets/skills/raxxar_escudo_tier_2.webp',
         damage: 0,
         title: 'Escudo Antidisturbios II - Muro Carmesí',
         description: '🛡️ [MORFOSIS REFORZADA]: Barrera antidisturbios reforzada (+140 Escudo PV, 80% reducción de daño y purifica debuffs).',
@@ -1912,7 +1912,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/raxxar_escudo_tier_3.png',
+        image: '/assets/skills/raxxar_escudo_tier_3.webp',
         damage: 0,
         title: 'Escudo Antidisturbios III - Égida Inexpugnable',
         description: '🛡️ [MORFOSIS SUPREMA]: Fortaleza táctica (+240 Escudo PV, 90% reducción de daño 2T, purificación total y +ATK rúnico).',
@@ -1934,7 +1934,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/raxxar_lanza_tier_1.png',
+        image: '/assets/skills/raxxar_lanza_tier_1.webp',
         damage: 32,
         title: 'Lanza Sangrienta I',
         description: '🩸 [LANZA TRANSFORMADA]: La espada adopta forma de lanza envuelta en magia de sangre e impacta a distancia (32 DMG) + Sangrado.',
@@ -1947,7 +1947,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/raxxar_lanza_tier_2.png',
+        image: '/assets/skills/raxxar_lanza_tier_2.webp',
         damage: 64,
         title: 'Lanza Sangrienta II - Venablo Carmesí',
         description: '🩸 [VENABLO DE SANGRE]: Lanza arrojadiza en espiral escarlata que atraviesa blindajes (64 DMG) + Sangrado II y Ruptura DEF.',
@@ -1961,7 +1961,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/raxxar_lanza_tier_3.png',
+        image: '/assets/skills/raxxar_lanza_tier_3.webp',
         damage: 112,
         title: 'Lanza Sangrienta III - Juicio Escarlata',
         description: '🩸 [IMPACTO SUPREMO]: Proyectil carmesí devastador que empala al enemigo (112 DMG), inflige Laceración, Ruptura DEF y Aturde 1T.',
@@ -1987,7 +1987,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/smurph_aterrizaje_heroico_tier_1.png',
+        image: '/assets/skills/smurph_aterrizaje_heroico_tier_1.webp',
         damage: 38,
         title: 'Vuelo y Aterrizaje Heroico',
         description: '🦅 [VUELO & ATERRIZAJE]: Smurph se eleva hacia arriba haciéndose invisible por 1 turno (inmune a daño). Al final del turno cae en picado y ataca al guardia con un brutal aterrizaje superheroico contra el suelo (38 DMG).',
@@ -2000,7 +2000,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/smurph_aterrizaje_heroico_tier_2.png',
+        image: '/assets/skills/smurph_aterrizaje_heroico_tier_2.webp',
         damage: 74,
         title: 'Aterrizaje Heroico II - Impacto Sísmico',
         description: '🦅 [SUPERHERO LANDING II]: Ascenso invisible a las nubes. Cae con violencia demoledora estrellándose contra el suelo (74 DMG), quebrando la armadura del guardia y aturdiéndolo.',
@@ -2014,7 +2014,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/smurph_aterrizaje_heroico_tier_3.png',
+        image: '/assets/skills/smurph_aterrizaje_heroico_tier_3.webp',
         damage: 125,
         title: 'Aterrizaje Heroico III - Colapso Dracónico',
         description: '🦅 [COLAPSO SUPREMO]: Despegue supersónico invisible inmune a todo daño. Cae como un meteoro en aterrizaje superheroico perfecto causando 125 DMG en un cráter eléctrico masivo.',
@@ -2037,7 +2037,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/smurph_bolas_fuego_tier_1.png',
+        image: '/assets/skills/smurph_bolas_fuego_tier_1.webp',
         damage: 28,
         title: 'Bolas de Fuego Dracónicas',
         description: '🔥 [FUEGO DRACÓNICO]: Dispara múltiples esferas de fuego dracónico que impactan al guardia infligiendo 28 DMG ígneo y quemadura persistente.',
@@ -2050,7 +2050,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/smurph_bolas_fuego_tier_2.png',
+        image: '/assets/skills/smurph_bolas_fuego_tier_2.webp',
         damage: 56,
         title: 'Bolas de Fuego II - Ráfaga Ígnea',
         description: '🔥 [ANDANADA MAGMÁTICA]: Lanza una ráfaga arrolladora de meteoros ígneos que calcinan al rival (56 DMG) y reducen su poder de ataque.',
@@ -2064,7 +2064,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/smurph_bolas_fuego_tier_3.png',
+        image: '/assets/skills/smurph_bolas_fuego_tier_3.webp',
         damage: 94,
         title: 'Bolas de Fuego III - Tormenta Piromántica',
         description: '🔥 [CATACLISMO ÍGNEO]: Bombardeo masivo de orbes solares dracónicos que desintegran la defensa enemiga (94 DMG) e incendian el campo de batalla.',
@@ -2087,7 +2087,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       1: {
         tier: 1,
         frameName: 'Bronce',
-        image: '/assets/skills/smurph_aliento_rayo_tier_1.png',
+        image: '/assets/skills/smurph_aliento_rayo_tier_1.webp',
         damage: 32,
         title: 'Aliento de Rayo',
         description: '⚡ [RELÁMPAGO BUCAL]: Abre las fauces y exhala un rayo eléctrico continuo de alta potencia que electrocuta al objetivo causando 32 DMG de rayo.',
@@ -2100,7 +2100,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       2: {
         tier: 2,
         frameName: 'Plata',
-        image: '/assets/skills/smurph_aliento_rayo_tier_2.png',
+        image: '/assets/skills/smurph_aliento_rayo_tier_2.webp',
         damage: 64,
         title: 'Aliento de Rayo II - Descarga Voltaica',
         description: '⚡ [DESCARGA VOLTAICA]: Haz crepitante de plasma eléctrico exhalado desde la garganta que atraviesa las armaduras (64 DMG) con choque severo.',
@@ -2115,7 +2115,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
       3: {
         tier: 3,
         frameName: 'Oro',
-        image: '/assets/skills/smurph_aliento_rayo_tier_3.png',
+        image: '/assets/skills/smurph_aliento_rayo_tier_3.webp',
         damage: 105,
         title: 'Aliento de Rayo III - Tormenta de Relámpagos',
         description: '⚡ [HAZ DRACÓNICO TITÁNICO]: Emisión atronadora de relámpagos celestes concentrados desde su boca (105 DMG), paralizando y quebrando al guardia por completo.',
@@ -2350,10 +2350,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Vanguardia • Bruto Muscular',
     chamberName: 'Sala I: Nido de Sangre',
     chamberNumber: 1,
-    spriteUrl: '/assets/combat/araknoide_rojo_clean.png',
-    attackSpriteUrl: '/assets/combat/araknoide_rojo_attack.png',
-    hurtSpriteUrl: '/assets/combat/araknoide_rojo_hurt.png',
-    thumbUrl: '/assets/combat/araknoide_rojo_thumb.png',
+    spriteUrl: '/assets/combat/araknoide_rojo_clean.webp',
+    attackSpriteUrl: '/assets/combat/araknoide_rojo_attack.webp',
+    hurtSpriteUrl: '/assets/combat/araknoide_rojo_hurt.webp',
+    thumbUrl: '/assets/combat/araknoide_rojo_thumb.webp',
     maxHp: 52,
     width: 139,
     height: 192,
@@ -2408,7 +2408,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Quitina Carmesí Fortificada',
         rarity: 'SSR',
         count: 2,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         description: 'Caparazón rojo ultra resistente obtenido del Araknoide Berserker de las grutas.',
       },
     },
@@ -2420,10 +2420,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Depredador Carmesí • Fauces Carnívoras',
     chamberName: 'Cueva de Huevos Carmesís',
     chamberNumber: 1,
-    spriteUrl: '/assets/combat/araknoide_voraz_clean.png',
-    attackSpriteUrl: '/assets/combat/araknoide_voraz_attack.png',
-    hurtSpriteUrl: '/assets/combat/araknoide_voraz_hurt.png',
-    thumbUrl: '/assets/combat/araknoide_voraz_thumb.png',
+    spriteUrl: '/assets/combat/araknoide_voraz_clean.webp',
+    attackSpriteUrl: '/assets/combat/araknoide_voraz_attack.webp',
+    hurtSpriteUrl: '/assets/combat/araknoide_voraz_hurt.webp',
+    thumbUrl: '/assets/combat/araknoide_voraz_thumb.webp',
     maxHp: 48,
     width: 140,
     height: 192,
@@ -2478,7 +2478,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Mandíbula de Araknoide Voraz',
         rarity: 'SR',
         count: 1,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         description: 'Fauces afiladas empapadas en icor carmesí.',
       },
     },
@@ -2490,10 +2490,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Acorazado de Púas • Caparazón Rojo',
     chamberName: 'Cueva de Huevos Carmesís',
     chamberNumber: 1,
-    spriteUrl: '/assets/combat/araknoide_espinoso_clean.png',
-    attackSpriteUrl: '/assets/combat/araknoide_espinoso_attack.png',
-    hurtSpriteUrl: '/assets/combat/araknoide_espinoso_hurt.png',
-    thumbUrl: '/assets/combat/araknoide_espinoso_thumb.png',
+    spriteUrl: '/assets/combat/araknoide_espinoso_clean.webp',
+    attackSpriteUrl: '/assets/combat/araknoide_espinoso_attack.webp',
+    hurtSpriteUrl: '/assets/combat/araknoide_espinoso_hurt.webp',
+    thumbUrl: '/assets/combat/araknoide_espinoso_thumb.webp',
     maxHp: 54,
     width: 145,
     height: 192,
@@ -2548,7 +2548,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Púa Carmesí Quitinoza',
         rarity: 'SR',
         count: 2,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         description: 'Espina hiperdura extraída del caparazón del araknoide espinoso.',
       },
     },
@@ -2560,10 +2560,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Guardián del Nido • Abdomen Carmesí',
     chamberName: 'Cueva de Huevos Carmesís',
     chamberNumber: 1,
-    spriteUrl: '/assets/combat/araknoide_oviparo_clean.png',
-    attackSpriteUrl: '/assets/combat/araknoide_oviparo_attack.png',
-    hurtSpriteUrl: '/assets/combat/araknoide_oviparo_hurt.png',
-    thumbUrl: '/assets/combat/araknoide_oviparo_thumb.png',
+    spriteUrl: '/assets/combat/araknoide_oviparo_clean.webp',
+    attackSpriteUrl: '/assets/combat/araknoide_oviparo_attack.webp',
+    hurtSpriteUrl: '/assets/combat/araknoide_oviparo_hurt.webp',
+    thumbUrl: '/assets/combat/araknoide_oviparo_thumb.webp',
     maxHp: 44,
     width: 140,
     height: 192,
@@ -2618,7 +2618,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Muestra de Huevo Carmesí',
         rarity: 'SSR',
         count: 1,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         description: 'Huevo viscoso intacto del nido subterráneo.',
       },
     },
@@ -2630,10 +2630,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Acechador Esbelto Criogénico',
     chamberName: 'Sala II: Grieta Criogénica',
     chamberNumber: 2,
-    spriteUrl: '/assets/combat/araknoide_azul_clean.png',
-    attackSpriteUrl: '/assets/combat/araknoide_azul_attack.png',
-    hurtSpriteUrl: '/assets/combat/araknoide_azul_hurt.png',
-    thumbUrl: '/assets/combat/araknoide_azul_thumb.png',
+    spriteUrl: '/assets/combat/araknoide_azul_clean.webp',
+    attackSpriteUrl: '/assets/combat/araknoide_azul_attack.webp',
+    hurtSpriteUrl: '/assets/combat/araknoide_azul_hurt.webp',
+    thumbUrl: '/assets/combat/araknoide_azul_thumb.webp',
     maxHp: 46,
     width: 135,
     height: 192,
@@ -2688,7 +2688,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Glándula de Hielo Zafiro',
         rarity: 'SSR',
         count: 2,
-        icon: '/assets/items/arcano_gema_app.png',
+        icon: '/assets/items/arcano_gema_app.webp',
         description: 'Órgano criogénico que segrega seda helada indestructible.',
       },
     },
@@ -2700,10 +2700,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Acechador Criogénico Blindado',
     chamberName: 'Caverna Congelada: Infección Glacial',
     chamberNumber: 1,
-    spriteUrl: '/assets/combat/araknoide_glacial_clean.png',
-    attackSpriteUrl: '/assets/combat/araknoide_glacial_attack.png',
-    hurtSpriteUrl: '/assets/combat/araknoide_glacial_hurt.png',
-    thumbUrl: '/assets/combat/araknoide_glacial_thumb.png',
+    spriteUrl: '/assets/combat/araknoide_glacial_clean.webp',
+    attackSpriteUrl: '/assets/combat/araknoide_glacial_attack.webp',
+    hurtSpriteUrl: '/assets/combat/araknoide_glacial_hurt.webp',
+    thumbUrl: '/assets/combat/araknoide_glacial_thumb.webp',
     maxHp: 56,
     width: 145,
     height: 195,
@@ -2758,7 +2758,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Espora Viral Criogénica',
         rarity: 'SSR',
         count: 1,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         description: 'Muestra intacta del parásito viral que transforma tejido vivo en quitina arácnida gélida.',
       },
     },
@@ -2770,10 +2770,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Jefe del Corazón de la Colonia • Tejedora de Espinas Abisales',
     chamberName: 'Entrada al Corazón de la Colonia: Mina Abisal',
     chamberNumber: 1,
-    spriteUrl: '/assets/combat/semiboss_zancudo_clean.png',
-    attackSpriteUrl: '/assets/combat/semiboss_zancudo_attack.png',
-    hurtSpriteUrl: '/assets/combat/semiboss_zancudo_hurt.png',
-    thumbUrl: '/assets/combat/semiboss_zancudo_thumb.png',
+    spriteUrl: '/assets/combat/semiboss_zancudo_clean.webp',
+    attackSpriteUrl: '/assets/combat/semiboss_zancudo_attack.webp',
+    hurtSpriteUrl: '/assets/combat/semiboss_zancudo_hurt.webp',
+    thumbUrl: '/assets/combat/semiboss_zancudo_thumb.webp',
     maxHp: 125,
     width: 292,
     height: 412,
@@ -2828,7 +2828,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Pata Aguja de Zancudo',
         rarity: 'SSR',
         count: 1,
-        icon: '/assets/items/fragmento_astral.png',
+        icon: '/assets/items/fragmento_astral.webp',
         description: 'Extremidad puntiaguda y letal del Semijefe Zancudo, codiciada por herreros de élite.',
       },
     },
@@ -2840,10 +2840,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Semijefe • Coloso Bestial Aracnofelino',
     chamberName: 'Sala IV: Foso del Behemoth',
     chamberNumber: 4,
-    spriteUrl: '/assets/combat/semiboss_melenudo_clean.png',
-    attackSpriteUrl: '/assets/combat/semiboss_melenudo_attack.png',
-    hurtSpriteUrl: '/assets/combat/semiboss_melenudo_hurt.png',
-    thumbUrl: '/assets/combat/semiboss_melenudo_thumb.png',
+    spriteUrl: '/assets/combat/semiboss_melenudo_clean.webp',
+    attackSpriteUrl: '/assets/combat/semiboss_melenudo_attack.webp',
+    hurtSpriteUrl: '/assets/combat/semiboss_melenudo_hurt.webp',
+    thumbUrl: '/assets/combat/semiboss_melenudo_thumb.webp',
     maxHp: 88,
     width: 161,
     height: 202,
@@ -2898,7 +2898,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Melena de Cerdas Titánicas',
         rarity: 'SSR',
         count: 1,
-        icon: '/assets/items/cuero.png',
+        icon: '/assets/items/cuero.webp',
         description: 'Tupida melena de pelos defensivos del Titán Araknoide. Irradia fuerza bruta colosal.',
       },
     },
@@ -2910,10 +2910,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Objetivo Táctico • Cristal Disipador de Rayos',
     chamberName: 'Foso del Behemoth',
     chamberNumber: 4,
-    spriteUrl: '/assets/items/arcano_gema_app.png',
-    attackSpriteUrl: '/assets/items/arcano_gema_app.png',
-    hurtSpriteUrl: '/assets/items/arcano_gema_app.png',
-    thumbUrl: '/assets/items/arcano_gema_app.png',
+    spriteUrl: '/assets/items/arcano_gema_app.webp',
+    attackSpriteUrl: '/assets/items/arcano_gema_app.webp',
+    hurtSpriteUrl: '/assets/items/arcano_gema_app.webp',
+    thumbUrl: '/assets/items/arcano_gema_app.webp',
     maxHp: 220,
     width: 95,
     height: 140,
@@ -2951,7 +2951,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Fragmento de Cristal Conductor',
         rarity: 'SR',
         count: 1,
-        icon: '/assets/items/arcano_gema_app.png',
+        icon: '/assets/items/arcano_gema_app.webp',
         description: 'Piedra conductora de alto voltaje que absorbe las descargas del Titán Melenudo.',
       },
     },
@@ -2963,10 +2963,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Gran Jefe • Soberano de las Profundidades',
     chamberName: 'Sala V: El Corazón del Abismo',
     chamberNumber: 5,
-    spriteUrl: '/assets/aistudio/araknoide_clean.png',
-    attackSpriteUrl: '/assets/combat/araknoide_attack.png',
-    hurtSpriteUrl: '/assets/combat/araknoide_hurt.png',
-    thumbUrl: '/assets/aistudio/image_54c3154f.png',
+    spriteUrl: '/assets/aistudio/araknoide_clean.webp',
+    attackSpriteUrl: '/assets/combat/araknoide_attack.webp',
+    hurtSpriteUrl: '/assets/combat/araknoide_hurt.webp',
+    thumbUrl: '/assets/aistudio/image_54c3154f.webp',
     maxHp: 65,
     width: 136,
     height: 192,
@@ -3022,7 +3022,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Quitina de Araknoide',
         rarity: 'SSR',
         count: 3,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         description: 'Caparazón endurecido obtenido de la bestia abisal de las Cuevas de Icespear.',
       },
     },
@@ -3034,10 +3034,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Fase 2 • Horror Eléctrico Subterráneo',
     chamberName: 'Sala V: El Corazón del Abismo (Fase 2)',
     chamberNumber: 5,
-    spriteUrl: '/assets/combat/medusa_clean.png',
-    attackSpriteUrl: '/assets/combat/medusa_attack.png',
-    hurtSpriteUrl: '/assets/combat/medusa_hurt.png',
-    thumbUrl: '/assets/combat/medusa_thumb.png',
+    spriteUrl: '/assets/combat/medusa_clean.webp',
+    attackSpriteUrl: '/assets/combat/medusa_attack.webp',
+    hurtSpriteUrl: '/assets/combat/medusa_hurt.webp',
+    thumbUrl: '/assets/combat/medusa_thumb.webp',
     maxHp: 75,
     width: 136,
     height: 192,
@@ -3092,7 +3092,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Tentáculo de Medusa Abisal',
         rarity: 'SSR',
         count: 1,
-        icon: '/assets/combat/medusa_thumb.png',
+        icon: '/assets/combat/medusa_thumb.webp',
         description: 'Bioluminiscencia viva cargada de plasma de choque y efecto aturdidor.',
       },
     },
@@ -3104,10 +3104,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Patrulla Urbana • Lanza y Broquel',
     chamberName: 'Oleada 1: Patrulla Callejera',
     chamberNumber: 1,
-    spriteUrl: '/assets/combat/guardia_lanza_clean.png',
-    attackSpriteUrl: '/assets/combat/guardia_lanza_attack.png',
-    hurtSpriteUrl: '/assets/combat/guardia_lanza_hurt.png',
-    thumbUrl: '/assets/combat/guardia_lanza_thumb.png',
+    spriteUrl: '/assets/combat/guardia_lanza_clean.webp',
+    attackSpriteUrl: '/assets/combat/guardia_lanza_attack.webp',
+    hurtSpriteUrl: '/assets/combat/guardia_lanza_hurt.webp',
+    thumbUrl: '/assets/combat/guardia_lanza_thumb.webp',
     maxHp: 48,
     width: 142,
     height: 195,
@@ -3162,7 +3162,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Lanza de la Guardia Urbana',
         rarity: 'SR',
         count: 1,
-        icon: '/assets/combat/guardia_lanza_thumb.png',
+        icon: '/assets/combat/guardia_lanza_thumb.webp',
         description: 'Lanza forjada en hierro templado perteneciente a la patrulla nocturna de Icespear.',
       },
     },
@@ -3174,10 +3174,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Infantería Pesada • Espada Ancha y Escudo Rúnico',
     chamberName: 'Oleada 2: Refuerzos de la Mansión',
     chamberNumber: 2,
-    spriteUrl: '/assets/combat/guardia_espada_clean.png',
-    attackSpriteUrl: '/assets/combat/guardia_espada_attack.png',
-    hurtSpriteUrl: '/assets/combat/guardia_espada_hurt.png',
-    thumbUrl: '/assets/combat/guardia_espada_thumb.png',
+    spriteUrl: '/assets/combat/guardia_espada_clean.webp',
+    attackSpriteUrl: '/assets/combat/guardia_espada_attack.webp',
+    hurtSpriteUrl: '/assets/combat/guardia_espada_hurt.webp',
+    thumbUrl: '/assets/combat/guardia_espada_thumb.webp',
     maxHp: 58,
     width: 142,
     height: 195,
@@ -3232,7 +3232,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Escudo Rúnico de la Guarnición',
         rarity: 'SR',
         count: 1,
-        icon: '/assets/combat/guardia_espada_thumb.png',
+        icon: '/assets/combat/guardia_espada_thumb.webp',
         description: 'Gran escudo de madera reforzada y tachones de acero con el sello de la guardia de la ciudad.',
       },
     },
@@ -3244,10 +3244,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Francotirador de Élite • Ballesta Pesada',
     chamberName: 'Oleada 3: Emboscada de Francotiradores',
     chamberNumber: 3,
-    spriteUrl: '/assets/combat/guardia_ballesta_clean.png',
-    attackSpriteUrl: '/assets/combat/guardia_ballesta_attack.png',
-    hurtSpriteUrl: '/assets/combat/guardia_ballesta_hurt.png',
-    thumbUrl: '/assets/combat/guardia_ballesta_thumb.png',
+    spriteUrl: '/assets/combat/guardia_ballesta_clean.webp',
+    attackSpriteUrl: '/assets/combat/guardia_ballesta_attack.webp',
+    hurtSpriteUrl: '/assets/combat/guardia_ballesta_hurt.webp',
+    thumbUrl: '/assets/combat/guardia_ballesta_thumb.webp',
     maxHp: 52,
     width: 142,
     height: 195,
@@ -3302,7 +3302,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Virotes de Precisión Templados',
         rarity: 'SR',
         count: 3,
-        icon: '/assets/combat/guardia_ballesta_thumb.png',
+        icon: '/assets/combat/guardia_ballesta_thumb.webp',
         description: 'Saetas de ballesta reglamentarias con emplumado de cuervo y punta acerada.',
       },
     },
@@ -3314,10 +3314,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
     title: 'Comandante de Turno • Maza con Púas y Armadura de Placas',
     chamberName: 'Oleada 4: Asedio del Sargento Acorazado',
     chamberNumber: 4,
-    spriteUrl: '/assets/combat/guardia_pesado_clean.png',
-    attackSpriteUrl: '/assets/combat/guardia_pesado_attack.png',
-    hurtSpriteUrl: '/assets/combat/guardia_pesado_hurt.png',
-    thumbUrl: '/assets/combat/guardia_pesado_thumb.png',
+    spriteUrl: '/assets/combat/guardia_pesado_clean.webp',
+    attackSpriteUrl: '/assets/combat/guardia_pesado_attack.webp',
+    hurtSpriteUrl: '/assets/combat/guardia_pesado_hurt.webp',
+    thumbUrl: '/assets/combat/guardia_pesado_thumb.webp',
     maxHp: 85,
     width: 154,
     height: 210,
@@ -3372,7 +3372,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         name: 'Cofre Sellado de la Mansión',
         rarity: 'SSR',
         count: 1,
-        icon: '/assets/items/cofre_sellado_mansion.png',
+        icon: '/assets/items/cofre_sellado_mansion.webp',
         description: 'Cofre de roble con herrajes de latón y un cerrojo mágico sellado, repleto de doblones de oro, sustraído durante el asalto a la mansión tras derrotar a toda la guardia de Icespear.',
       },
     },
@@ -3384,10 +3384,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Merodeador de la Maleza • Dagas Dentadas',
       chamberName: 'Oleada 1: Batidores de la Maleza',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/goblin_daga_clean.png',
-      attackSpriteUrl: '/assets/combat/goblin_daga_attack.png',
-      hurtSpriteUrl: '/assets/combat/goblin_daga_hurt.png',
-      thumbUrl: '/assets/combat/goblin_daga_thumb.png',
+      spriteUrl: '/assets/combat/goblin_daga_clean.webp',
+      attackSpriteUrl: '/assets/combat/goblin_daga_attack.webp',
+      hurtSpriteUrl: '/assets/combat/goblin_daga_hurt.webp',
+      thumbUrl: '/assets/combat/goblin_daga_thumb.webp',
       maxHp: 38,
       width: 131,
       height: 180,
@@ -3442,7 +3442,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Daga Mellada Goblin',
           rarity: 'SR',
           count: 1,
-          icon: '/assets/combat/goblin_daga_thumb.png',
+          icon: '/assets/combat/goblin_daga_thumb.webp',
           description: 'Cuchilla de hierro oxidado y hueso empuñada por los asaltantes goblin del bosque.',
         },
       },
@@ -3454,10 +3454,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Hostigador Rápido • Honda y Guijarros',
       chamberName: 'Oleada 1: Batidores de la Maleza',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/goblin_honda_clean.png',
-      attackSpriteUrl: '/assets/combat/goblin_honda_attack.png',
-      hurtSpriteUrl: '/assets/combat/goblin_honda_hurt.png',
-      thumbUrl: '/assets/combat/goblin_honda_thumb.png',
+      spriteUrl: '/assets/combat/goblin_honda_clean.webp',
+      attackSpriteUrl: '/assets/combat/goblin_honda_attack.webp',
+      hurtSpriteUrl: '/assets/combat/goblin_honda_hurt.webp',
+      thumbUrl: '/assets/combat/goblin_honda_thumb.webp',
       maxHp: 34,
       width: 131,
       height: 180,
@@ -3506,7 +3506,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Bolsa de Guijarros de Río',
           rarity: 'SR',
           count: 1,
-          icon: '/assets/combat/goblin_honda_thumb.png',
+          icon: '/assets/combat/goblin_honda_thumb.webp',
           description: 'Pouch de piel curtida repleto de cantos rodados de río listos para hondas de asalto.',
         },
       },
@@ -3518,10 +3518,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Bruto de la Jauría • Clava Claveteada y Casco Olla',
       chamberName: 'Oleada 2: Emboscada de la Jauría Goblin',
       chamberNumber: 2,
-      spriteUrl: '/assets/combat/goblin_garrote_clean.png',
-      attackSpriteUrl: '/assets/combat/goblin_garrote_attack.png',
-      hurtSpriteUrl: '/assets/combat/goblin_garrote_hurt.png',
-      thumbUrl: '/assets/combat/goblin_garrote_thumb.png',
+      spriteUrl: '/assets/combat/goblin_garrote_clean.webp',
+      attackSpriteUrl: '/assets/combat/goblin_garrote_attack.webp',
+      hurtSpriteUrl: '/assets/combat/goblin_garrote_hurt.webp',
+      thumbUrl: '/assets/combat/goblin_garrote_thumb.webp',
       maxHp: 56,
       width: 131,
       height: 180,
@@ -3570,7 +3570,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Clava Claveteada de Roble',
           rarity: 'SR',
           count: 1,
-          icon: '/assets/combat/goblin_garrote_thumb.png',
+          icon: '/assets/combat/goblin_garrote_thumb.webp',
           description: 'Garrote tosco pero mortífero adornado con clavos de forja humana sustraídos en los caminos.',
         },
       },
@@ -3582,10 +3582,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Líder Tribal • Fetiche de Calavera y Fuego Fatuo',
       chamberName: 'Oleada 2: Emboscada de la Jauría Goblin',
       chamberNumber: 2,
-      spriteUrl: '/assets/combat/goblin_chaman_clean.png',
-      attackSpriteUrl: '/assets/combat/goblin_chaman_attack.png',
-      hurtSpriteUrl: '/assets/combat/goblin_chaman_hurt.png',
-      thumbUrl: '/assets/combat/goblin_chaman_thumb.png',
+      spriteUrl: '/assets/combat/goblin_chaman_clean.webp',
+      attackSpriteUrl: '/assets/combat/goblin_chaman_attack.webp',
+      hurtSpriteUrl: '/assets/combat/goblin_chaman_hurt.webp',
+      thumbUrl: '/assets/combat/goblin_chaman_thumb.webp',
       maxHp: 52,
       width: 131,
       height: 180,
@@ -3634,7 +3634,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Fetiche Rúnico del Chamán',
           rarity: 'SSR',
           count: 1,
-          icon: '/assets/combat/goblin_chaman_thumb.png',
+          icon: '/assets/combat/goblin_chaman_thumb.webp',
           description: 'Cráneo tallado y báculo de roble imbuido con magia de la naturaleza corrupta de los bosques.',
         },
       },
@@ -3646,10 +3646,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Monstruosidad de las Nieves • Fase 1: Coraza [50% Resistencia a Definitivos]',
       chamberName: 'Puertas de Glimmerstone: El Titán del Paso',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/devorador_quitinoso_clean.png',
-      attackSpriteUrl: '/assets/combat/devorador_quitinoso_attack.png',
-      hurtSpriteUrl: '/assets/combat/devorador_quitinoso_hurt.png',
-      thumbUrl: '/assets/combat/devorador_quitinoso_thumb.png',
+      spriteUrl: '/assets/combat/devorador_quitinoso_clean.webp',
+      attackSpriteUrl: '/assets/combat/devorador_quitinoso_attack.webp',
+      hurtSpriteUrl: '/assets/combat/devorador_quitinoso_hurt.webp',
+      thumbUrl: '/assets/combat/devorador_quitinoso_thumb.webp',
       maxHp: 160,
       width: 176,
       height: 240,
@@ -3706,7 +3706,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Placa de Quitina Ancestral',
           rarity: 'SSR',
           count: 2,
-          icon: '/assets/items/fragmento_de_quitina.png',
+          icon: '/assets/items/fragmento_de_quitina.webp',
           description: 'Placa quitinosa de dureza extrema arrancada de la coraza del Devorador Quitinoso.',
         },
       },
@@ -3718,10 +3718,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Fase 2 • Depredador Desatado [Robo de Vida en Ataques + 50% Resistencia Definitivos]',
       chamberName: 'Puertas de Glimmerstone: Furia Desatada',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/devorador_quitinoso_clean.png',
-      attackSpriteUrl: '/assets/combat/devorador_quitinoso_p2_attack.png',
-      hurtSpriteUrl: '/assets/combat/devorador_quitinoso_hurt.png',
-      thumbUrl: '/assets/combat/devorador_quitinoso_thumb.png',
+      spriteUrl: '/assets/combat/devorador_quitinoso_clean.webp',
+      attackSpriteUrl: '/assets/combat/devorador_quitinoso_p2_attack.webp',
+      hurtSpriteUrl: '/assets/combat/devorador_quitinoso_hurt.webp',
+      thumbUrl: '/assets/combat/devorador_quitinoso_thumb.webp',
       maxHp: 220,
       width: 176,
       height: 240,
@@ -3778,7 +3778,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Coraza del Devorador Quitinoso',
           rarity: 'SSR',
           count: 1,
-          icon: '/assets/items/fragmento_de_quitina.png',
+          icon: '/assets/items/fragmento_de_quitina.webp',
           description: 'El núcleo de coraza blindada del coloso que custodiaba las puertas selladas de Glimmerstone.',
         },
       },
@@ -3790,10 +3790,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Asaltante Furtivo • Ataques Rápidos y Hemorragia',
       chamberName: 'Emboscada de Bandidos • Asalto en el Vado',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/bandido_daga_clean.png',
-      attackSpriteUrl: '/assets/combat/bandido_daga_attack.png',
-      hurtSpriteUrl: '/assets/combat/bandido_daga_hurt.png',
-      thumbUrl: '/assets/combat/bandido_daga_thumb.png',
+      spriteUrl: '/assets/combat/bandido_daga_clean.webp',
+      attackSpriteUrl: '/assets/combat/bandido_daga_attack.webp',
+      hurtSpriteUrl: '/assets/combat/bandido_daga_hurt.webp',
+      thumbUrl: '/assets/combat/bandido_daga_thumb.webp',
       maxHp: 42,
       width: 140,
       height: 180,
@@ -3843,7 +3843,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Daga Mellada de Bandido',
           rarity: 'SR',
           count: 1,
-          icon: '/assets/items/dagas_hierro.png',
+          icon: '/assets/items/dagas_hierro.webp',
           description: 'Arma ligera recuperada de los forajidos del vado.',
         },
       },
@@ -3855,10 +3855,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Arquero de los Riscos • Flechas Penetrantes',
       chamberName: 'Emboscada de Bandidos • Asalto en el Vado',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/bandido_tirador_clean.png',
-      attackSpriteUrl: '/assets/combat/bandido_tirador_attack.png',
-      hurtSpriteUrl: '/assets/combat/bandido_tirador_hurt.png',
-      thumbUrl: '/assets/combat/bandido_tirador_thumb.png',
+      spriteUrl: '/assets/combat/bandido_tirador_clean.webp',
+      attackSpriteUrl: '/assets/combat/bandido_tirador_attack.webp',
+      hurtSpriteUrl: '/assets/combat/bandido_tirador_hurt.webp',
+      thumbUrl: '/assets/combat/bandido_tirador_thumb.webp',
       maxHp: 36,
       width: 130,
       height: 180,
@@ -3908,7 +3908,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Flechas Dentadas de Bandido',
           rarity: 'SR',
           count: 2,
-          icon: '/assets/items/dagas_plata.png',
+          icon: '/assets/items/dagas_plata.webp',
           description: 'Proyectiles de caza utilizados para asaltar caravanas mercantes.',
         },
       },
@@ -3920,10 +3920,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Líder Forajido • Furia de Acero y Golpes Brutales',
       chamberName: 'Emboscada de Bandidos • Asalto en el Vado',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/bandido_lider_clean.png',
-      attackSpriteUrl: '/assets/combat/bandido_lider_attack.png',
-      hurtSpriteUrl: '/assets/combat/bandido_lider_hurt.png',
-      thumbUrl: '/assets/combat/bandido_lider_thumb.png',
+      spriteUrl: '/assets/combat/bandido_lider_clean.webp',
+      attackSpriteUrl: '/assets/combat/bandido_lider_attack.webp',
+      hurtSpriteUrl: '/assets/combat/bandido_lider_hurt.webp',
+      thumbUrl: '/assets/combat/bandido_lider_thumb.webp',
       maxHp: 96,
       width: 155,
       height: 220,
@@ -3973,7 +3973,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Cinto de Cuero del Capitán',
           rarity: 'SSR',
           count: 1,
-          icon: '/assets/items/cuero.png',
+          icon: '/assets/items/cuero.webp',
           description: 'Cinto con hebilla de bronce forjado que portaba el líder de los forajidos.',
         },
       },
@@ -3985,10 +3985,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Rastreador Caníbal • Estocada y Sangrado',
       chamberName: 'Asalto Orco • Paso Helado',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/orco_lanza_clean.png',
-      attackSpriteUrl: '/assets/combat/orco_lanza_attack.png',
-      hurtSpriteUrl: '/assets/combat/orco_lanza_hurt.png',
-      thumbUrl: '/assets/combat/orco_lanza_thumb.png',
+      spriteUrl: '/assets/combat/orco_lanza_clean.webp',
+      attackSpriteUrl: '/assets/combat/orco_lanza_attack.webp',
+      hurtSpriteUrl: '/assets/combat/orco_lanza_hurt.webp',
+      thumbUrl: '/assets/combat/orco_lanza_thumb.webp',
       maxHp: 58,
       width: 145,
       height: 200,
@@ -4038,7 +4038,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Punta de Lanza Dentada',
           rarity: 'SR',
           count: 1,
-          icon: '/assets/items/dagas_hierro.png',
+          icon: '/assets/items/dagas_hierro.webp',
           description: 'Pedernal afilado a mano por los cazadores orcos.',
         },
       },
@@ -4050,10 +4050,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Carnicero de la Horda • Hachazo Demoledor',
       chamberName: 'Asalto Orco • Paso Helado',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/orco_hacha_clean.png',
-      attackSpriteUrl: '/assets/combat/orco_hacha_attack.png',
-      hurtSpriteUrl: '/assets/combat/orco_hacha_hurt.png',
-      thumbUrl: '/assets/combat/orco_hacha_thumb.png',
+      spriteUrl: '/assets/combat/orco_hacha_clean.webp',
+      attackSpriteUrl: '/assets/combat/orco_hacha_attack.webp',
+      hurtSpriteUrl: '/assets/combat/orco_hacha_hurt.webp',
+      thumbUrl: '/assets/combat/orco_hacha_thumb.webp',
       maxHp: 72,
       width: 155,
       height: 205,
@@ -4103,7 +4103,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Hacha Astillada de Carnicero',
           rarity: 'SR',
           count: 1,
-          icon: '/assets/items/cuero.png',
+          icon: '/assets/items/cuero.webp',
           description: 'Hoja de hierro mellada con la que los carniceros orcos despedazan a sus presas.',
         },
       },
@@ -4115,10 +4115,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Jefe Caníbal • El Devorador Insaciable',
       chamberName: 'Asalto Orco • Paso Helado',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/orco_caudillo_clean.png',
-      attackSpriteUrl: '/assets/combat/orco_caudillo_attack.png',
-      hurtSpriteUrl: '/assets/combat/orco_caudillo_hurt.png',
-      thumbUrl: '/assets/combat/orco_caudillo_thumb.png',
+      spriteUrl: '/assets/combat/orco_caudillo_clean.webp',
+      attackSpriteUrl: '/assets/combat/orco_caudillo_attack.webp',
+      hurtSpriteUrl: '/assets/combat/orco_caudillo_hurt.webp',
+      thumbUrl: '/assets/combat/orco_caudillo_thumb.webp',
       maxHp: 165,
       width: 190,
       height: 240,
@@ -4180,10 +4180,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Infantería de Élite • Ébano, Oro y Escudo Rúnico',
       chamberName: 'Oleada 1: Patrulla de Avanzada de Ferton',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/guarda_negro_espada_clean.png',
-      attackSpriteUrl: '/assets/combat/guarda_negro_espada_attack.png',
-      hurtSpriteUrl: '/assets/combat/guarda_negro_espada_hurt.png',
-      thumbUrl: '/assets/portraits/guarda_negro_espada_thumb.png',
+      spriteUrl: '/assets/combat/guarda_negro_espada_clean.webp',
+      attackSpriteUrl: '/assets/combat/guarda_negro_espada_attack.webp',
+      hurtSpriteUrl: '/assets/combat/guarda_negro_espada_hurt.webp',
+      thumbUrl: '/assets/portraits/guarda_negro_espada_thumb.webp',
       maxHp: 88,
       width: 140,
       height: 195,
@@ -4238,7 +4238,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Insignia de Ébano y Oro de Ferton',
           rarity: 'SR',
           count: 1,
-          icon: '/assets/portraits/guarda_negro_espada_thumb.png',
+          icon: '/assets/portraits/guarda_negro_espada_thumb.webp',
           description: 'Medallón de infantería con el blasón de oro y ébano de Ferton.',
         },
       },
@@ -4250,10 +4250,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Sargento Frontal • Pica Pesada de Ébano y Oro',
       chamberName: 'Oleada 1: Patrulla de Avanzada de Ferton',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/guarda_negro_alabarda_clean.png',
-      attackSpriteUrl: '/assets/combat/guarda_negro_alabarda_attack.png',
-      hurtSpriteUrl: '/assets/combat/guarda_negro_alabarda_hurt.png',
-      thumbUrl: '/assets/portraits/guarda_negro_alabarda_thumb.png',
+      spriteUrl: '/assets/combat/guarda_negro_alabarda_clean.webp',
+      attackSpriteUrl: '/assets/combat/guarda_negro_alabarda_attack.webp',
+      hurtSpriteUrl: '/assets/combat/guarda_negro_alabarda_hurt.webp',
+      thumbUrl: '/assets/portraits/guarda_negro_alabarda_thumb.webp',
       maxHp: 98,
       width: 142,
       height: 195,
@@ -4308,7 +4308,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Punta de Lanza de Ébano y Oro',
           rarity: 'SSR',
           count: 1,
-          icon: '/assets/portraits/guarda_negro_alabarda_thumb.png',
+          icon: '/assets/portraits/guarda_negro_alabarda_thumb.webp',
           description: 'Punta de lanza afilada forjada en aleación negra enriquecida con láminas de oro puro.',
         },
       },
@@ -4320,10 +4320,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Tirador de Élite • Virotes de Alta Potencia',
       chamberName: 'Oleada 1: Patrulla de Avanzada de Ferton',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/guarda_negro_ballesta_clean.png',
-      attackSpriteUrl: '/assets/combat/guarda_negro_ballesta_attack.png',
-      hurtSpriteUrl: '/assets/combat/guarda_negro_ballesta_hurt.png',
-      thumbUrl: '/assets/portraits/guarda_negro_ballesta_thumb.png',
+      spriteUrl: '/assets/combat/guarda_negro_ballesta_clean.webp',
+      attackSpriteUrl: '/assets/combat/guarda_negro_ballesta_attack.webp',
+      hurtSpriteUrl: '/assets/combat/guarda_negro_ballesta_hurt.webp',
+      thumbUrl: '/assets/portraits/guarda_negro_ballesta_thumb.webp',
       maxHp: 80,
       width: 142,
       height: 195,
@@ -4378,7 +4378,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Carcaj de Virotes Negros de Ferton',
           rarity: 'SR',
           count: 1,
-          icon: '/assets/portraits/guarda_negro_ballesta_thumb.png',
+          icon: '/assets/portraits/guarda_negro_ballesta_thumb.webp',
           description: 'Carcaj de cuero oscuro con saetas con plumas negras y remates dorados.',
         },
       },
@@ -4390,10 +4390,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Comandante Pretoriano • Coloso de Ébano, Oro y Maza Devastadora',
       chamberName: 'Oleada 3: Guardia Pretoriana de Ferton',
       chamberNumber: 3,
-      spriteUrl: '/assets/combat/guarda_negro_pesado_clean.png',
-      attackSpriteUrl: '/assets/combat/guarda_negro_pesado_attack.png',
-      hurtSpriteUrl: '/assets/combat/guarda_negro_pesado_hurt.png',
-      thumbUrl: '/assets/portraits/guarda_negro_pesado_thumb.png',
+      spriteUrl: '/assets/combat/guarda_negro_pesado_clean.webp',
+      attackSpriteUrl: '/assets/combat/guarda_negro_pesado_attack.webp',
+      hurtSpriteUrl: '/assets/combat/guarda_negro_pesado_hurt.webp',
+      thumbUrl: '/assets/portraits/guarda_negro_pesado_thumb.webp',
       maxHp: 180,
       width: 154,
       height: 210,
@@ -4448,7 +4448,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Gran Escudo de Ébano del León Dorado',
           rarity: 'SSR',
           count: 1,
-          icon: '/assets/portraits/guarda_negro_pesado_thumb.png',
+          icon: '/assets/portraits/guarda_negro_pesado_thumb.webp',
           description: 'Pabellón de infantería reforzado con láminas de acero negro templado y el león dorado de Ferton.',
         },
       },
@@ -4460,10 +4460,10 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Comandante del Contrabando Imperial',
       chamberName: 'Duelo contra el Capataz Hoggoblin',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/hobgoblin_fase1_idle.png',
-      attackSpriteUrl: '/assets/combat/hobgoblin_fase1_attack.png',
-      hurtSpriteUrl: '/assets/combat/hobgoblin_fase1_hurt.png',
-      thumbUrl: '/assets/combat/hobgoblin_fase1_idle.png',
+      spriteUrl: '/assets/combat/hobgoblin_fase1_idle.webp',
+      attackSpriteUrl: '/assets/combat/hobgoblin_fase1_attack.webp',
+      hurtSpriteUrl: '/assets/combat/hobgoblin_fase1_hurt.webp',
+      thumbUrl: '/assets/combat/hobgoblin_fase1_idle.webp',
       maxHp: 300,
       width: 154,
       height: 210,
@@ -4518,7 +4518,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Trabuco de Fuego de Ébano y Oro',
           rarity: 'SSR',
           count: 1,
-          icon: '/assets/combat/hobgoblin_fase3_idle.png',
+          icon: '/assets/combat/hobgoblin_fase3_idle.webp',
           description: 'Arma de fuego reglamentaria imperial con grabados de oro incautada al Capataz Hoggoblin.',
         },
       },
@@ -4529,9 +4529,9 @@ export const HOBGOBLIN_SKILLS_BY_PHASE = {
   1: {
     phase: 1 as const,
     title: 'Fase 1: Maza de Asalto',
-    idleSprite: '/assets/combat/hobgoblin_fase1_idle.png',
-    attackSprite: '/assets/combat/hobgoblin_fase1_attack.png',
-    hurtSprite: '/assets/combat/hobgoblin_fase1_hurt.png',
+    idleSprite: '/assets/combat/hobgoblin_fase1_idle.webp',
+    attackSprite: '/assets/combat/hobgoblin_fase1_attack.webp',
+    hurtSprite: '/assets/combat/hobgoblin_fase1_hurt.webp',
     normal: {
       name: 'Embestida de Maza Brutal',
       desc: 'Golpea violentamente con su maza pesada de ébano.',
@@ -4562,9 +4562,9 @@ export const HOBGOBLIN_SKILLS_BY_PHASE = {
   2: {
     phase: 2 as const,
     title: 'Fase 2: Granadas Alquímicas',
-    idleSprite: '/assets/combat/hobgoblin_fase2_idle.png',
-    attackSprite: '/assets/combat/hobgoblin_fase2_attack.png',
-    hurtSprite: '/assets/combat/hobgoblin_fase2_hurt.png',
+    idleSprite: '/assets/combat/hobgoblin_fase2_idle.webp',
+    attackSprite: '/assets/combat/hobgoblin_fase2_attack.webp',
+    hurtSprite: '/assets/combat/hobgoblin_fase2_hurt.webp',
     normal: {
       name: 'Lanzamiento de Granada Explosiva',
       desc: 'Arroja un artefacto alquímico que detona en metralla ardiente.',
@@ -4595,9 +4595,9 @@ export const HOBGOBLIN_SKILLS_BY_PHASE = {
   3: {
     phase: 3 as const,
     title: 'Fase 3: Trabuco de Fuego de Ébano',
-    idleSprite: '/assets/combat/hobgoblin_fase3_idle.png',
-    attackSprite: '/assets/combat/hobgoblin_fase3_attack.png',
-    hurtSprite: '/assets/combat/hobgoblin_fase3_hurt.png',
+    idleSprite: '/assets/combat/hobgoblin_fase3_idle.webp',
+    attackSprite: '/assets/combat/hobgoblin_fase3_attack.webp',
+    hurtSprite: '/assets/combat/hobgoblin_fase3_hurt.webp',
     normal: {
       name: 'Disparo de Trabuco Perforante',
       desc: 'Dispara un proyectil macizo con pólvora negra que atraviesa armaduras.',
@@ -4774,7 +4774,7 @@ const getEnemyStateSpriteScale = (_baseUrl?: string | null, currentUrl?: string 
 
 const LootSackIcon: React.FC<{ className?: string }> = ({ className }) => (
   <img
-    src="/assets/items/saco%20de%20loot.png"
+    src="/assets/items/saco%20de%20loot.webp"
     alt=""
     aria-hidden="true"
     className={`${className ?? ''} object-contain pointer-events-none select-none`}
@@ -5126,10 +5126,10 @@ export const CombatView: React.FC = () => {
           hitKey: 0,
           isTwitching: false,
           animation: 'idle',
-          spriteUrl: '/assets/combat/araknoide_rojo_clean.png',
-          attackSpriteUrl: '/assets/combat/araknoide_rojo_attack.png',
-          hurtSpriteUrl: '/assets/combat/araknoide_rojo_hurt.png',
-          thumbUrl: '/assets/combat/araknoide_rojo_thumb.png',
+          spriteUrl: '/assets/combat/araknoide_rojo_clean.webp',
+          attackSpriteUrl: '/assets/combat/araknoide_rojo_attack.webp',
+          hurtSpriteUrl: '/assets/combat/araknoide_rojo_hurt.webp',
+          thumbUrl: '/assets/combat/araknoide_rojo_thumb.webp',
           scaleClass: 'w-[139px] h-[192px]',
           width: 139,
           height: 192,
@@ -5179,93 +5179,93 @@ export const CombatView: React.FC = () => {
   // Preload Magordito combat pose sprites for seamless zero-latency pose changes
   useEffect(() => {
     const sprites = [
-      '/assets/combat/magordito_idle.png',
-      '/assets/combat/magordito_hurt.png',
-      '/assets/combat/magordito_cast_rayo.png',
-      '/assets/combat/magordito_cast_dios.png',
-      '/assets/combat/magordito_cast_slash.png',
-      '/assets/combat/magordito_cast_toxic.png',
-      '/assets/combat/chispo_idle.png',
-      '/assets/combat/chispo_hurt.png',
-      '/assets/combat/chispo_attack.png',
-      '/assets/combat/chispo_cast.png',
-      '/assets/combat/giovani_idle.png',
-      '/assets/combat/giovani_hurt.png',
-      '/assets/combat/giovani_attack.png',
-      '/assets/combat/giovani_cast.png',
-      '/assets/combat/prometeo_idle.png',
-      '/assets/combat/prometeo_hurt.png',
-      '/assets/combat/prometeo_attack.png',
-      '/assets/combat/prometeo_cast.png',
-      '/assets/combat/kairon_idle.png',
-      '/assets/combat/kairon_hurt.png',
-      '/assets/combat/kairon_attack.png',
-      '/assets/combat/kairon_attack_dual.png',
-      '/assets/combat/kairon_cast.png',
-      '/assets/combat/ragnavaldr_idle.png',
-      '/assets/combat/ragnavaldr_hurt.png',
-      '/assets/combat/ragnavaldr_attack.png',
-      '/assets/combat/ragnavaldr_furia.png',
-      '/assets/combat/ragnavaldr_cast.png',
-      '/assets/combat/smurph_idle.png',
-      '/assets/combat/smurph_hurt.png',
-      '/assets/combat/smurph_attack.png',
-      '/assets/combat/smurph_landing.png',
-      '/assets/combat/smurph_flight.png',
-      '/assets/combat/smurph_cast.png',
-      '/assets/combat/smurph_lightning.png',
-      '/assets/skills/smurph_aterrizaje_heroico.png',
-      '/assets/skills/smurph_bolas_fuego.png',
-      '/assets/skills/smurph_aliento_rayo.png',
-      '/assets/skills/barled_inspiracion_tier_1.png',
-      '/assets/skills/barled_inspiracion_tier_2.png',
-      '/assets/skills/barled_inspiracion_tier_3.png',
-      '/assets/skills/barled_fuego_feerico_tier_1.png',
-      '/assets/skills/barled_fuego_feerico_tier_2.png',
-      '/assets/skills/barled_fuego_feerico_tier_3.png',
-      '/assets/skills/barled_curacion_tier_1.png',
-      '/assets/skills/barled_curacion_tier_2.png',
-      '/assets/skills/barled_curacion_tier_3.png',
-      '/assets/skills/raxxar_espada_tier_1.png',
-      '/assets/skills/raxxar_espada_tier_2.png',
-      '/assets/skills/raxxar_espada_tier_3.png',
-      '/assets/skills/raxxar_escudo_tier_1.png',
-      '/assets/skills/raxxar_escudo_tier_2.png',
-      '/assets/skills/raxxar_escudo_tier_3.png',
-      '/assets/skills/raxxar_lanza_tier_1.png',
-      '/assets/skills/raxxar_lanza_tier_2.png',
-      '/assets/skills/raxxar_lanza_tier_3.png',
-      '/assets/combat/barled_idle.png',
-      '/assets/combat/barled_hurt.png',
-      '/assets/combat/barled_attack.png',
-      '/assets/combat/barled_cast.png',
-      '/assets/combat/raxxar_idle.png',
-      '/assets/combat/raxxar_hurt.png',
-      '/assets/combat/raxxar_attack.png',
-      '/assets/combat/raxxar_shield.png',
-      '/assets/combat/raxxar_spear.png',
-      '/assets/combat/barled_vfx_inspiracion.png',
-      '/assets/combat/barled_vfx_destello.png',
-      '/assets/combat/barled_vfx_feerico.png',
-      '/assets/combat/raxxar_vfx_tajo.png',
-      '/assets/combat/raxxar_vfx_rayo_sangre.png',
-      '/assets/combat/raxxar_vfx_zap.png',
-      '/assets/combat/raxxar_vfx_zzzt.png',
-      '/assets/combat/raxxar_vfx_tzzzk.png',
-      '/assets/combat/raxxar_vfx_impacto.png',
-      '/assets/combat/raxxar_vfx_escudo.png',
-      '/assets/combat/devorador_quitinoso_p2_attack.png',
-      '/assets/combat/devorador_quitinoso_roar.png',
-      '/assets/combat/enemy_vfx_devorador_mordisco.png',
-      '/assets/combat/enemy_vfx_devorador_slash.png',
-      '/assets/combat/enemy_vfx_voraz_corte_espada.png',
-      '/assets/combat/enemy_ono_chack.png',
-      '/assets/combat/enemy_ono_screeck.png',
-      '/assets/combat/enemy_ono_scrook.png',
-      '/assets/combat/enemy_vfx_espinoso_web.png',
-      '/assets/combat/enemy_ono_crash.png',
-      '/assets/combat/enemy_ono_crosh.png',
-      '/assets/combat/enemy_vfx_oviparo_lanza.png',
+      '/assets/combat/magordito_idle.webp',
+      '/assets/combat/magordito_hurt.webp',
+      '/assets/combat/magordito_cast_rayo.webp',
+      '/assets/combat/magordito_cast_dios.webp',
+      '/assets/combat/magordito_cast_slash.webp',
+      '/assets/combat/magordito_cast_toxic.webp',
+      '/assets/combat/chispo_idle.webp',
+      '/assets/combat/chispo_hurt.webp',
+      '/assets/combat/chispo_attack.webp',
+      '/assets/combat/chispo_cast.webp',
+      '/assets/combat/giovani_idle.webp',
+      '/assets/combat/giovani_hurt.webp',
+      '/assets/combat/giovani_attack.webp',
+      '/assets/combat/giovani_cast.webp',
+      '/assets/combat/prometeo_idle.webp',
+      '/assets/combat/prometeo_hurt.webp',
+      '/assets/combat/prometeo_attack.webp',
+      '/assets/combat/prometeo_cast.webp',
+      '/assets/combat/kairon_idle.webp',
+      '/assets/combat/kairon_hurt.webp',
+      '/assets/combat/kairon_attack.webp',
+      '/assets/combat/kairon_attack_dual.webp',
+      '/assets/combat/kairon_cast.webp',
+      '/assets/combat/ragnavaldr_idle.webp',
+      '/assets/combat/ragnavaldr_hurt.webp',
+      '/assets/combat/ragnavaldr_attack.webp',
+      '/assets/combat/ragnavaldr_furia.webp',
+      '/assets/combat/ragnavaldr_cast.webp',
+      '/assets/combat/smurph_idle.webp',
+      '/assets/combat/smurph_hurt.webp',
+      '/assets/combat/smurph_attack.webp',
+      '/assets/combat/smurph_landing.webp',
+      '/assets/combat/smurph_flight.webp',
+      '/assets/combat/smurph_cast.webp',
+      '/assets/combat/smurph_lightning.webp',
+      '/assets/skills/smurph_aterrizaje_heroico.webp',
+      '/assets/skills/smurph_bolas_fuego.webp',
+      '/assets/skills/smurph_aliento_rayo.webp',
+      '/assets/skills/barled_inspiracion_tier_1.webp',
+      '/assets/skills/barled_inspiracion_tier_2.webp',
+      '/assets/skills/barled_inspiracion_tier_3.webp',
+      '/assets/skills/barled_fuego_feerico_tier_1.webp',
+      '/assets/skills/barled_fuego_feerico_tier_2.webp',
+      '/assets/skills/barled_fuego_feerico_tier_3.webp',
+      '/assets/skills/barled_curacion_tier_1.webp',
+      '/assets/skills/barled_curacion_tier_2.webp',
+      '/assets/skills/barled_curacion_tier_3.webp',
+      '/assets/skills/raxxar_espada_tier_1.webp',
+      '/assets/skills/raxxar_espada_tier_2.webp',
+      '/assets/skills/raxxar_espada_tier_3.webp',
+      '/assets/skills/raxxar_escudo_tier_1.webp',
+      '/assets/skills/raxxar_escudo_tier_2.webp',
+      '/assets/skills/raxxar_escudo_tier_3.webp',
+      '/assets/skills/raxxar_lanza_tier_1.webp',
+      '/assets/skills/raxxar_lanza_tier_2.webp',
+      '/assets/skills/raxxar_lanza_tier_3.webp',
+      '/assets/combat/barled_idle.webp',
+      '/assets/combat/barled_hurt.webp',
+      '/assets/combat/barled_attack.webp',
+      '/assets/combat/barled_cast.webp',
+      '/assets/combat/raxxar_idle.webp',
+      '/assets/combat/raxxar_hurt.webp',
+      '/assets/combat/raxxar_attack.webp',
+      '/assets/combat/raxxar_shield.webp',
+      '/assets/combat/raxxar_spear.webp',
+      '/assets/combat/barled_vfx_inspiracion.webp',
+      '/assets/combat/barled_vfx_destello.webp',
+      '/assets/combat/barled_vfx_feerico.webp',
+      '/assets/combat/raxxar_vfx_tajo.webp',
+      '/assets/combat/raxxar_vfx_rayo_sangre.webp',
+      '/assets/combat/raxxar_vfx_zap.webp',
+      '/assets/combat/raxxar_vfx_zzzt.webp',
+      '/assets/combat/raxxar_vfx_tzzzk.webp',
+      '/assets/combat/raxxar_vfx_impacto.webp',
+      '/assets/combat/raxxar_vfx_escudo.webp',
+      '/assets/combat/devorador_quitinoso_p2_attack.webp',
+      '/assets/combat/devorador_quitinoso_roar.webp',
+      '/assets/combat/enemy_vfx_devorador_mordisco.webp',
+      '/assets/combat/enemy_vfx_devorador_slash.webp',
+      '/assets/combat/enemy_vfx_voraz_corte_espada.webp',
+      '/assets/combat/enemy_ono_chack.webp',
+      '/assets/combat/enemy_ono_screeck.webp',
+      '/assets/combat/enemy_ono_scrook.webp',
+      '/assets/combat/enemy_vfx_espinoso_web.webp',
+      '/assets/combat/enemy_ono_crash.webp',
+      '/assets/combat/enemy_ono_crosh.webp',
+      '/assets/combat/enemy_vfx_oviparo_lanza.webp',
     ];
     sprites.forEach((src) => {
       const img = new Image();
@@ -5357,54 +5357,54 @@ export const CombatView: React.FC = () => {
   };
 
   const getHeroSplashartUrl = (): string => {
-    if (isSmurphCombat) return '/assets/portraits/smurph_draco.png';
-    if (isRoxanneCombat) return '/assets/portraits/roxanne.png';
-    if (isBarledCombat) return '/assets/portraits/barled.png';
-    if (isRaxxarCombat) return '/assets/portraits/raxxar.png';
-    if (isRagnavaldrCombat) return '/assets/portraits/ragnavaldr.png';
-    if (isKaironCombat) return '/assets/portraits/kairon.png';
-    if (isPrometeoCombat) return '/assets/portraits/prometeo.png';
-    if (isChispoCombat) return '/assets/portraits/chispo_deez_icono.png';
-    if (isGiovaniCombat) return '/assets/portraits/giovani_vazquez_icono.png';
-    if (isEdacornCombat) return '/assets/portraits/edacorn_icono.png';
-    if (isPepeCombat) return '/assets/portraits/pepe_loux.png';
-    if (isArlemCombat) return '/assets/portraits/arlem_diaz_icono.png';
-    return '/assets/aistudio/splashart_magordito_c1637d56.png';
+    if (isSmurphCombat) return '/assets/portraits/smurph_draco.webp';
+    if (isRoxanneCombat) return '/assets/portraits/roxanne.webp';
+    if (isBarledCombat) return '/assets/portraits/barled.webp';
+    if (isRaxxarCombat) return '/assets/portraits/raxxar.webp';
+    if (isRagnavaldrCombat) return '/assets/portraits/ragnavaldr.webp';
+    if (isKaironCombat) return '/assets/portraits/kairon.webp';
+    if (isPrometeoCombat) return '/assets/portraits/prometeo.webp';
+    if (isChispoCombat) return '/assets/portraits/chispo_deez_icono.webp';
+    if (isGiovaniCombat) return '/assets/portraits/giovani_vazquez_icono.webp';
+    if (isEdacornCombat) return '/assets/portraits/edacorn_icono.webp';
+    if (isPepeCombat) return '/assets/portraits/pepe_loux.webp';
+    if (isArlemCombat) return '/assets/portraits/arlem_diaz_icono.webp';
+    return '/assets/aistudio/splashart_magordito_c1637d56.webp';
   };
 
   const getHeroUltimateCardImage = (heroId: string): string => {
     switch (heroId) {
       case 'smurph_draco':
       case 'smurph':
-        return '/assets/skills/smurph_ultimate.png';
+        return '/assets/skills/smurph_ultimate.webp';
       case 'roxanne':
-        return '/assets/skills/roxanne_ultimate.png';
+        return '/assets/skills/roxanne_ultimate.webp';
       case 'barled':
-        return '/assets/skills/barled_ultimate.png';
+        return '/assets/skills/barled_ultimate.webp';
       case 'raxxar':
-        return '/assets/skills/raxxar_ultimate.png';
+        return '/assets/skills/raxxar_ultimate.webp';
       case 'ragnavaldr':
-        return '/assets/skills/ragnavaldr_ultimate.png';
+        return '/assets/skills/ragnavaldr_ultimate.webp';
       case 'kairon':
-        return '/assets/skills/kairon_ultimate.png';
+        return '/assets/skills/kairon_ultimate.webp';
       case 'chispo_deez':
       case 'chispo':
-        return '/assets/skills/chispo_ultimate.png';
+        return '/assets/skills/chispo_ultimate.webp';
       case 'giovani':
       case 'giovani_vazquez':
-        return '/assets/skills/giovani_ultimate.png';
+        return '/assets/skills/giovani_ultimate.webp';
       case 'prometeo':
-        return '/assets/skills/prometeo_ultimate.png';
+        return '/assets/skills/prometeo_ultimate.webp';
       case 'edacorn':
-        return '/assets/skills/edacorn_ultimate.png';
+        return '/assets/skills/edacorn_ultimate.webp';
       case 'pepe_loux':
-        return '/assets/skills/pepe_loux_ultimate.png';
+        return '/assets/skills/pepe_loux_ultimate.webp';
       case 'arlem':
       case 'arlem_diaz':
-        return '/assets/skills/arlem_ultimate.png';
+        return '/assets/skills/arlem_ultimate.webp';
       case 'magordito':
       default:
-        return '/assets/skills/magordito_ultimate.png';
+        return '/assets/skills/magordito_ultimate.webp';
     }
   };
 
@@ -5535,218 +5535,218 @@ export const CombatView: React.FC = () => {
     // 0. Smurph Draco: Hechicero Dracónico
     if (isSmurphCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/smurph_hurt.png';
+        return '/assets/combat/smurph_hurt.webp';
       }
       if (isSmurphLandingAction) {
-        return '/assets/combat/smurph_landing.png';
+        return '/assets/combat/smurph_landing.webp';
       }
       if (isSmurphAirborne) {
-        return '/assets/combat/smurph_flight.png';
+        return '/assets/combat/smurph_flight.webp';
       }
       if (heroCastSkill) {
         switch (heroCastSkill) {
           case 'smurph_aterrizaje_heroico':
             return isSmurphLandingAction
-              ? '/assets/combat/smurph_landing.png'
-              : '/assets/combat/smurph_flight.png';
+              ? '/assets/combat/smurph_landing.webp'
+              : '/assets/combat/smurph_flight.webp';
           case 'smurph_bolas_fuego':
-            return '/assets/combat/smurph_cast.png';
+            return '/assets/combat/smurph_cast.webp';
           case 'smurph_aliento_rayo':
-            return '/assets/combat/smurph_lightning.png';
+            return '/assets/combat/smurph_lightning.webp';
           default:
-            return '/assets/combat/smurph_attack.png';
+            return '/assets/combat/smurph_attack.webp';
         }
       }
       if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
-        return '/assets/combat/smurph_landing.png';
+        return '/assets/combat/smurph_landing.webp';
       }
-      return '/assets/combat/smurph_idle.png';
+      return '/assets/combat/smurph_idle.webp';
     }
 
     // 0. Roxanne: Barda con lira, magia rosada y rapier
     if (isRoxanneCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/roxanne_hurt.png';
+        return '/assets/combat/roxanne_hurt.webp';
       }
       if (heroCastSkill) {
         switch (heroCastSkill) {
           case 'roxanne_estocada':
-            return '/assets/combat/roxanne_attack.png';
+            return '/assets/combat/roxanne_attack.webp';
           case 'roxanne_inspiracion':
           case 'roxanne_velada':
-            return '/assets/combat/roxanne_cast.png';
+            return '/assets/combat/roxanne_cast.webp';
           default:
-            return '/assets/combat/roxanne_attack.png';
+            return '/assets/combat/roxanne_attack.webp';
         }
       }
       if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
-        return '/assets/combat/roxanne_attack.png';
+        return '/assets/combat/roxanne_attack.webp';
       }
-      return '/assets/combat/roxanne_idle.png';
+      return '/assets/combat/roxanne_idle.webp';
     }
 
     // 0.05 Barled: Bardo con Lanza y Oud (Laúd Árabe)
     if (isBarledCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/barled_hurt.png';
+        return '/assets/combat/barled_hurt.webp';
       }
       if (heroCastSkill) {
         switch (heroCastSkill) {
           case 'barled_fuego_feerico':
-            return '/assets/combat/barled_attack.png';
+            return '/assets/combat/barled_attack.webp';
           case 'barled_inspiracion':
           case 'barled_curacion':
-            return '/assets/combat/barled_cast.png';
+            return '/assets/combat/barled_cast.webp';
           default:
-            return '/assets/combat/barled_attack.png';
+            return '/assets/combat/barled_attack.webp';
         }
       }
       if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
-        return '/assets/combat/barled_attack.png';
+        return '/assets/combat/barled_attack.webp';
       }
-      return '/assets/combat/barled_idle.png';
+      return '/assets/combat/barled_idle.webp';
     }
 
     // 0.08 Raxxar: Leonín Rojo con Espada Rúnica Morfable (Espada / Escudo Antidisturbios / Lanza Sangrienta)
     if (isRaxxarCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/raxxar_hurt.png';
+        return '/assets/combat/raxxar_hurt.webp';
       }
       if (heroCastSkill) {
         switch (heroCastSkill) {
           case 'raxxar_espada':
-            return '/assets/combat/raxxar_attack.png';
+            return '/assets/combat/raxxar_attack.webp';
           case 'raxxar_escudo':
-            return '/assets/combat/raxxar_shield.png';
+            return '/assets/combat/raxxar_shield.webp';
           case 'raxxar_lanza':
-            return '/assets/combat/raxxar_spear.png';
+            return '/assets/combat/raxxar_spear.webp';
           default:
-            return '/assets/combat/raxxar_attack.png';
+            return '/assets/combat/raxxar_attack.webp';
         }
       }
       if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
-        return '/assets/combat/raxxar_attack.png';
+        return '/assets/combat/raxxar_attack.webp';
       }
-      return '/assets/combat/raxxar_idle.png';
+      return '/assets/combat/raxxar_idle.webp';
     }
 
     // 0.1 Ragnavaldr: Bárbaro Druida con dos lanzas
     if (isRagnavaldrCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/ragnavaldr_hurt.png';
+        return '/assets/combat/ragnavaldr_hurt.webp';
       }
       if (heroCastSkill) {
         switch (heroCastSkill) {
           case 'ragnavaldr_doble_lanza':
-            return '/assets/combat/ragnavaldr_attack.png';
+            return '/assets/combat/ragnavaldr_attack.webp';
           case 'ragnavaldr_furia':
-            return '/assets/combat/ragnavaldr_furia.png';
+            return '/assets/combat/ragnavaldr_furia.webp';
           case 'ragnavaldr_cuchillo_hielo':
-            return '/assets/combat/ragnavaldr_cast.png';
+            return '/assets/combat/ragnavaldr_cast.webp';
           default:
-            return '/assets/combat/ragnavaldr_attack.png';
+            return '/assets/combat/ragnavaldr_attack.webp';
         }
       }
       if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
-        return '/assets/combat/ragnavaldr_attack.png';
+        return '/assets/combat/ragnavaldr_attack.webp';
       }
-      return '/assets/combat/ragnavaldr_idle.png';
+      return '/assets/combat/ragnavaldr_idle.webp';
     }
 
     // 0.1 Kairon: Gunslinger (Pistolas duales y espada larga)
     if (isKaironCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/kairon_hurt.png';
+        return '/assets/combat/kairon_hurt.webp';
       }
       if (heroCastSkill) {
         switch (heroCastSkill) {
           case 'kairon_tiro_doble':
-            return '/assets/combat/kairon_attack.png';
+            return '/assets/combat/kairon_attack.webp';
           case 'kairon_disparo_dual':
-            return '/assets/combat/kairon_attack_dual.png';
+            return '/assets/combat/kairon_attack_dual.webp';
           case 'kairon_espadazo_largo':
-            return '/assets/combat/kairon_cast.png';
+            return '/assets/combat/kairon_cast.webp';
           default:
-            return '/assets/combat/kairon_attack.png';
+            return '/assets/combat/kairon_attack.webp';
         }
       }
       if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
-        return '/assets/combat/kairon_cast.png';
+        return '/assets/combat/kairon_cast.webp';
       }
-      return '/assets/combat/kairon_idle.png';
+      return '/assets/combat/kairon_idle.webp';
     }
 
     // 1. Chispo Deez: Paladín Enano Alado / Divino
     if (isChispoCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/chispo_hurt.png';
+        return '/assets/combat/chispo_hurt.webp';
       }
       if (heroCastSkill) {
         switch (heroCastSkill) {
           case 'chispo_martillo':
-            return '/assets/combat/chispo_attack.png';
+            return '/assets/combat/chispo_attack.webp';
           case 'chispo_luz_divina':
-            return '/assets/combat/chispo_cast.png';
+            return '/assets/combat/chispo_cast.webp';
           case 'chispo_castigo_divino':
-            return '/assets/combat/chispo_cast.png';
+            return '/assets/combat/chispo_cast.webp';
           case 'chispo_dagas':
-            return '/assets/combat/chispo_attack.png';
+            return '/assets/combat/chispo_attack.webp';
           case 'chispo_truco':
           case 'chispo_alas':
-            return '/assets/combat/chispo_cast.png';
+            return '/assets/combat/chispo_cast.webp';
           default:
-            return '/assets/combat/chispo_attack.png';
+            return '/assets/combat/chispo_attack.webp';
         }
       }
       if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
-        return '/assets/combat/chispo_attack.png';
+        return '/assets/combat/chispo_attack.webp';
       }
-      return '/assets/combat/chispo_idle.png';
+      return '/assets/combat/chispo_idle.webp';
     }
 
     // 2. Giovani Vázquez: Bribón Emplumado / Mago Oscuro
     if (isGiovaniCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/giovani_hurt.png';
+        return '/assets/combat/giovani_hurt.webp';
       }
       if (heroCastSkill) {
         switch (heroCastSkill) {
           case 'giovani_plumas':
-            return '/assets/combat/giovani_attack.png';
+            return '/assets/combat/giovani_attack.webp';
           case 'giovani_treta':
-            return '/assets/combat/giovani_attack.png';
+            return '/assets/combat/giovani_attack.webp';
           case 'giovani_tomo':
-            return '/assets/combat/giovani_cast.png';
+            return '/assets/combat/giovani_cast.webp';
           default:
-            return '/assets/combat/giovani_attack.png';
+            return '/assets/combat/giovani_attack.webp';
         }
       }
       if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
-        return '/assets/combat/giovani_cast.png';
+        return '/assets/combat/giovani_cast.webp';
       }
-      return '/assets/combat/giovani_idle.png';
+      return '/assets/combat/giovani_idle.webp';
     }
 
     // 3. Prometeo: Cazador de Sangre (Blood Hunter) / Magia de Fuego
     if (isPrometeoCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/prometeo_hurt.png';
+        return '/assets/combat/prometeo_hurt.webp';
       }
       if (heroCastSkill) {
         switch (heroCastSkill) {
           case 'prometeo_espada_verde':
-            return '/assets/combat/prometeo_attack.png';
+            return '/assets/combat/prometeo_attack.webp';
           case 'prometeo_bola_fuego':
           case 'prometeo_fire_bolt':
-            return '/assets/combat/prometeo_cast.png';
+            return '/assets/combat/prometeo_cast.webp';
           default:
-            return '/assets/combat/prometeo_attack.png';
+            return '/assets/combat/prometeo_attack.webp';
         }
       }
       if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
-        return '/assets/combat/prometeo_attack.png';
+        return '/assets/combat/prometeo_attack.webp';
       }
-      return '/assets/combat/prometeo_idle.png';
+      return '/assets/combat/prometeo_idle.webp';
     }
 
     // 3. Edacorn: Idle, Hurt & Per-Skill transparent combat sprites (without spectral wings)
@@ -5754,106 +5754,106 @@ export const CombatView: React.FC = () => {
       // Postura de contraataque armada: manda sobre cualquier otra pose (atacar, recibir
       // golpe o castear) hasta que Edacorn responda con la réplica.
       if (edacornCounter?.active) {
-        return '/assets/combat/edacorn_cast_contraataque.png';
+        return '/assets/combat/edacorn_cast_contraataque.webp';
       }
       // Golpe de réplica: pose de ataque
       if (edacornStrikePose) {
-        return '/assets/combat/edacorn_attack.png';
+        return '/assets/combat/edacorn_attack.webp';
       }
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/edacorn_hurt.png';
+        return '/assets/combat/edacorn_hurt.webp';
       }
       if (heroCastSkill) {
         switch (heroCastSkill) {
           case 'ataque_furtivo':
-            return '/assets/combat/edacorn_cast_furtivo.png';
+            return '/assets/combat/edacorn_cast_furtivo.webp';
           case 'contraataque':
-            return '/assets/combat/edacorn_cast_contraataque.png';
+            return '/assets/combat/edacorn_cast_contraataque.webp';
           case 'sigilo':
-            return '/assets/combat/edacorn_cast_sigilo.png';
+            return '/assets/combat/edacorn_cast_sigilo.webp';
           default:
-            return '/assets/combat/edacorn_attack.png';
+            return '/assets/combat/edacorn_attack.webp';
         }
       }
       if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
-        return '/assets/combat/edacorn_cast_furtivo.png';
+        return '/assets/combat/edacorn_cast_furtivo.webp';
       }
-      return '/assets/combat/edacorn_idle.png';
+      return '/assets/combat/edacorn_idle.webp';
     }
 
     // 4. Pepe Loux: Guerrero enano con hacha de combate (sin espada, sin magia)
     if (isPepeCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/pepe_loux_hurt.png';
+        return '/assets/combat/pepe_loux_hurt.webp';
       }
       if (heroCastSkill) {
         switch (heroCastSkill) {
           case 'pepe_ataque':
-            return '/assets/combat/pepe_loux_cast_hacha.png';
+            return '/assets/combat/pepe_loux_cast_hacha.webp';
           case 'pepe_remo':
-            return '/assets/combat/pepe_loux_cast_remo.png';
+            return '/assets/combat/pepe_loux_cast_remo.webp';
           case 'pepe_escudo':
-            return '/assets/combat/pepe_loux_cast_escudo.png';
+            return '/assets/combat/pepe_loux_cast_escudo.webp';
           default:
-            return '/assets/combat/pepe_loux_attack.png';
+            return '/assets/combat/pepe_loux_attack.webp';
         }
       }
       if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
-        return '/assets/combat/pepe_loux_cast_hacha.png';
+        return '/assets/combat/pepe_loux_cast_hacha.webp';
       }
-      return '/assets/combat/pepe_loux_idle.png';
+      return '/assets/combat/pepe_loux_idle.webp';
     }
 
     // 5. Arlem Díaz: Bardo con laúd y rapier, Idle, Hurt & Per-Skill transparent combat sprites
     if (isArlemCombat) {
       if (heroAnimation === 'hit' || isHeroHitShaking) {
-        return '/assets/combat/arlem_hurt.png';
+        return '/assets/combat/arlem_hurt.webp';
       }
       if (heroCastSkill) {
         switch (heroCastSkill) {
           case 'arlem_rankup':
-            return '/assets/combat/arlem_cast_inspiracion.png';
+            return '/assets/combat/arlem_cast_inspiracion.webp';
           case 'arlem_curacion':
-            return '/assets/combat/arlem_cast_balada.png';
+            return '/assets/combat/arlem_cast_balada.webp';
           case 'arlem_fuego':
-            return '/assets/combat/arlem_cast_estocada.png';
+            return '/assets/combat/arlem_cast_estocada.webp';
           default:
-            return '/assets/combat/arlem_attack.png';
+            return '/assets/combat/arlem_attack.webp';
         }
       }
       if (heroAnimation === 'lunge' || tier3Cinematic || isUltimateCinematicActive) {
-        return '/assets/combat/arlem_cast_estocada.png';
+        return '/assets/combat/arlem_cast_estocada.webp';
       }
-      return '/assets/combat/arlem_idle.png';
+      return '/assets/combat/arlem_idle.webp';
     }
 
     // 6. Default / Magordito
     if (heroAnimation === 'hit' || isHeroHitShaking) {
-      return '/assets/combat/magordito_hurt.png';
+      return '/assets/combat/magordito_hurt.webp';
     }
     if (heroCastSkill) {
       switch (heroCastSkill) {
         case 'rayo_necrotico':
-          return '/assets/combat/magordito_cast_rayo.png';
+          return '/assets/combat/magordito_cast_rayo.webp';
         case 'dios_oscuro':
-          return '/assets/combat/magordito_cast_dios.png';
+          return '/assets/combat/magordito_cast_dios.webp';
         case 'drenar_maldiciones':
-          return '/assets/combat/magordito_cast_toxic.png';
+          return '/assets/combat/magordito_cast_toxic.webp';
         case 'fortalecer_marioneta':
-          return '/assets/combat/magordito_cast_slash.png';
+          return '/assets/combat/magordito_cast_slash.webp';
         case 'cataclismo_astral':
-          return '/assets/combat/magordito_cast_rayo.png';
+          return '/assets/combat/magordito_cast_rayo.webp';
         default:
-          return '/assets/combat/magordito_cast_slash.png';
+          return '/assets/combat/magordito_cast_slash.webp';
       }
     }
     if (isUltimateCinematicActive) {
-      return '/assets/combat/magordito_cast_rayo.png';
+      return '/assets/combat/magordito_cast_rayo.webp';
     }
     if (heroAnimation === 'lunge') {
-      return '/assets/combat/magordito_cast_slash.png';
+      return '/assets/combat/magordito_cast_slash.webp';
     }
-    return '/assets/combat/magordito_idle.png';
+    return '/assets/combat/magordito_idle.webp';
   };
 
   /**
@@ -5952,7 +5952,7 @@ export const CombatView: React.FC = () => {
 
   const getEnemySpriteUrl = (enemy: ChamberEnemyState): string => {
     if (isDevoradorRoaring && enemy.configId.includes('devorador')) {
-      return '/assets/combat/devorador_quitinoso_roar.png';
+      return '/assets/combat/devorador_quitinoso_roar.webp';
     }
     if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
       return enemy.hurtSpriteUrl || enemy.spriteUrl;
@@ -6026,126 +6026,126 @@ export const CombatView: React.FC = () => {
   useEffect(() => {
     const assetsToPreload = [
       // All 12 Card Tier Images (guarantees zero-latency card rank-up without disappearing)
-      '/assets/aistudio/image_f589d3f3.png',
-      '/assets/aistudio/image_10ee0a33.png',
-      '/assets/aistudio/image_b6d0dc18.png',
-      '/assets/aistudio/image_e8288ed9.png',
-      '/assets/aistudio/image_4aa946b2.png',
-      '/assets/aistudio/image_eb9fd249.png',
-      '/assets/aistudio/image_de00910f.png',
-      '/assets/items/drenar_maldiciones_tier_2.png',
-      '/assets/items/drenar_maldiciones_tier_3.png',
-      '/assets/aistudio/image_e0c0b7e7.png',
-      '/assets/aistudio/image_3e1c2525.png',
-      '/assets/aistudio/image_f9e08028.png',
+      '/assets/aistudio/image_f589d3f3.webp',
+      '/assets/aistudio/image_10ee0a33.webp',
+      '/assets/aistudio/image_b6d0dc18.webp',
+      '/assets/aistudio/image_e8288ed9.webp',
+      '/assets/aistudio/image_4aa946b2.webp',
+      '/assets/aistudio/image_eb9fd249.webp',
+      '/assets/aistudio/image_de00910f.webp',
+      '/assets/items/drenar_maldiciones_tier_2.webp',
+      '/assets/items/drenar_maldiciones_tier_3.webp',
+      '/assets/aistudio/image_e0c0b7e7.webp',
+      '/assets/aistudio/image_3e1c2525.webp',
+      '/assets/aistudio/image_f9e08028.webp',
       // Card Combination Burst FX
-      '/assets/cfxr/graphics/cfxr-ring-electric-gold.png?v=c3',
-      '/assets/cfxr/graphics/cfxr-flare-gold.png?v=c3',
-      '/assets/cfxr/graphics/cfxr-magic-star-gold.png?v=c3',
+      '/assets/cfxr/graphics/cfxr-ring-electric-gold.webp?v=c3',
+      '/assets/cfxr/graphics/cfxr-flare-gold.webp?v=c3',
+      '/assets/cfxr/graphics/cfxr-magic-star-gold.webp?v=c3',
       // Combat VFX Textures
-      '/assets/cfxr/graphics/cfxr-flare.png?v=c3',
-      '/assets/cfxr/graphics/cfxr-spikes-impact-cyan.png?v=c3',
-      '/assets/cfxr/graphics/cfxr-ring-electric-cyan.png?v=c3',
-      '/assets/cfxr/graphics/cfxr-electric-spark-cyan.png?v=c3',
-      '/assets/cfxr/graphics/cfxr-flare-gold.png',
-      '/assets/cfxr/graphics/cfxr-ring-electric-gold.png',
-      '/assets/cfxr/graphics/cfxr-fire-small-anim-gold.png',
-      '/assets/cfxr/graphics/cfxr-magic-star-gold.png',
-      '/assets/cfxr/graphics/cfxr-spikes-impact-gold.png',
-      '/assets/cfxr/graphics/cfxr-aura-runic-purple.png',
-      '/assets/cfxr/graphics/cfxr-aura-rays-purple.png',
-      '/assets/cfxr/graphics/cfxr-skull-2-purple.png',
-      '/assets/cfxr/graphics/cfxr-ring-electric-violet.png',
-      '/assets/cfxr/graphics/cfxr-blood-splash-crimson.png',
-      '/assets/cfxr/graphics/cfxr-heart-break-parts.png',
-      '/assets/cfxr/graphics/cfxr-sword-trail-mask-light-crimson.png',
-      '/assets/cfxr/graphics/cfxr-ember-blur.png',
-      '/assets/cfxr/graphics/cfxr-explosion-smoke-dissolve-fire.png',
-      '/assets/skills/rayo_necrotico_spritesheet.png',
+      '/assets/cfxr/graphics/cfxr-flare.webp?v=c3',
+      '/assets/cfxr/graphics/cfxr-spikes-impact-cyan.webp?v=c3',
+      '/assets/cfxr/graphics/cfxr-ring-electric-cyan.webp?v=c3',
+      '/assets/cfxr/graphics/cfxr-electric-spark-cyan.webp?v=c3',
+      '/assets/cfxr/graphics/cfxr-flare-gold.webp',
+      '/assets/cfxr/graphics/cfxr-ring-electric-gold.webp',
+      '/assets/cfxr/graphics/cfxr-fire-small-anim-gold.webp',
+      '/assets/cfxr/graphics/cfxr-magic-star-gold.webp',
+      '/assets/cfxr/graphics/cfxr-spikes-impact-gold.webp',
+      '/assets/cfxr/graphics/cfxr-aura-runic-purple.webp',
+      '/assets/cfxr/graphics/cfxr-aura-rays-purple.webp',
+      '/assets/cfxr/graphics/cfxr-skull-2-purple.webp',
+      '/assets/cfxr/graphics/cfxr-ring-electric-violet.webp',
+      '/assets/cfxr/graphics/cfxr-blood-splash-crimson.webp',
+      '/assets/cfxr/graphics/cfxr-heart-break-parts.webp',
+      '/assets/cfxr/graphics/cfxr-sword-trail-mask-light-crimson.webp',
+      '/assets/cfxr/graphics/cfxr-ember-blur.webp',
+      '/assets/cfxr/graphics/cfxr-explosion-smoke-dissolve-fire.webp',
+      '/assets/skills/rayo_necrotico_spritesheet.webp',
       '/assets/skills/rayo_necrotico_impacto.webp',
       // Hero Combat Sprites (Edacorn, Pepe Loux, Arlem, Magordito)
-      '/assets/combat/edacorn_idle.png',
-      '/assets/combat/edacorn_hurt.png',
-      '/assets/combat/edacorn_attack.png',
-      '/assets/combat/edacorn_cast_furtivo.png',
-      '/assets/combat/edacorn_cast_contraataque.png',
-      '/assets/combat/edacorn_cast_sigilo.png',
-      '/assets/skills/golpe_hacha.png',
-      '/assets/combat/pepe_loux_idle.png',
-      '/assets/combat/pepe_loux_hurt.png',
-      '/assets/combat/pepe_loux_attack.png',
-      '/assets/combat/pepe_loux_cast_hacha.png',
-      '/assets/combat/pepe_loux_cast_mandoble.png',
-      '/assets/combat/pepe_loux_cast_remo.png',
-      '/assets/combat/pepe_loux_cast_escudo.png',
-      '/assets/combat/arlem_idle.png',
-      '/assets/combat/arlem_hurt.png',
-      '/assets/combat/arlem_attack.png',
-      '/assets/combat/arlem_cast_inspiracion.png',
-      '/assets/combat/arlem_cast_balada.png',
-      '/assets/combat/arlem_cast_estocada.png',
-      '/assets/combat/magordito_idle.png',
-      '/assets/combat/magordito_hurt.png',
-      '/assets/combat/magordito_cast_dios.png',
-      '/assets/combat/magordito_cast_rayo.png',
-      '/assets/combat/magordito_cast_slash.png',
-      '/assets/combat/magordito_cast_toxic.png',
-      '/assets/combat/prometeo_idle.png',
-      '/assets/combat/prometeo_hurt.png',
-      '/assets/combat/prometeo_attack.png',
-      '/assets/combat/prometeo_cast.png',
-      '/assets/combat/chispo_idle.png',
-      '/assets/combat/chispo_hurt.png',
-      '/assets/combat/chispo_attack.png',
-      '/assets/combat/chispo_cast.png',
-      '/assets/combat/giovani_idle.png',
-      '/assets/combat/giovani_hurt.png',
-      '/assets/combat/giovani_attack.png',
-      '/assets/combat/giovani_cast.png',
-      '/assets/combat/kairon_idle.png',
-      '/assets/combat/kairon_hurt.png',
-      '/assets/combat/kairon_attack.png',
-      '/assets/combat/kairon_attack_dual.png',
-      '/assets/combat/kairon_cast.png',
-      '/assets/combat/barled_idle.png',
-      '/assets/combat/barled_hurt.png',
-      '/assets/combat/barled_attack.png',
-      '/assets/combat/barled_cast.png',
-      '/assets/combat/ragnavaldr_idle.png',
-      '/assets/combat/ragnavaldr_hurt.png',
-      '/assets/combat/ragnavaldr_attack.png',
-      '/assets/combat/ragnavaldr_cast.png',
-      '/assets/combat/ragnavaldr_furia.png',
-      '/assets/combat/raxxar_idle.png',
-      '/assets/combat/raxxar_hurt.png',
-      '/assets/combat/raxxar_attack.png',
-      '/assets/combat/raxxar_shield.png',
-      '/assets/combat/raxxar_spear.png',
-      '/assets/combat/roxanne_idle.png',
-      '/assets/combat/roxanne_hurt.png',
-      '/assets/combat/roxanne_attack.png',
-      '/assets/combat/roxanne_cast.png',
-      '/assets/combat/smurph_idle.png',
-      '/assets/combat/smurph_hurt.png',
-      '/assets/combat/smurph_attack.png',
-      '/assets/combat/smurph_cast.png',
-      '/assets/combat/smurph_flight.png',
-      '/assets/combat/smurph_landing.png',
-      '/assets/combat/smurph_lightning.png',
+      '/assets/combat/edacorn_idle.webp',
+      '/assets/combat/edacorn_hurt.webp',
+      '/assets/combat/edacorn_attack.webp',
+      '/assets/combat/edacorn_cast_furtivo.webp',
+      '/assets/combat/edacorn_cast_contraataque.webp',
+      '/assets/combat/edacorn_cast_sigilo.webp',
+      '/assets/skills/golpe_hacha.webp',
+      '/assets/combat/pepe_loux_idle.webp',
+      '/assets/combat/pepe_loux_hurt.webp',
+      '/assets/combat/pepe_loux_attack.webp',
+      '/assets/combat/pepe_loux_cast_hacha.webp',
+      '/assets/combat/pepe_loux_cast_mandoble.webp',
+      '/assets/combat/pepe_loux_cast_remo.webp',
+      '/assets/combat/pepe_loux_cast_escudo.webp',
+      '/assets/combat/arlem_idle.webp',
+      '/assets/combat/arlem_hurt.webp',
+      '/assets/combat/arlem_attack.webp',
+      '/assets/combat/arlem_cast_inspiracion.webp',
+      '/assets/combat/arlem_cast_balada.webp',
+      '/assets/combat/arlem_cast_estocada.webp',
+      '/assets/combat/magordito_idle.webp',
+      '/assets/combat/magordito_hurt.webp',
+      '/assets/combat/magordito_cast_dios.webp',
+      '/assets/combat/magordito_cast_rayo.webp',
+      '/assets/combat/magordito_cast_slash.webp',
+      '/assets/combat/magordito_cast_toxic.webp',
+      '/assets/combat/prometeo_idle.webp',
+      '/assets/combat/prometeo_hurt.webp',
+      '/assets/combat/prometeo_attack.webp',
+      '/assets/combat/prometeo_cast.webp',
+      '/assets/combat/chispo_idle.webp',
+      '/assets/combat/chispo_hurt.webp',
+      '/assets/combat/chispo_attack.webp',
+      '/assets/combat/chispo_cast.webp',
+      '/assets/combat/giovani_idle.webp',
+      '/assets/combat/giovani_hurt.webp',
+      '/assets/combat/giovani_attack.webp',
+      '/assets/combat/giovani_cast.webp',
+      '/assets/combat/kairon_idle.webp',
+      '/assets/combat/kairon_hurt.webp',
+      '/assets/combat/kairon_attack.webp',
+      '/assets/combat/kairon_attack_dual.webp',
+      '/assets/combat/kairon_cast.webp',
+      '/assets/combat/barled_idle.webp',
+      '/assets/combat/barled_hurt.webp',
+      '/assets/combat/barled_attack.webp',
+      '/assets/combat/barled_cast.webp',
+      '/assets/combat/ragnavaldr_idle.webp',
+      '/assets/combat/ragnavaldr_hurt.webp',
+      '/assets/combat/ragnavaldr_attack.webp',
+      '/assets/combat/ragnavaldr_cast.webp',
+      '/assets/combat/ragnavaldr_furia.webp',
+      '/assets/combat/raxxar_idle.webp',
+      '/assets/combat/raxxar_hurt.webp',
+      '/assets/combat/raxxar_attack.webp',
+      '/assets/combat/raxxar_shield.webp',
+      '/assets/combat/raxxar_spear.webp',
+      '/assets/combat/roxanne_idle.webp',
+      '/assets/combat/roxanne_hurt.webp',
+      '/assets/combat/roxanne_attack.webp',
+      '/assets/combat/roxanne_cast.webp',
+      '/assets/combat/smurph_idle.webp',
+      '/assets/combat/smurph_hurt.webp',
+      '/assets/combat/smurph_attack.webp',
+      '/assets/combat/smurph_cast.webp',
+      '/assets/combat/smurph_flight.webp',
+      '/assets/combat/smurph_landing.webp',
+      '/assets/combat/smurph_lightning.webp',
       // Custom Per-Hero Ultimate Cards
-      '/assets/skills/arlem_ultimate.png',
-      '/assets/skills/barled_ultimate.png',
-      '/assets/skills/chispo_ultimate.png',
-      '/assets/skills/edacorn_ultimate.png',
-      '/assets/skills/giovani_ultimate.png',
-      '/assets/skills/kairon_ultimate.png',
-      '/assets/skills/magordito_ultimate.png',
-      '/assets/skills/pepe_loux_ultimate.png',
-      '/assets/skills/prometeo_ultimate.png',
-      '/assets/skills/ragnavaldr_ultimate.png',
-      '/assets/skills/raxxar_ultimate.png',
-      '/assets/skills/roxanne_ultimate.png',
-      '/assets/skills/smurph_ultimate.png',
+      '/assets/skills/arlem_ultimate.webp',
+      '/assets/skills/barled_ultimate.webp',
+      '/assets/skills/chispo_ultimate.webp',
+      '/assets/skills/edacorn_ultimate.webp',
+      '/assets/skills/giovani_ultimate.webp',
+      '/assets/skills/kairon_ultimate.webp',
+      '/assets/skills/magordito_ultimate.webp',
+      '/assets/skills/pepe_loux_ultimate.webp',
+      '/assets/skills/prometeo_ultimate.webp',
+      '/assets/skills/ragnavaldr_ultimate.webp',
+      '/assets/skills/raxxar_ultimate.webp',
+      '/assets/skills/roxanne_ultimate.webp',
+      '/assets/skills/smurph_ultimate.webp',
       // Status Condition Cartoon VFX Assets
       ...STATUS_VFX_ASSETS,
     ];
@@ -7327,7 +7327,7 @@ export const CombatView: React.FC = () => {
         name: 'Coraza del Devorador Quitinoso',
         category: 'materials' as const,
         count: 1,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         rarity: 'SSR' as const,
         priceGold: 8000,
         description: 'El núcleo de coraza blindada del coloso que custodiaba las puertas selladas de Glimmerstone. Material de forja legendario.',
@@ -7340,7 +7340,7 @@ export const CombatView: React.FC = () => {
         name: 'Carne de Devorador',
         category: 'materials' as const,
         count: 3,
-        icon: '/assets/items/ing_carne_devorador.png',
+        icon: '/assets/items/ing_carne_devorador.webp',
         rarity: 'SSR' as const,
         priceGold: 240,
         description: 'Carne densa y marmolada protegida por la coraza quitinosa del Devorador. Jugosa, potente y digna de un banquete colosal.',
@@ -7412,7 +7412,7 @@ export const CombatView: React.FC = () => {
         category: 'materials',
         rarity: 'SSR',
         count: 1,
-        icon: '/assets/items/fragmento_astral.png',
+        icon: '/assets/items/fragmento_astral.webp',
         priceGold: 8500,
         description: 'Extremidad puntiaguda y letal del Jefe Zancudo Espectral, impregnada de esencia abisal del Corazón de la Colonia.',
       });
@@ -7460,7 +7460,7 @@ export const CombatView: React.FC = () => {
         category: 'materials',
         rarity: 'SSR',
         count: 1,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         priceGold: 6000,
         description: 'Púa glacial extraída de los acechadores congelados que inocula la mutación viral arácnida.',
       });
@@ -7508,7 +7508,7 @@ export const CombatView: React.FC = () => {
         category: 'materials',
         rarity: 'SSR',
         count: 1,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         priceGold: 5000,
         description: 'Huevo mutante petrificado de la cámara de cría tras la purga de Edacorn. Reliquia repleta de maná primigenio.',
       });
@@ -7518,7 +7518,7 @@ export const CombatView: React.FC = () => {
         name: 'Huevos de Araknoide',
         category: 'materials',
         count: 4,
-        icon: '/assets/items/ing_huevos_araknoide.png',
+        icon: '/assets/items/ing_huevos_araknoide.webp',
         rarity: 'SR',
         priceGold: 160,
         description: 'Huevos translúcidos recolectados en los nidos carmesíes de la colonia. Ingrediente exótico con suave luminiscencia nutritiva.',
@@ -7528,7 +7528,7 @@ export const CombatView: React.FC = () => {
         name: 'Larvas de Araknoide',
         category: 'materials',
         count: 4,
-        icon: '/assets/items/ing_larvas_araknoide.png',
+        icon: '/assets/items/ing_larvas_araknoide.webp',
         rarity: 'SR',
         priceGold: 150,
         description: 'Larvas cavernícolas ricas en proteínas y maná residual. Crujientes al saltear y de gran valor culinario.',
@@ -7702,7 +7702,7 @@ export const CombatView: React.FC = () => {
         name: 'Trabuco de Fuego de Ébano y Oro',
         category: 'materials' as const,
         count: 1,
-        icon: '/assets/combat/hobgoblin_fase3_idle.png',
+        icon: '/assets/combat/hobgoblin_fase3_idle.webp',
         rarity: 'UR' as const,
         priceGold: 35000,
         description: 'Arma de fuego reglamentaria imperial incautada tras abatir al Capataz Hoggoblin de Ferton. Su cañón de ébano canaliza metralla devastadora.',
@@ -7714,7 +7714,7 @@ export const CombatView: React.FC = () => {
         name: 'Salvoconducto Real del Mercado Negro',
         category: 'materials' as const,
         count: 1,
-        icon: '/assets/items/fragmento_astral.png',
+        icon: '/assets/items/fragmento_astral.webp',
         rarity: 'SSR' as const,
         priceGold: 20000,
         description: 'Emblema dorado con el sello de Ferton que permite libre acceso comercial a los puertos del Mercado Negro subterráneo.',
@@ -7786,7 +7786,7 @@ export const CombatView: React.FC = () => {
           name: 'Cofre Blindado de Contrabando de Ferton',
           category: 'materials' as const,
           count: 1,
-          icon: '/assets/portraits/guarda_negro_pesado_thumb.png',
+          icon: '/assets/portraits/guarda_negro_pesado_thumb.webp',
           rarity: 'UR' as const,
           priceGold: 30000,
           description: 'Cofre de roble reforzado con placas de ébano y runas doradas abandonado por el Capataz Hobgoblin tras ser interceptado por Caldo de Dragón.',
@@ -7871,7 +7871,7 @@ export const CombatView: React.FC = () => {
           name: 'Cofre Sellado de la Mansión',
           category: 'materials' as const,
           count: 1,
-          icon: '/assets/items/cofre_sellado_mansion.png',
+          icon: '/assets/items/cofre_sellado_mansion.webp',
           rarity: 'SSR' as const,
           priceGold: 5000,
           description: 'Cofre de roble con herrajes de latón y un cerrojo mágico sellado, repleto de doblones de oro y gemas, sustraído durante el asalto a la mansión tras derrotar a toda la guardia de Icespear.',
@@ -7955,7 +7955,7 @@ export const CombatView: React.FC = () => {
           name: 'Mapa de la Colonia de Plata de Glimmerstone',
           category: 'materials' as const,
           count: 1,
-          icon: '/assets/backgrounds/mapa_icespear_clean_nobtn.png',
+          icon: '/assets/backgrounds/mapa_icespear_clean_nobtn.webp',
           rarity: 'SSR' as const,
           priceGold: 4000,
           description: 'Pergamino antiguo recuperado del chamán goblin con runas enanas. Revela la entrada a la histórica colonia minera de Glimmerstone en Icespear, célebre por sus ricas vetas de plata.',
@@ -11219,7 +11219,7 @@ export const CombatView: React.FC = () => {
       <div
         className="relative z-20 w-[calc(100%+36px)] -mx-[18px] min-h-[58px] py-2 px-5 flex flex-col justify-center shadow-lg shrink-0 overflow-visible"
         style={{
-          backgroundImage: 'url(/assets/aistudio/image_b8a81806.png)',
+          backgroundImage: 'url(/assets/aistudio/image_b8a81806.webp)',
           backgroundSize: '112% 115%',
           backgroundPosition: 'center',
           backgroundColor: '#380f05',
@@ -11332,7 +11332,7 @@ export const CombatView: React.FC = () => {
 
               {/* Authentic Red Health Frame */}
               <img
-                src="/assets/aistudio/image_fee54ee0.png"
+                src="/assets/aistudio/image_fee54ee0.webp"
                 alt="Health Frame"
                 className="absolute inset-0 w-full h-full object-fill pointer-events-none z-10"
               />
@@ -11418,24 +11418,24 @@ export const CombatView: React.FC = () => {
           <img
             src={
               selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm9_emboscada_ferton'
-                ? '/assets/backgrounds/camino_bosque_carromatos.png'
+                ? '/assets/backgrounds/camino_bosque_carromatos.webp'
                 : selectedCombatMissionId === 'm5_cuevas_zancudo'
-                ? '/assets/backgrounds/mina_underdark_telaranas.png'
+                ? '/assets/backgrounds/mina_underdark_telaranas.webp'
                 : selectedCombatMissionId === 'm4_cuevas_azul'
-                ? '/assets/backgrounds/cueva_congelada.png'
+                ? '/assets/backgrounds/cueva_congelada.webp'
                 : selectedCombatMissionId === 'm3_cuevas_rojo'
-                ? '/assets/backgrounds/cueva_huevos_carmesis.png'
+                ? '/assets/backgrounds/cueva_huevos_carmesis.webp'
                 : selectedCombatMissionId === 'evento_asalto_orco'
-                ? '/assets/backgrounds/asalto_orco_combate.png'
+                ? '/assets/backgrounds/asalto_orco_combate.webp'
                 : selectedCombatMissionId === 'evento_emboscada_bandidos'
-                ? '/assets/backgrounds/emboscada_combate.png'
+                ? '/assets/backgrounds/emboscada_combate.webp'
                 : selectedCombatMissionId === 'm4_puertas_selladas'
-                ? '/assets/backgrounds/puertas_selladas_glimmerstone.png'
+                ? '/assets/backgrounds/puertas_selladas_glimmerstone.webp'
                 : selectedCombatMissionId === 'm3_bosque'
-                ? '/assets/backgrounds/bosque_icespear.png'
+                ? '/assets/backgrounds/bosque_icespear.webp'
                 : selectedCombatMissionId === 'm2_robo'
-                ? '/assets/backgrounds/icespear_combate_guardias.png'
-                : '/assets/aistudio/image_4daa80e0.png'
+                ? '/assets/backgrounds/icespear_combate_guardias.webp'
+                : '/assets/aistudio/image_4daa80e0.webp'
             }
             alt={
               selectedCombatMissionId === 'm10_hobgoblin_boss'
@@ -11628,7 +11628,7 @@ export const CombatView: React.FC = () => {
         >
           {/* Authentic Shadow sprite anchored in the exact middle of feet contact plane */}
           <img
-            src="/assets/aistudio/sombra_6ce1cba3.png"
+            src="/assets/aistudio/sombra_6ce1cba3.webp"
             alt="Sombra"
             style={{
               // La sombra va atada al cuerpo del héroe (complexión), no a la pose, así que no
@@ -11918,7 +11918,7 @@ export const CombatView: React.FC = () => {
           >
             {/* Authentic Shadow anchored in the exact middle of enemy feet / claws contact plane */}
             <img
-              src="/assets/aistudio/sombra_6ce1cba3.png"
+              src="/assets/aistudio/sombra_6ce1cba3.webp"
               alt="Sombra"
               data-enemy-shadow=""
               style={{
@@ -12083,7 +12083,7 @@ export const CombatView: React.FC = () => {
               {heroCastSkill === 'ragnavaldr_cuchillo_hielo' && (
                 <div className="absolute -top-32 left-1/2 -translate-x-1/2 pointer-events-none z-50 flex flex-col items-center animate-[iceDaggerFall_0.45s_cubic-bezier(0.25,1,0.5,1)_forwards]">
                   <img
-                    src="/assets/skills/ragnavaldr_cuchillo_hielo.png"
+                    src="/assets/skills/ragnavaldr_cuchillo_hielo.webp"
                     alt="Cuchillo de Hielo"
                     className="w-24 h-24 object-contain filter drop-shadow-[0_0_25px_#38bdf8] rotate-[135deg]"
                   />
@@ -12154,7 +12154,7 @@ export const CombatView: React.FC = () => {
                 {/* Cristal animado */}
                 <div className="relative w-14 h-24 sm:w-16 sm:h-26 flex items-center justify-center animate-[medusaHoverFloat_2.6s_ease-in-out_infinite]">
                   <img
-                    src="/assets/items/arcano_gema_app.png"
+                    src="/assets/items/arcano_gema_app.webp"
                     alt="Mineral Conductor"
                     className="w-full h-full object-contain filter drop-shadow-[0_0_18px_rgba(56,189,248,0.85)] transition-all duration-300 group-hover:brightness-125"
                   />
@@ -12259,13 +12259,13 @@ export const CombatView: React.FC = () => {
               {/* Radial Magic Seal / Ground Runes */}
               <div className="absolute inset-0 flex items-center justify-center opacity-85 pointer-events-none">
                 <img
-                  src={isFgoEnemy ? '/assets/cfxr/graphics/cfxr-aura-runic-purple.png' : '/assets/cfxr/graphics/cfxr-aura-runic.png'}
+                  src={isFgoEnemy ? '/assets/cfxr/graphics/cfxr-aura-runic-purple.webp' : '/assets/cfxr/graphics/cfxr-aura-runic.webp'}
                   alt=""
                   className="w-[390px] h-[390px] object-contain animate-[celestialRuneSpin_3.5s_linear_infinite] filter drop-shadow-[0_0_35px_rgba(245,158,11,0.8)]"
                   style={{ mixBlendMode: 'screen' }}
                 />
                 <img
-                  src={isFgoEnemy ? '/assets/cfxr/graphics/cfxr-ring-electric-violet.png' : '/assets/cfxr/graphics/cfxr-ring-electric-gold.png'}
+                  src={isFgoEnemy ? '/assets/cfxr/graphics/cfxr-ring-electric-violet.webp' : '/assets/cfxr/graphics/cfxr-ring-electric-gold.webp'}
                   alt=""
                   className="absolute w-[330px] h-[330px] object-contain animate-[celestialRingPulse_1s_ease-in-out_infinite]"
                   style={{ mixBlendMode: 'screen' }}
@@ -12275,7 +12275,7 @@ export const CombatView: React.FC = () => {
               {/* Rising Energy Pillars */}
               <div className="absolute inset-0 flex items-center justify-center opacity-40 pointer-events-none">
                 <img
-                  src={isFgoEnemy ? '/assets/cfxr/graphics/cfxr-aura-rays-purple.png' : '/assets/cfxr/graphics/cfxr-aura-rays.png'}
+                  src={isFgoEnemy ? '/assets/cfxr/graphics/cfxr-aura-rays-purple.webp' : '/assets/cfxr/graphics/cfxr-aura-rays.webp'}
                   alt=""
                   className="w-full h-full object-cover animate-pulse"
                   style={{ mixBlendMode: 'screen' }}
@@ -12309,7 +12309,7 @@ export const CombatView: React.FC = () => {
                       <div className="relative w-36 h-36 flex items-center justify-center">
                         <div className={`absolute inset-0 rounded-full ${currentBoss === 'medusa' ? 'bg-cyan-500/30' : 'bg-red-500/30'} blur-xl animate-pulse`} />
                         <img
-                          src={currentBoss === 'medusa' ? '/assets/combat/medusa_thumb.png' : '/assets/aistudio/image_54c3154f.png'}
+                          src={currentBoss === 'medusa' ? '/assets/combat/medusa_thumb.webp' : '/assets/aistudio/image_54c3154f.webp'}
                           alt=""
                           className="relative w-full h-full object-contain filter drop-shadow-[0_0_20px_#ef4444] scale-125"
                         />
@@ -12357,13 +12357,13 @@ export const CombatView: React.FC = () => {
                 <div className="relative flex flex-col items-center justify-center">
                   {/* Energy Gathering Vortex */}
                   <img
-                    src="/assets/cfxr/graphics/cfxr-ring-electric-gold.png"
+                    src="/assets/cfxr/graphics/cfxr-ring-electric-gold.webp"
                     alt=""
                     className="w-72 h-72 object-contain animate-[fgoEnergyGather_1s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_35px_#f59e0b]"
                     style={{ mixBlendMode: 'screen' }}
                   />
                   <img
-                    src="/assets/cfxr/graphics/cfxr-flare-gold.png"
+                    src="/assets/cfxr/graphics/cfxr-flare-gold.webp"
                     alt=""
                     className="absolute w-44 h-44 object-contain animate-pulse filter drop-shadow-[0_0_25px_#facc15]"
                     style={{ mixBlendMode: 'screen' }}
@@ -12382,7 +12382,7 @@ export const CombatView: React.FC = () => {
 
                   {/* Explosive Impact Rings & Star Particles */}
                   <img
-                    src={isFgoEnemy ? '/assets/cfxr/graphics/cfxr-ring-electric-violet.png' : '/assets/cfxr/graphics/cfxr-ring-electric-gold.png'}
+                    src={isFgoEnemy ? '/assets/cfxr/graphics/cfxr-ring-electric-violet.webp' : '/assets/cfxr/graphics/cfxr-ring-electric-gold.webp'}
                     alt=""
                     className="absolute w-[360px] h-[360px] object-contain animate-[cfxrExpandingRing_0.6s_ease-out_forwards] filter drop-shadow-[0_0_40px_#f59e0b]"
                     style={{ mixBlendMode: 'screen' }}
@@ -12390,7 +12390,7 @@ export const CombatView: React.FC = () => {
 
                   {fgoPhase === 'impact' && (
                     <img
-                      src="/assets/cfxr/graphics/cfxr-spikes-impact-gold.png"
+                      src="/assets/cfxr/graphics/cfxr-spikes-impact-gold.webp"
                       alt=""
                       className="absolute w-[300px] h-[300px] object-contain animate-[cfxrImpactBurst_0.5s_ease-out_forwards] filter drop-shadow-[0_0_30px_#f59e0b]"
                       style={{ mixBlendMode: 'screen' }}
@@ -12462,7 +12462,7 @@ export const CombatView: React.FC = () => {
       <div
         className="relative z-20 w-[calc(100%+36px)] -mx-[18px] min-h-[82px] py-1.5 px-5 flex items-center justify-between shadow-xl overflow-visible shrink-0"
         style={{
-          backgroundImage: 'url(/assets/aistudio/image_6c93ccdc.png)',
+          backgroundImage: 'url(/assets/aistudio/image_6c93ccdc.webp)',
           backgroundSize: '105% 105%',
           backgroundPosition: 'center',
           backgroundColor: '#0a101d',
@@ -12533,30 +12533,30 @@ export const CombatView: React.FC = () => {
               (heroId === 'arlem_diaz' && activeCombatHeroId === 'arlem');
             const heroPortrait =
               heroId === 'smurph_draco' || heroId === 'smurph'
-                ? '/assets/portraits/smurph_draco.png'
+                ? '/assets/portraits/smurph_draco.webp'
                 : heroId === 'roxanne'
-                ? '/assets/portraits/roxanne.png'
+                ? '/assets/portraits/roxanne.webp'
                 : heroId === 'ragnavaldr'
-                ? '/assets/portraits/ragnavaldr.png'
+                ? '/assets/portraits/ragnavaldr.webp'
                 : heroId === 'barled'
-                ? '/assets/portraits/barled.png'
+                ? '/assets/portraits/barled.webp'
                 : heroId === 'raxxar'
-                ? '/assets/portraits/raxxar.png'
+                ? '/assets/portraits/raxxar.webp'
                 : heroId === 'kairon'
-                ? '/assets/portraits/kairon.png'
+                ? '/assets/portraits/kairon.webp'
                 : heroId === 'chispo_deez' || heroId === 'chispo'
-                ? '/assets/portraits/chispo_deez_icono.png'
+                ? '/assets/portraits/chispo_deez_icono.webp'
                 : heroId === 'giovani' || heroId === 'giovani_vazquez'
-                ? '/assets/portraits/giovani_vazquez_icono.png'
+                ? '/assets/portraits/giovani_vazquez_icono.webp'
                 : heroId === 'prometeo'
-                ? '/assets/portraits/prometeo.png'
+                ? '/assets/portraits/prometeo.webp'
                 : heroId === 'pepe_loux'
-                ? '/assets/portraits/pepe_loux.png'
+                ? '/assets/portraits/pepe_loux.webp'
                 : heroId === 'arlem' || heroId === 'arlem_diaz'
-                ? '/assets/portraits/arlem_diaz_icono.png'
+                ? '/assets/portraits/arlem_diaz_icono.webp'
                 : heroId === 'edacorn'
-                ? '/assets/portraits/edacorn_icono.png'
-                : '/assets/portraits/magordito.png';
+                ? '/assets/portraits/edacorn_icono.webp'
+                : '/assets/portraits/magordito.webp';
             const heroLabel =
               heroId === 'smurph_draco' || heroId === 'smurph'
                 ? 'Smurph Draco'
@@ -12662,7 +12662,7 @@ export const CombatView: React.FC = () => {
 
             {/* Authentic Green Health Frame (barra de vida 1.png) */}
             <img
-              src="/assets/aistudio/image_7a62ba8b.png"
+              src="/assets/aistudio/image_7a62ba8b.webp"
               alt="Hero Health Frame"
               className="absolute inset-0 w-full h-full object-fill pointer-events-none z-10"
             />
@@ -12677,7 +12677,7 @@ export const CombatView: React.FC = () => {
       <div
         className="relative z-20 w-[calc(100%+36px)] -mx-[18px] flex flex-col items-center justify-between pt-3 pb-3 px-6 shadow-2xl overflow-hidden shrink-0"
         style={{
-          backgroundImage: 'url(/assets/aistudio/image_b8a81806.png)',
+          backgroundImage: 'url(/assets/aistudio/image_b8a81806.webp)',
           backgroundSize: '112% 115%',
           backgroundPosition: 'center',
           backgroundColor: '#380f05',
@@ -12737,36 +12737,36 @@ export const CombatView: React.FC = () => {
         {/* HIDDEN CACHE LAYER: Keeps all 12 card tier assets decoded in GPU memory to prevent 1-second disappearance */}
         <div className="hidden pointer-events-none select-none opacity-0 absolute" aria-hidden="true">
           {[
-            '/assets/aistudio/image_f589d3f3.png',
-            '/assets/aistudio/image_10ee0a33.png',
-            '/assets/aistudio/image_b6d0dc18.png',
-            '/assets/aistudio/image_e8288ed9.png',
-            '/assets/aistudio/image_4aa946b2.png',
-            '/assets/aistudio/image_eb9fd249.png',
-            '/assets/aistudio/image_de00910f.png',
-            '/assets/items/drenar_maldiciones_tier_2.png',
-            '/assets/items/drenar_maldiciones_tier_3.png',
-            '/assets/aistudio/image_e0c0b7e7.png',
-            '/assets/aistudio/image_3e1c2525.png',
-            '/assets/aistudio/image_f9e08028.png',
-            '/assets/cfxr/graphics/cfxr-ring-electric-gold.png?v=c3',
-            '/assets/cfxr/graphics/cfxr-flare-gold.png?v=c3',
-            '/assets/cfxr/graphics/cfxr-magic-star-gold.png?v=c3',
-            '/assets/skills/rayo_necrotico_spritesheet.png',
+            '/assets/aistudio/image_f589d3f3.webp',
+            '/assets/aistudio/image_10ee0a33.webp',
+            '/assets/aistudio/image_b6d0dc18.webp',
+            '/assets/aistudio/image_e8288ed9.webp',
+            '/assets/aistudio/image_4aa946b2.webp',
+            '/assets/aistudio/image_eb9fd249.webp',
+            '/assets/aistudio/image_de00910f.webp',
+            '/assets/items/drenar_maldiciones_tier_2.webp',
+            '/assets/items/drenar_maldiciones_tier_3.webp',
+            '/assets/aistudio/image_e0c0b7e7.webp',
+            '/assets/aistudio/image_3e1c2525.webp',
+            '/assets/aistudio/image_f9e08028.webp',
+            '/assets/cfxr/graphics/cfxr-ring-electric-gold.webp?v=c3',
+            '/assets/cfxr/graphics/cfxr-flare-gold.webp?v=c3',
+            '/assets/cfxr/graphics/cfxr-magic-star-gold.webp?v=c3',
+            '/assets/skills/rayo_necrotico_spritesheet.webp',
             '/assets/skills/rayo_necrotico_impacto.webp',
-            '/assets/skills/arlem_ultimate.png',
-            '/assets/skills/barled_ultimate.png',
-            '/assets/skills/chispo_ultimate.png',
-            '/assets/skills/edacorn_ultimate.png',
-            '/assets/skills/giovani_ultimate.png',
-            '/assets/skills/kairon_ultimate.png',
-            '/assets/skills/magordito_ultimate.png',
-            '/assets/skills/pepe_loux_ultimate.png',
-            '/assets/skills/prometeo_ultimate.png',
-            '/assets/skills/ragnavaldr_ultimate.png',
-            '/assets/skills/raxxar_ultimate.png',
-            '/assets/skills/roxanne_ultimate.png',
-            '/assets/skills/smurph_ultimate.png',
+            '/assets/skills/arlem_ultimate.webp',
+            '/assets/skills/barled_ultimate.webp',
+            '/assets/skills/chispo_ultimate.webp',
+            '/assets/skills/edacorn_ultimate.webp',
+            '/assets/skills/giovani_ultimate.webp',
+            '/assets/skills/kairon_ultimate.webp',
+            '/assets/skills/magordito_ultimate.webp',
+            '/assets/skills/pepe_loux_ultimate.webp',
+            '/assets/skills/prometeo_ultimate.webp',
+            '/assets/skills/ragnavaldr_ultimate.webp',
+            '/assets/skills/raxxar_ultimate.webp',
+            '/assets/skills/roxanne_ultimate.webp',
+            '/assets/skills/smurph_ultimate.webp',
           ].map((src) => (
             <img key={src} src={src} alt="" loading="eager" decoding="sync" />
           ))}

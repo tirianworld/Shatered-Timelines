@@ -20,12 +20,12 @@ export const BOTICA_TUTORIAL_GOLD = 200;
 
 /** Materiales que Raxxar deja sobre el alambique para la primera poción. */
 export const BOTICA_TUTORIAL_MATERIALS = [
-  { name: 'Hierba de Icespear', icon: '/assets/items/shop_herb.png', count: 3 },
-  { name: 'Semilla de Experiencia', icon: '/assets/items/semilla_xp.png', count: 2 },
-  { name: 'Frasco de Destilación', icon: '/assets/items/recurso_26_4x.png', count: 1 },
+  { name: 'Hierba de Icespear', icon: '/assets/items/shop_herb.webp', count: 3 },
+  { name: 'Semilla de Experiencia', icon: '/assets/items/semilla_xp.webp', count: 2 },
+  { name: 'Frasco de Destilación', icon: '/assets/items/recurso_26_4x.webp', count: 1 },
 ] as const;
 
-const BOTICA_BACKGROUND = '/assets/aistudio/image_180f7992.png';
+const BOTICA_BACKGROUND = '/assets/aistudio/image_180f7992.webp';
 
 export const RAXXAR_BOTICA_DIALOGUE: DialogueLine[] = [
   {

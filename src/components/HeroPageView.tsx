@@ -24,73 +24,73 @@ const PAGES: { id: HeroTab; label: string; template: string; width: number; heig
   {
     id: 'descripcion',
     label: 'DESCRIPCIÓN',
-    template: `${A}/fondo_personajes_1.png`,
+    template: `${A}/fondo_personajes_1.webp`,
     width: 841,
     height: 1871,
     cropTop: 0.155,
   },
-  { id: 'equipo', label: 'EQUIPO', template: `${A}/fondo_equipo.png`, width: 852, height: 1846, cropTop: 0.15 },
-  { id: 'nivel', label: 'NIVEL', template: `${A}/fondo_xp_pagina.png`, width: 853, height: 1844, cropTop: 0.15 },
+  { id: 'equipo', label: 'EQUIPO', template: `${A}/fondo_equipo.webp`, width: 852, height: 1846, cropTop: 0.15 },
+  { id: 'nivel', label: 'NIVEL', template: `${A}/fondo_xp_pagina.webp`, width: 853, height: 1844, cropTop: 0.15 },
   {
     id: 'despertar',
     label: 'DESPERTAR',
-    template: `${A}/fondo_despertar_arlem.png`,
+    template: `${A}/fondo_despertar_arlem.webp`,
     width: 853,
     height: 1844,
     cropTop: 0.15,
   },
-  { id: 'skins', label: 'SKINS', template: `${A}/marco_skin.png`, width: 863, height: 1823, cropTop: 0.178 },
+  { id: 'skins', label: 'SKINS', template: `${A}/marco_skin.webp`, width: 863, height: 1823, cropTop: 0.178 },
 ];
 
 const ATTRIBUTE_ORB: Record<string, string> = {
-  Arcano: '/assets/items/atributo arcano.png',
-  Natural: '/assets/items/atributo natural.png',
-  Divino: '/assets/items/atributo fe.png',
-  Profano: '/assets/items/atributo OSCURO.png',
-  Hielo: '/assets/items/atributo natural.png',
+  Arcano: '/assets/items/atributo arcano.webp',
+  Natural: '/assets/items/atributo natural.webp',
+  Divino: '/assets/items/atributo fe.webp',
+  Profano: '/assets/items/atributo OSCURO.webp',
+  Hielo: '/assets/items/atributo natural.webp',
 };
 
 /** Arte de cuerpo completo de cada héroe (sprites originales del proyecto Unity). */
 const HERO_ART: Record<string, string> = {
-  arlem_diaz: `${A}/arte_cruzado2.png`,
-  kairon: `${A}/arte_kairon.png`,
-  el_baron: `${A}/arte_el_baron.png`,
-  pepe_loux: `${A}/arte_pepe_loux.png`,
-  prometeo: `${A}/arte_prometeo.png`,
-  roxanne: `${A}/arte_roxanne.png`,
-  ragnavaldr: `${A}/arte_ragnavaldr.png`,
-  smurph_draco: `${A}/arte_smurph_draco.png`,
-  magordito: `${A}/arte_magordito.png`,
-  edacorn: `${A}/arte_edacorn.png`,
+  arlem_diaz: `${A}/arte_cruzado2.webp`,
+  kairon: `${A}/arte_kairon.webp`,
+  el_baron: `${A}/arte_el_baron.webp`,
+  pepe_loux: `${A}/arte_pepe_loux.webp`,
+  prometeo: `${A}/arte_prometeo.webp`,
+  roxanne: `${A}/arte_roxanne.webp`,
+  ragnavaldr: `${A}/arte_ragnavaldr.webp`,
+  smurph_draco: `${A}/arte_smurph_draco.webp`,
+  magordito: `${A}/arte_magordito.webp`,
+  edacorn: `${A}/arte_edacorn.webp`,
 };
 
 /** Raza de cada héroe (icono + nombre) para el panel PERSONAJE. */
 const HERO_RACE: Record<string, { label: string; icon: string }> = {
-  edacorn: { label: 'Aasimar', icon: `${A}/raza_aasimar.png` },
-  pepe_loux: { label: 'Enano', icon: `${A}/raza_enano.png` },
+  edacorn: { label: 'Aasimar', icon: `${A}/raza_aasimar.webp` },
+  pepe_loux: { label: 'Enano', icon: `${A}/raza_enano.webp` },
 };
-const DEFAULT_RACE = { label: 'Humano', icon: `${A}/raza_humano.png` };
+const DEFAULT_RACE = { label: 'Humano', icon: `${A}/raza_humano.webp` };
 
 const RARITY_BADGE: Record<string, string> = {
-  SSR: `${A}/rarity_sr.png`,
-  SR: `${A}/rarity_sr.png`,
-  R: '/assets/ui/marco_r.png',
-  UR: '/assets/ui/marco_ur.png',
+  SSR: `${A}/rarity_sr.webp`,
+  SR: `${A}/rarity_sr.webp`,
+  R: '/assets/ui/marco_r.webp',
+  UR: '/assets/ui/marco_ur.webp',
 };
 
 /** Materiales de mejora del Despertar, tomados de Unity (Assets/Resources/Items Mejora). */
 const AWAKEN_MATERIALS: Record<string, { name: string; icon: string; stars: number }> = {
-  pergamino_natural: { name: 'Pergamino Natural', icon: `${A}/mat_pergamino_natural.png`, stars: 4 },
-  pergamino_arcano: { name: 'Pergamino Arcano', icon: `${A}/mat_pergamino_arcano.png`, stars: 4 },
-  pergamino_divino: { name: 'Pergamino Divino', icon: `${A}/mat_pergamino_divino.png`, stars: 4 },
-  pergamino_oscuro: { name: 'Pergamino Oscuro', icon: `${A}/mat_pergamino_oscuro.png`, stars: 4 },
-  grimorio_culto: { name: 'Grimorio del Culto a los Dragones', icon: `${A}/mat_grimorio_culto.png`, stars: 4 },
-  grimorio_luz_solar: { name: 'Grimorio de la Luz Solar', icon: `${A}/mat_grimorio_luz_solar.png`, stars: 4 },
-  grimorio_luna_oscura: { name: 'Grimorio de la Luna Oscura', icon: `${A}/mat_grimorio_luna_oscura.png`, stars: 4 },
-  grimorio_piedad: { name: 'Grimorio de la Piedad', icon: `${A}/mat_grimorio_piedad.png`, stars: 4 },
-  grimorio_tres_sables: { name: 'Grimorio de los Tres Sables', icon: `${A}/mat_grimorio_tres_sables.png`, stars: 4 },
-  sello_caldo_dragon: { name: 'Sello Caldo de Dragón', icon: `${A}/mat_sello_caldo_dragon.png`, stars: 5 },
-  emblema_mercado_negro: { name: 'Insignia Mercado Negro', icon: `${A}/mat_emblema_mercado_negro.png`, stars: 4 },
+  pergamino_natural: { name: 'Pergamino Natural', icon: `${A}/mat_pergamino_natural.webp`, stars: 4 },
+  pergamino_arcano: { name: 'Pergamino Arcano', icon: `${A}/mat_pergamino_arcano.webp`, stars: 4 },
+  pergamino_divino: { name: 'Pergamino Divino', icon: `${A}/mat_pergamino_divino.webp`, stars: 4 },
+  pergamino_oscuro: { name: 'Pergamino Oscuro', icon: `${A}/mat_pergamino_oscuro.webp`, stars: 4 },
+  grimorio_culto: { name: 'Grimorio del Culto a los Dragones', icon: `${A}/mat_grimorio_culto.webp`, stars: 4 },
+  grimorio_luz_solar: { name: 'Grimorio de la Luz Solar', icon: `${A}/mat_grimorio_luz_solar.webp`, stars: 4 },
+  grimorio_luna_oscura: { name: 'Grimorio de la Luna Oscura', icon: `${A}/mat_grimorio_luna_oscura.webp`, stars: 4 },
+  grimorio_piedad: { name: 'Grimorio de la Piedad', icon: `${A}/mat_grimorio_piedad.webp`, stars: 4 },
+  grimorio_tres_sables: { name: 'Grimorio de los Tres Sables', icon: `${A}/mat_grimorio_tres_sables.webp`, stars: 4 },
+  sello_caldo_dragon: { name: 'Sello Caldo de Dragón', icon: `${A}/mat_sello_caldo_dragon.webp`, stars: 5 },
+  emblema_mercado_negro: { name: 'Insignia Mercado Negro', icon: `${A}/mat_emblema_mercado_negro.webp`, stars: 4 },
 };
 
 /** Set del panel Despertar de cada héroe en Unity: [pergamino, grimorio, sello/insignia]. */
@@ -137,13 +137,13 @@ const EQUIP_CATEGORIES: { id: EquipmentCategory; label: string; Icon: typeof Swo
 
 /** Materiales de sastrería con los que se fabrican las skins (iconos del juego). */
 const SKIN_MATS = {
-  libro: { name: 'Libro Sagrado', icon: `${A}/skinmat_libro.png` },
-  arapos: { name: 'Montón de Arapos', icon: `${A}/skinmat_arapos.png` },
-  hadas: { name: 'Polvo de Hadas', icon: `${A}/skinmat_polvo_hadas.png` },
-  paquetes: { name: 'Paquetes Sospechosos', icon: `${A}/skinmat_paquetes.png` },
-  colmillos: { name: 'Colmillos Desgastados', icon: `${A}/skinmat_colmillo.png` },
-  huesos: { name: 'Fragmentos Óseos', icon: `${A}/skinmat_huesos.png` },
-  talisman: { name: 'Talismán de Jefe Orco', icon: `${A}/skinmat_talisman.png` },
+  libro: { name: 'Libro Sagrado', icon: `${A}/skinmat_libro.webp` },
+  arapos: { name: 'Montón de Arapos', icon: `${A}/skinmat_arapos.webp` },
+  hadas: { name: 'Polvo de Hadas', icon: `${A}/skinmat_polvo_hadas.webp` },
+  paquetes: { name: 'Paquetes Sospechosos', icon: `${A}/skinmat_paquetes.webp` },
+  colmillos: { name: 'Colmillos Desgastados', icon: `${A}/skinmat_colmillo.webp` },
+  huesos: { name: 'Fragmentos Óseos', icon: `${A}/skinmat_huesos.webp` },
+  talisman: { name: 'Talismán de Jefe Orco', icon: `${A}/skinmat_talisman.webp` },
 };
 
 const SKINS = [
@@ -151,7 +151,7 @@ const SKINS = [
     id: 'clasico',
     name: 'Clásico',
     subtitle: 'Aspecto base del héroe',
-    art: `${A}/skin_clasico.png`,
+    art: `${A}/skin_clasico.webp`,
     title: 'CLÁSICO',
     description: 'Atuendo de bardo errante, cosido en la sastrería más prestigiosa de Moonhaven.',
     bonus: 'Sin bonificación adicional.',
@@ -167,7 +167,7 @@ const SKINS = [
     id: 'monje',
     name: 'Atuendo Monástico',
     subtitle: 'Ropajes de la iglesia',
-    art: `${A}/skin_monje.png`,
+    art: `${A}/skin_monje.webp`,
     title: 'ATUENDO MONÁSTICO',
     description: 'Ropajes prestados por la Iglesia de Freya al encontrarte desnudo en su puerta.',
     bonus: '+8% Defensa · reduce el daño recibido de Profano.',
@@ -183,7 +183,7 @@ const SKINS = [
     id: 'orco',
     name: 'Orco Ilusorio',
     subtitle: 'Ilusión de Gromock',
-    art: `${A}/skin_orco.png`,
+    art: `${A}/skin_orco.webp`,
     title: 'ORCO ILUSORIO',
     description: 'Ilusión creada por Arlem para engañar a Gromock y a su horda.',
     bonus: '+15% al Ataque · cuenta como Semiorco.',
@@ -324,11 +324,11 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
   const luck = Math.round(stats.critRate * 1000) / 10;
 
   const statCards = [
-    { label: 'Vida', value: fmt(hp), icon: `${A}/stat_vida.png` },
-    { label: 'Ataque', value: fmt(atk), icon: `${A}/stat_ataque.png` },
-    { label: 'Defensa', value: fmt(def), icon: `${A}/stat_defensa.png` },
-    { label: 'Energía', value: fmt(energy), icon: `${A}/stat_energia.png` },
-    { label: 'Suerte', value: fmt(luck), icon: `${A}/stat_suerte.png` },
+    { label: 'Vida', value: fmt(hp), icon: `${A}/stat_vida.webp` },
+    { label: 'Ataque', value: fmt(atk), icon: `${A}/stat_ataque.webp` },
+    { label: 'Defensa', value: fmt(def), icon: `${A}/stat_defensa.webp` },
+    { label: 'Energía', value: fmt(energy), icon: `${A}/stat_energia.webp` },
+    { label: 'Suerte', value: fmt(luck), icon: `${A}/stat_suerte.webp` },
   ];
 
   const goTab = (next: HeroTab) => {
@@ -550,7 +550,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
   const page = PAGES.find((p) => p.id === tab)!;
 
   // Arte real del héroe; si el personaje no tiene sprite propio se usa su retrato.
-  const heroArt = HERO_ART[hero.id] ?? hero.portrait ?? hero.backgroundArt ?? `${A}/arte_cruzado2.png`;
+  const heroArt = HERO_ART[hero.id] ?? hero.portrait ?? hero.backgroundArt ?? `${A}/arte_cruzado2.webp`;
 
   /* ======================= Secciones ======================= */
 
@@ -576,7 +576,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
             {Array.from({ length: 5 }).map((_, i) => (
               <img
                 key={i}
-                src={`${A}/estrella_mejora.png`}
+                src={`${A}/estrella_mejora.webp`}
                 alt=""
                 className={`w-[28px] h-[28px] object-contain ${i < stars ? '' : 'opacity-25 grayscale'}`}
               />
@@ -632,7 +632,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
 
       {/* HABILIDAD PASIVA */}
       <img
-        src={isArlem ? `${A}/pasiva_arlem.png` : `/assets/portraits/${hero.id}_icono.png`}
+        src={isArlem ? `${A}/pasiva_arlem.webp` : `/assets/portraits/${hero.id}_icono.png`}
         alt="Habilidad pasiva"
         className="absolute left-[12%] top-[69.4%] w-[13%] object-contain drop-shadow"
       />
@@ -719,11 +719,11 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
     });
 
     const bonusTiles = [
-      { label: 'Vida', value: fmt(Math.round(bonus.hp)), icon: `${A}/stat_vida.png` },
-      { label: 'Ataque', value: fmt(Math.round(bonus.attack)), icon: `${A}/stat_ataque.png` },
-      { label: 'Defensa', value: fmt(Math.round(bonus.defense)), icon: `${A}/stat_defensa.png` },
-      { label: 'Energía', value: fmt(Math.round(bonus.speed)), icon: `${A}/stat_energia.png` },
-      { label: 'Suerte', value: fmt(Math.round(bonus.critRate * 1000) / 10), icon: `${A}/stat_suerte.png` },
+      { label: 'Vida', value: fmt(Math.round(bonus.hp)), icon: `${A}/stat_vida.webp` },
+      { label: 'Ataque', value: fmt(Math.round(bonus.attack)), icon: `${A}/stat_ataque.webp` },
+      { label: 'Defensa', value: fmt(Math.round(bonus.defense)), icon: `${A}/stat_defensa.webp` },
+      { label: 'Energía', value: fmt(Math.round(bonus.speed)), icon: `${A}/stat_energia.webp` },
+      { label: 'Suerte', value: fmt(Math.round(bonus.critRate * 1000) / 10), icon: `${A}/stat_suerte.webp` },
     ];
 
     const tabs = EQUIP_CATEGORIES;
@@ -953,11 +953,11 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
       {/* Estadísticas */}
       <div className="absolute left-[5%] top-[31.6%] w-[50%] space-y-[4px]">
                   {[
-            { key: 'Vida', icon: `${A}/stat_vida.png`, value: hp },
-            { key: 'Ataque', icon: `${A}/stat_ataque.png`, value: atk },
-            { key: 'Defensa', icon: `${A}/stat_defensa.png`, value: def },
-            { key: 'Energía', icon: `${A}/stat_energia.png`, value: energy },
-            { key: 'Suerte', icon: `${A}/stat_suerte.png`, value: luck },
+            { key: 'Vida', icon: `${A}/stat_vida.webp`, value: hp },
+            { key: 'Ataque', icon: `${A}/stat_ataque.webp`, value: atk },
+            { key: 'Defensa', icon: `${A}/stat_defensa.webp`, value: def },
+            { key: 'Energía', icon: `${A}/stat_energia.webp`, value: energy },
+            { key: 'Suerte', icon: `${A}/stat_suerte.webp`, value: luck },
           ].map((row) => (
             <div key={row.key} className="flex items-center gap-[6px]">
             <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-[4px] border border-[#8a4a10]/70 bg-[#2a1206] shadow-[inset_0_1px_2px_rgba(0,0,0,0.65)]">
@@ -1005,7 +1005,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
                 >
                   <div className="absolute inset-0 rounded-[9px] bg-[#120806]" />
                   <img
-                    src={`${A}/marco_item.png`}
+                    src={`${A}/marco_item.webp`}
                     alt=""
                     className="absolute inset-0 w-full h-full object-fill pointer-events-none"
                   />
@@ -1019,7 +1019,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
                   </span>
                   <div className="absolute bottom-[7%] left-0 right-0 flex justify-center gap-[0.5px]">
                     {Array.from({ length: starCountFor(p.rarity) }).map((_, s) => (
-                      <img key={s} src={`${A}/estrella_mejora.png`} alt="" className="w-[5px] h-[5px] object-contain" />
+                      <img key={s} src={`${A}/estrella_mejora.webp`} alt="" className="w-[5px] h-[5px] object-contain" />
                     ))}
                   </div>
                 </button>
@@ -1035,7 +1035,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
           if (!potion) {
             return (
               <div key={`empty-${i}`} className="relative">
-                <img src={`${A}/marco_item.png`} alt="" className="absolute inset-0 w-full h-full object-fill opacity-50" />
+                <img src={`${A}/marco_item.webp`} alt="" className="absolute inset-0 w-full h-full object-fill opacity-50" />
               </div>
             );
           }
@@ -1061,7 +1061,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
             >
               <div className="absolute inset-0 rounded-[9px] bg-[#120806]" />
               <img
-                src={`${A}/marco_item.png`}
+                src={`${A}/marco_item.webp`}
                 alt=""
                 className={`absolute inset-0 w-full h-full object-fill pointer-events-none ${qty > 0 ? 'drop-shadow-[0_0_6px_rgba(255,190,90,0.55)]' : ''}`}
               />
@@ -1079,7 +1079,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
                 {Array.from({ length: starCountFor(potion.rarity) }).map((_, s) => (
                   <img
                     key={s}
-                    src={`${A}/estrella_mejora.png`}
+                    src={`${A}/estrella_mejora.webp`}
                     alt=""
                     className={`w-[6px] h-[6px] object-contain ${remaining === 0 ? 'opacity-40' : ''}`}
                   />
@@ -1102,7 +1102,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         }`}
       >
         <span className="flex items-center gap-1 text-[10.5px] font-black">
-          <img src="/assets/items/moneda_de_moonhaven.png" alt="" className="w-3.5 h-3.5 object-contain" />
+          <img src="/assets/items/moneda_de_moonhaven.webp" alt="" className="w-3.5 h-3.5 object-contain" />
           {fmt(goldCostForXp(assignedXp))}
         </span>
         <span className="mt-[1px] text-[6px] font-black uppercase tracking-[0.1em]">Aplicar EXP</span>
@@ -1138,7 +1138,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         {/* Estrellas actuales */}
         <div className="absolute left-[5%] top-[25.2%] flex w-[62%] items-center gap-[7px]">
           <span className="flex items-center gap-[3px] rounded-[4px] border border-[#8a4a10]/80 bg-gradient-to-b from-[#3a1c0a] to-[#251006] px-[6px] py-[2px] text-[10.5px] font-black uppercase leading-none tracking-[0.1em] text-[#ffd98a] shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
-            <img src={`${A}/estrella_mejora.png`} alt="" className="h-[10px] w-[10px] object-contain" />
+            <img src={`${A}/estrella_mejora.webp`} alt="" className="h-[10px] w-[10px] object-contain" />
             Despertar
           </span>
           <span className="font-serif text-[20px] font-black leading-none tabular-nums text-[#552006]">{stars}</span>
@@ -1155,7 +1155,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
             {Array.from({ length: 5 }).map((_, i) => (
               <img
                 key={i}
-                src={`${A}/estrella_mejora.png`}
+                src={`${A}/estrella_mejora.webp`}
                 alt=""
                 className={`h-[19px] w-[19px] object-contain drop-shadow-[0_1px_1px_rgba(60,20,0,0.35)] ${
                   i < filledStars ? '' : 'opacity-25 grayscale'
@@ -1168,11 +1168,11 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         {/* Estadísticas */}
         <div className="absolute left-[5%] top-[31.2%] w-[50%] space-y-[4px]">
           {[
-            { key: 'Vida', icon: `${A}/stat_vida.png`, value: hp },
-            { key: 'Ataque', icon: `${A}/stat_ataque.png`, value: atk },
-            { key: 'Defensa', icon: `${A}/stat_defensa.png`, value: def },
-            { key: 'Energía', icon: `${A}/stat_energia.png`, value: energy },
-            { key: 'Suerte', icon: `${A}/stat_suerte.png`, value: luck },
+            { key: 'Vida', icon: `${A}/stat_vida.webp`, value: hp },
+            { key: 'Ataque', icon: `${A}/stat_ataque.webp`, value: atk },
+            { key: 'Defensa', icon: `${A}/stat_defensa.webp`, value: def },
+            { key: 'Energía', icon: `${A}/stat_energia.webp`, value: energy },
+            { key: 'Suerte', icon: `${A}/stat_suerte.webp`, value: luck },
           ].map((row) => (
             <div key={row.key} className="flex items-center gap-[6px]">
               <span className="flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-[4px] border border-[#8a4a10]/70 bg-[#2a1206] shadow-[inset_0_1px_2px_rgba(0,0,0,0.65)]">
@@ -1219,7 +1219,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
                   >
                     <div className="absolute inset-0 rounded-[9px] bg-[#120806]" />
                     <img
-                      src={`${A}/marco_item.png`}
+                      src={`${A}/marco_item.webp`}
                       alt=""
                       className="absolute inset-0 h-full w-full object-fill pointer-events-none drop-shadow-[0_0_6px_rgba(255,190,90,0.55)]"
                     />
@@ -1233,7 +1233,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
                     </span>
                     <div className="absolute bottom-[6%] left-0 right-0 flex justify-center gap-[0.5px]">
                       {Array.from({ length: r.stars }).map((_, s) => (
-                        <img key={s} src={`${A}/estrella_mejora.png`} alt="" className="h-[5px] w-[5px] object-contain" />
+                        <img key={s} src={`${A}/estrella_mejora.webp`} alt="" className="h-[5px] w-[5px] object-contain" />
                       ))}
                     </div>
                   </div>
@@ -1267,7 +1267,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
               >
                 <div className="absolute inset-0 rounded-[9px] bg-[#120806]" />
                 <img
-                  src={`${A}/marco_item.png`}
+                  src={`${A}/marco_item.webp`}
                   alt=""
                   className={`absolute inset-0 h-full w-full object-fill pointer-events-none ${
                     qty > 0 ? 'drop-shadow-[0_0_6px_rgba(255,190,90,0.55)]' : ''
@@ -1290,7 +1290,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
                   {Array.from({ length: r.stars }).map((_, s) => (
                     <img
                       key={s}
-                      src={`${A}/estrella_mejora.png`}
+                      src={`${A}/estrella_mejora.webp`}
                       alt=""
                       className={`h-[6px] w-[6px] object-contain ${remaining === 0 ? 'opacity-40' : ''}`}
                     />
@@ -1318,7 +1318,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
           }`}
         >
           <span className="flex items-center gap-1 text-[10px] font-black">
-            <img src="/assets/items/moneda_de_moonhaven.png" alt="" className="h-3.5 w-3.5 object-contain" />
+            <img src="/assets/items/moneda_de_moonhaven.webp" alt="" className="h-3.5 w-3.5 object-contain" />
             {fmt(AWAKEN_GOLD)}
           </span>
           <span className="mt-[1px] text-[6px] font-black uppercase tracking-[0.1em]">
@@ -1347,7 +1347,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
     // Kits de herrería que pide la mejora (9 como máximo, como en el panel de Unity).
     const kitsNeeded = Math.min(9, 3 + (selected?.level ?? 1) * 2);
     const kitRemaining = Math.max(0, forgeKitCount - kitAssigned);
-    const kitIcon = forgeKit?.icon ?? '/assets/items/kit de herreria app.png';
+    const kitIcon = forgeKit?.icon ?? '/assets/items/kit de herreria app.webp';
     const canUpgrade = Boolean(selected) && gold >= cost && kitAssigned >= kitsNeeded;
     kitLimitsRef.current = { need: kitsNeeded, remaining: forgeKitCount };
 
@@ -1361,11 +1361,11 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
       equippedBonus.critRate += it.stats.critRate ?? 0;
     });
     const bonusTiles = [
-      { label: 'Vida', value: fmt(Math.round(equippedBonus.hp)), icon: `${A}/stat_vida.png` },
-      { label: 'Ataque', value: fmt(Math.round(equippedBonus.attack)), icon: `${A}/stat_ataque.png` },
-      { label: 'Defensa', value: fmt(Math.round(equippedBonus.defense)), icon: `${A}/stat_defensa.png` },
-      { label: 'Energía', value: fmt(Math.round(equippedBonus.speed)), icon: `${A}/stat_energia.png` },
-      { label: 'Suerte', value: fmt(Math.round(equippedBonus.critRate * 1000) / 10), icon: `${A}/stat_suerte.png` },
+      { label: 'Vida', value: fmt(Math.round(equippedBonus.hp)), icon: `${A}/stat_vida.webp` },
+      { label: 'Ataque', value: fmt(Math.round(equippedBonus.attack)), icon: `${A}/stat_ataque.webp` },
+      { label: 'Defensa', value: fmt(Math.round(equippedBonus.defense)), icon: `${A}/stat_defensa.webp` },
+      { label: 'Energía', value: fmt(Math.round(equippedBonus.speed)), icon: `${A}/stat_energia.webp` },
+      { label: 'Suerte', value: fmt(Math.round(equippedBonus.critRate * 1000) / 10), icon: `${A}/stat_suerte.webp` },
     ];
 
     const close = () => {
@@ -1401,7 +1401,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
     return (
       <div className="absolute inset-0 z-40 flex flex-col overflow-hidden bg-[#e2b077] animate-fade-in">
         <img
-          src="/assets/backgrounds/fondo_personajes.png"
+          src="/assets/backgrounds/fondo_personajes.webp"
           alt=""
           className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-90 select-none"
         />
@@ -1433,7 +1433,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         <div className="relative z-10 mt-[2px] flex justify-center">
           <div className="relative aspect-square w-[34%]">
             <div className="absolute inset-0 rounded-[6px] bg-[#2a1206]" />
-            <img src={`${A}/marco_item.png`} alt="" className="absolute inset-0 h-full w-full object-fill" />
+            <img src={`${A}/marco_item.webp`} alt="" className="absolute inset-0 h-full w-full object-fill" />
             {selected && (
               <img
                 src={selected.icon}
@@ -1471,7 +1471,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
               className="relative h-[74%] aspect-square shrink-0 cursor-pointer select-none touch-pan-y transition-transform active:scale-95"
             >
               <div className="absolute inset-0 rounded-[7px] bg-[#120806]" />
-              <img src={`${A}/marco_item.png`} alt="" className="absolute inset-0 h-full w-full object-fill" />
+              <img src={`${A}/marco_item.webp`} alt="" className="absolute inset-0 h-full w-full object-fill" />
               <img
                 src={kitIcon}
                 alt=""
@@ -1503,7 +1503,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
           >
             <div className="absolute inset-0 rounded-[7px] bg-[#120806]" />
             <img
-              src={`${A}/marco_item.png`}
+              src={`${A}/marco_item.webp`}
               alt=""
               className={`absolute inset-0 h-full w-full object-fill ${kitAssigned > 0 ? 'drop-shadow-[0_0_6px_rgba(255,190,90,0.5)]' : ''}`}
             />
@@ -1540,7 +1540,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
                 : 'border-[#a9672a]/70 bg-gradient-to-b from-[#e8bf80] to-[#c08c3e] text-[#4a2a0a]/70 cursor-not-allowed'
             }`}
           >
-            <img src="/assets/items/moneda_de_moonhaven.png" alt="" className="h-3.5 w-3.5 object-contain" />
+            <img src="/assets/items/moneda_de_moonhaven.webp" alt="" className="h-3.5 w-3.5 object-contain" />
             Oro: {fmt(cost)}
           </button>
           <div className="flex w-[42%] items-center justify-center gap-[4px] rounded-[6px] border-2 border-[#2a6a86] bg-gradient-to-b from-[#5cc3ee] to-[#2385c4] px-[6px] py-[5px] text-[9.5px] font-black leading-none text-[#062a36]">
@@ -1690,7 +1690,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         className="absolute left-[47.5%] top-[32%] w-[5%] h-[5%] flex items-center justify-center text-[#f0b95a] cursor-pointer"
         aria-label="Skin anterior"
       >
-        <img src={`${A}/boton_flecha.png`} alt="" className="w-full h-full object-contain -scale-x-100" />
+        <img src={`${A}/boton_flecha.webp`} alt="" className="w-full h-full object-contain -scale-x-100" />
       </button>
       {/* Skin: enmascarada al hueco de la vista previa */}
       <div className="pointer-events-none absolute left-[51%] top-[21%] h-[36%] w-[40%] overflow-hidden">
@@ -1709,7 +1709,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         className="absolute right-[4.5%] top-[32%] w-[5%] h-[5%] flex items-center justify-center cursor-pointer"
         aria-label="Skin siguiente"
       >
-        <img src={`${A}/boton_flecha.png`} alt="" className="w-full h-full object-contain" />
+        <img src={`${A}/boton_flecha.webp`} alt="" className="w-full h-full object-contain" />
       </button>
 
       {/* Descripción de la skin: en el marco que queda bajo la vista previa */}

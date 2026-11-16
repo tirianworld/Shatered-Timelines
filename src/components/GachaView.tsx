@@ -10,9 +10,9 @@ import { Sparkles, Star, ChevronLeft, ChevronRight, HelpCircle, X, Sword, Gem } 
 /** Arte grande que se coloca sobre el estandarte (estilo Grand Cross). */
 const BANNER_ART: Record<string, string[]> = {
   banner_latentes: [
-    '/assets/heropage/arte_ragnavaldr.png',
-    '/assets/heropage/arte_prometeo.png',
-    '/assets/heropage/arte_kairon.png',
+    '/assets/heropage/arte_ragnavaldr.webp',
+    '/assets/heropage/arte_prometeo.webp',
+    '/assets/heropage/arte_kairon.webp',
   ],
 };
 
@@ -122,7 +122,7 @@ export const GachaView: React.FC = () => {
         {/* Moneda + selector de estandartes */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 rounded-full border border-cyan-700/60 bg-cyan-950/50 px-3 py-1">
-            <img src="/assets/items/gema_del_recuerdo.png" alt="" className="w-4 h-4 object-contain" />
+            <img src="/assets/items/gema_del_recuerdo.webp" alt="" className="w-4 h-4 object-contain" />
             <span className="font-mono text-xs font-bold text-cyan-200">{astralShards.toLocaleString()}</span>
           </div>
           {astralShards < 100 && (
@@ -171,7 +171,7 @@ export const GachaView: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-b from-[#3a1d0c] via-[#24120a] to-stone-950">
                 {/* Fondo ambiental de taberna/market */}
                 <img
-                  src="/assets/backgrounds/fondo_baron.png"
+                  src="/assets/backgrounds/fondo_baron.webp"
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover opacity-40 mix-blend-luminosity"
                 />
@@ -249,7 +249,7 @@ export const GachaView: React.FC = () => {
                 }`}
               >
                 <span className="flex items-center gap-1 font-mono text-[13px] font-bold text-cyan-200">
-                  <img src="/assets/items/gema_del_recuerdo.png" alt="" className="h-3.5 w-3.5 object-contain" />
+                  <img src="/assets/items/gema_del_recuerdo.webp" alt="" className="h-3.5 w-3.5 object-contain" />
                   {currentBanner.costSingle}
                 </span>
                 <span className="font-serif text-[10px] font-bold uppercase tracking-wide text-stone-200">Tirada x1</span>
@@ -265,7 +265,7 @@ export const GachaView: React.FC = () => {
                 }`}
               >
                 <span className="flex items-center gap-1 font-mono text-[13px] font-bold text-amber-200">
-                  <img src="/assets/items/gema_del_recuerdo.png" alt="" className="h-3.5 w-3.5 object-contain" />
+                  <img src="/assets/items/gema_del_recuerdo.webp" alt="" className="h-3.5 w-3.5 object-contain" />
                   {currentBanner.costMulti}
                 </span>
                 <span className="font-serif text-[10px] font-bold uppercase tracking-wide text-stone-200">Tirada x10</span>

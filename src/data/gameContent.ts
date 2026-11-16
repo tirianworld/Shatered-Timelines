@@ -2,14 +2,14 @@ import { SummonBanner, PatrolMission, InventoryItem, EquipmentItem } from '../ty
 
 /** Armas raras que rellenan las tiradas del banner de latentes. */
 export const GACHA_WEAPONS: { id: string; name: string; icon: string; rarity: 'R' | 'SR' | 'SSR' | 'UR' }[] = [
-  { id: 'arma_espada_hierro', name: 'Espada de Hierro', icon: '/assets/aistudio/image_5889f1da.png', rarity: 'SR' },
-  { id: 'arma_ropera_hierro', name: 'Ropera de Hierro', icon: '/assets/aistudio/image_17a979ba.png', rarity: 'SR' },
-  { id: 'arma_lanza_hierro', name: 'Lanza de Hierro', icon: '/assets/aistudio/lanza_de_hierro_basica_app_bf1dd7a4.png', rarity: 'SR' },
-  { id: 'arma_dagas_plata', name: 'Dagas de Plata', icon: '/assets/items/dagas_plata.png', rarity: 'SR' },
-  { id: 'arma_tridente_plata', name: 'Tridente de Plata', icon: '/assets/aistudio/tridente_de_plata_b2da1515.png', rarity: 'SSR' },
-  { id: 'arma_dagas_oro', name: 'Dagas de Oro', icon: '/assets/items/dagas_oro.png', rarity: 'SSR' },
-  { id: 'arma_dagas_electrum', name: 'Dagas de Electrum', icon: '/assets/items/dagas_electrum.png', rarity: 'SSR' },
-  { id: 'arma_espada_loux', name: 'Espada de Loux', icon: '/assets/items/ESPADA LOUX.png', rarity: 'SSR' },
+  { id: 'arma_espada_hierro', name: 'Espada de Hierro', icon: '/assets/aistudio/image_5889f1da.webp', rarity: 'SR' },
+  { id: 'arma_ropera_hierro', name: 'Ropera de Hierro', icon: '/assets/aistudio/image_17a979ba.webp', rarity: 'SR' },
+  { id: 'arma_lanza_hierro', name: 'Lanza de Hierro', icon: '/assets/aistudio/lanza_de_hierro_basica_app_bf1dd7a4.webp', rarity: 'SR' },
+  { id: 'arma_dagas_plata', name: 'Dagas de Plata', icon: '/assets/items/dagas_plata.webp', rarity: 'SR' },
+  { id: 'arma_tridente_plata', name: 'Tridente de Plata', icon: '/assets/aistudio/tridente_de_plata_b2da1515.webp', rarity: 'SSR' },
+  { id: 'arma_dagas_oro', name: 'Dagas de Oro', icon: '/assets/items/dagas_oro.webp', rarity: 'SSR' },
+  { id: 'arma_dagas_electrum', name: 'Dagas de Electrum', icon: '/assets/items/dagas_electrum.webp', rarity: 'SSR' },
+  { id: 'arma_espada_loux', name: 'Espada de Loux', icon: '/assets/items/ESPADA LOUX.webp', rarity: 'SSR' },
 ];
 export const BANNERS: SummonBanner[] = [
   {
@@ -20,7 +20,7 @@ export const BANNERS: SummonBanner[] = [
     featuredHeroIds: ['raxxar', 'ragnavaldr', 'prometeo', 'barled', 'kairon'],
     costSingle: 100,
     costMulti: 900,
-    bannerImage: '/assets/heropage/arte_prometeo.png',
+    bannerImage: '/assets/heropage/arte_prometeo.webp',
     dropRates: {
       UR: 0,
       SSR: 0.15,
@@ -36,7 +36,7 @@ export const BANNERS: SummonBanner[] = [
     featuredHeroIds: ['kairon', 'edacorn', 'arthorius'],
     costSingle: 100,
     costMulti: 900,
-    bannerImage: '/assets/backgrounds/icespear_banner.png',
+    bannerImage: '/assets/backgrounds/icespear_banner.webp',
     dropRates: {
       UR: 0.03, // 3%
       SSR: 0.12, // 12%
@@ -52,7 +52,7 @@ export const BANNERS: SummonBanner[] = [
     featuredHeroIds: ['el_baron', 'roxanne', 'chispo_deez'],
     costSingle: 100,
     costMulti: 900,
-    bannerImage: '/assets/backgrounds/fondo_baron.png',
+    bannerImage: '/assets/backgrounds/fondo_baron.webp',
     dropRates: {
       UR: 0.035,
       SSR: 0.115,
@@ -68,7 +68,7 @@ export const BANNERS: SummonBanner[] = [
     featuredHeroIds: ['pepe_loux', 'aeliana', 'prometeo', 'smurph_draco'],
     costSingle: 100,
     costMulti: 900,
-    bannerImage: '/assets/backgrounds/mansion_loux.png',
+    bannerImage: '/assets/backgrounds/mansion_loux.webp',
     dropRates: {
       UR: 0.03,
       SSR: 0.13,
@@ -85,7 +85,7 @@ export const PATROLS: PatrolMission[] = [
     region: 'Frontera Norte',
     durationSeconds: 30, // 30s for quick action, or scaling
     description: 'Vigilar los torreones de hielo frente a merodeadores orcos y lobos hambrientos.',
-    bgImage: '/assets/backgrounds/fondo_icespear.png',
+    bgImage: '/assets/backgrounds/fondo_icespear.webp',
     recommendedPower: 400,
     rewards: {
       gold: 250,
@@ -100,7 +100,7 @@ export const PATROLS: PatrolMission[] = [
     region: 'Grutas Profundas',
     durationSeconds: 60,
     description: 'Adentrarse en las grutas subterráneas en busca de vetas de amatista y minerales preciosos.',
-    bgImage: '/assets/backgrounds/cuevas_de_icespear.png',
+    bgImage: '/assets/backgrounds/cuevas_de_icespear.webp',
     recommendedPower: 700,
     rewards: {
       gold: 500,
@@ -115,7 +115,7 @@ export const PATROLS: PatrolMission[] = [
     region: 'Sótanos Clandestinos',
     durationSeconds: 120,
     description: 'Investigar los misteriosos ruidos y túneles ocultos bajo la bodega de la taberna.',
-    bgImage: '/assets/backgrounds/mazmorra_taverna_icespear.png',
+    bgImage: '/assets/backgrounds/mazmorra_taverna_icespear.webp',
     recommendedPower: 1100,
     rewards: {
       gold: 900,
@@ -130,7 +130,7 @@ export const PATROLS: PatrolMission[] = [
     region: 'Cumbre Helada',
     durationSeconds: 180,
     description: 'Expedición de élite al altar del dragón de hielo para recuperar reliquias astrales.',
-    bgImage: '/assets/backgrounds/icespear_combate_guardias.png',
+    bgImage: '/assets/backgrounds/icespear_combate_guardias.webp',
     recommendedPower: 1600,
     rewards: {
       gold: 1600,
@@ -148,7 +148,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'consumable',
     rarity: 'R',
     count: 10,
-    icon: '/assets/items/pocion_exp_1.png',
+    icon: '/assets/items/pocion_exp_1.webp',
     description: 'Otorga 250 puntos de experiencia a un héroe seleccionado.',
     usable: true,
     effect: { xpAmount: 250 },
@@ -159,7 +159,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'consumable',
     rarity: 'R',
     count: 10,
-    icon: '/assets/items/pocion_exp_2.png',
+    icon: '/assets/items/pocion_exp_2.webp',
     description: 'Otorga 600 puntos de experiencia a un héroe seleccionado.',
     usable: true,
     effect: { xpAmount: 600 },
@@ -170,7 +170,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'consumable',
     rarity: 'R',
     count: 10,
-    icon: '/assets/items/pocion_exp_3.png',
+    icon: '/assets/items/pocion_exp_3.webp',
     description: 'Otorga 1.200 puntos de experiencia a un héroe seleccionado.',
     usable: true,
     effect: { xpAmount: 1200 },
@@ -181,7 +181,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'consumable',
     rarity: 'SSR',
     count: 5,
-    icon: '/assets/items/pocion_exp_4.png',
+    icon: '/assets/items/pocion_exp_4.webp',
     description: 'Otorga 3.000 puntos de experiencia a un héroe seleccionado.',
     usable: true,
     effect: { xpAmount: 3000 },
@@ -192,7 +192,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'consumable',
     rarity: 'SSR',
     count: 5,
-    icon: '/assets/items/pocion_exp_5.png',
+    icon: '/assets/items/pocion_exp_5.webp',
     description: 'Otorga 8.000 puntos de experiencia a un héroe seleccionado.',
     usable: true,
     effect: { xpAmount: 8000 },
@@ -203,7 +203,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'R',
     count: 25,
-    icon: '/assets/items/LINGOTE ACERO.png',
+    icon: '/assets/items/LINGOTE ACERO.webp',
     description: 'Material indispensable para forjar y reforzar armas en la herrería.',
   },
   // Materiales de mejora del Despertar (mismos objetos que el panel Despertar de Unity).
@@ -213,7 +213,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'SR',
     count: 12,
-    icon: '/assets/heropage/mat_pergamino_natural.png',
+    icon: '/assets/heropage/mat_pergamino_natural.webp',
     description: 'Pergamino de magia primitiva usado para despertar las estrellas de un héroe Natural.',
   },
   {
@@ -222,7 +222,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'SR',
     count: 12,
-    icon: '/assets/heropage/mat_pergamino_arcano.png',
+    icon: '/assets/heropage/mat_pergamino_arcano.webp',
     description: 'Pergamino de runas estelares usado para despertar las estrellas de un héroe Arcano.',
   },
   {
@@ -231,7 +231,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'SR',
     count: 8,
-    icon: '/assets/heropage/mat_pergamino_divino.png',
+    icon: '/assets/heropage/mat_pergamino_divino.webp',
     description: 'Pergamino bendecido por la fe, usado para despertar las estrellas de un héroe Divino.',
   },
   {
@@ -240,7 +240,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'SR',
     count: 12,
-    icon: '/assets/heropage/mat_pergamino_oscuro.png',
+    icon: '/assets/heropage/mat_pergamino_oscuro.webp',
     description: 'Pergamino de magia antinatural, usado para despertar las estrellas de un héroe Profano.',
   },
   {
@@ -249,7 +249,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'SR',
     count: 4,
-    icon: '/assets/heropage/mat_grimorio_culto.png',
+    icon: '/assets/heropage/mat_grimorio_culto.webp',
     description: 'Escritos prohibidos del Culto a los Dragones, necesarios para el Despertar.',
   },
   {
@@ -258,7 +258,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'SR',
     count: 4,
-    icon: '/assets/heropage/mat_grimorio_luz_solar.png',
+    icon: '/assets/heropage/mat_grimorio_luz_solar.webp',
     description: 'Grimorio de la Iglesia de la Luz Solar, necesario para el Despertar.',
   },
   {
@@ -267,7 +267,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'SR',
     count: 4,
-    icon: '/assets/heropage/mat_grimorio_luna_oscura.png',
+    icon: '/assets/heropage/mat_grimorio_luna_oscura.webp',
     description: 'Grimorio de los ritos de la Luna Oscura, necesario para el Despertar.',
   },
   {
@@ -276,7 +276,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'SR',
     count: 4,
-    icon: '/assets/heropage/mat_grimorio_piedad.png',
+    icon: '/assets/heropage/mat_grimorio_piedad.webp',
     description: 'Grimorio de la orden de la Piedad, necesario para el Despertar.',
   },
   {
@@ -285,7 +285,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'SR',
     count: 4,
-    icon: '/assets/heropage/mat_grimorio_tres_sables.png',
+    icon: '/assets/heropage/mat_grimorio_tres_sables.webp',
     description: 'Escritos sagrados de la iglesia de los Tres Sables, necesarios para el Despertar.',
   },
   {
@@ -294,7 +294,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'SSR',
     count: 20,
-    icon: '/assets/heropage/mat_sello_caldo_dragon.png',
+    icon: '/assets/heropage/mat_sello_caldo_dragon.webp',
     description: 'Sello de la legendaria Orden de Aventureros; acredita tu valía para ascender.',
   },
   {
@@ -303,7 +303,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'SSR',
     count: 20,
-    icon: '/assets/heropage/mat_emblema_mercado_negro.png',
+    icon: '/assets/heropage/mat_emblema_mercado_negro.webp',
     description: 'Insignia de aliado al Mercado Negro, aceptada como pago en los Despertares.',
   },
   {
@@ -312,7 +312,7 @@ export const INITIAL_INVENTORY: InventoryItem[] = [
     type: 'material',
     rarity: 'SSR',
     count: 6,
-    icon: '/assets/items/amatista_app.png',
+    icon: '/assets/items/amatista_app.webp',
     description: 'Gema imbuida con resonancia cósmica, usada para ascender equipo legendario.',
   },
 ];
@@ -325,7 +325,7 @@ export const INITIAL_EQUIPMENT: EquipmentItem[] = [
     rarity: 'SR',
     level: 1,
     stats: { attack: 45, critRate: 0.05 },
-    icon: '/assets/items/ESPADA LOUX.png',
+    icon: '/assets/items/ESPADA LOUX.webp',
     description: 'Forjada en los hornos de Icespear con temple de nieve.',
   },
   {
@@ -335,7 +335,7 @@ export const INITIAL_EQUIPMENT: EquipmentItem[] = [
     rarity: 'SR',
     level: 1,
     stats: { hp: 200, defense: 35 },
-    icon: '/assets/items/ARMADURA LOUX.png',
+    icon: '/assets/items/ARMADURA LOUX.webp',
     description: 'Placas de metal pulido capaces de resistir el embate de las bestias.',
   },
   {
@@ -345,7 +345,7 @@ export const INITIAL_EQUIPMENT: EquipmentItem[] = [
     rarity: 'SSR',
     level: 1,
     stats: { attack: 30, defense: 20, hp: 120 },
-    icon: '/assets/items/ANILLO ORO.png',
+    icon: '/assets/items/ANILLO ORO.webp',
     description: 'Grabado con el blasón de la dinastía Loux.',
   },
 ];
@@ -357,7 +357,7 @@ export const SHOP_ITEMS = [
     type: 'currency',
     amount: 100,
     costGold: 1000,
-    icon: '/assets/items/amatista_app.png',
+    icon: '/assets/items/amatista_app.webp',
     description: 'Permite realizar 1 tirada en cualquier estandarte.',
   },
   {
@@ -366,7 +366,7 @@ export const SHOP_ITEMS = [
     type: 'currency',
     amount: 900,
     costGold: 8500,
-    icon: '/assets/items/amatista_app.png',
+    icon: '/assets/items/amatista_app.webp',
     description: 'Suficiente para una tirada múltiple de 10 héroes.',
   },
   {
@@ -375,7 +375,7 @@ export const SHOP_ITEMS = [
     type: 'consumable',
     amount: 5,
     costGold: 600,
-    icon: '/assets/items/pocion_exp_3.png',
+    icon: '/assets/items/pocion_exp_3.webp',
     description: 'Para subir de nivel rápidamente a tus héroes.',
   },
   {
@@ -384,7 +384,7 @@ export const SHOP_ITEMS = [
     type: 'material',
     amount: 10,
     costGold: 1200,
-    icon: '/assets/items/LINGOTE ACERO.png',
+    icon: '/assets/items/LINGOTE ACERO.webp',
     description: 'Materiales esenciales de forja para la herrería.',
   },
   {
@@ -393,7 +393,7 @@ export const SHOP_ITEMS = [
     type: 'consumable',
     amount: 3,
     costGold: 450,
-    icon: '/assets/items/Bebida.png',
+    icon: '/assets/items/Bebida.webp',
     description: 'Bebida espumosa favorita de los aventureros en la taberna.',
   },
 ];

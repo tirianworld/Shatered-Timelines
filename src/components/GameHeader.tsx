@@ -35,7 +35,7 @@ export const GameHeader: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
       <div className="relative w-full max-w-[560px] mx-auto aspect-[403/65] overflow-hidden">
         {/* Authentic banner sprite: wood frame, carved wheel, arrow button, mail button, pill frames & gem/coin icons */}
         <img
-          src="/assets/items/banner_superior_base.png"
+          src="/assets/items/banner_superior_base.webp"
           alt="Barra Superior"
           className="w-full h-full object-contain pointer-events-none select-none"
         />

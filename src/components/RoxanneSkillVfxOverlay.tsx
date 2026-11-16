@@ -872,7 +872,7 @@ export const RoxanneSkillVfxOverlay: React.FC<RoxanneSkillVfxOverlayProps> = ({
                     }}
                   >
                     <img
-                      src="/assets/combat/roxanne_vfx_melodia.png"
+                      src="/assets/combat/roxanne_vfx_melodia.webp"
                       alt="Inspiración Bárdica"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain animate-[roxanneRibbonSweep_0.74s_cubic-bezier(0.22,1,0.36,1)_forwards]"
@@ -893,7 +893,7 @@ export const RoxanneSkillVfxOverlay: React.FC<RoxanneSkillVfxOverlayProps> = ({
                 className="absolute left-[18%] bottom-[38%] w-[166px] h-[104px] pointer-events-none z-20 overflow-visible"
               >
                 <img
-                  src="/assets/combat/roxanne_vfx_melodia.png"
+                  src="/assets/combat/roxanne_vfx_melodia.webp"
                   alt="Onda Encantadora"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain animate-[roxanneMelodyFly_0.48s_cubic-bezier(0.2,0.85,0.3,1)_forwards]"
@@ -917,7 +917,7 @@ export const RoxanneSkillVfxOverlay: React.FC<RoxanneSkillVfxOverlayProps> = ({
                     }}
                   >
                     <img
-                      src="/assets/combat/roxanne_vfx_encanto.png"
+                      src="/assets/combat/roxanne_vfx_encanto.webp"
                       alt="Velada Encantadora"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain animate-[roxanneCharmPop_0.54s_cubic-bezier(0.22,1.25,0.36,1)_forwards]"
@@ -950,7 +950,7 @@ export const RoxanneSkillVfxOverlay: React.FC<RoxanneSkillVfxOverlayProps> = ({
                     }}
                   >
                     <img
-                      src="/assets/combat/roxanne_vfx_estocada.png"
+                      src="/assets/combat/roxanne_vfx_estocada.webp"
                       alt="Estocada Sonora"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain animate-[roxanneSonicThrust_0.4s_cubic-bezier(0.16,1,0.3,1)_forwards]"
@@ -976,7 +976,7 @@ export const RoxanneSkillVfxOverlay: React.FC<RoxanneSkillVfxOverlayProps> = ({
                     }}
                   >
                     <img
-                      src="/assets/combat/roxanne_vfx_tshk.png"
+                      src="/assets/combat/roxanne_vfx_tshk.webp"
                       alt="¡TSHK!"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain animate-[roxanneTshkPop_0.46s_cubic-bezier(0.22,1.28,0.36,1)_forwards]"

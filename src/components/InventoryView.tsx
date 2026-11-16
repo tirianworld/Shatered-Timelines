@@ -17,27 +17,27 @@ const CATEGORIES: CategoryConfig[] = [
   {
     id: 'materials',
     name: 'Materiales & Piedras',
-    iconSrc: '/assets/items/escamas_de_cryovain.png',
+    iconSrc: '/assets/items/escamas_de_cryovain.webp',
   },
   {
     id: 'food',
     name: 'Comida & Consumibles',
-    iconSrc: '/assets/items/hamburguesa.png',
+    iconSrc: '/assets/items/hamburguesa.webp',
   },
   {
     id: 'tools',
     name: 'Herramientas & Forja',
-    iconSrc: '/assets/items/kit de herreria app.png',
+    iconSrc: '/assets/items/kit de herreria app.webp',
   },
   {
     id: 'cards',
     name: 'Cartas & Grimorios',
-    iconSrc: '/assets/items/Cartas Tribunal app.png',
+    iconSrc: '/assets/items/Cartas Tribunal app.webp',
   },
   {
     id: 'equipment',
     name: 'Equipo & Anillos',
-    iconSrc: '/assets/items/anillo del incrustado.png',
+    iconSrc: '/assets/items/anillo del incrustado.webp',
   },
 ];
 
@@ -83,7 +83,7 @@ export const InventoryView: React.FC = () => {
     <div className="relative w-full h-full flex-1 flex flex-col justify-start overflow-hidden select-none bg-[#1d0b04]">
       {/* Background: Vertical Wood Planks covering the entire screen */}
       <img
-        src="/assets/backgrounds/fondo inventario app.png"
+        src="/assets/backgrounds/fondo inventario app.webp"
         alt="Fondo Inventario"
         className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none z-0"
       />
@@ -117,7 +117,7 @@ export const InventoryView: React.FC = () => {
               {/* Hanging Wood Sign Sprite - 2x wider and tucked into top border */}
               <div className="relative w-[68px] h-[86px] sm:w-[74px] sm:h-[94px] flex items-center justify-center">
                 <img
-                  src="/assets/items/cartel shop.png"
+                  src="/assets/items/cartel shop.webp"
                   alt={cat.name}
                   className="w-full h-full object-contain"
                 />
@@ -169,7 +169,7 @@ export const InventoryView: React.FC = () => {
                         {/* Round wooden plate resting directly on the top surface plane of the shelf */}
                         <div className="relative w-[62px] sm:w-[68px] aspect-[1/0.46] flex items-center justify-center">
                           <img
-                            src="/assets/items/base item app.png"
+                            src="/assets/items/base item app.webp"
                             alt=""
                             className="w-full h-full object-contain pointer-events-none filter drop-shadow-[0_3px_4px_rgba(0,0,0,0.85)]"
                           />
@@ -204,7 +204,7 @@ export const InventoryView: React.FC = () => {
               {/* Wooden Shelf Plank: adjusted 15% to the left (-40% translate) */}
               <div className="relative z-0 w-[126%] left-1/2 -translate-x-[40%] max-w-none h-[103px] sm:h-[113px]">
                 <img
-                  src="/assets/items/baldas.png"
+                  src="/assets/items/baldas.webp"
                   alt="Estantería"
                   className="w-full h-full object-fill pointer-events-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.95)]"
                 />
@@ -293,7 +293,7 @@ export const InventoryView: React.FC = () => {
             <div className="bg-[#120602] border border-amber-800/40 rounded-xl p-4 flex flex-col items-center space-y-3">
               <div className="relative w-20 h-20 flex items-center justify-center">
                 <img
-                  src="/assets/items/base item app.png"
+                  src="/assets/items/base item app.webp"
                   alt=""
                   className="absolute bottom-0 w-22 object-contain pointer-events-none"
                 />

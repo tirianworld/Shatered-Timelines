@@ -585,7 +585,7 @@ export const TavernKitchenView: React.FC<TavernKitchenViewProps> = ({ onClose })
     <div className="absolute inset-0 w-full h-full bg-[#140602] text-stone-100 flex flex-col justify-between overflow-hidden select-none z-50 animate-fade-in font-sans">
       {/* Background: Authentic Tavern Kitchen Interior */}
       <img
-        src="/assets/backgrounds/cocina_taverna_icespear.png"
+        src="/assets/backgrounds/cocina_taverna_icespear.webp"
         alt="Cocina de la Taberna de Icespear"
         className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none z-0"
       />

@@ -211,7 +211,7 @@ export const PotionShopView: React.FC = () => {
     <div className="absolute inset-0 z-50 flex flex-col justify-between overflow-hidden select-none font-sans text-stone-100 animate-fade-in bg-[#140602]">
       {/* Fondo: interior de la Botica */}
       <img
-        src="/assets/aistudio/image_180f7992.png"
+        src="/assets/aistudio/image_180f7992.webp"
         alt="Botica de Pociones de Icespear"
         className="absolute inset-0 w-full h-full object-cover scale-[1.12] -translate-y-[5%] object-center pointer-events-none z-0"
       />

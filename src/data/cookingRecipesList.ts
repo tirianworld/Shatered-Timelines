@@ -59,7 +59,7 @@ const SIGNATURES: Record<
 > = {
   'ing_carne_roja__ing_harina_trigo__ing_patata_montana': {
     name: 'Steak & Chips de la Taberna',
-    icon: '/assets/items/food_steak_chips.png',
+    icon: '/assets/items/food_steak_chips.webp',
     rarity: 'SSR',
     buffBadge: 'EVASIÓN TOTAL & +25% ATK',
     buffDescription: 'Plato estrella de 7DS Grand Cross: Esquiva con certeza el primer golpe enemigo y otorga un 25% de ataque.',
@@ -67,7 +67,7 @@ const SIGNATURES: Record<
   },
   'ing_harina_trigo__ing_patata_montana__ing_salmon_helado': {
     name: 'Fish & Chips Tradicional de Salmón',
-    icon: '/assets/items/salmon_dishes/salmon_ing_harina_trigo__ing_patata_montana__ing_salmon_helado.png',
+    icon: '/assets/items/salmon_dishes/salmon_ing_harina_trigo__ing_patata_montana__ing_salmon_helado.webp',
     rarity: 'SSR',
     buffBadge: 'EVASIÓN DE DEBUFFS & VELOCIDAD',
     buffDescription: 'Plato de combate de 7DS: Inmune a congelación y venenos, y aumenta un 20% la velocidad de turno.',
@@ -75,7 +75,7 @@ const SIGNATURES: Record<
   },
   'ing_huevos_corral__ing_pan_rustico__ing_patata_montana': {
     name: 'Eggs & Chips Campestre',
-    icon: '/assets/items/food_eggs_chips.png',
+    icon: '/assets/items/food_eggs_chips.webp',
     rarity: 'SR',
     buffBadge: 'EVASIÓN DE 1 GOLPE',
     buffDescription: 'Famoso plato de 7DS: Esquiva con certeza total el siguiente ataque enemigo.',
@@ -83,7 +83,7 @@ const SIGNATURES: Record<
   },
   'ing_cangrejo_cueva__ing_harina_trigo__ing_huevos_corral': {
     name: 'Quiche Dorada de Cangrejo de Cueva y Huevos Camperos',
-    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_harina_trigo__ing_huevos_corral.png',
+    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_harina_trigo__ing_huevos_corral.webp',
     rarity: 'SR',
     buffBadge: '+25% DEF & ESCUDO 25 PV',
     buffDescription: 'Tarta salada horneada a leña: incrementa un 25% la armadura y crea una barrera de 25 PV protectores.',
@@ -91,7 +91,7 @@ const SIGNATURES: Record<
   },
   'ing_ajo_silvestre__ing_huevos_araknoide__ing_patata_montana': {
     name: 'Tortilla de Araknoide',
-    icon: '/assets/items/food_tortilla_araknoide.png',
+    icon: '/assets/items/food_tortilla_araknoide.webp',
     rarity: 'SSR',
     buffBadge: 'EVASIÓN 100% & +35% CELERIDAD',
     buffDescription: 'Esquiva con certeza total el próximo ataque enemigo, purifica debuffs y otorga un 35% extra de celeridad.',
@@ -99,7 +99,7 @@ const SIGNATURES: Record<
   },
   'ing_carne_devorador__ing_harina_trigo__ing_huevos_corral': {
     name: 'Milanesa de Devorador Empanada',
-    icon: '/assets/items/food_devorador_empanada.png',
+    icon: '/assets/items/food_devorador_empanada.webp',
     rarity: 'SSR',
     buffBadge: '+35% ATAQUE & PERFORACIÓN 50%',
     buffDescription: 'Aumenta un 35% todo el daño físico y mágico de combate e ignora el 50% de la armadura enemiga.',
@@ -107,7 +107,7 @@ const SIGNATURES: Record<
   },
   'ing_especias_dragon__ing_hortalizas_huerto__ing_larvas_araknoide': {
     name: 'Salteado de Larvas al Wok',
-    icon: '/assets/items/food_larvas_crujientes.png',
+    icon: '/assets/items/food_larvas_crujientes.webp',
     rarity: 'SR',
     buffBadge: '+50 PV & +25% CRÍTICO',
     buffDescription: 'Restaura 50 PV de vitalidad de inmediato y aumenta un 25% la tasa y daño de impactos críticos.',
@@ -115,7 +115,7 @@ const SIGNATURES: Record<
   },
   'ing_lomo_jabali__ing_mantequilla_salada__ing_setas_cueva': {
     name: 'Boeuf Bourguignon de la Taberna',
-    icon: '/assets/items/food_bourguignon.png',
+    icon: '/assets/items/food_bourguignon.webp',
     rarity: 'SSR',
     buffBadge: '+20% TODOS STATS & +50 PV',
     buffDescription: 'Aumenta un 20% Ataque y Defensa, +50 PV Máx y regenera +15 PV por turno en combate.',
@@ -123,7 +123,7 @@ const SIGNATURES: Record<
   },
   'ing_carne_ahumada__ing_harina_trigo__ing_hortalizas_huerto': {
     name: 'Ramen Tonkotsu de Icespear',
-    icon: '/assets/items/ramen.png',
+    icon: '/assets/items/ramen.webp',
     rarity: 'SR',
     buffBadge: '+40 PV & +8 REGEN',
     buffDescription: 'Restaura 40 PV de inmediato y concede regeneración continua de +8 PV al inicio de cada turno.',
@@ -131,7 +131,7 @@ const SIGNATURES: Record<
   },
   'ing_ajo_silvestre__ing_mantequilla_salada__ing_pan_rustico': {
     name: 'Pan de Ajo con Mantequilla Fundida',
-    icon: '/assets/items/panes_de_ajo.png',
+    icon: '/assets/items/panes_de_ajo.webp',
     rarity: 'R',
     buffBadge: '+2 ORBES DEFINITIVOS',
     buffDescription: 'Empieza el próximo combate con 2 orbes de habilidad definitiva (Cataclismo Astral) listos.',
@@ -139,7 +139,7 @@ const SIGNATURES: Record<
   },
   'ing_harina_trigo__ing_leche_fresca__ing_sal_glacial': {
     name: 'Pancakes con Crema y Mantequilla',
-    icon: '/assets/items/tortitas.png',
+    icon: '/assets/items/tortitas.webp',
     rarity: 'R',
     buffBadge: '+20% ORO & EXPERIENCIA',
     buffDescription: 'Otorga un 20% extra de Oro y EXP al completar el siguiente combate o patrulla.',
@@ -147,7 +147,7 @@ const SIGNATURES: Record<
   },
   'ing_carne_roja__ing_harina_trigo__ing_queso_cabra': {
     name: 'Lasaña Boloñesa Tradicional al Horno',
-    icon: '/assets/items/food_lasana.png',
+    icon: '/assets/items/food_lasana.webp',
     rarity: 'SR',
     buffBadge: '+20% DEF & ESCUDO 20 PV',
     buffDescription: 'Aumenta un 20% la defensa y añade una barrera de 20 PV absorbente.',
@@ -155,7 +155,7 @@ const SIGNATURES: Record<
   },
   'ing_leche_fresca__ing_mantequilla_salada__ing_queso_cabra': {
     name: 'Fondue Suiza Tradicional al Horno',
-    icon: '/assets/items/food_fondue.png',
+    icon: '/assets/items/food_fondue.webp',
     rarity: 'SR',
     buffBadge: '+35% DEF & ESCUDO 35 PV',
     buffDescription: 'Potencia la defensa en un 35% y envuelve a los héroes en un escudo de 35 PV.',
@@ -163,7 +163,7 @@ const SIGNATURES: Record<
   },
   'ing_arroz_grano__ing_sal_glacial__ing_salmon_helado': {
     name: 'Sushi Nigiri de Salmón Glacial',
-    icon: '/assets/items/salmon_dishes/salmon_ing_arroz_grano__ing_sal_glacial__ing_salmon_helado.png',
+    icon: '/assets/items/salmon_dishes/salmon_ing_arroz_grano__ing_sal_glacial__ing_salmon_helado.webp',
     rarity: 'SR',
     buffBadge: '+15% VEL & CONGELACIÓN',
     buffDescription: 'Aumenta un 15% la velocidad y añade probabilidad de congelar al objetivo.',
@@ -171,7 +171,7 @@ const SIGNATURES: Record<
   },
   'ing_especias_dragon__ing_sal_glacial__ing_salmon_helado': {
     name: 'Ceviche Clásico de Salmón Glacial',
-    icon: '/assets/items/salmon_dishes/salmon_ing_especias_dragon__ing_sal_glacial__ing_salmon_helado.png',
+    icon: '/assets/items/salmon_dishes/salmon_ing_especias_dragon__ing_sal_glacial__ing_salmon_helado.webp',
     rarity: 'SR',
     buffBadge: '+25% VELOCIDAD & CRÍTICO +15%',
     buffDescription: 'Aumenta un 25% la velocidad de ataque y un 15% la probabilidad de golpe crítico.',
@@ -179,7 +179,7 @@ const SIGNATURES: Record<
   },
   'ing_cangrejo_cueva__ing_especias_dragon__ing_sal_glacial': {
     name: 'Ceviche Picante de Cangrejo de Cueva',
-    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_especias_dragon__ing_sal_glacial.png',
+    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_especias_dragon__ing_sal_glacial.webp',
     rarity: 'SSR',
     buffBadge: '+30% ATK & +20% VELOCIDAD',
     buffDescription: 'Aumenta un 30% el ataque y eleva la rapidez de acción en combate.',
@@ -187,7 +187,7 @@ const SIGNATURES: Record<
   },
   'ing_cangrejo_cueva__ing_mantequilla_salada__ing_queso_cabra': {
     name: 'Cangrejo de Cueva Termidor al Queso Fundido',
-    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_mantequilla_salada__ing_queso_cabra.png',
+    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_mantequilla_salada__ing_queso_cabra.webp',
     rarity: 'SSR',
     buffBadge: '+30% ATK & ESCUDO 25 PV',
     buffDescription: 'Incrementa el ataque un 30% y añade un escudo de 25 PV absorbente.',
@@ -195,7 +195,7 @@ const SIGNATURES: Record<
   },
   'ing_ajo_silvestre__ing_cangrejo_cueva__ing_especias_dragon': {
     name: 'Cangrejo de Cueva al Ajillo Picante',
-    icon: '/assets/items/crab_dishes/crab_ing_ajo_silvestre__ing_cangrejo_cueva__ing_especias_dragon.png',
+    icon: '/assets/items/crab_dishes/crab_ing_ajo_silvestre__ing_cangrejo_cueva__ing_especias_dragon.webp',
     rarity: 'SSR',
     buffBadge: '+30% ATK & ROBO DE VIDA 15%',
     buffDescription: 'Aumenta un 30% el ataque y regenera salud equivalente al 15% del daño infligido.',
@@ -203,7 +203,7 @@ const SIGNATURES: Record<
   },
   'ing_cangrejo_cueva__ing_patata_montana__ing_trucha_arroyo': {
     name: 'Marmitako Marinero de Cangrejo y Trucha',
-    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_patata_montana__ing_trucha_arroyo.png',
+    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_patata_montana__ing_trucha_arroyo.webp',
     rarity: 'SR',
     buffBadge: '+20% ATK & +20% VELOCIDAD',
     buffDescription: 'Aumenta un 20% el ataque y permite adelantarse en el turno de combate.',
@@ -211,7 +211,7 @@ const SIGNATURES: Record<
   },
   'ing_arroz_grano__ing_cangrejo_cueva__ing_huevos_corral': {
     name: 'Arroz Salteado de Cangrejo con Huevo Campero',
-    icon: '/assets/items/crab_dishes/crab_ing_arroz_grano__ing_cangrejo_cueva__ing_huevos_corral.png',
+    icon: '/assets/items/crab_dishes/crab_ing_arroz_grano__ing_cangrejo_cueva__ing_huevos_corral.webp',
     rarity: 'SR',
     buffBadge: '+2 ORBES ULTI & +20% DEF',
     buffDescription: 'Concede 2 orbes de habilidad definitiva y refuerza la defensa de los combatientes.',
@@ -219,7 +219,7 @@ const SIGNATURES: Record<
   },
   'ing_cangrejo_cueva__ing_mantequilla_salada__ing_pan_rustico': {
     name: 'Roll Nórdico de Cangrejo de Cueva en Pan Rústico',
-    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_mantequilla_salada__ing_pan_rustico.png',
+    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_mantequilla_salada__ing_pan_rustico.webp',
     rarity: 'SR',
     buffBadge: '+25% ATK & +30 PV REGEN',
     buffDescription: 'Pan artesano crujiente relleno de cangrejo desmigado y mantequilla salada. Otorga +25% Ataque y cura 30 PV.',
@@ -227,7 +227,7 @@ const SIGNATURES: Record<
   },
   'ing_cangrejo_cueva__ing_carne_roja__ing_patata_montana': {
     name: 'Mar y Montaña de Cangrejo de Cueva y Ternera Glacial',
-    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_carne_roja__ing_patata_montana.png',
+    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_carne_roja__ing_patata_montana.webp',
     rarity: 'SSR',
     buffBadge: '+30% ATK & +25% DEF',
     buffDescription: 'Sartén de hierro fundido con pinzas de cangrejo a la brasa, chuletón y patatas crujientes.',
@@ -235,7 +235,7 @@ const SIGNATURES: Record<
   },
   'ing_carne_devorador__ing_cangrejo_cueva__ing_setas_cueva': {
     name: 'Cazuela Abisal de Cangrejo y Carne de Devorador',
-    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_carne_devorador__ing_setas_cueva.png',
+    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_carne_devorador__ing_setas_cueva.webp',
     rarity: 'UR',
     buffBadge: '+40% ATK & PERFORACIÓN 60%',
     buffDescription: 'Guiso oscuro de las profundidades: desata poder destructor aumentando un 40% el daño físico e ignora el 60% de defensa.',
@@ -243,7 +243,7 @@ const SIGNATURES: Record<
   },
   'ing_cangrejo_cueva__ing_masa_madre__ing_queso_cabra': {
     name: 'Pizza Artesana de Cangrejo de Cueva y Queso',
-    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_masa_madre__ing_queso_cabra.png',
+    icon: '/assets/items/crab_dishes/crab_ing_cangrejo_cueva__ing_masa_madre__ing_queso_cabra.webp',
     rarity: 'SSR',
     buffBadge: '+25% DEF & ESCUDO 30 PV',
     buffDescription: 'Masa madre crujiente horneada con abundante queso de cabra y carne seleccionada de cangrejo.',
@@ -251,7 +251,7 @@ const SIGNATURES: Record<
   },
   'ing_mantequilla_salada__ing_patata_montana__ing_trucha_arroyo': {
     name: 'Trucha Plateada Meunière con Patatas Doradas',
-    icon: '/assets/items/trout_dishes/trout_ing_mantequilla_salada__ing_patata_montana__ing_trucha_arroyo.png',
+    icon: '/assets/items/trout_dishes/trout_ing_mantequilla_salada__ing_patata_montana__ing_trucha_arroyo.webp',
     rarity: 'SR',
     buffBadge: '+20% VELOCIDAD & +30 PV REGEN',
     buffDescription: 'Lomos de trucha de arroyo a la plancha bañados en mantequilla dorada noisette y patatas de montaña.',
@@ -259,7 +259,7 @@ const SIGNATURES: Record<
   },
   'ing_pan_rustico__ing_queso_cabra__ing_trucha_arroyo': {
     name: 'Tosta Nórdica de Trucha Ahumada y Queso',
-    icon: '/assets/items/trout_dishes/trout_ing_pan_rustico__ing_queso_cabra__ing_trucha_arroyo.png',
+    icon: '/assets/items/trout_dishes/trout_ing_pan_rustico__ing_queso_cabra__ing_trucha_arroyo.webp',
     rarity: 'SR',
     buffBadge: '+20% ATK & +20% DEF',
     buffDescription: 'Rebanada tostada con finas láminas de trucha curada, queso madurado y hierbas aromáticas.',
@@ -267,7 +267,7 @@ const SIGNATURES: Record<
   },
   'ing_especias_dragon__ing_sal_glacial__ing_trucha_arroyo': {
     name: 'Tartar Glacial de Trucha Plateada Picante',
-    icon: '/assets/items/trout_dishes/trout_ing_especias_dragon__ing_sal_glacial__ing_trucha_arroyo.png',
+    icon: '/assets/items/trout_dishes/trout_ing_especias_dragon__ing_sal_glacial__ing_trucha_arroyo.webp',
     rarity: 'SR',
     buffBadge: '+25% CRÍTICO & +20% VEL',
     buffDescription: 'Dados de trucha fresca de deshielo macerados en cristales de sal marina y guindilla de dragón.',
@@ -275,7 +275,7 @@ const SIGNATURES: Record<
   },
   'ing_ajo_silvestre__ing_hortalizas_huerto__ing_trucha_arroyo': {
     name: 'Caldera de Pescador de Trucha de Arroyo',
-    icon: '/assets/items/trout_dishes/trout_ing_ajo_silvestre__ing_hortalizas_huerto__ing_trucha_arroyo.png',
+    icon: '/assets/items/trout_dishes/trout_ing_ajo_silvestre__ing_hortalizas_huerto__ing_trucha_arroyo.webp',
     rarity: 'SR',
     buffBadge: '+35 PV & PURIFICA VENENO',
     buffDescription: 'Guiso marinero de arroyo cocinado lentamente a fuego de campamento con verduras y ajo silvestre.',
@@ -283,7 +283,7 @@ const SIGNATURES: Record<
   },
   'ing_harina_trigo__ing_huevos_corral__ing_salmon_helado': {
     name: 'Tarta Quiche Nórdica de Salmón y Queso',
-    icon: '/assets/items/salmon_dishes/salmon_ing_harina_trigo__ing_huevos_corral__ing_salmon_helado.png',
+    icon: '/assets/items/salmon_dishes/salmon_ing_harina_trigo__ing_huevos_corral__ing_salmon_helado.webp',
     rarity: 'SSR',
     buffBadge: '+25% DEF & +30 PV REGEN',
     buffDescription: 'Clásica tarta quiche horneada a leña con salmón del río helado, queso madurado y huevos camperos.',
@@ -291,7 +291,7 @@ const SIGNATURES: Record<
   },
   'ing_leche_fresca__ing_patata_montana__ing_salmon_helado': {
     name: 'Sopa Lohikeitto Finlandesa de Salmón',
-    icon: '/assets/items/salmon_dishes/salmon_ing_leche_fresca__ing_patata_montana__ing_salmon_helado.png',
+    icon: '/assets/items/salmon_dishes/salmon_ing_leche_fresca__ing_patata_montana__ing_salmon_helado.webp',
     rarity: 'SR',
     buffBadge: '+35 PV & ESCUDO 25 PV',
     buffDescription: 'Sopa caliente y cremosa de salmón del ártico con patatas de montaña y eneldo.',
@@ -299,7 +299,7 @@ const SIGNATURES: Record<
   },
   'ing_pan_rustico__ing_pimienta_negra__ing_salmon_helado': {
     name: 'Tosta de Salmón Gravlax Curado con Eneldo',
-    icon: '/assets/items/salmon_dishes/salmon_ing_pan_rustico__ing_pimienta_negra__ing_salmon_helado.png',
+    icon: '/assets/items/salmon_dishes/salmon_ing_pan_rustico__ing_pimienta_negra__ing_salmon_helado.webp',
     rarity: 'SR',
     buffBadge: '+20% ATK & +20% VELOCIDAD',
     buffDescription: 'Rebanada tostada con finas lonchas de salmón curado con sal glacial, pimienta y mostaza cremosa.',
@@ -307,7 +307,7 @@ const SIGNATURES: Record<
   },
   'ing_ajo_silvestre__ing_patata_montana__ing_pollo_calidad': {
     name: 'Pollo Asado Rústico con Patatas y Ajo',
-    icon: '/assets/items/chicken_dishes/chicken_ing_ajo_silvestre__ing_patata_montana__ing_pollo_calidad.png',
+    icon: '/assets/items/chicken_dishes/chicken_ing_ajo_silvestre__ing_patata_montana__ing_pollo_calidad.webp',
     rarity: 'SR',
     buffBadge: '+25% ATK & +30 PV',
     buffDescription: 'Pollo entero asado a la leña en cazuela de barro con patatas crujientes y cabezas de ajo silvestre.',
@@ -315,7 +315,7 @@ const SIGNATURES: Record<
   },
   'ing_harina_trigo__ing_huevos_corral__ing_pollo_calidad': {
     name: 'Empanada Criolla de Pollo y Huevo Campero',
-    icon: '/assets/items/chicken_dishes/chicken_ing_harina_trigo__ing_huevos_corral__ing_pollo_calidad.png',
+    icon: '/assets/items/chicken_dishes/chicken_ing_harina_trigo__ing_huevos_corral__ing_pollo_calidad.webp',
     rarity: 'SR',
     buffBadge: '+20% DEF & ESCUDO 25 PV',
     buffDescription: 'Pastel hojaldrado horneado relleno con pollo desmigado jugoso y trozos de huevo campero.',
@@ -323,7 +323,7 @@ const SIGNATURES: Record<
   },
   'ing_arroz_grano__ing_especias_dragon__ing_pollo_calidad': {
     name: 'Brochetas Yakitori de Pollo Especiado al Fuego',
-    icon: '/assets/items/chicken_dishes/chicken_ing_arroz_grano__ing_especias_dragon__ing_pollo_calidad.png',
+    icon: '/assets/items/chicken_dishes/chicken_ing_arroz_grano__ing_especias_dragon__ing_pollo_calidad.webp',
     rarity: 'SR',
     buffBadge: '+2 ORBES ULTI & +20% ATK',
     buffDescription: 'Brochetas a la brasa glaseadas con salsa picante de dragón servidas sobre cama de arroz.',
@@ -339,7 +339,7 @@ const SIGNATURES: Record<
   },
   'ing_hierbas_bosque__ing_masa_madre__ing_queso_cabra': {
     name: 'Pizza Margarita al Horno de Leña',
-    icon: '/assets/items/pizza.png',
+    icon: '/assets/items/pizza.webp',
     rarity: 'SR',
     buffBadge: '+30% DEF & ESCUDO 30 PV',
     buffDescription: 'Reduce un 30% el daño recibido y otorga un escudo protector de 30 PV.',
@@ -347,7 +347,7 @@ const SIGNATURES: Record<
   },
   'ing_harina_trigo__ing_mantequilla_salada__ing_queso_cabra': {
     name: 'Arepas Caseras Rellenas de Queso',
-    icon: '/assets/items/arepas.png',
+    icon: '/assets/items/arepas.webp',
     rarity: 'SR',
     buffBadge: '-20% DAÑO & +25 PV',
     buffDescription: 'Reduce el daño recibido un 20% y restaura 25 PV de vitalidad.',
@@ -355,7 +355,7 @@ const SIGNATURES: Record<
   },
   'ing_ajo_silvestre__ing_hortalizas_huerto__ing_setas_cueva': {
     name: 'Ratatouille Clásico de la Huerta',
-    icon: '/assets/items/food_ratatouille.png',
+    icon: '/assets/items/food_ratatouille.webp',
     rarity: 'R',
     buffBadge: '+40 PV REGEN & PURIFICA',
     buffDescription: 'Cura 40 PV de inmediato y disipa efectos de veneno y quemadura.',
@@ -363,7 +363,7 @@ const SIGNATURES: Record<
   },
   'ing_especias_dragon__ing_harina_trigo__ing_pimienta_negra': {
     name: 'Nachos Crujientes con Especias de Fuego',
-    icon: '/assets/items/doritos.png',
+    icon: '/assets/items/doritos.webp',
     rarity: 'R',
     buffBadge: '+20% CRÍTICO & QUEMADURA',
     buffDescription: 'Eleva la probabilidad de asestar golpes críticos un 20% e inflige quemadura continua.',
@@ -419,53 +419,53 @@ function getDishIcon(ings: CookingIngredient[]): string {
     const sorted = ings.map((i) => i.id).sort().join('__');
     rawIcon = `/assets/items/chicken_dishes/chicken_${sorted}.png`;
   } else if (ids.has('ing_huevos_araknoide')) {
-    rawIcon = '/assets/items/food_tortilla_araknoide.png';
+    rawIcon = '/assets/items/food_tortilla_araknoide.webp';
   } else if (ids.has('ing_larvas_araknoide')) {
-    rawIcon = '/assets/items/food_larvas_crujientes.png';
+    rawIcon = '/assets/items/food_larvas_crujientes.webp';
   } else if (ids.has('ing_carne_devorador')) {
-    rawIcon = '/assets/items/food_devorador_empanada.png';
+    rawIcon = '/assets/items/food_devorador_empanada.webp';
   } else if (ids.has('ing_masa_madre')) {
-    rawIcon = '/assets/items/pizza.png';
+    rawIcon = '/assets/items/pizza.webp';
   } else if (ids.has('ing_arroz_grano')) {
-    rawIcon = cats.includes('pescados') ? '/assets/items/food_sushi_salmon.png' : '/assets/items/ramen.png';
+    rawIcon = cats.includes('pescados') ? '/assets/items/food_sushi_salmon.webp' : '/assets/items/ramen.webp';
   } else if (ids.has('ing_harina_trigo') && ids.has('ing_leche_fresca')) {
-    rawIcon = '/assets/items/tortitas.png';
+    rawIcon = '/assets/items/tortitas.webp';
   } else if (ids.has('ing_pan_rustico') && ids.has('ing_ajo_silvestre')) {
-    rawIcon = '/assets/items/panes_de_ajo.png';
+    rawIcon = '/assets/items/panes_de_ajo.webp';
   } else if (ids.has('ing_queso_cabra') && ids.has('ing_harina_trigo')) {
-    rawIcon = '/assets/items/arepas.png';
+    rawIcon = '/assets/items/arepas.webp';
   } else if (ids.has('ing_carne_ahumada')) {
     // Comidas preparadas con Carne Seca Curada
-    if (ids.has('ing_harina_trigo') && ids.has('ing_hortalizas_huerto')) rawIcon = '/assets/items/ramen.png';
-    else if (ids.has('ing_pan_rustico') || ids.has('ing_harina_trigo')) rawIcon = '/assets/items/hamburguesa.png';
-    else if (ids.has('ing_queso_cabra')) rawIcon = '/assets/items/food_lasana.png';
-    else if (ids.has('ing_patata_montana')) rawIcon = '/assets/items/food_steak_chips.png';
-    else if (ids.has('ing_especias_dragon')) rawIcon = '/assets/items/kebab.png';
+    if (ids.has('ing_harina_trigo') && ids.has('ing_hortalizas_huerto')) rawIcon = '/assets/items/ramen.webp';
+    else if (ids.has('ing_pan_rustico') || ids.has('ing_harina_trigo')) rawIcon = '/assets/items/hamburguesa.webp';
+    else if (ids.has('ing_queso_cabra')) rawIcon = '/assets/items/food_lasana.webp';
+    else if (ids.has('ing_patata_montana')) rawIcon = '/assets/items/food_steak_chips.webp';
+    else if (ids.has('ing_especias_dragon')) rawIcon = '/assets/items/kebab.webp';
     else rawIcon = '/assets/items/plato_de_carne_app.png';
   } else if (ids.has('ing_patata_montana')) {
-    if (cats.includes('carnes')) rawIcon = '/assets/items/food_steak_chips.png';
-    else if (cats.includes('pescados')) rawIcon = '/assets/items/food_fish_chips.png';
-    else if (ids.has('ing_huevos_corral')) rawIcon = '/assets/items/food_eggs_chips.png';
-    else rawIcon = '/assets/items/tortilla_patata.png';
+    if (cats.includes('carnes')) rawIcon = '/assets/items/food_steak_chips.webp';
+    else if (cats.includes('pescados')) rawIcon = '/assets/items/food_fish_chips.webp';
+    else if (ids.has('ing_huevos_corral')) rawIcon = '/assets/items/food_eggs_chips.webp';
+    else rawIcon = '/assets/items/tortilla_patata.webp';
   } else if (ids.has('ing_salmon_helado') && ids.has('ing_arroz_grano')) {
-    rawIcon = '/assets/items/food_sushi_salmon.png';
+    rawIcon = '/assets/items/food_sushi_salmon.webp';
   } else if (cats.includes('pescados')) {
-    rawIcon = ids.has('ing_especias_dragon') || ids.has('ing_sal_glacial') ? '/assets/items/food_ceviche.png' : '/assets/items/food_fish_chips.png';
+    rawIcon = ids.has('ing_especias_dragon') || ids.has('ing_sal_glacial') ? '/assets/items/food_ceviche.webp' : '/assets/items/food_fish_chips.webp';
   } else if (cats.includes('carnes')) {
-    if (ids.has('ing_lomo_jabali')) rawIcon = '/assets/items/food_bourguignon.png';
-    else if (ids.has('ing_especias_dragon')) rawIcon = '/assets/items/kebab.png';
-    else if (ids.has('ing_pan_rustico') || ids.has('ing_harina_trigo')) rawIcon = '/assets/items/hamburguesa.png';
-    else rawIcon = '/assets/items/food_bourguignon.png';
+    if (ids.has('ing_lomo_jabali')) rawIcon = '/assets/items/food_bourguignon.webp';
+    else if (ids.has('ing_especias_dragon')) rawIcon = '/assets/items/kebab.webp';
+    else if (ids.has('ing_pan_rustico') || ids.has('ing_harina_trigo')) rawIcon = '/assets/items/hamburguesa.webp';
+    else rawIcon = '/assets/items/food_bourguignon.webp';
   } else if (cats.includes('lacteos')) {
-    if (ids.has('ing_queso_cabra') && ids.has('ing_leche_fresca')) rawIcon = '/assets/items/food_fondue.png';
-    else if (ids.has('ing_huevos_corral')) rawIcon = '/assets/items/tortilla_patata.png';
-    else rawIcon = '/assets/items/quesarito.png';
+    if (ids.has('ing_queso_cabra') && ids.has('ing_leche_fresca')) rawIcon = '/assets/items/food_fondue.webp';
+    else if (ids.has('ing_huevos_corral')) rawIcon = '/assets/items/tortilla_patata.webp';
+    else rawIcon = '/assets/items/quesarito.webp';
   } else if (cats.every((c) => c === 'verduras')) {
-    rawIcon = '/assets/items/food_ratatouille.png';
+    rawIcon = '/assets/items/food_ratatouille.webp';
   } else if (cats.includes('especias')) {
-    rawIcon = '/assets/items/doritos.png';
+    rawIcon = '/assets/items/doritos.webp';
   } else {
-    rawIcon = '/assets/items/castillo_sopa.png';
+    rawIcon = '/assets/items/castillo_sopa.webp';
   }
 
   return resolveCanonicalDishIcon(rawIcon);

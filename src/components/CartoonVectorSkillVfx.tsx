@@ -177,14 +177,14 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
 
           {/* Anillo de choque sutil */}
           <img
-            src="/assets/particles/circle_01.png"
+            src="/assets/particles/circle_01.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxShockwave_0.65s_ease-out_forwards] filter drop-shadow-[0_0_18px_#00f7ff] opacity-80"
             style={{ mixBlendMode: 'screen' }}
           />
           {/* Relámpago principal Kenney */}
           <img
-            src="/assets/particles/trace_05.png"
+            src="/assets/particles/trace_05.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxLightning_0.75s_ease-out_forwards] filter drop-shadow-[0_0_20px_#00f7ff] opacity-85"
             style={{ mixBlendMode: 'screen' }}
@@ -199,14 +199,14 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Runa arcana oscura Kenney magic_04 */}
           <img
-            src="/assets/particles/magic_04.png"
+            src="/assets/particles/magic_04.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxSpinFast_0.85s_ease-out_forwards] filter drop-shadow-[0_0_22px_#a855f7] opacity-80"
             style={{ mixBlendMode: 'screen' }}
           />
           {/* Calavera espectral Cartoon FX Remaster */}
           <img
-            src="/assets/cfxr/graphics/cfxr-skull-2.png"
+            src="/assets/cfxr/graphics/cfxr-skull-2.webp"
             alt=""
             className="absolute top-4 w-[160px] h-[160px] object-contain animate-[proVfxPop_0.8s_ease-out_forwards] filter drop-shadow-[0_0_24px_#7c3aed] hue-rotate-[270deg] opacity-85"
             style={{ mixBlendMode: 'screen' }}
@@ -232,7 +232,7 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
 
           {/* Tajo Kenney slash_01 */}
           <img
-            src="/assets/particles/slash_01.png"
+            src="/assets/particles/slash_01.webp"
             alt=""
             className={`absolute inset-0 w-full h-full object-contain animate-[proVfxSlashA_0.5s_ease-out_forwards] filter ${
               type.includes('claw')
@@ -251,14 +251,14 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Impacto de cráter en el suelo */}
           <img
-            src="/assets/particles/scorch_02.png"
+            src="/assets/particles/scorch_02.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxPop_0.55s_ease-out_forwards] filter drop-shadow-[0_0_22px_#d97706] opacity-80"
             style={{ mixBlendMode: 'screen' }}
           />
           {/* Onda expansiva de tierra */}
           <img
-            src="/assets/cfxr/graphics/cfxr-spikes-half-impact-gradient.png"
+            src="/assets/cfxr/graphics/cfxr-spikes-half-impact-gradient.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxShockwave_0.6s_ease-out_forwards] filter drop-shadow-[0_0_18px_#f59e0b] opacity-85"
             style={{ mixBlendMode: 'screen' }}
@@ -273,14 +273,14 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Tajo penetrante Kenney slash_03 */}
           <img
-            src="/assets/particles/slash_03.png"
+            src="/assets/particles/slash_03.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxSlashA_0.45s_ease-out_forwards] filter drop-shadow-[0_0_22px_#ef4444] opacity-85"
             style={{ mixBlendMode: 'screen' }}
           />
           {/* Salpicadura carmesí */}
           <img
-            src="/assets/cfxr/graphics/cfxr-blood-splash.png"
+            src="/assets/cfxr/graphics/cfxr-blood-splash.webp"
             alt=""
             className="absolute w-[180px] h-[180px] object-contain animate-[proVfxPop_0.55s_ease-out_forwards] filter drop-shadow-[0_0_18px_#dc2626] opacity-80"
             style={{ mixBlendMode: 'screen' }}
@@ -295,14 +295,14 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Bola de fuego central Kenney fire_01 */}
           <img
-            src="/assets/particles/fire_01.png"
+            src="/assets/particles/fire_01.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxFirePulse_0.85s_ease-out_forwards] filter drop-shadow-[0_0_24px_#f97316] opacity-85"
             style={{ mixBlendMode: 'screen' }}
           />
           {/* Fuego cómic Phaser */}
           <img
-            src="/assets/phaser/fire1.png"
+            src="/assets/phaser/fire1.webp"
             alt=""
             className="absolute w-[160px] h-[160px] object-contain animate-pulse filter drop-shadow-[0_0_16px_#facc15] opacity-80"
             style={{ mixBlendMode: 'screen' }}
@@ -317,14 +317,14 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Anillo de hielo Cartoon FX Remaster */}
           <img
-            src="/assets/cfxr/graphics/cfxr-ring-ice.png"
+            src="/assets/cfxr/graphics/cfxr-ring-ice.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxShockwave_0.7s_ease-out_forwards] filter drop-shadow-[0_0_20px_#38bdf8] opacity-85"
             style={{ mixBlendMode: 'screen' }}
           />
           {/* Copo de nieve Phaser */}
           <img
-            src="/assets/phaser/snowflake.png"
+            src="/assets/phaser/snowflake.webp"
             alt=""
             className="absolute w-28 h-28 object-contain animate-[proVfxSpinFast_0.8s_ease-out_forwards] filter drop-shadow-[0_0_16px_#ffffff] opacity-85"
             style={{ mixBlendMode: 'screen' }}
@@ -339,7 +339,7 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Onda sónica concéntrica Kenney circle_02 */}
           <img
-            src="/assets/particles/circle_02.png"
+            src="/assets/particles/circle_02.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxShockwave_0.6s_ease-out_forwards] filter drop-shadow-[0_0_22px_#818cf8] opacity-85"
             style={{ mixBlendMode: 'screen' }}
@@ -354,7 +354,7 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Estallido de burbuja ácida Kenney circle_05 */}
           <img
-            src="/assets/particles/circle_05.png"
+            src="/assets/particles/circle_05.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxPop_0.65s_ease-out_forwards] filter drop-shadow-[0_0_22px_#84cc16] hue-rotate-[65deg] opacity-85"
             style={{ mixBlendMode: 'screen' }}
@@ -369,7 +369,7 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Runa sagrada Kenney magic_03 */}
           <img
-            src="/assets/particles/magic_03.png"
+            src="/assets/particles/magic_03.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxSpinFast_0.8s_ease-out_forwards] filter drop-shadow-[0_0_24px_#fde047] opacity-85"
             style={{ mixBlendMode: 'screen' }}
@@ -384,7 +384,7 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Vórtice hipnótico Kenney twirl_02 */}
           <img
-            src="/assets/particles/twirl_02.png"
+            src="/assets/particles/twirl_02.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxShockwave_0.65s_ease-out_forwards] filter drop-shadow-[0_0_22px_#d946ef] opacity-85"
             style={{ mixBlendMode: 'screen' }}
@@ -399,14 +399,14 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Runa cósmica celestial Kenney magic_01 */}
           <img
-            src="/assets/particles/magic_01.png"
+            src="/assets/particles/magic_01.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxSpinFast_0.9s_ease-out_forwards] filter drop-shadow-[0_0_28px_#f59e0b] opacity-85"
             style={{ mixBlendMode: 'screen' }}
           />
           {/* Estrella supernova de 12 puntas Kenney star_05 */}
           <img
-            src="/assets/particles/star_05.png"
+            src="/assets/particles/star_05.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-spin filter drop-shadow-[0_0_24px_#fbbf24] opacity-80"
             style={{ mixBlendMode: 'screen' }}
@@ -421,7 +421,7 @@ export const CartoonVectorSkillVfx: React.FC<CartoonVectorSkillVfxProps> = ({
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {/* Vórtice de seda Kenney twirl_02 */}
           <img
-            src="/assets/particles/twirl_02.png"
+            src="/assets/particles/twirl_02.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-contain animate-[proVfxShockwave_0.65s_ease-out_forwards] filter drop-shadow-[0_0_20px_#06b6d4] opacity-85"
             style={{ mixBlendMode: 'screen' }}

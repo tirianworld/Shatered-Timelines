@@ -379,7 +379,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Mango de Espada',
         category: 'tools',
         count: 12,
-        icon: '/assets/aistudio/mango_de_espada_ITEM_80f48554.png',
+        icon: '/assets/aistudio/mango_de_espada_ITEM_80f48554.webp',
         rarity: 'SR',
         description: 'Mango artesanal con guarda de bronce y empuñadura de cuero para forjar espadas.',
         priceGold: 150,
@@ -393,7 +393,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Lingote de Hierro',
         category: 'materials',
         count: 18,
-        icon: '/assets/items/lingote_app.png',
+        icon: '/assets/items/lingote_app.webp',
         rarity: 'R',
         description: 'Lingote de hierro templado indispensable para forjar espadas y armaduras.',
         priceGold: 200,
@@ -407,7 +407,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Kit herrería',
         category: 'tools',
         count: 12,
-        icon: '/assets/items/kit_de_herreria_app.png',
+        icon: '/assets/items/kit_de_herreria_app.webp',
         rarity: 'R',
         description: 'Herramientas básicas para temple de aceros y armas.',
         priceGold: 150,
@@ -421,7 +421,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Libro Sagrado',
         category: 'materials',
         count: 2,
-        icon: '/assets/heropage/skinmat_libro.png',
+        icon: '/assets/heropage/skinmat_libro.webp',
         rarity: 'SR',
         description: 'Tomo encuadernado en cuero que sirve de patrón para prendas rituales.',
         priceGold: 300,
@@ -431,7 +431,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Montón de Arapos',
         category: 'materials',
         count: 5,
-        icon: '/assets/heropage/skinmat_arapos.png',
+        icon: '/assets/heropage/skinmat_arapos.webp',
         rarity: 'R',
         description: 'Jirones de tela gastada que sirven para coser atuendos.',
         priceGold: 80,
@@ -441,7 +441,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Polvo de Hadas',
         category: 'materials',
         count: 4,
-        icon: '/assets/heropage/skinmat_polvo_hadas.png',
+        icon: '/assets/heropage/skinmat_polvo_hadas.webp',
         rarity: 'SR',
         description: 'Polvo irisado que da brillo y color a los tejidos encantados.',
         priceGold: 250,
@@ -451,7 +451,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Paquetes Sospechosos',
         category: 'materials',
         count: 3,
-        icon: '/assets/heropage/skinmat_paquetes.png',
+        icon: '/assets/heropage/skinmat_paquetes.webp',
         rarity: 'R',
         description: 'Bultos de contrabando con los avíos que no se encuentran en la sastrería.',
         priceGold: 120,
@@ -461,7 +461,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Colmillos Desgastados',
         category: 'materials',
         count: 3,
-        icon: '/assets/heropage/skinmat_colmillo.png',
+        icon: '/assets/heropage/skinmat_colmillo.webp',
         rarity: 'SR',
         description: 'Colmillos huecos que se usan como adornos de piel.',
         priceGold: 200,
@@ -471,7 +471,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Fragmentos Óseos',
         category: 'materials',
         count: 4,
-        icon: '/assets/heropage/skinmat_huesos.png',
+        icon: '/assets/heropage/skinmat_huesos.webp',
         rarity: 'R',
         description: 'Restos de hueso para remaches y hebillas.',
         priceGold: 100,
@@ -481,7 +481,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Talismán de Jefe Orco',
         category: 'materials',
         count: 2,
-        icon: '/assets/heropage/skinmat_talisman.png',
+        icon: '/assets/heropage/skinmat_talisman.webp',
         rarity: 'SSR',
         description: 'Tótem de guerra orco, imprescindible para imitar su aspecto.',
         priceGold: 800,
@@ -498,7 +498,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Mango de Lanza',
         category: 'tools',
         count: 10,
-        icon: '/assets/items/mango_lanza.png',
+        icon: '/assets/items/mango_lanza.webp',
         rarity: 'R',
         description: 'Asta resistente reforzada para montar puntas de lanza y tridentes.',
         priceGold: 150,
@@ -512,38 +512,38 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Fragmento de Quitina',
         category: 'materials',
         count: 16,
-        icon: '/assets/items/fragmento de quitina.png',
+        icon: '/assets/items/fragmento de quitina.webp',
         rarity: 'SR',
         description: 'Caparazón orgánico hiperresistente para forjas de afinidad natural.',
         priceGold: 250,
       });
     }
 
-    const mangoHachaMartilloItem = items.find((it) => it.id === 'mango_hacha_martillo' || it.icon === '/assets/items/mango_hacha_martillo.png');
+    const mangoHachaMartilloItem = items.find((it) => it.id === 'mango_hacha_martillo' || it.icon === '/assets/items/mango_hacha_martillo.webp');
     if (!mangoHachaMartilloItem) {
       items.push({
         id: 'mango_hacha_martillo',
         name: 'Mango de Hacha y Martillo',
         category: 'tools',
         count: 12,
-        icon: '/assets/items/mango_hacha_martillo.png',
+        icon: '/assets/items/mango_hacha_martillo.webp',
         rarity: 'SR',
         description: 'Mango reforzado de madera oscura y engarces de bronce anaranjado para hachas de guerra y martillos pesados.',
         priceGold: 150,
       });
     } else if (mangoHachaMartilloItem.count < 6) {
       mangoHachaMartilloItem.count = 12;
-      mangoHachaMartilloItem.icon = '/assets/items/mango_hacha_martillo.png';
+      mangoHachaMartilloItem.icon = '/assets/items/mango_hacha_martillo.webp';
     }
 
-    const lomoItem = items.find((it) => it.id === 'lomo_libro' || it.icon === '/assets/items/lomo_libro.png');
+    const lomoItem = items.find((it) => it.id === 'lomo_libro' || it.icon === '/assets/items/lomo_libro.webp');
     if (!lomoItem) {
       items.push({
         id: 'lomo_libro',
         name: 'Lomo de Grimorio',
         category: 'tools',
         count: 10,
-        icon: '/assets/items/lomo_libro.png',
+        icon: '/assets/items/lomo_libro.webp',
         rarity: 'SR',
         description: 'Lomo encuadernado en cuero y escamas de dragón para forjar grimorios arcanos.',
         priceGold: 200,
@@ -552,14 +552,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       lomoItem.count = 10;
     }
 
-    const kitInscripcionItem = items.find((it) => it.id === 'kit_inscripcion' || it.icon === '/assets/items/kit_de_inscripcion_app.png');
+    const kitInscripcionItem = items.find((it) => it.id === 'kit_inscripcion' || it.icon === '/assets/items/kit_de_inscripcion_app.webp');
     if (!kitInscripcionItem) {
       items.push({
         id: 'kit_inscripcion',
         name: 'Kit de Inscripción',
         category: 'tools',
         count: 8,
-        icon: '/assets/items/kit_de_inscripcion_app.png',
+        icon: '/assets/items/kit_de_inscripcion_app.webp',
         rarity: 'SR',
         description: 'Tintas rúnicas, plumas y sellos para encantar grimorios.',
         priceGold: 250,
@@ -582,7 +582,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           name: 'Hamburguesa Artesanal',
           category: 'food',
           count: 4,
-          icon: '/assets/items/hamburguesa.png',
+          icon: '/assets/items/hamburguesa.webp',
           rarity: 'SR',
           description: 'Carne asada de Icespear. Otorga +25% Ataque Total en combate.',
           priceGold: 200,
@@ -592,7 +592,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           name: 'Ramen Humeante',
           category: 'food',
           count: 4,
-          icon: '/assets/items/ramen.png',
+          icon: '/assets/items/ramen.webp',
           rarity: 'SR',
           description: 'Caldo caliente artesanal. Restaura 40 PV y regenera +8 PV/turno.',
           priceGold: 220,
@@ -602,7 +602,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           name: 'Pizza Fundida',
           category: 'food',
           count: 3,
-          icon: '/assets/items/pizza.png',
+          icon: '/assets/items/pizza.webp',
           rarity: 'SR',
           description: 'Cuatro quesos al horno de piedra. Otorga +30% Defensa y Escudo Protector de 30 PV.',
           priceGold: 250,
@@ -612,7 +612,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           name: 'Panes de Ajo Dorados',
           category: 'food',
           count: 5,
-          icon: '/assets/items/panes_de_ajo.png',
+          icon: '/assets/items/panes_de_ajo.webp',
           rarity: 'R',
           description: 'Bocados crujientes con mantequilla. Concede al instante +2 Orbes Definitivos.',
           priceGold: 180,
@@ -622,7 +622,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           name: 'Quesarito Picante',
           category: 'food',
           count: 3,
-          icon: '/assets/items/quesarito.png',
+          icon: '/assets/items/quesarito.webp',
           rarity: 'SR',
           description: 'Quesadilla enrollada especiada. Aumenta un +35% la Tasa Crítica y +50% Daño Crítico.',
           priceGold: 240,
@@ -632,7 +632,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           name: 'Tortilla de Patatas',
           category: 'food',
           count: 3,
-          icon: '/assets/items/tortilla_patata.png',
+          icon: '/assets/items/tortilla_patata.webp',
           rarity: 'SR',
           description: 'Receta tradicional jugosa. Concede Evasión Total del siguiente golpe enemigo y purifica alteraciones.',
           priceGold: 220,
@@ -642,7 +642,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           name: 'Poción de Vida Mayor',
           category: 'food',
           count: 5,
-          icon: '/assets/items/boton_pocion.png',
+          icon: '/assets/items/boton_pocion.webp',
           rarity: 'SR',
           description: 'Elixir revitalizante de manantial. Restaura 50 PV de Magordito de inmediato.',
           priceGold: 150,
@@ -1267,9 +1267,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ring: 'Anillo de Amatista Purificada',
     };
     const iconMap = {
-      weapon: '/assets/items/ESPADA LOUX.png',
-      armor: '/assets/items/ARMADURA LOUX.png',
-      ring: '/assets/items/ANILLO ORO.png',
+      weapon: '/assets/items/ESPADA LOUX.webp',
+      armor: '/assets/items/ARMADURA LOUX.webp',
+      ring: '/assets/items/ANILLO ORO.webp',
     };
 
     const newItem: EquipmentItem = {

@@ -27,3 +27,4 @@ artifacts/
 
 # Toolchains locales de build
 .tools/
+scripts/webp-map.json

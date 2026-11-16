@@ -850,14 +850,14 @@ export const RagnavaldrSkillVfxOverlay: React.FC<RagnavaldrSkillVfxOverlayProps>
                       }}
                     >
                       <img
-                        src="/assets/combat/ragnavaldr_vfx_lanza.png"
+                        src="/assets/combat/ragnavaldr_vfx_lanza.webp"
                         alt="Estocada de Lanzas Gemelas"
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-contain"
                         style={{ filter: spearFilter }}
                       />
                       <img
-                        src="/assets/combat/ragnavaldr_vfx_lanza.png"
+                        src="/assets/combat/ragnavaldr_vfx_lanza.webp"
                         alt=""
                         referrerPolicy="no-referrer"
                         className="absolute inset-0 w-full h-full object-contain pointer-events-none"
@@ -896,7 +896,7 @@ export const RagnavaldrSkillVfxOverlay: React.FC<RagnavaldrSkillVfxOverlayProps>
                     }}
                   >
                     <img
-                      src="/assets/combat/edacorn_vfx_slash.png"
+                      src="/assets/combat/edacorn_vfx_slash.webp"
                       alt="SLASH!"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain animate-[ragnavaldrOnoPop_0.46s_cubic-bezier(0.22,1.28,0.36,1)_forwards]"
@@ -932,7 +932,7 @@ export const RagnavaldrSkillVfxOverlay: React.FC<RagnavaldrSkillVfxOverlayProps>
                     }}
                   >
                     <img
-                      src="/assets/combat/ragnavaldr_vfx_cuchillo_hielo.png"
+                      src="/assets/combat/ragnavaldr_vfx_cuchillo_hielo.webp"
                       alt="Fragmentos de Hielo"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain"
@@ -970,14 +970,14 @@ export const RagnavaldrSkillVfxOverlay: React.FC<RagnavaldrSkillVfxOverlayProps>
                       }}
                     >
                       <img
-                        src="/assets/combat/ragnavaldr_vfx_escarcha.png"
+                        src="/assets/combat/ragnavaldr_vfx_escarcha.webp"
                         alt="Estallido Glacial"
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-contain"
                         style={{ filter: iceKnifeFilter }}
                       />
                       <img
-                        src="/assets/combat/ragnavaldr_vfx_escarcha.png"
+                        src="/assets/combat/ragnavaldr_vfx_escarcha.webp"
                         alt=""
                         referrerPolicy="no-referrer"
                         className="absolute inset-0 w-full h-full object-contain pointer-events-none"

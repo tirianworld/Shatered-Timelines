@@ -958,7 +958,7 @@ export const PrometeoSkillVfxOverlay: React.FC<PrometeoSkillVfxOverlayProps> = (
                   }}
                 >
                   <img
-                    src="/assets/combat/prometeo_vfx_fire_bolt.png"
+                    src="/assets/combat/prometeo_vfx_fire_bolt.webp"
                     alt="Fire Bolt"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-contain"
@@ -996,7 +996,7 @@ export const PrometeoSkillVfxOverlay: React.FC<PrometeoSkillVfxOverlayProps> = (
                   }}
                 >
                   <img
-                    src="/assets/combat/prometeo_vfx_tajo_verde.png"
+                    src="/assets/combat/prometeo_vfx_tajo_verde.webp"
                     alt="Tajo de Fuego Verde"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-contain"
@@ -1009,7 +1009,7 @@ export const PrometeoSkillVfxOverlay: React.FC<PrometeoSkillVfxOverlayProps> = (
                     }
                   />
                   <img
-                    src="/assets/combat/prometeo_vfx_tajo_verde.png"
+                    src="/assets/combat/prometeo_vfx_tajo_verde.webp"
                     alt=""
                     referrerPolicy="no-referrer"
                     className="absolute inset-0 w-full h-full object-contain pointer-events-none"
@@ -1049,7 +1049,7 @@ export const PrometeoSkillVfxOverlay: React.FC<PrometeoSkillVfxOverlayProps> = (
               }`}
             >
               <img
-                src="/assets/combat/prometeo_vfx_bola.png"
+                src="/assets/combat/prometeo_vfx_bola.webp"
                 alt="Bola de Fuego"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-contain"
@@ -1059,7 +1059,7 @@ export const PrometeoSkillVfxOverlay: React.FC<PrometeoSkillVfxOverlayProps> = (
                 }}
               />
               <img
-                src="/assets/combat/prometeo_vfx_bola.png"
+                src="/assets/combat/prometeo_vfx_bola.webp"
                 alt=""
                 referrerPolicy="no-referrer"
                 className="absolute inset-0 w-full h-full object-contain pointer-events-none"
@@ -1092,8 +1092,8 @@ export const PrometeoSkillVfxOverlay: React.FC<PrometeoSkillVfxOverlayProps> = (
                 <img
                   src={
                     isGreenSlashPopup
-                      ? '/assets/combat/edacorn_vfx_slash.png'
-                      : '/assets/combat/prometeo_vfx_boom.png'
+                      ? '/assets/combat/edacorn_vfx_slash.webp'
+                      : '/assets/combat/prometeo_vfx_boom.webp'
                   }
                   alt={isGreenSlashPopup ? 'SLASH!' : 'BOOM!'}
                   referrerPolicy="no-referrer"

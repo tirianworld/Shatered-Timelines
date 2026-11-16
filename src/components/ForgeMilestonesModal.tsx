@@ -227,7 +227,7 @@ export const ForgeMilestonesModal: React.FC<ForgeMilestonesModalProps> = ({
       >
         {/* POPUP Background Image (4197x5588 native, zero distortion) */}
         <img
-          src="/assets/forge/POPUP.png"
+          src="/assets/forge/POPUP.webp"
           alt="Marco POPUP"
           className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none z-0 filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.98)]"
         />
@@ -244,7 +244,7 @@ export const ForgeMilestonesModal: React.FC<ForgeMilestonesModalProps> = ({
           aria-label="Cerrar Hitos"
         >
           <img
-            src="/assets/forge/btn_close_x.png"
+            src="/assets/forge/btn_close_x.webp"
             alt="Cerrar"
             className="w-full h-full object-contain filter drop-shadow-md"
           />
@@ -261,7 +261,7 @@ export const ForgeMilestonesModal: React.FC<ForgeMilestonesModalProps> = ({
           <div className="px-2.5 pt-1 pb-1 shrink-0 flex items-center gap-2">
             <div className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full border border-amber-500/70 overflow-hidden bg-black/60 flex items-center justify-center shrink-0 shadow-md">
               <img
-                src="/assets/forge/boton_logros_forja.png"
+                src="/assets/forge/boton_logros_forja.webp"
                 alt=""
                 className="w-full h-full object-contain filter drop-shadow"
               />
@@ -272,7 +272,7 @@ export const ForgeMilestonesModal: React.FC<ForgeMilestonesModalProps> = ({
               </h2>
               <p className="text-[9px] sm:text-[10px] text-amber-300/80 font-medium flex items-center gap-1 truncate">
                 <span>Alcanza metas de forja y reclama Cristales del Recuerdo</span>
-                <img src="/assets/items/gema_del_recuerdo.png" alt="Cristal del Recuerdo" className="w-3.5 h-3.5 object-contain inline shrink-0" />
+                <img src="/assets/items/gema_del_recuerdo.webp" alt="Cristal del Recuerdo" className="w-3.5 h-3.5 object-contain inline shrink-0" />
               </p>
             </div>
           </div>
@@ -288,7 +288,7 @@ export const ForgeMilestonesModal: React.FC<ForgeMilestonesModalProps> = ({
               </span>
               <span className="text-stone-300 flex items-center gap-1">
                 Total:{' '}
-                <img src="/assets/items/gema_del_recuerdo.png" alt="Cristal del Recuerdo" className="w-3.5 h-3.5 object-contain inline" />
+                <img src="/assets/items/gema_del_recuerdo.webp" alt="Cristal del Recuerdo" className="w-3.5 h-3.5 object-contain inline" />
                 <strong className="text-cyan-300 font-mono">{totalCrystalsEarned.toLocaleString()}</strong>
               </span>
             </div>
@@ -395,7 +395,7 @@ export const ForgeMilestonesModal: React.FC<ForgeMilestonesModalProps> = ({
                       {/* Reward crystal pill */}
                       <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-[#031d28] border border-[#0e4860] shadow-inner">
                         <img
-                          src="/assets/items/gema_del_recuerdo.png"
+                          src="/assets/items/gema_del_recuerdo.webp"
                           alt="Cristal del Recuerdo"
                           className="w-3.5 h-3.5 object-contain filter drop-shadow"
                         />

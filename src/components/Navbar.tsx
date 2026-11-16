@@ -79,7 +79,7 @@ export const Navbar: React.FC = () => {
 
           {/* Cristales del Recuerdo */}
           <div className="flex items-center gap-1.5 bg-stone-900/90 px-3 py-1 rounded-md border border-stone-800 shadow-inner" title="Cristales del Recuerdo">
-            <img src="/assets/items/gema_del_recuerdo.png" alt="Cristales del Recuerdo" className="w-4 h-4 object-contain" />
+            <img src="/assets/items/gema_del_recuerdo.webp" alt="Cristales del Recuerdo" className="w-4 h-4 object-contain" />
             <span className="text-xs font-mono font-bold text-cyan-300">{astralShards.toLocaleString()}</span>
           </div>
 

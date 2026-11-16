@@ -32,7 +32,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Poción de Vida Mayor',
         category: 'materials',
         rarity: 'R',
-        icon: '/assets/items/pocion_vida.png',
+        icon: '/assets/items/pocion_vida.webp',
         count: 2,
         description: 'Poción de alta graduación para restaurar vitalidad de Magordito en combate.',
       },
@@ -41,7 +41,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Hortalizas de Huerto',
         category: 'materials',
         rarity: 'R',
-        icon: '/assets/items/ing_hortalizas.png',
+        icon: '/assets/items/ing_hortalizas.webp',
         count: 3,
         description: 'Vegetales frescos cosechados para la cocina de la taberna.',
       },
@@ -57,7 +57,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Kebab Especiado de Mercader',
         category: 'food',
         rarity: 'SR',
-        icon: '/assets/items/kebab.png',
+        icon: '/assets/items/kebab.webp',
         count: 2,
         description: 'Carne adobada y asada con vegetales en pan pita tradicional.',
       },
@@ -66,7 +66,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Carne Seca Curada',
         category: 'materials',
         rarity: 'R',
-        icon: '/assets/items/ing_carne_seca.png',
+        icon: '/assets/items/ing_carne_seca.webp',
         count: 3,
         description: 'Carne secada al humo de abeto para platos reconstituyentes.',
       },
@@ -82,7 +82,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Fragmento de Quitina',
         category: 'materials',
         rarity: 'SR',
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         count: 3,
         description: 'Placas resistentes de coraza de bestias del bosque para forja.',
       },
@@ -91,7 +91,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Setas de las Minas',
         category: 'materials',
         rarity: 'SR',
-        icon: '/assets/items/ing_setas_cueva.png',
+        icon: '/assets/items/ing_setas_cueva.webp',
         count: 2,
         description: 'Hongos cavernícolas umami para estofados de la taberna.',
       },
@@ -107,7 +107,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Coraza del Devorador Quitinoso',
         category: 'materials',
         rarity: 'SSR',
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         count: 1,
         description: 'El núcleo de coraza blindada del coloso de las puertas selladas.',
       },
@@ -116,7 +116,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Carne de Devorador',
         category: 'materials',
         rarity: 'SSR',
-        icon: '/assets/items/ing_carne_devorador.png',
+        icon: '/assets/items/ing_carne_devorador.webp',
         count: 3,
         description: 'Carne densa y marmolada protegida por la coraza quitinosa para cocina exótica.',
       },
@@ -132,7 +132,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Lingote de Plata Glimmerstone',
         category: 'materials',
         rarity: 'SSR',
-        icon: '/assets/items/lingote_de_plata.png',
+        icon: '/assets/items/lingote_de_plata.webp',
         count: 2,
         description: 'Plata subterránea pura de máxima pureza extraída en las minas.',
       },
@@ -141,7 +141,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Patata de Icespear',
         category: 'materials',
         rarity: 'R',
-        icon: '/assets/items/ing_patata_rara.png',
+        icon: '/assets/items/ing_patata_rara.webp',
         count: 4,
         description: 'Tubérculo dorado resistente a las heladas, base para tortillas.',
       },
@@ -157,7 +157,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Huevo Carmesí Calcificado',
         category: 'materials',
         rarity: 'SSR',
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         count: 1,
         description: 'Huevo mutante petrificado de la cámara de cría con maná primigenio.',
       },
@@ -166,7 +166,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Huevos de Araknoide',
         category: 'materials',
         rarity: 'SR',
-        icon: '/assets/items/ing_huevos_araknoide.png',
+        icon: '/assets/items/ing_huevos_araknoide.webp',
         count: 4,
         description: 'Huevos translúcidos recolectados en los nidos carmesíes de la colonia.',
       },
@@ -175,7 +175,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Larvas de Araknoide',
         category: 'materials',
         rarity: 'SR',
-        icon: '/assets/items/ing_larvas_araknoide.png',
+        icon: '/assets/items/ing_larvas_araknoide.webp',
         count: 4,
         description: 'Larvas cavernícolas ricas en proteínas y maná residual para salteados.',
       },
@@ -191,7 +191,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Aguja Criogénica Parasitaria',
         category: 'materials',
         rarity: 'SSR',
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         count: 1,
         description: 'Púa glacial extraída de los acechadores congelados.',
       },
@@ -200,7 +200,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Fragmento de Quitina',
         category: 'materials',
         rarity: 'SR',
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         count: 4,
         description: 'Material quitinoso denso para forja de armaduras.',
       },
@@ -215,7 +215,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Pata Aguja de Zancudo',
         category: 'materials',
         rarity: 'SSR',
-        icon: '/assets/items/fragmento_astral.png',
+        icon: '/assets/items/fragmento_astral.webp',
         count: 1,
         description: 'Extremidad puntiaguda del Jefe Zancudo Espectral con esencia abisal.',
       },
@@ -224,7 +224,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Especias de Dragón',
         category: 'materials',
         rarity: 'SR',
-        icon: '/assets/items/ing_especias_chili.png',
+        icon: '/assets/items/ing_especias_chili.webp',
         count: 3,
         description: 'Pimientos picantes secos para platos ardientes de combate.',
       },
@@ -240,7 +240,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Llave Inerte del Laberinto de Lloth',
         category: 'materials',
         rarity: 'UR',
-        icon: '/assets/items/llave_laberinto_desactivada.png',
+        icon: '/assets/items/llave_laberinto_desactivada.webp',
         count: 1,
         description: 'Llave de obsidiana con forma de araña arrojada tras el sellado del laberinto.',
       },
@@ -249,7 +249,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Carne de Devorador',
         category: 'materials',
         rarity: 'SSR',
-        icon: '/assets/items/ing_carne_devorador.png',
+        icon: '/assets/items/ing_carne_devorador.webp',
         count: 4,
         description: 'Carne de los especímenes del abismo para el fogón de Paco.',
       },
@@ -265,7 +265,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Emblema de Glimmerstone y Sombra del Laberinto',
         category: 'materials',
         rarity: 'UR',
-        icon: '/assets/items/llave_laberinto_desactivada.png',
+        icon: '/assets/items/llave_laberinto_desactivada.webp',
         count: 1,
         description: 'Insignia de gratitud del clan enano de Glimmerstone y vestigio sombrío del titiritero.',
       },
@@ -274,7 +274,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Carne de Devorador',
         category: 'materials',
         rarity: 'SSR',
-        icon: '/assets/items/ing_carne_devorador.png',
+        icon: '/assets/items/ing_carne_devorador.webp',
         count: 5,
         description: 'Carne de los especímenes del abismo para el fogón de Paco.',
       },
@@ -290,7 +290,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Insignia de la Guardia Negra de Ferton',
         category: 'materials',
         rarity: 'SR',
-        icon: '/assets/portraits/guarda_negro_espada_thumb.png',
+        icon: '/assets/portraits/guarda_negro_espada_thumb.webp',
         count: 2,
         description: 'Medallón de ébano con bordes de oro grabado con el blasón clandestino de Ferton.',
       },
@@ -299,7 +299,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Filo de Alabarda de Ébano y Oro',
         category: 'materials',
         rarity: 'SSR',
-        icon: '/assets/portraits/guarda_negro_alabarda_thumb.png',
+        icon: '/assets/portraits/guarda_negro_alabarda_thumb.webp',
         count: 1,
         description: 'Hoja de corte forjada en aleación negra enriquecida con láminas de oro puro.',
       },
@@ -308,7 +308,7 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
         name: 'Cofre Blindado de Contrabando de Ferton',
         category: 'materials',
         rarity: 'UR',
-        icon: '/assets/portraits/guarda_negro_pesado_thumb.png',
+        icon: '/assets/portraits/guarda_negro_pesado_thumb.webp',
         count: 1,
         description: 'Cofre de roble reforzado con placas de ébano y runas doradas interceptado en el camino nevado.',
       },
@@ -326,7 +326,7 @@ const DEFAULT_REWARD: MissionAutoRewardConfig = {
       name: 'Fragmento de Quitina',
       category: 'materials',
       rarity: 'SR',
-      icon: '/assets/items/fragmento_de_quitina.png',
+      icon: '/assets/items/fragmento_de_quitina.webp',
       count: 2,
       description: 'Placas resistentes para mejoras en la forja.',
     },
@@ -335,7 +335,7 @@ const DEFAULT_REWARD: MissionAutoRewardConfig = {
       name: 'Hortalizas de Huerto',
       category: 'materials',
       rarity: 'R',
-      icon: '/assets/items/ing_hortalizas.png',
+      icon: '/assets/items/ing_hortalizas.webp',
       count: 3,
       description: 'Ingredientes para cocinar platos de combate.',
     },
@@ -492,7 +492,7 @@ export const AutoRepeatModal: React.FC<AutoRepeatModalProps> = ({ mission, onClo
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-xl bg-[#09151e] border border-cyan-400/50 p-1 flex items-center justify-center shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)] shrink-0">
               <img
-                src="/assets/items/fragmento_astral.png"
+                src="/assets/items/fragmento_astral.webp"
                 alt="Astral"
                 className="w-7 h-7 object-contain drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] animate-pulse"
               />
@@ -546,7 +546,7 @@ export const AutoRepeatModal: React.FC<AutoRepeatModalProps> = ({ mission, onClo
               {/* Currency gains summary */}
               <div className="grid grid-cols-2 gap-2 w-full">
                 <div className="p-2.5 rounded-xl bg-stone-900/80 border border-amber-500/30 flex items-center justify-center gap-2">
-                  <img src="/assets/items/oro.png" alt="Oro" className="w-5 h-5 object-contain" />
+                  <img src="/assets/items/oro.webp" alt="Oro" className="w-5 h-5 object-contain" />
                   <div className="flex flex-col items-start leading-tight">
                     <span className="text-[10px] font-sans font-bold text-amber-300/80">ORO GANADO</span>
                     <span className="text-sm font-mono font-black text-amber-200">
@@ -556,7 +556,7 @@ export const AutoRepeatModal: React.FC<AutoRepeatModalProps> = ({ mission, onClo
                 </div>
 
                 <div className="p-2.5 rounded-xl bg-stone-900/80 border border-emerald-500/30 flex items-center justify-center gap-2">
-                  <img src="/assets/items/gema.png" alt="Cristales" className="w-5 h-5 object-contain" />
+                  <img src="/assets/items/gema.webp" alt="Cristales" className="w-5 h-5 object-contain" />
                   <div className="flex flex-col items-start leading-tight">
                     <span className="text-[10px] font-sans font-bold text-emerald-300/80">CRISTALES</span>
                     <span className="text-sm font-mono font-black text-emerald-200">
@@ -661,7 +661,7 @@ export const AutoRepeatModal: React.FC<AutoRepeatModalProps> = ({ mission, onClo
               <div className="p-3 rounded-xl bg-gradient-to-r from-[#07131b] via-[#091a26] to-[#07131b] border border-cyan-500/40 flex items-center justify-between shadow-inner">
                 <div className="flex items-center gap-2">
                   <img
-                    src="/assets/items/fragmento_astral.png"
+                    src="/assets/items/fragmento_astral.webp"
                     alt="Fragmentos Astrales"
                     className="w-6 h-6 object-contain drop-shadow-[0_0_6px_rgba(34,211,238,0.7)]"
                   />
@@ -758,13 +758,13 @@ export const AutoRepeatModal: React.FC<AutoRepeatModalProps> = ({ mission, onClo
 
                 <div className="grid grid-cols-2 gap-2">
                   <div className="p-2 rounded-lg bg-stone-900/60 border border-amber-500/20 flex items-center gap-2">
-                    <img src="/assets/items/oro.png" alt="Oro" className="w-4 h-4 object-contain" />
+                    <img src="/assets/items/oro.webp" alt="Oro" className="w-4 h-4 object-contain" />
                     <span className="text-xs font-mono font-bold text-amber-200">
                       +{(rewardConfig.gold * count).toLocaleString()} Oro
                     </span>
                   </div>
                   <div className="p-2 rounded-lg bg-stone-900/60 border border-emerald-500/20 flex items-center gap-2">
-                    <img src="/assets/items/gema.png" alt="Cristales" className="w-4 h-4 object-contain" />
+                    <img src="/assets/items/gema.webp" alt="Cristales" className="w-4 h-4 object-contain" />
                     <span className="text-xs font-mono font-bold text-emerald-200">
                       +{(rewardConfig.crystals * count).toLocaleString()} Cristales
                     </span>
@@ -819,7 +819,7 @@ export const AutoRepeatModal: React.FC<AutoRepeatModalProps> = ({ mission, onClo
                 ) : (
                   <>
                     <img
-                      src="/assets/items/fragmento_astral.png"
+                      src="/assets/items/fragmento_astral.webp"
                       alt=""
                       className="w-4 h-4 object-contain drop-shadow"
                     />

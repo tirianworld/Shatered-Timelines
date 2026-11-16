@@ -531,7 +531,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Trabuco de Fuego de Ébano y Oro de Ferton',
         category: 'materials',
         count: 1,
-        icon: '/assets/portraits/hobgoblin_capataz_thumb.png',
+        icon: '/assets/portraits/hobgoblin_capataz_thumb.webp',
         rarity: 'UR',
         priceGold: 45000,
         description: 'Arma de fuego artesanal con boca de bronce acampanada y recámara de oro requisada al Capataz de Ferton.',
@@ -541,7 +541,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Salvoconducto Real del Mercado Negro',
         category: 'materials',
         count: 1,
-        icon: '/assets/portraits/hobgoblin_capataz_thumb.png',
+        icon: '/assets/portraits/hobgoblin_capataz_thumb.webp',
         rarity: 'UR',
         priceGold: 50000,
         description: 'Pase maestro con el sello del halcón y la cadena de oro de Ferton para comerciar sin restricciones en el Mercado Negro.',
@@ -558,7 +558,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Órdenes Selladas y Blasón de Ferton',
         category: 'materials',
         count: 1,
-        icon: '/assets/portraits/guarda_negro_espada_thumb.png',
+        icon: '/assets/portraits/guarda_negro_espada_thumb.webp',
         rarity: 'UR',
         priceGold: 35000,
         description: 'Manifiesto confidencial requisado del carromato con la firma de Ferton y la ruta secreta hacia los puestos de avanzada del Mercado Negro.',
@@ -575,7 +575,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Efigie Ilusoria de Arlem Orco',
         category: 'materials',
         count: 1,
-        icon: '/assets/portraits/arlem_orco_thumb.png',
+        icon: '/assets/portraits/arlem_orco_thumb.webp',
         rarity: 'UR',
         priceGold: 25000,
         description: 'Tótem arcano imbuido con magia de alteración e ilusión menor. Conmemora el brillante engaño que desalojó el campamento orco del bosque sin derramar una sola gota de sangre.',
@@ -592,7 +592,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Emblema de Glimmerstone y Sombra del Laberinto',
         category: 'materials',
         count: 1,
-        icon: '/assets/items/llave_laberinto_desactivada.png',
+        icon: '/assets/items/llave_laberinto_desactivada.webp',
         rarity: 'UR',
         priceGold: 20000,
         description: 'Insignia de gratitud del clan enano de Glimmerstone y vestigio sombrío del titiritero que selló el destino de Lord Vaelas.',
@@ -609,7 +609,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Llave Inerte del Laberinto de Lloth',
         category: 'materials',
         count: 1,
-        icon: '/assets/items/llave_laberinto_desactivada.png',
+        icon: '/assets/items/llave_laberinto_desactivada.webp',
         rarity: 'UR',
         priceGold: 15000,
         description: 'Llave de obsidiana con forma de araña arrojada tras el sellado del laberinto. Su amatista central está apagada y sus runas inertes: símbolo de la traición y perdición eterna de Lord Vaelas.',
@@ -626,7 +626,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Pelaje Electrificado de Titán',
         category: 'materials',
         count: 1,
-        icon: '/assets/items/cuero.png',
+        icon: '/assets/items/cuero.webp',
         rarity: 'SSR',
         priceGold: 9500,
         description: 'Manto de cerdas del Titán Melenudo que aún chisporrotea con descargas eléctricas puras del Underdark.',
@@ -643,7 +643,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Aguja Espectral de Zancudo',
         category: 'materials',
         count: 1,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         rarity: 'SSR',
         priceGold: 8000,
         description: 'Pata larguísima e hiperdensa impregnada de magia sombría del Underdark.',
@@ -660,7 +660,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Aguja Criogénica Parasitaria',
         category: 'materials',
         count: 1,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         rarity: 'SSR',
         priceGold: 6000,
         description: 'Púa glacial extraída de los acechadores congelados que inocula la mutación viral arácnida.',
@@ -677,7 +677,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Huevo Carmesí Calcificado',
         category: 'materials',
         count: 1,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         rarity: 'SSR',
         priceGold: 5000,
         description: 'Huevo mutante petrificado de la cámara de cría tras la purga de Edacorn. Reliquia repleta de maná primigenio.',
@@ -687,7 +687,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Huevos de Araknoide',
         category: 'materials',
         count: 4,
-        icon: '/assets/items/ing_huevos_araknoide.png',
+        icon: '/assets/items/ing_huevos_araknoide.webp',
         rarity: 'SR',
         priceGold: 160,
         description: 'Huevos translúcidos recolectados en los nidos carmesíes de la colonia. Ingrediente exótico con suave luminiscencia nutritiva.',
@@ -697,7 +697,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Larvas de Araknoide',
         category: 'materials',
         count: 4,
-        icon: '/assets/items/ing_larvas_araknoide.png',
+        icon: '/assets/items/ing_larvas_araknoide.webp',
         rarity: 'SR',
         priceGold: 150,
         description: 'Larvas cavernícolas ricas en proteínas y maná residual. Crujientes al saltear y de gran valor culinario.',
@@ -722,7 +722,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Lingote de Plata Glimmerstone',
         category: 'materials',
         count: 2,
-        icon: '/assets/items/lingote_de_plata.png',
+        icon: '/assets/items/lingote_de_plata.webp',
         rarity: 'SSR',
         priceGold: 3500,
         description: 'Plata subterránea pura de máxima pureza extraída por los hermanos Boran y Thora en las minas profundas.',
@@ -738,7 +738,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Kebab Especiado de Mercader',
         category: 'food',
         count: 2,
-        icon: '/assets/items/kebab.png',
+        icon: '/assets/items/kebab.webp',
         rarity: 'SR',
         priceGold: 800,
         description: 'Suculenta porción de carne asada con hierbas de montaña entregada como muestra de agradecimiento por la caravana rescatada.',
@@ -748,7 +748,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Tortilla de Patatas de la Caravana',
         category: 'food',
         count: 1,
-        icon: '/assets/items/tortilla_patata.png',
+        icon: '/assets/items/tortilla_patata.webp',
         rarity: 'SSR',
         priceGold: 1500,
         description: 'Generosa tortilla recién preparada por los mercaderes agradecidos tras ahuyentar a los bandidos de los riscos.',
@@ -766,7 +766,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Placas del Devorador Quitinoso',
         category: 'materials',
         count: 1,
-        icon: '/assets/items/fragmento_de_quitina.png',
+        icon: '/assets/items/fragmento_de_quitina.webp',
         rarity: 'SSR',
         priceGold: 6000,
         description: 'Placas titánicas de quitina adamantina arrancadas del Devorador Quitinoso en las Puertas de Glimmerstone.',
@@ -776,7 +776,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         name: 'Carne de Devorador',
         category: 'materials',
         count: 3,
-        icon: '/assets/items/ing_carne_devorador.png',
+        icon: '/assets/items/ing_carne_devorador.webp',
         rarity: 'SSR',
         priceGold: 240,
         description: 'Carne densa y marmolada protegida por la coraza quitinosa del Devorador. Jugosa, potente y digna de un banquete colosal.',
@@ -820,7 +820,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       name: 'Escamas de Cryovain',
       category: 'materials',
       count: 2,
-      icon: '/assets/items/escamas_de_cryovain.png',
+      icon: '/assets/items/escamas_de_cryovain.webp',
       rarity: 'SSR',
       priceGold: 2000,
       description: 'Gélidas escamas desprendidas del dragón blanco Cryovain tras su ataque a Icespear.',
@@ -1184,7 +1184,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         <div className="relative w-full h-[245px] sm:h-[270px] scale-[1.04] origin-bottom flex flex-col justify-end bg-gradient-to-t from-black via-[#0d0401] to-[#0d0401]/95">
           {/* Exact Ornate Dialog Frame Asset - 4% larger with crisp drop-shadow */}
           <img
-            src="/assets/items/panel_dialogo_idl.png"
+            src="/assets/items/panel_dialogo_idl.webp"
             alt="Panel de Diálogo"
             className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none drop-shadow-[0_-4px_20px_rgba(0,0,0,0.98)]"
           />
@@ -1616,30 +1616,30 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   <img
                     src={
                       isCapitulo3IntroMission
-                        ? '/assets/portraits/arlem_orco_thumb.png'
+                        ? '/assets/portraits/arlem_orco_thumb.webp'
                         : isAldeaEpilogue || isLaberintoMission
-                        ? '/assets/items/llave_laberinto_desactivada.png'
+                        ? '/assets/items/llave_laberinto_desactivada.webp'
                         : isZancudoEpilogue
-                        ? '/assets/combat/semiboss_zancudo_thumb.png'
+                        ? '/assets/combat/semiboss_zancudo_thumb.webp'
                         : isCavernaAzulEpilogue
-                        ? '/assets/portraits/enano_infectado_thumb.png'
+                        ? '/assets/portraits/enano_infectado_thumb.webp'
                         : isFuriaCarmesiEpilogue
-                        ? '/assets/portraits/edacorn_alas_thumb.png'
+                        ? '/assets/portraits/edacorn_alas_thumb.webp'
                         : isMinasHistoriaMission
-                        ? '/assets/portraits/enanos_mineros_thumb.png'
+                        ? '/assets/portraits/enanos_mineros_thumb.webp'
                         : isAsaltoOrcoEpilogue || isAsaltoOrcoMission
-                        ? '/assets/combat/orco_caudillo_thumb.png'
+                        ? '/assets/combat/orco_caudillo_thumb.webp'
                         : isPuertasEpilogue || isPuertasMission
-                        ? '/assets/combat/bestia_jaula_clean.png'
+                        ? '/assets/combat/bestia_jaula_clean.webp'
                         : isRoboEpilogue
-                        ? '/assets/items/cofre_sellado_mansion.png'
+                        ? '/assets/items/cofre_sellado_mansion.webp'
                         : isBosqueEpilogue
-                        ? '/assets/portraits/bestia_jaula_thumb.png'
+                        ? '/assets/portraits/bestia_jaula_thumb.webp'
                         : isRoboMission
-                        ? '/assets/combat/guardia_lanza_thumb.png'
+                        ? '/assets/combat/guardia_lanza_thumb.webp'
                         : isBosqueMission
-                        ? '/assets/combat/goblin_garrote_thumb.png'
-                        : '/assets/items/escamas_de_cryovain.png'
+                        ? '/assets/combat/goblin_garrote_thumb.webp'
+                        : '/assets/items/escamas_de_cryovain.webp'
                     }
                     alt="Recompensa"
                     className="w-5 h-5 object-contain"

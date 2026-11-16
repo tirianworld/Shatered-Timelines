@@ -61,7 +61,7 @@ export const TavernView: React.FC = () => {
     <div className="relative w-full h-full min-h-[580px] flex-1 flex flex-col justify-between overflow-hidden select-none">
       {/* Tavern Interior Illustration */}
       <img
-        src="/assets/aistudio/image_14e93a8e.png"
+        src="/assets/aistudio/image_14e93a8e.webp"
         alt="Interior de la Taberna"
         className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
       />

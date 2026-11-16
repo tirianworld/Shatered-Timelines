@@ -187,7 +187,7 @@ export const OptionsModal: React.FC = () => {
             title="Abrir Inventario"
           >
             <img
-              src="/assets/items/Inventary_Button.png"
+              src="/assets/items/Inventary_Button.webp"
               alt="Inventario"
               className="w-full h-full object-contain filter drop-shadow-md"
             />

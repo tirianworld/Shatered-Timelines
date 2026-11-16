@@ -74,10 +74,10 @@ export const ArlemSkillVfxOverlay: React.FC<ArlemSkillVfxOverlayProps> = ({
 
   const estocadaSpriteUrl =
     tier === 3
-      ? '/assets/combat/arlem_vfx_tajo_t3.png'
+      ? '/assets/combat/arlem_vfx_tajo_t3.webp'
       : tier === 2
-      ? '/assets/combat/arlem_vfx_estocada_t2.png'
-      : '/assets/combat/arlem_vfx_estocada_t1.png';
+      ? '/assets/combat/arlem_vfx_estocada_t2.webp'
+      : '/assets/combat/arlem_vfx_estocada_t1.webp';
 
   // Timer-driven staggered slash lines + comic SLASH! popups for Tier 3 Golden Rapier
   useEffect(() => {
@@ -936,7 +936,7 @@ export const ArlemSkillVfxOverlay: React.FC<ArlemSkillVfxOverlayProps> = ({
                 }`}
               >
                 <img
-                  src="/assets/combat/arlem_vfx_slash.png"
+                  src="/assets/combat/arlem_vfx_slash.webp"
                   alt="SLASH!"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain animate-[arlemSlashPopCartoony_0.82s_cubic-bezier(0.22,1.28,0.36,1)_forwards]"
@@ -1014,8 +1014,8 @@ export const ArlemSkillVfxOverlay: React.FC<ArlemSkillVfxOverlayProps> = ({
                     <img
                       src={
                         ono.isGold
-                          ? '/assets/combat/arlem_vfx_slash_gold.png'
-                          : '/assets/combat/arlem_vfx_slash.png'
+                          ? '/assets/combat/arlem_vfx_slash_gold.webp'
+                          : '/assets/combat/arlem_vfx_slash.webp'
                       }
                       alt="SLASH!"
                       referrerPolicy="no-referrer"

@@ -175,7 +175,7 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
     <div className="relative w-full h-full flex flex-col select-none overflow-hidden bg-[#1c0803]">
       {/* Authentic Carved Wood Background */}
       <img
-        src="/assets/items/recurso_8_4x.png"
+        src="/assets/items/recurso_8_4x.webp"
         alt=""
         className="absolute inset-0 w-full h-full object-fill pointer-events-none z-0"
       />

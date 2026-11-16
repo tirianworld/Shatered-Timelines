@@ -205,8 +205,8 @@ class ClanService {
       name,
       tag: tag.toUpperCase(),
       motto: motto || 'Por el honor del bastión y la gloria eterna.',
-      emblem: emblem || '/assets/items/Recurso 287@4x.png',
-      buildingImage: '/assets/aistudio/image_6578a593.png',
+      emblem: emblem || '/assets/items/Recurso 287@4x.webp',
+      buildingImage: '/assets/aistudio/image_6578a593.webp',
       level: 1,
       xp: 0,
       xpToNextLevel: 1000,
@@ -218,7 +218,7 @@ class ClanService {
         {
           playerId: profile.playerId,
           gamerTag: leaderTag,
-          avatarUrl: profile.avatarUrl || '/assets/portraits/edacorn icono.png',
+          avatarUrl: profile.avatarUrl || '/assets/portraits/edacorn icono.webp',
           role: 'Gran Maestre',
           playGamesLevel: playerLevel(),
           squadPower: 25000,
@@ -294,7 +294,7 @@ class ClanService {
     const newMember: ClanMember = {
       playerId: profile.playerId,
       gamerTag: profile.gamerTag || 'Aventurero',
-      avatarUrl: profile.avatarUrl || '/assets/portraits/edacorn icono.png',
+      avatarUrl: profile.avatarUrl || '/assets/portraits/edacorn icono.webp',
       role: 'Iniciado',
       playGamesLevel: playerLevel(),
       squadPower: 18500,

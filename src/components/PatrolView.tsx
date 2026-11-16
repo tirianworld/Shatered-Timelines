@@ -39,7 +39,7 @@ export const PatrolView: React.FC = () => {
     <div className="relative w-full h-full flex-1 overflow-y-auto no-scrollbar text-stone-100 p-3 sm:p-5 space-y-5 pb-28 sm:pb-32 select-none">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-25 mix-blend-luminosity filter blur-sm pointer-events-none"
-        style={{ backgroundImage: `url('/assets/backgrounds/fondo_quest.png')` }}
+        style={{ backgroundImage: `url('/assets/backgrounds/fondo_quest.webp')` }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-stone-950/70 via-stone-950/90 to-stone-950 pointer-events-none" />
 
@@ -89,7 +89,7 @@ export const PatrolView: React.FC = () => {
                   <div className="flex items-center gap-4 py-2 border-y border-stone-800/80 text-xs font-mono">
                     <span className="text-amber-400 font-bold">+{patrol.rewards.gold} Oro</span>
                     <span className="text-cyan-400 font-bold flex items-center gap-1">
-                      <img src="/assets/items/gema_del_recuerdo.png" alt="" className="w-3.5 h-3.5 object-contain inline" />
+                      <img src="/assets/items/gema_del_recuerdo.webp" alt="" className="w-3.5 h-3.5 object-contain inline" />
                       +{patrol.rewards.crystals} Cristales del Recuerdo
                     </span>
                     <span className="text-stone-300 font-bold">+{patrol.rewards.xp} XP</span>

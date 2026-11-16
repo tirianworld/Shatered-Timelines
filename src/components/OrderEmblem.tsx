@@ -21,7 +21,7 @@ export const OrderEmblem: React.FC<OrderEmblemProps> = ({ emblem, className = ''
         alt=""
         className={`object-contain ${className}`}
         onError={(e) => {
-          (e.currentTarget as HTMLImageElement).src = '/assets/items/Recurso 287@4x.png';
+          (e.currentTarget as HTMLImageElement).src = '/assets/items/Recurso 287@4x.webp';
         }}
       />
     );

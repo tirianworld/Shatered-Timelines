@@ -33,7 +33,7 @@ export const MailboxModal: React.FC = () => {
       <div className="relative w-full max-w-[420px] sm:max-w-[440px] h-[78vh] sm:h-[650px] max-h-[88vh] flex flex-col">
         {/* Authentic Smooth Background Parchment Asset (fondo_mensajes.png) */}
         <img
-          src="/assets/backgrounds/fondo_mensajes.png"
+          src="/assets/backgrounds/fondo_mensajes.webp"
           alt="Pergamino de Notificaciones"
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.9)]"
         />
@@ -50,7 +50,7 @@ export const MailboxModal: React.FC = () => {
           aria-label="Cerrar Buzón"
         >
           <img
-            src="/assets/ui/sello_cerrar.png"
+            src="/assets/ui/sello_cerrar.webp"
             alt="Cerrar"
             className="w-full h-full object-contain filter group-hover:brightness-110"
           />
@@ -81,7 +81,7 @@ export const MailboxModal: React.FC = () => {
                 title="Reclamar todas las recompensas"
               >
                 <img
-                  src="/assets/items/BOTON BOTON TIENDA.png"
+                  src="/assets/items/BOTON BOTON TIENDA.webp"
                   alt=""
                   className="absolute inset-0 w-full h-full object-cover rounded pointer-events-none"
                 />
@@ -111,7 +111,7 @@ export const MailboxModal: React.FC = () => {
                 >
                   {/* Paper Background Asset (HISTORIA NIVEL BOTON.png) requested by user */}
                   <img
-                    src="/assets/items/historia_nivel_boton.png"
+                    src="/assets/items/historia_nivel_boton.webp"
                     alt=""
                     className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
                   />
@@ -153,7 +153,7 @@ export const MailboxModal: React.FC = () => {
                         {mail.rewardGold && (
                           <div className="flex items-center gap-1 bg-[#3a1805]/15 px-2 py-0.5 rounded-full border border-[#854516]/30">
                             <img
-                              src="/assets/items/moneda_de_moonhaven.png"
+                              src="/assets/items/moneda_de_moonhaven.webp"
                               alt="Oro"
                               className="w-3.5 h-3.5 object-contain"
                             />
@@ -165,7 +165,7 @@ export const MailboxModal: React.FC = () => {
                         {mail.rewardCrystals && (
                           <div className="flex items-center gap-1 bg-[#3a1805]/15 px-2 py-0.5 rounded-full border border-[#854516]/30">
                             <img
-                              src="/assets/items/gema_del_recuerdo.png"
+                              src="/assets/items/gema_del_recuerdo.webp"
                               alt="Cristales del Recuerdo"
                               className="w-3.5 h-3.5 object-contain"
                             />
@@ -194,7 +194,7 @@ export const MailboxModal: React.FC = () => {
                               className="relative px-3 py-1 text-xs font-black text-amber-950 uppercase tracking-wide cursor-pointer hover:brightness-110 active:scale-95 transition-transform flex items-center justify-center shrink-0 shadow-sm"
                             >
                               <img
-                                src="/assets/items/BOTON BOTON TIENDA.png"
+                                src="/assets/items/BOTON BOTON TIENDA.webp"
                                 alt=""
                                 className="absolute inset-0 w-full h-full object-cover rounded pointer-events-none"
                               />

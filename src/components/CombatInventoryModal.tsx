@@ -120,7 +120,7 @@ export const CombatInventoryModal: React.FC<CombatInventoryModalProps> = ({
       name: 'Hamburguesa Artesanal',
       category: 'food',
       count: 3,
-      icon: '/assets/items/hamburguesa.png',
+      icon: '/assets/items/hamburguesa.webp',
       rarity: 'SR',
       description: 'Hamburguesa de las colinas de Icespear. Otorga +25% Ataque Total en combate.',
     });
@@ -129,7 +129,7 @@ export const CombatInventoryModal: React.FC<CombatInventoryModalProps> = ({
       name: 'Pizza Fundida',
       category: 'food',
       count: 3,
-      icon: '/assets/items/pizza.png',
+      icon: '/assets/items/pizza.webp',
       rarity: 'SR',
       description: 'Queso fundido al horno de leña. Otorga +30% Defensa y Escudo Protector de 30 PV.',
     });
@@ -138,7 +138,7 @@ export const CombatInventoryModal: React.FC<CombatInventoryModalProps> = ({
       name: 'Ramen Humeante',
       category: 'food',
       count: 3,
-      icon: '/assets/items/ramen.png',
+      icon: '/assets/items/ramen.webp',
       rarity: 'SR',
       description: 'Caldo caliente y reconfortante. Restaura 40 PV y regenera +8 PV por turno.',
     });
@@ -147,7 +147,7 @@ export const CombatInventoryModal: React.FC<CombatInventoryModalProps> = ({
       name: 'Panes de Ajo Dorados',
       category: 'food',
       count: 4,
-      icon: '/assets/items/panes_de_ajo.png',
+      icon: '/assets/items/panes_de_ajo.webp',
       rarity: 'R',
       description: 'Crujientes con ajo y mantequilla. Otorga +2 Cargas Definitivas al instante.',
     });
@@ -159,7 +159,7 @@ export const CombatInventoryModal: React.FC<CombatInventoryModalProps> = ({
     <div className="absolute inset-0 z-50 flex flex-col justify-start select-none bg-[#1d0b04] overflow-hidden animate-fade-in">
       {/* Background: Exact same vertical wood planks as main inventory */}
       <img
-        src="/assets/backgrounds/fondo inventario app.png"
+        src="/assets/backgrounds/fondo inventario app.webp"
         alt="Fondo Estanterías"
         className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 brightness-90 contrast-105"
       />
@@ -185,14 +185,14 @@ export const CombatInventoryModal: React.FC<CombatInventoryModalProps> = ({
           <div className="relative w-[68px] h-[86px] sm:w-[74px] sm:h-[94px] flex items-center justify-center">
             {/* Hanging sign asset with chains */}
             <img
-              src="/assets/items/cartel shop.png"
+              src="/assets/items/cartel shop.webp"
               alt="Consumibles"
               className="w-full h-full object-contain pointer-events-none filter drop-shadow-[0_6px_8px_rgba(0,0,0,0.85)] brightness-105"
             />
             {/* Category Emblem inside lower square carved box */}
             <div className="absolute bottom-3 sm:bottom-3.5 inset-x-0 flex items-center justify-center pointer-events-none">
               <img
-                src="/assets/items/hamburguesa.png"
+                src="/assets/items/hamburguesa.webp"
                 alt="Comida"
                 className="w-9 h-9 sm:w-10 sm:h-10 object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.9)] brightness-110"
               />
@@ -285,7 +285,7 @@ export const CombatInventoryModal: React.FC<CombatInventoryModalProps> = ({
                         {/* Round wooden plate resting directly on the top surface plane */}
                         <div className="relative w-[62px] sm:w-[68px] aspect-[1/0.46] flex items-center justify-center">
                           <img
-                            src="/assets/items/base item app.png"
+                            src="/assets/items/base item app.webp"
                             alt=""
                             className="w-full h-full object-contain pointer-events-none filter drop-shadow-[0_3px_4px_rgba(0,0,0,0.85)]"
                           />
@@ -334,7 +334,7 @@ export const CombatInventoryModal: React.FC<CombatInventoryModalProps> = ({
               {/* Wooden Shelf Plank: adjusted 15% to the left (-40% translate) matching InventoryView */}
               <div className="relative z-0 w-[126%] left-1/2 -translate-x-[40%] max-w-none h-[103px] sm:h-[113px]">
                 <img
-                  src="/assets/items/baldas.png"
+                  src="/assets/items/baldas.webp"
                   alt="Estantería"
                   className="w-full h-full object-fill pointer-events-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.95)]"
                 />
@@ -408,7 +408,7 @@ export const CombatInventoryModal: React.FC<CombatInventoryModalProps> = ({
               <div className="bg-[#100502] border border-amber-800/40 rounded-xl p-3.5 flex flex-col items-center space-y-2.5">
                 <div className="relative w-20 h-20 flex items-center justify-center">
                   <img
-                    src="/assets/items/base item app.png"
+                    src="/assets/items/base item app.webp"
                     alt=""
                     className="absolute bottom-0 w-22 object-contain pointer-events-none"
                   />

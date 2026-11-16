@@ -92,14 +92,14 @@ const GameContent: React.FC = () => {
         <img
           src={
             currentTab === 'shop'
-              ? '/assets/backgrounds/FONDO_TIENDA_BACKUP.png'
+              ? '/assets/backgrounds/FONDO_TIENDA_BACKUP.webp'
               : currentTab === 'inventory'
-              ? '/assets/backgrounds/fondo inventario app.png'
+              ? '/assets/backgrounds/fondo inventario app.webp'
               : currentTab === 'forge'
-              ? '/assets/backgrounds/fondo_herreria_1.png'
+              ? '/assets/backgrounds/fondo_herreria_1.webp'
               : currentTab === 'potions'
-              ? '/assets/aistudio/image_180f7992.png'
-              : '/assets/items/recurso_8_4x.png'
+              ? '/assets/aistudio/image_180f7992.webp'
+              : '/assets/items/recurso_8_4x.webp'
           }
           alt="Fondo"
           className={`absolute inset-0 w-full h-full pointer-events-none select-none z-0 ${

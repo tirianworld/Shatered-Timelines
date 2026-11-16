@@ -755,7 +755,7 @@ export const BarledSkillVfxOverlay: React.FC<BarledSkillVfxOverlayProps> = ({
                   }}
                 >
                   <img
-                    src="/assets/combat/barled_vfx_inspiracion.png"
+                    src="/assets/combat/barled_vfx_inspiracion.webp"
                     alt="Inspiración del Oud"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-contain"
@@ -791,7 +791,7 @@ export const BarledSkillVfxOverlay: React.FC<BarledSkillVfxOverlayProps> = ({
                     }}
                   >
                     <img
-                      src="/assets/combat/barled_vfx_destello.png"
+                      src="/assets/combat/barled_vfx_destello.webp"
                       alt="Destello Feérico"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain"
@@ -818,14 +818,14 @@ export const BarledSkillVfxOverlay: React.FC<BarledSkillVfxOverlayProps> = ({
                 }`}
               >
                 <img
-                  src="/assets/combat/barled_vfx_feerico.png"
+                  src="/assets/combat/barled_vfx_feerico.webp"
                   alt="Fuego Feérico"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain origin-bottom animate-[barledFaerieVortexErupt_0.9s_cubic-bezier(0.16,1,0.3,1)_forwards]"
                   style={{ filter: feericoFilter }}
                 />
                 <img
-                  src="/assets/combat/barled_vfx_feerico.png"
+                  src="/assets/combat/barled_vfx_feerico.webp"
                   alt=""
                   referrerPolicy="no-referrer"
                   className="absolute inset-0 w-full h-full object-contain origin-bottom pointer-events-none"

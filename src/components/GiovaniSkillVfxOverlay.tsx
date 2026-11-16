@@ -891,7 +891,7 @@ export const GiovaniSkillVfxOverlay: React.FC<GiovaniSkillVfxOverlayProps> = ({
                   }}
                 >
                   <img
-                    src="/assets/combat/giovani_vfx_pluma.png"
+                    src="/assets/combat/giovani_vfx_pluma.webp"
                     alt="Pluma Sombría"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-contain"
@@ -944,7 +944,7 @@ export const GiovaniSkillVfxOverlay: React.FC<GiovaniSkillVfxOverlayProps> = ({
                     }}
                   >
                     <img
-                      src="/assets/combat/giovani_vfx_naipe.png"
+                      src="/assets/combat/giovani_vfx_naipe.webp"
                       alt="Naipe del Bribón"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain"
@@ -995,14 +995,14 @@ export const GiovaniSkillVfxOverlay: React.FC<GiovaniSkillVfxOverlayProps> = ({
                 }`}
               >
                 <img
-                  src="/assets/combat/giovani_vfx_llama.png"
+                  src="/assets/combat/giovani_vfx_llama.webp"
                   alt="Llama Arcana Violeta"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain origin-bottom animate-[giovaniTomoFlameErupt_0.9s_cubic-bezier(0.16,1,0.3,1)_forwards]"
                   style={{ filter: llamaShaderFilter }}
                 />
                 <img
-                  src="/assets/combat/giovani_vfx_llama.png"
+                  src="/assets/combat/giovani_vfx_llama.webp"
                   alt=""
                   referrerPolicy="no-referrer"
                   className="absolute inset-0 w-full h-full object-contain origin-bottom pointer-events-none"
@@ -1028,7 +1028,7 @@ export const GiovaniSkillVfxOverlay: React.FC<GiovaniSkillVfxOverlayProps> = ({
                 <>
                   <div className="absolute right-[13.5%] bottom-[19%] w-[108px] h-[152px] flex items-end justify-center pointer-events-none z-15 overflow-visible">
                     <img
-                      src="/assets/combat/giovani_vfx_llama.png"
+                      src="/assets/combat/giovani_vfx_llama.webp"
                       alt=""
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain origin-bottom scale-x-[-1] animate-[giovaniTomoFlameErupt_0.84s_0.08s_cubic-bezier(0.16,1,0.3,1)_both]"
@@ -1037,7 +1037,7 @@ export const GiovaniSkillVfxOverlay: React.FC<GiovaniSkillVfxOverlayProps> = ({
                   </div>
                   <div className="absolute right-[3%] bottom-[20%] w-[98px] h-[142px] flex items-end justify-center pointer-events-none z-15 overflow-visible">
                     <img
-                      src="/assets/combat/giovani_vfx_llama.png"
+                      src="/assets/combat/giovani_vfx_llama.webp"
                       alt=""
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain origin-bottom animate-[giovaniTomoFlameErupt_0.82s_0.14s_cubic-bezier(0.16,1,0.3,1)_both]"
@@ -1066,7 +1066,7 @@ export const GiovaniSkillVfxOverlay: React.FC<GiovaniSkillVfxOverlayProps> = ({
                 }}
               >
                 <img
-                  src="/assets/combat/giovani_vfx_zap.png"
+                  src="/assets/combat/giovani_vfx_zap.webp"
                   alt="ZAP!"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain animate-[giovaniZapPopCartoony_0.48s_cubic-bezier(0.22,1.28,0.36,1)_forwards]"

@@ -163,7 +163,7 @@ export const DailyRewardsModal: React.FC = () => {
       {/* Marco de madera del resto de menús */}
       <div className="relative w-full max-w-[420px] max-h-[94vh] flex flex-col overflow-hidden rounded-2xl wood-frame">
         <img
-          src="/assets/ui/nav_bar_wood_background.jpg"
+          src="/assets/ui/nav_bar_wood_background.webp"
           alt=""
           className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none opacity-30 mix-blend-luminosity"
         />
@@ -430,11 +430,11 @@ export const DailyRewardsModal: React.FC = () => {
               <p className="text-[9px] text-stone-300/85 leading-snug line-clamp-2">{reward.subtitle}</p>
               <div className="mt-1 flex flex-wrap items-center gap-1">
                 {reward.gold ? (
-                  <CurrencyChip icon="/assets/items/moneda_de_moonhaven.png" value={`+${reward.gold.toLocaleString('es-ES')}`} />
+                  <CurrencyChip icon="/assets/items/moneda_de_moonhaven.webp" value={`+${reward.gold.toLocaleString('es-ES')}`} />
                 ) : null}
                 {reward.crystals ? (
                   <CurrencyChip
-                    icon="/assets/items/gema_del_recuerdo.png"
+                    icon="/assets/items/gema_del_recuerdo.webp"
                     value={`+${reward.crystals.toLocaleString('es-ES')}`}
                     tone="crystal"
                   />

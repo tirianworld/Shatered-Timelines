@@ -20,16 +20,16 @@ export const FORGE_TUTORIAL_GOLD = 500;
 
 /** Materiales que Goryn deja apartados en el yunque para la primera espada. */
 export const FORGE_TUTORIAL_MATERIALS = [
-  { name: 'Lingote de Hierro', icon: '/assets/items/lingote_app.png', count: 6 },
+  { name: 'Lingote de Hierro', icon: '/assets/items/lingote_app.webp', count: 6 },
   {
     name: 'Mango de Espada',
-    icon: '/assets/aistudio/mango_de_espada_ITEM_80f48554.png',
+    icon: '/assets/aistudio/mango_de_espada_ITEM_80f48554.webp',
     count: 1,
   },
-  { name: 'Kit de Herrería', icon: '/assets/items/kit_de_herreria_app.png', count: 1 },
+  { name: 'Kit de Herrería', icon: '/assets/items/kit_de_herreria_app.webp', count: 1 },
 ] as const;
 
-const FORGE_BACKGROUND = '/assets/backgrounds/herreria_fondo_icespear.png';
+const FORGE_BACKGROUND = '/assets/backgrounds/herreria_fondo_icespear.webp';
 
 export const GORYN_FORGE_DIALOGUE: DialogueLine[] = [
   {

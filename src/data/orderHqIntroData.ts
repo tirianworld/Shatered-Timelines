@@ -13,7 +13,7 @@ export const ORDER_HQ_TUTORIAL_DONE_KEY = 'cdd_order_hq_tutorial_done_v1';
 /** Identificador de misión ficticia que abre la cinemática de Nala. */
 export const ORDER_HQ_INTRO_MISSION_ID = 'sede_nala';
 
-const ORDER_HQ_BACKGROUND = '/assets/backgrounds/fondo_icespear_1.png';
+const ORDER_HQ_BACKGROUND = '/assets/backgrounds/fondo_icespear_1.webp';
 
 export const NALA_ORDER_HQ_DIALOGUE: DialogueLine[] = [
   {

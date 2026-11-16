@@ -28,7 +28,7 @@ export const CampView: React.FC = () => {
       {/* Background Graphic */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-luminosity filter blur-[1px] pointer-events-none"
-        style={{ backgroundImage: `url('/assets/backgrounds/taverna_fondo.png')` }}
+        style={{ backgroundImage: `url('/assets/backgrounds/taverna_fondo.webp')` }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent pointer-events-none" />
 
@@ -150,7 +150,7 @@ export const CampView: React.FC = () => {
                           alt={hero.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-all"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/assets/portraits/Aeliana.png';
+                            (e.target as HTMLImageElement).src = '/assets/portraits/Aeliana.webp';
                           }}
                         />
                         <span

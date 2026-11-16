@@ -373,7 +373,7 @@ export const OrderClanView: React.FC = () => {
       {/* 1. CABECERA DE LA SEDE */}
       <div className="relative w-full h-[168px] shrink-0 overflow-hidden border-b-2 border-[#451f10] shadow-2xl">
         <img
-          src={clan?.buildingImage || '/assets/aistudio/image_6578a593.png'}
+          src={clan?.buildingImage || '/assets/aistudio/image_6578a593.webp'}
           alt="Sede de la Orden de Icespear"
           className="w-full h-full object-cover object-center filter brightness-90 contrast-105"
         />
@@ -649,7 +649,7 @@ export const OrderClanView: React.FC = () => {
                             alt={member.gamerTag}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              (e.currentTarget as HTMLImageElement).src = '/assets/portraits/edacorn icono.png';
+                              (e.currentTarget as HTMLImageElement).src = '/assets/portraits/edacorn icono.webp';
                             }}
                           />
                           {member.role === 'Gran Maestre' && (
@@ -1274,7 +1274,7 @@ export const OrderClanView: React.FC = () => {
           {/* Nala en escena (busto de novela visual, encuadrado entre las pestañas y el panel) */}
           <div className="absolute left-1/2 -translate-x-1/2 bottom-[26%] w-[310px] h-[250px] overflow-hidden pointer-events-none">
             <img
-              src="/assets/portraits/nala.png"
+              src="/assets/portraits/nala.webp"
               alt="Nala"
               onError={(event) => {
                 event.currentTarget.style.visibility = 'hidden';
@@ -1287,7 +1287,7 @@ export const OrderClanView: React.FC = () => {
           <div className="absolute inset-x-0 bottom-0 h-[248px] sm:h-[268px] pointer-events-auto">
             <div className="relative w-full h-full bg-gradient-to-t from-black via-[#0d0401] to-[#0d0401]/95">
               <img
-                src="/assets/items/panel_dialogo_idl.png"
+                src="/assets/items/panel_dialogo_idl.webp"
                 alt="Panel de Diálogo"
                 className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none drop-shadow-[0_-4px_20px_rgba(0,0,0,0.98)]"
               />
