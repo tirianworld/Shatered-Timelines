@@ -212,6 +212,30 @@ export const QuestView: React.FC = () => {
       stageId: 'stage_duelo_hobgoblin',
       isStory: true,
     },
+    {
+      id: 'm10b_encuentro_chispo',
+      title: 'El Paladín de Glimmerstone',
+      iconType: 'boss',
+      difficulty: 'Facil',
+      description:
+        '¡Cinemática de Regreso a Icespear! Al acercarse a la taberna, Caldo de Dragón se encuentra en mitad de la calle con Chispo Deez, un paladín de Marduk de Glimmerstone reclutado por el Capitán Gabriel. Tras presentarse Pepe Loux, ¡todos celebran en la taberna!',
+      portrait: '/assets/portraits/chispo_deez_icono.webp',
+      portraitClass: 'scale-[1.12] translate-y-0.5 object-center',
+      stageId: 'stage_encuentro_chispo',
+      isStory: true,
+    },
+    {
+      id: 'm10c_callejon_hoggoblins',
+      title: 'Saludos en el Callejón',
+      iconType: 'swords',
+      difficulty: 'Pesadilla',
+      description:
+        '¡Emboscada tras la taberna! En mitad del brindis, a Arlem le da un amarillo por el polvo de hada y sale al callejón trasero con Pepe Loux a vomitar arcoíris líquido. ¡Dos rondas contra hoggoblins encapuchados con dagas y ballestas que traen saludos de Ferton!',
+      portrait: '/assets/portraits/hoggoblin_daga_thumb.webp',
+      portraitClass: 'scale-[1.2] translate-y-0.5 object-center',
+      stageId: 'stage_callejon_hoggoblins',
+      isStory: true,
+    },
   ];
 
   // Chapter 4 missions - The icy peaks of Pico Icespear (future / upcoming missions)
@@ -336,6 +360,8 @@ export const QuestView: React.FC = () => {
         mission.id === 'm8_intro_capitulo3' ||
         mission.id === 'm9_emboscada_ferton' ||
         mission.id === 'm10_hobgoblin_boss' ||
+        mission.id === 'm10b_encuentro_chispo' ||
+        mission.id === 'm10c_callejon_hoggoblins' ||
         mission.isStory) &&
       (!questProgress.completedMissions.includes(mission.id) || forceStory || mission.isStory);
 
@@ -343,6 +369,7 @@ export const QuestView: React.FC = () => {
     let missionId = mission.id;
     if (playsStory && forceStory && questProgress.completedMissions.includes(mission.id)) {
       const epilogues: Record<string, string> = {
+        m10c_callejon_hoggoblins: 'm10c_callejon_hoggoblins_epilogo',
         m10_hobgoblin_boss: 'm10_hobgoblin_boss_epilogo',
         m9_emboscada_ferton: 'm9_emboscada_ferton_epilogo',
         m2_robo: 'm2_robo_epilogo',
@@ -731,8 +758,9 @@ export const QuestView: React.FC = () => {
               isCompleted;
 
             const isFertonMission = mission.id === 'm9_emboscada_ferton';
+            const isCallejonHoggoblinsMission = mission.id === 'm10c_callejon_hoggoblins';
             const isStoryMission =
-              (mission.isStory && !isFertonMission) ||
+              (mission.isStory && !isFertonMission && !isCallejonHoggoblinsMission) ||
               mission.id === 'm1_tirano' ||
               mission.id === 'm5_minas_historia';
             const isRoboMission = mission.id === 'm2_robo';
@@ -871,7 +899,9 @@ export const QuestView: React.FC = () => {
                         mission.id === 'm5_minas_historia' ||
                         mission.id === 'm8_intro_capitulo3' ||
                         mission.id === 'm9_emboscada_ferton' ||
-                        mission.id === 'm10_hobgoblin_boss';
+                        mission.id === 'm10_hobgoblin_boss' ||
+                        mission.id === 'm10b_encuentro_chispo' ||
+                        mission.id === 'm10c_callejon_hoggoblins';
 
                       if (hasStoryBtn && isCompleted) {
                         return (

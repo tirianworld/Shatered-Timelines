@@ -31,6 +31,9 @@ import {
   STORY_CAPITULO3_M9_EPILOGUE_DIALOGUE,
   STORY_CAPITULO3_M10_DIALOGUE,
   STORY_CAPITULO3_M10_EPILOGUE_DIALOGUE,
+  STORY_CAPITULO3_CHISPO_DIALOGUE,
+  STORY_CAPITULO3_M10C_DIALOGUE,
+  STORY_CAPITULO3_M10C_EPILOGUE_DIALOGUE,
   CHARACTER_PROFILES,
   DialogueLine,
   EmotionType,
@@ -149,6 +152,14 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     setActiveQuestChapter,
   } = useGame();
 
+  const isCallejonHoggoblinsMission =
+    selectedCombatMissionId === 'm10c_callejon_hoggoblins' ||
+    selectedCombatMissionId === 'm10c_callejon_hoggoblins_epilogo';
+  const isCallejonHoggoblinsEpilogue =
+    selectedCombatMissionId === 'm10c_callejon_hoggoblins_epilogo';
+  const isChispoEncuentroMission =
+    selectedCombatMissionId === 'm10b_encuentro_chispo' ||
+    selectedCombatMissionId === 'm10b_encuentro_chispo_epilogo';
   const isHobgoblinBossMission =
     selectedCombatMissionId === 'm10_hobgoblin_boss' ||
     selectedCombatMissionId === 'm10_hobgoblin_boss_epilogo';
@@ -223,6 +234,12 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     ? GORYN_FORGE_DIALOGUE
     : isKitchenIntro
     ? PACO_FOGON_DIALOGUE
+    : isCallejonHoggoblinsEpilogue
+    ? STORY_CAPITULO3_M10C_EPILOGUE_DIALOGUE
+    : isCallejonHoggoblinsMission
+    ? STORY_CAPITULO3_M10C_DIALOGUE
+    : isChispoEncuentroMission
+    ? STORY_CAPITULO3_CHISPO_DIALOGUE
     : isHobgoblinBossEpilogue
     ? STORY_CAPITULO3_M10_EPILOGUE_DIALOGUE
     : isHobgoblinBossMission
@@ -474,10 +491,10 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     if (currentLineIndex < dialogueLines.length - 1) {
       setCurrentLineIndex((prev) => prev + 1);
     } else {
-      if (isAldeaEpilogue || isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue || isFertonEpilogue) {
+      if (isAldeaEpilogue || isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue || isFertonEpilogue || isChispoEncuentroMission || isCallejonHoggoblinsEpilogue) {
         handleCompleteStory();
-      } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isRoboMission || isBosqueMission || isPuertasMission || isEmboscadaMission || isAsaltoOrcoMission || isFuriaCarmesiMission || (isFertonMission && !isFertonEpilogue)) {
-        setScreenFlash(isFertonMission ? 'gold' : isTitanMission ? 'gold' : isZancudoMission ? 'purple' : isCavernaAzulMission ? 'cyan' : isFuriaCarmesiMission ? 'cyan' : 'red');
+      } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isRoboMission || isBosqueMission || isPuertasMission || isEmboscadaMission || isAsaltoOrcoMission || isFuriaCarmesiMission || (isFertonMission && !isFertonEpilogue) || (isCallejonHoggoblinsMission && !isCallejonHoggoblinsEpilogue)) {
+        setScreenFlash(isCallejonHoggoblinsMission ? 'red' : isFertonMission ? 'gold' : isTitanMission ? 'gold' : isZancudoMission ? 'purple' : isCavernaAzulMission ? 'cyan' : isFuriaCarmesiMission ? 'cyan' : 'red');
         setBattleTransitionAlert(true);
         setTimeout(() => {
           handleStartCombatAfterStory();
@@ -496,7 +513,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         handleCompleteStory();
       }
     }
-  }, [isTyping, currentLine.text, currentLineIndex, dialogueLines.length, isAldeaEpilogue, isLaberintoMission, isTitanMission, isTitanEpilogue, isZancudoMission, isZancudoEpilogue, isRoboMission, isRoboEpilogue, isBosqueMission, isBosqueEpilogue, isPuertasMission, isPuertasEpilogue, isEmboscadaMission, isEmboscadaEpilogue, isAsaltoOrcoMission, isAsaltoOrcoEpilogue, isMinasHistoriaMission, isFuriaCarmesiMission, isFuriaCarmesiEpilogue, isCavernaAzulMission, isCavernaAzulEpilogue, isFertonMission, isFertonEpilogue, isHobgoblinBossMission, isHobgoblinBossEpilogue]);
+  }, [isTyping, currentLine.text, currentLineIndex, dialogueLines.length, isAldeaEpilogue, isLaberintoMission, isTitanMission, isTitanEpilogue, isZancudoMission, isZancudoEpilogue, isRoboMission, isRoboEpilogue, isBosqueMission, isBosqueEpilogue, isPuertasMission, isPuertasEpilogue, isEmboscadaMission, isEmboscadaEpilogue, isAsaltoOrcoMission, isAsaltoOrcoEpilogue, isMinasHistoriaMission, isFuriaCarmesiMission, isFuriaCarmesiEpilogue, isCavernaAzulMission, isCavernaAzulEpilogue, isFertonMission, isFertonEpilogue, isHobgoblinBossMission, isHobgoblinBossEpilogue, isChispoEncuentroMission, isCallejonHoggoblinsMission, isCallejonHoggoblinsEpilogue]);
 
   const handleCompleteStory = () => {
     // Las bienvenidas del fogón y de la forja no son misiones: nunca deben
@@ -521,6 +538,40 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     launchConfetti();
     setIsStoryCompleted(true);
     setIsAutoPlay(false);
+
+    if (isCallejonHoggoblinsEpilogue) {
+      completeQuestMission('m10c_callejon_hoggoblins', 3);
+      addGold(45000);
+      addCrystals(1800);
+      addShelfItem({
+        id: `tunica_sicario_ferton_${Date.now()}`,
+        name: 'Túnica Negra y Dorada de Sicario de Ferton',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/portraits/hoggoblin_daga_thumb.webp',
+        rarity: 'UR',
+        priceGold: 40000,
+        description: 'Túnica encapuchada negra con bordados dorados requisada a los hoggoblins que tendieron una emboscada en el callejón de la taberna.',
+      });
+      return;
+    }
+
+    if (isChispoEncuentroMission) {
+      completeQuestMission('m10b_encuentro_chispo', 3);
+      addGold(30000);
+      addCrystals(1200);
+      addShelfItem({
+        id: `jarra_glimmerstone_marduk_${Date.now()}`,
+        name: 'Jarra Conmemorativa de Marduk y Glimmerstone',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/portraits/chispo_deez_icono.webp',
+        rarity: 'UR',
+        priceGold: 30000,
+        description: 'Jarra de acero enano y oro grabada con el sol de Marduk, testigo del encuentro entre Chispo Deez y Pepe Loux en la taberna de Icespear.',
+      });
+      return;
+    }
 
     if (isHobgoblinBossEpilogue) {
       completeQuestMission('m10_hobgoblin_boss', 3);
@@ -893,6 +944,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       setSelectedCombatMissionId('m4_puertas_selladas');
     } else if (isBosqueMission) {
       setSelectedCombatMissionId('m3_bosque');
+    } else if (isCallejonHoggoblinsMission) {
+      setSelectedCombatMissionId('m10c_callejon_hoggoblins');
     } else if (isHobgoblinBossMission) {
       setSelectedCombatMissionId('m10_hobgoblin_boss');
     } else if (isFertonMission) {
@@ -1371,7 +1424,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               <Swords className="w-6 h-6 text-red-400" />
             </div>
             <span className="text-[10px] font-black uppercase tracking-widest text-red-400 block animate-pulse">
-              {isTitanMission
+              {isCallejonHoggoblinsMission
+                ? '¡EMBOSCADA TRAS LA TABERNA!'
+                : isTitanMission
                 ? '¡DESPERTAR DEL TITÁN MELENUDO!'
                 : isZancudoMission
                 ? '¡EMBOSCADA EN LAS TELARAÑAS!'
@@ -1384,7 +1439,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 : '¡ALARMA EN EL CALLEJÓN!'}
             </span>
             <h3 className="font-serif font-black text-base uppercase text-amber-200">
-              {isTitanMission
+              {isCallejonHoggoblinsMission
+                ? '¡Hoggoblins Encapuchados!'
+                : isTitanMission
                 ? '¡El Titán Melenudo!'
                 : isZancudoMission
                 ? '¡El Zancudo Espectral!'
@@ -1397,7 +1454,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 : '¡Rodeados por la Guardia!'}
             </h3>
             <p className="text-[11px] text-stone-200 leading-snug">
-              {isTitanMission
+              {isCallejonHoggoblinsMission
+                ? '¡Sicarios de Ferton con túnicas negras y doradas bloquean la puerta trasera de la taberna! ¡Sobrevive a 2 rondas contra dagas y ballestas!'
+                : isTitanMission
                 ? '¡El estornudo de Lord Vaelas ha despertado al titán! Todos sus ataques son eléctricos (25% aturdimiento) y tiene 80% de resistencia al daño definitivo.'
                 : isZancudoMission
                 ? '¡La temible tejedora de agujas desciende de las vigas! Cuidado: ¡cada vez que recibe daño invoca a un araknoide básico más!'
@@ -1683,7 +1742,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
             {/* Action Buttons */}
             <div className="space-y-2 pt-1">
-              {!isFertonEpilogue && !isCapitulo3IntroMission && !isAldeaEpilogue && !isLaberintoMission && !isRoboEpilogue && !isBosqueEpilogue && !isPuertasEpilogue && !isEmboscadaEpilogue && !isAsaltoOrcoEpilogue && !isFuriaCarmesiEpilogue && !isCavernaAzulEpilogue && !isZancudoEpilogue && (
+              {!isCallejonHoggoblinsEpilogue && !isChispoEncuentroMission && !isFertonEpilogue && !isCapitulo3IntroMission && !isAldeaEpilogue && !isLaberintoMission && !isRoboEpilogue && !isBosqueEpilogue && !isPuertasEpilogue && !isEmboscadaEpilogue && !isAsaltoOrcoEpilogue && !isFuriaCarmesiEpilogue && !isCavernaAzulEpilogue && !isZancudoEpilogue && (
                 <button
                   type="button"
                   onClick={handleStartCombatAfterStory}
@@ -1691,7 +1750,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 >
                   <Swords className="w-4 h-4" />
                   <span>
-                    {isFertonMission
+                    {isCallejonHoggoblinsMission
+                      ? '¡Enfrentar a los Hoggoblins Encapuchados! (2 Rondas)'
+                      : isFertonMission
                       ? '¡Enfrentar a la Guardia Negra! (3 Oleadas)'
                       : isMinasHistoriaMission
                       ? '¡Iniciar Exterminio: Araknoide Carmesí!'
@@ -1729,7 +1790,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  if (isCapitulo3IntroMission || isFertonMission) {
+                  if (isCallejonHoggoblinsMission || isChispoEncuentroMission || isCapitulo3IntroMission || isFertonMission || isHobgoblinBossMission) {
                     setActiveQuestChapter(3);
                     handleReturnToQuests();
                   } else if (isAldeaEpilogue) {
@@ -1750,7 +1811,11 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                     : 'from-amber-700 via-amber-600 to-yellow-600 text-stone-950 font-black shadow-md'
                 } hover:brightness-110 rounded-xl text-xs uppercase tracking-wider cursor-pointer transition-all active:scale-95`}
               >
-                {isCapitulo3IntroMission
+                {isCallejonHoggoblinsEpilogue
+                  ? '¡Callejón Despejado! Volver a Misiones'
+                  : isChispoEncuentroMission
+                  ? '¡Brindis Celebrado! Volver a Misiones'
+                  : isCapitulo3IntroMission
                   ? '¡Capítulo III Desbloqueado! Volver a Misiones'
                   : isAldeaEpilogue
                   ? '¡Capítulo II Finalizado! Volver a Misiones'

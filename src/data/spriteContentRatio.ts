@@ -211,6 +211,8 @@ export const SPRITE_POSE_SCALE: Record<string, number> = {
   '/assets/combat/semiboss_zancudo_clean.webp': 1.0,
   '/assets/combat/semiboss_zancudo_hurt.webp': 1.02,
   '/assets/combat/semiboss_zancudo_roar.webp': 0.88,
+  '/assets/combat/hoggoblin_daga_clean.webp': 1.0,
+  '/assets/combat/hoggoblin_ballesta_clean.webp': 1.0,
   '/assets/combat/tiefling_familia_clean.webp': 1.0,
   '/assets/combat/vagabundo_clean.webp': 1.0,
   '/assets/combat/drow_vaelas_llave_clean.webp': 1.0,

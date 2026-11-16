@@ -2246,7 +2246,9 @@ export type CombatEnemyId =
   | 'guarda_negro_alabarda'
   | 'guarda_negro_ballesta'
   | 'guarda_negro_pesado'
-  | 'hobgoblin_capataz';
+  | 'hobgoblin_capataz'
+  | 'hoggoblin_encapuchado_daga'
+  | 'hoggoblin_encapuchado_ballesta';
 
 export interface EnemyConfig {
   id: CombatEnemyId;
@@ -4523,6 +4525,146 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         },
       },
     },
+    hoggoblin_encapuchado_daga: {
+      id: 'hoggoblin_encapuchado_daga',
+      missionId: 'm10c_callejon_hoggoblins',
+      name: 'Hoggoblin Encapuchado (Dagas)',
+      title: 'Sicario de Ferton • Túnica Negra y Dorada',
+      chamberName: 'Emboscada en el Callejón Trasero',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/hoggoblin_daga_clean.webp',
+      attackSpriteUrl: '/assets/combat/hoggoblin_daga_clean.webp',
+      hurtSpriteUrl: '/assets/combat/hoggoblin_daga_clean.webp',
+      thumbUrl: '/assets/portraits/hoggoblin_daga_thumb.webp',
+      maxHp: 115,
+      width: 146,
+      height: 196,
+      scaleClass: 'w-[146px] h-[196px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Tajo Doble de Dagas Curvas',
+        desc: 'Se abalanza desde la sombra con dos dagas afiladas de ébano y oro.',
+        damage: [14, 20],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 1,
+          title: 'Herida Sangrante',
+        },
+      },
+      specialSkill: {
+        name: 'Puñalada Traicionera del Callejón',
+        desc: 'Ataque furtivo dirigido a los costados con filo untado en ponzoña.',
+        damage: [18, 25],
+        vfx: 'shadow_needle',
+        sfx: 'hit',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'poison',
+          duration: 2,
+          stacks: 2,
+          title: 'Veneno del Callejón',
+        },
+      },
+      ultimateSkill: {
+        name: 'Danza Letal de Ferton',
+        desc: 'Torbellino rápido de múltiples puñaladas bajo su capa negra y dorada.',
+        damage: 34,
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'bleed',
+          duration: 3,
+          stacks: 2,
+          title: 'Hemorragia Profunda',
+        },
+      },
+      rewards: {
+        gold: 2800,
+        crystals: 110,
+        item: {
+          id: 'daga_dorada_callejon',
+          name: 'Daga Curva de Ébano y Oro',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/hoggoblin_daga_thumb.webp',
+          description: 'Daga curva con pomo dorado usada por los sicarios encapuchados de Ferton.',
+        },
+      },
+    },
+    hoggoblin_encapuchado_ballesta: {
+      id: 'hoggoblin_encapuchado_ballesta',
+      missionId: 'm10c_callejon_hoggoblins',
+      name: 'Hoggoblin Encapuchado (Ballesta)',
+      title: 'Ballestero de Ferton • Túnica Negra y Dorada',
+      chamberName: 'Emboscada en el Callejón Trasero',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/hoggoblin_ballesta_clean.webp',
+      attackSpriteUrl: '/assets/combat/hoggoblin_ballesta_clean.webp',
+      hurtSpriteUrl: '/assets/combat/hoggoblin_ballesta_clean.webp',
+      thumbUrl: '/assets/portraits/hoggoblin_ballesta_thumb.webp',
+      maxHp: 125,
+      width: 146,
+      height: 196,
+      scaleClass: 'w-[146px] h-[196px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Virote Sombrío de Ballesta',
+        desc: 'Disparo preciso a quemarropa entre los barriles del callejón.',
+        damage: [15, 22],
+        vfx: 'shadow_needle',
+        sfx: 'laser2',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Armadura Perforada',
+        },
+      },
+      specialSkill: {
+        name: 'Saeta Envenenada de Ferton',
+        desc: 'Virote pesado impregnado con toxina paralizante de contrabando.',
+        damage: [19, 26],
+        vfx: 'shadow_needle',
+        sfx: 'laser',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'poison',
+          duration: 2,
+          stacks: 2,
+          title: 'Toxina de Ferton',
+        },
+      },
+      ultimateSkill: {
+        name: 'Salva Traidora de Tres Virotes',
+        desc: 'Descarga rápida de saetas doradas que atraviesan la guardia.',
+        damage: 38,
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 2,
+          title: 'Perforación Severa',
+        },
+      },
+      rewards: {
+        gold: 3200,
+        crystals: 130,
+        item: {
+          id: 'virote_oro_callejon',
+          name: 'Ballesta Ligera de Ébano y Oro',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/hoggoblin_ballesta_thumb.webp',
+          description: 'Ballesta táctica de los emboscadores de Ferton con grabados dorados.',
+        },
+      },
+    },
   };
 
 export const HOBGOBLIN_SKILLS_BY_PHASE = {
@@ -4687,6 +4829,11 @@ export const calculateHobgoblinDamage = (
   }
 };
 
+export const CALLEJON_HOGGOBLIN_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Ronda 1: Sicarios Encapuchados de Ferton', isBoss: false, enemyConfigIds: ['hoggoblin_encapuchado_daga', 'hoggoblin_encapuchado_ballesta'], missionId: 'm10c_callejon_hoggoblins' },
+  { floor: 2, name: 'Ronda 2: Refuerzos Negros y Dorados', isBoss: true, enemyConfigIds: ['hoggoblin_encapuchado_daga', 'hoggoblin_encapuchado_ballesta', 'hoggoblin_encapuchado_daga', 'hoggoblin_encapuchado_ballesta'], missionId: 'm10c_callejon_hoggoblins' },
+];
+
 export const HOBGOBLIN_CHAMBERS: BaseChamber[] = [
   { floor: 1, name: 'Duelo de Honor contra el Capataz Hoggoblin', isBoss: true, enemyConfigIds: ['hobgoblin_capataz'], missionId: 'm10_hobgoblin_boss' },
 ];
@@ -4850,6 +4997,13 @@ export const createChamberEnemies = (floor: number, missionId?: string | null): 
       chosen.push(pool[Math.floor(Math.random() * pool.length)]);
     }
     configIds = chosen;
+  } else if (missionId === 'm10c_callejon_hoggoblins') {
+    if (floor <= 2) {
+      const chamber = CALLEJON_HOGGOBLIN_CHAMBERS[floor - 1] || CALLEJON_HOGGOBLIN_CHAMBERS[0];
+      configIds = chamber.enemyConfigIds;
+    } else {
+      configIds = ['hoggoblin_encapuchado_daga', 'hoggoblin_encapuchado_ballesta'];
+    }
   } else if (missionId === 'm9_emboscada_ferton') {
     if (floor <= 3) {
       const chamber = FERTON_GUARD_CHAMBERS[floor - 1] || FERTON_GUARD_CHAMBERS[0];
@@ -4958,6 +5112,7 @@ export const CombatView: React.FC = () => {
   const getInitialFloor = (): number => {
     if (
       selectedCombatMissionId === 'm10_hobgoblin_boss' ||
+      selectedCombatMissionId === 'm10c_callejon_hoggoblins' ||
       selectedCombatMissionId === 'm9_emboscada_ferton' ||
       selectedCombatMissionId === 'evento_asalto_orco' ||
       selectedCombatMissionId === 'evento_emboscada_bandidos' ||
@@ -7775,6 +7930,88 @@ export const CombatView: React.FC = () => {
       setTimeout(() => {
         navigateTo('story');
       }, 1500);
+      return;
+    }
+
+    // Specialized Wave Progression for Saludos en el Callejón (m10c_callejon_hoggoblins - 2 Rondas)
+    if (selectedCombatMissionId === 'm10c_callejon_hoggoblins') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      const waveGold = 4500 + currentFloor * 1500;
+      const waveCrystals = 180 + currentFloor * 70;
+
+      const firstEnemyCfg =
+        DUNGEON_ENEMIES[activeEnemiesRef.current[0]?.configId] || DUNGEON_ENEMIES['hoggoblin_encapuchado_daga'];
+      const itemDrop = {
+        id: `${firstEnemyCfg.rewards.item.id}_w${currentFloor}`,
+        name: firstEnemyCfg.rewards.item.name,
+        count: 1,
+        icon: firstEnemyCfg.rewards.item.icon,
+        rarity: firstEnemyCfg.rewards.item.rarity,
+        description: firstEnemyCfg.rewards.item.description,
+      };
+
+      setAccumulatedLoot((prev) => ({
+        gold: prev.gold + waveGold,
+        crystals: prev.crystals + waveCrystals,
+        items: [...prev.items, itemDrop],
+      }));
+
+      if (currentFloor >= 2) {
+        completeQuestMission('m10c_callejon_hoggoblins', 3);
+        addGold(20000);
+        addCrystals(600);
+        addShelfItem({
+          id: 'emblema_sicarios_ferton_callejon',
+          name: 'Emblema Negro y Dorado de Ferton',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/hoggoblin_ballesta_thumb.webp',
+          rarity: 'UR',
+          priceGold: 32000,
+          description: 'Broche dorado incautado a los hoggoblins encapuchados que tendieron la emboscada tras la taberna.',
+        });
+
+        if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+        if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+        accumulatedLoot.items.forEach((it) =>
+          addShelfItem({
+            id: `${it.id}_${Date.now()}`,
+            name: it.name,
+            category: 'materials',
+            rarity: it.rarity as any,
+            count: it.count,
+            icon: it.icon,
+            description: it.description,
+          })
+        );
+        setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+        setWaveClearBanner({
+          floor: 2,
+          gold: 20000,
+          crystals: 600,
+          nextFloor: 2,
+        });
+
+        setSelectedCombatMissionId('m10c_callejon_hoggoblins_epilogo');
+        setTimeout(() => {
+          navigateTo('story');
+        }, 1500);
+        return;
+      }
+
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold: waveGold,
+        crystals: waveCrystals,
+        nextFloor: currentFloor + 1,
+      });
+
+      setTimeout(() => {
+        startChamber(currentFloor + 1);
+      }, 1800);
       return;
     }
 
@@ -11444,7 +11681,9 @@ export const CombatView: React.FC = () => {
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <img
             src={
-              selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm9_emboscada_ferton'
+              selectedCombatMissionId === 'm10c_callejon_hoggoblins'
+                ? '/assets/backgrounds/callejon_trasero_taberna.webp'
+                : selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm9_emboscada_ferton'
                 ? '/assets/backgrounds/camino_bosque_carromatos.webp'
                 : selectedCombatMissionId === 'm5_cuevas_zancudo'
                 ? '/assets/backgrounds/mina_underdark_telaranas.webp'
@@ -12230,7 +12469,11 @@ export const CombatView: React.FC = () => {
           <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/65 backdrop-blur-xs pointer-events-none animate-in fade-in zoom-in-95 duration-200">
             <div className="px-6 py-4 rounded-2xl bg-gradient-to-r from-amber-950 via-yellow-900 to-amber-950 border-2 border-yellow-400 shadow-[0_0_40px_rgba(245,158,11,0.9)] text-center animate-bounce">
               <div className="text-[11px] uppercase tracking-widest text-amber-300 font-black mb-1">
-                {selectedCombatMissionId === 'm9_emboscada_ferton'
+                {selectedCombatMissionId === 'm10c_callejon_hoggoblins'
+                  ? waveClearBanner.floor >= 2
+                    ? '¡HOGGOBLINS ENCAPUCHADOS DERROTADOS!'
+                    : `¡RONDA ${waveClearBanner.floor} DE 2 SUPERADA!`
+                  : selectedCombatMissionId === 'm9_emboscada_ferton'
                   ? waveClearBanner.floor >= 3
                     ? '¡GUARDIA NEGRA DE FERTON DERROTADA!'
                     : `¡OLEADA ${waveClearBanner.floor} DE 3 SUPERADA!`
@@ -12241,7 +12484,11 @@ export const CombatView: React.FC = () => {
                   : `¡VICTORIA EN SALA ${waveClearBanner.floor}!`}
               </div>
               <div className="text-xl font-black text-white flex items-center gap-2 justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
-                {selectedCombatMissionId === 'm9_emboscada_ferton'
+                {selectedCombatMissionId === 'm10c_callejon_hoggoblins'
+                  ? waveClearBanner.floor >= 2
+                    ? '¡CALLEJÓN DESPEJADO!'
+                    : '¡PRIMER ASALTO GANADO!'
+                  : selectedCombatMissionId === 'm9_emboscada_ferton'
                   ? waveClearBanner.floor >= 3
                     ? '¡CARAVANA INTERCEPTADA!'
                     : '¡LÍNEA ENEMIGA ROTURA!'
@@ -12252,7 +12499,11 @@ export const CombatView: React.FC = () => {
                   : '¡SALA SUPERADA!'}
               </div>
               <div className="text-xs text-yellow-200 mt-2 font-mono font-bold">
-                {selectedCombatMissionId === 'm9_emboscada_ferton'
+                {selectedCombatMissionId === 'm10c_callejon_hoggoblins'
+                  ? waveClearBanner.floor >= 2
+                    ? 'Volviendo a la taberna para el epílogo...'
+                    : `Siguiente: Ronda ${waveClearBanner.nextFloor} de 2 (${CALLEJON_HOGGOBLIN_CHAMBERS[waveClearBanner.nextFloor - 1]?.name?.split(': ')[1] || 'Refuerzos'})...`
+                  : selectedCombatMissionId === 'm9_emboscada_ferton'
                   ? waveClearBanner.floor >= 3
                     ? 'Cargando epílogo y misterios de Ferton...'
                     : `Siguiente: Oleada ${waveClearBanner.nextFloor} de 3 (${FERTON_GUARD_CHAMBERS[waveClearBanner.nextFloor - 1]?.name?.split(': ')[1] || 'Guardia de Élite'})...`
@@ -13035,7 +13286,7 @@ export const CombatView: React.FC = () => {
                 onClick={handleRetreatAndClaim}
                 className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-lg"
               >
-                {selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' || selectedCombatMissionId === 'm10_hobgoblin_boss' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
+                {selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' || selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm10c_callejon_hoggoblins' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
               </button>
 
               <button

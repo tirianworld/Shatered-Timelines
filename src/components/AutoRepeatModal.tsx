@@ -315,6 +315,31 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
     ],
     tavernStockBonus: { ing_carne_ahumada: 5 },
   },
+  m10c_callejon_hoggoblins: {
+    gold: 35000,
+    crystals: 1400,
+    items: [
+      {
+        id: 'daga_dorada_sicario',
+        name: 'Daga Curva de Ébano y Oro',
+        category: 'materials',
+        rarity: 'SSR',
+        icon: '/assets/portraits/hoggoblin_daga_thumb.webp',
+        count: 2,
+        description: 'Daga ligera con filigranas doradas requisada a los hoggoblins encapuchados del callejón.',
+      },
+      {
+        id: 'tunica_negra_dorada_ferton',
+        name: 'Túnica Negra y Dorada con Capucha',
+        category: 'materials',
+        rarity: 'UR',
+        icon: '/assets/portraits/hoggoblin_ballesta_thumb.webp',
+        count: 1,
+        description: 'Prenda ceremonial de los sicarios clandestinos de Ferton, manchada de arcoíris luminiscente.',
+      },
+    ],
+    tavernStockBonus: { ing_carne_ahumada: 6 },
+  },
 };
 
 const DEFAULT_REWARD: MissionAutoRewardConfig = {

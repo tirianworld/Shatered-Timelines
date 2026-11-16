@@ -318,6 +318,8 @@ export const SPRITE_ANCHOR: Record<string, SpriteAnchor> = {
   '/assets/combat/semiboss_zancudo_clean.webp': { c: 0.504, b: 0.999, hx: 0.395, hy: 0.257 },
   '/assets/combat/semiboss_zancudo_hurt.webp': { c: 0.505, b: 0.984, hx: 0.413, hy: 0.303 },
   '/assets/combat/semiboss_zancudo_roar.webp': { c: 0.503, b: 0.99, hx: 0.48, hy: 0.14 },
+  '/assets/combat/hoggoblin_daga_clean.webp': { c: 0.532, b: 0.987, hx: 0.506, hy: 0.172 },
+  '/assets/combat/hoggoblin_ballesta_clean.webp': { c: 0.48, b: 0.987, hx: 0.501, hy: 0.176 },
   '/assets/combat/semiboss_zancudo_thumb.webp': { c: 0.476, b: 1, hx: 0.362, hy: 0.228 },
   '/assets/combat/smurph_attack.webp': { c: 0.496, b: 0.954, hx: 0.506, hy: 0.165 },
   '/assets/combat/smurph_cast.webp': { c: 0.481, b: 0.968, hx: 0.529, hy: 0.174 },
