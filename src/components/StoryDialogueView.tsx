@@ -49,6 +49,21 @@ import {
   STORY_CAPITULO5_M17_DIALOGUE,
   STORY_CAPITULO5_M18_DIALOGUE,
   STORY_CAPITULO5_M18_EPILOGUE_DIALOGUE,
+  STORY_CAPITULO5_M19_DIALOGUE,
+  STORY_CAPITULO5_M19_EPILOGUE_DIALOGUE,
+  STORY_CAPITULO5_M20_DIALOGUE,
+  STORY_CAPITULO5_M20_EPILOGUE_DIALOGUE,
+  STORY_CAPITULO5_M21_COLISEO_DIALOGUE,
+  STORY_EVENTO_COLISEO_EPILOGUE_DIALOGUE,
+  STORY_CAPITULO6_INTRO_DIALOGUE,
+  STORY_CAPITULO6_PUERTA_EPILOGUE_DIALOGUE,
+  STORY_CAPITULO6_VERDAD_GABRIEL_DIALOGUE,
+  STORY_TOMO2_C1_M5_CID_DIALOGUE,
+  STORY_TOMO2_C1_BARRACON_INTRO_DIALOGUE,
+  STORY_TOMO2_C1_BARRACON_EPILOGUE_DIALOGUE,
+  STORY_TOMO2_C1_JAURIA_DIALOGUE,
+  STORY_TOMO2_C1_ARMADURA_DIALOGUE,
+  STORY_TOMO2_C1_ARANA_DIALOGUE,
   CHARACTER_PROFILES,
   DialogueLine,
   EmotionType,
@@ -166,9 +181,72 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     addCrystals,
     addShelfItem,
     setActiveQuestChapter,
+    setActiveWorldPlane,
     isMissionCompleted,
   } = useGame();
 
+  const isTome2Ch1BarraconEpilogue =
+    selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos_epilogo';
+  const isTome2Ch1BarraconMission =
+    selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos' ||
+    isTome2Ch1BarraconEpilogue;
+  const isTome2Ch1JauriaMission = selectedCombatMissionId === 't2_c1_m2_jauria_salas';
+  const isTome2Ch1ArmaduraMission =
+    selectedCombatMissionId === 't2_c1_m3_custodios_anillo';
+  const isTome2Ch1AranaMission = selectedCombatMissionId === 't2_c1_m4_arana_acorazada';
+  const isTome2Ch1Story =
+    isTome2Ch1BarraconMission ||
+    isTome2Ch1JauriaMission ||
+    isTome2Ch1ArmaduraMission ||
+    isTome2Ch1AranaMission;
+  // Resumen del prólogo del Tomo II (el salto de historia no debe hablar de Cryovain).
+  const tome2Ch1SkipTitle = isTome2Ch1BarraconMission
+    ? '¡DESPERTAIS EN EL BARRACÓN ABANDONADO!'
+    : isTome2Ch1JauriaMission
+    ? '¡EMBOSCADA EN LA SALA TRES!'
+    : isTome2Ch1ArmaduraMission
+    ? '¡EL ANILLO DE LADRÓN ES VUESTRO!'
+    : '¡LA ARAÑA ACORAZADA HA CAÍDO!';
+  const tome2Ch1SkipText = isTome2Ch1BarraconMission
+    ? 'Seis desconocidos despiertan casi desnudos en un barracón abandonado, lejos de Kaliria y sin saber cómo han llegado hasta allí. Una nota tras la mesa volcada les señala el equipo escondido tras el horno de la cocina, y el pasillo de la derecha termina en un muro: la única salida son las escaleras.'
+    : isTome2Ch1JauriaMission
+    ? 'En la sala dos, un mueble de alquimista guarda una poción de curación por cabeza. El pasillo largo acaba en una rejilla cerrada con llave, así que el grupo vuelve sobre sus pasos... y dos perros asalvajados saltan desde los papeles amontonados de la sala tres.'
+    : isTome2Ch1ArmaduraMission
+    ? 'Bajo la alfombra de la sala cinco aparece una llave oxidada: la de la rejilla. Tras abrirse paso entre tres soldados no muertos, Ragnavaldr sube a la sala hexagonal, donde una armadura en un pedestal cobra vida al tocar el cofre. Al vencerla, la armadura se desvanece y el cofre entrega el Anillo de Ladrón.'
+    : 'En la sala seis, dos no muertos rezan arrodillados ante una puerta entreabierta. Al otro lado espera la Araña Acorazada: caparazón como escudo, telas que la guían y un cono de fuego que obliga a separarse. La bestia cae y el barracón empieza a arder.';
+  const tome2Ch1SkipIcon = isTome2Ch1AranaMission
+    ? '/assets/portraits/arana_acorazada_thumb.webp'
+    : isTome2Ch1ArmaduraMission
+    ? '/assets/portraits/armadura_reanimada_thumb.webp'
+    : isTome2Ch1JauriaMission
+    ? '/assets/portraits/perro_asalvajado_thumb.webp'
+    : '/assets/portraits/no_muerto_thumb.webp';
+  const isTome2Ch1CidMission =
+    selectedCombatMissionId === 't2_c1_m5_carreta_cid' ||
+    selectedCombatMissionId === 't2_c1_m5_carreta_cid_epilogo';
+  const isCh6VerdadGabrielMission =
+    selectedCombatMissionId === 'm21d_verdad_gabriel' ||
+    selectedCombatMissionId === 'm21d_verdad_gabriel_epilogo';
+  const isCh6ForzarPuertaEpilogue =
+    selectedCombatMissionId === 'm21c_forzar_puerta_epilogo';
+  const isCh6CasaGabrielMission =
+    selectedCombatMissionId === 'm21b_casa_gabriel' ||
+    selectedCombatMissionId === 'm21b_casa_gabriel_epilogo';
+  const isEventoColiseoEpilogue =
+    selectedCombatMissionId === 'evento_coliseo_suenos_epilogo';
+  const isColiseoSuenosMission =
+    selectedCombatMissionId === 'm21_coliseo_suenos' ||
+    selectedCombatMissionId === 'm21_coliseo_suenos_epilogo';
+  const isBulezauMazmorraMission =
+    selectedCombatMissionId === 'm20_tercera_camara_bulezau' ||
+    selectedCombatMissionId === 'm20_tercera_camara_bulezau_epilogo';
+  const isBulezauMazmorraEpilogue =
+    selectedCombatMissionId === 'm20_tercera_camara_bulezau_epilogo';
+  const isAireMazmorraMission =
+    selectedCombatMissionId === 'm19_segunda_camara_aire' ||
+    selectedCombatMissionId === 'm19_segunda_camara_aire_epilogo';
+  const isAireMazmorraEpilogue =
+    selectedCombatMissionId === 'm19_segunda_camara_aire_epilogo';
   const isGorgonMazmorraMission =
     selectedCombatMissionId === 'm18_primera_camara_gorgon' ||
     selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo';
@@ -290,6 +368,36 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     ? GORYN_FORGE_DIALOGUE
     : isKitchenIntro
     ? PACO_FOGON_DIALOGUE
+    : isTome2Ch1AranaMission
+    ? STORY_TOMO2_C1_ARANA_DIALOGUE
+    : isTome2Ch1ArmaduraMission
+    ? STORY_TOMO2_C1_ARMADURA_DIALOGUE
+    : isTome2Ch1JauriaMission
+    ? STORY_TOMO2_C1_JAURIA_DIALOGUE
+    : isTome2Ch1BarraconMission
+    ? isTome2Ch1BarraconEpilogue
+      ? STORY_TOMO2_C1_BARRACON_EPILOGUE_DIALOGUE
+      : STORY_TOMO2_C1_BARRACON_INTRO_DIALOGUE
+    : isTome2Ch1CidMission
+    ? STORY_TOMO2_C1_M5_CID_DIALOGUE
+    : isCh6VerdadGabrielMission
+    ? STORY_CAPITULO6_VERDAD_GABRIEL_DIALOGUE
+    : isCh6ForzarPuertaEpilogue
+    ? STORY_CAPITULO6_PUERTA_EPILOGUE_DIALOGUE
+    : isCh6CasaGabrielMission
+    ? STORY_CAPITULO6_INTRO_DIALOGUE
+    : isEventoColiseoEpilogue
+    ? STORY_EVENTO_COLISEO_EPILOGUE_DIALOGUE
+    : isColiseoSuenosMission
+    ? STORY_CAPITULO5_M21_COLISEO_DIALOGUE
+    : isBulezauMazmorraEpilogue
+    ? STORY_CAPITULO5_M20_EPILOGUE_DIALOGUE
+    : isBulezauMazmorraMission
+    ? STORY_CAPITULO5_M20_DIALOGUE
+    : isAireMazmorraEpilogue
+    ? STORY_CAPITULO5_M19_EPILOGUE_DIALOGUE
+    : isAireMazmorraMission
+    ? STORY_CAPITULO5_M19_DIALOGUE
     : isGorgonMazmorraEpilogue
     ? STORY_CAPITULO5_M18_EPILOGUE_DIALOGUE
     : isGorgonMazmorraMission
@@ -397,6 +505,109 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
   const currentLine: DialogueLine = dialogueLines[currentLineIndex] || dialogueLines[0];
   const speakerProfile = CHARACTER_PROFILES[currentLine.speakerId] || CHARACTER_PROFILES.arlem;
+
+  const hasEdacornSkullHelmet = isMissionCompleted('m20_tercera_camara_bulezau');
+  const isPreBulezauHelmetMission =
+    !isBulezauMazmorraEpilogue &&
+    Boolean(selectedCombatMissionId) &&
+    [
+      'm1_tirano',
+      'm2_robo',
+      'm2_robo_epilogo',
+      'm3_bosque',
+      'm3_bosque_epilogo',
+      'm4_puertas_selladas',
+      'm4_puertas_selladas_epilogo',
+      'evento_emboscada_bandidos',
+      'evento_emboscada_bandidos_epilogo',
+      'evento_asalto_orco',
+      'evento_asalto_orco_epilogo',
+      'm5_minas_historia',
+      'm3_cuevas_rojo',
+      'm3_cuevas_rojo_epilogo',
+      'm4_cuevas_azul',
+      'm4_cuevas_azul_epilogo',
+      'm5_cuevas_zancudo',
+      'm5_cuevas_zancudo_epilogo',
+      'm6_cuevas_titan',
+      'm6_cuevas_titan_epilogo',
+      'm6_puerta_laberinto',
+      'm7_epilogo_aldea',
+      'm7_epilogo_aldea_epilogo',
+      'm8_intro_capitulo3',
+      'm8_intro_capitulo3_epilogo',
+      'm8_campamento_orco',
+      'm9_emboscada_ferton',
+      'm9_emboscada_ferton_epilogo',
+      'm10_hobgoblin_boss',
+      'm10_hobgoblin_boss_epilogo',
+      'm10b_encuentro_chispo',
+      'm10b_encuentro_chispo_epilogo',
+      'm10c_callejon_hoggoblins',
+      'm10c_callejon_hoggoblins_epilogo',
+      'm10d_mansion_baron',
+      'm10d_mansion_baron_epilogo',
+      'm10e_taberna_duergar',
+      'm10e_taberna_duergar_epilogo',
+      'm11_llegada_mansion_ferton',
+      'm11_llegada_mansion_ferton_epilogo',
+      'm12_recibidor_mansion_ferton',
+      'm12_recibidor_mansion_ferton_epilogo',
+      'm13_escaleras_durnik',
+      'm13_escaleras_durnik_epilogo',
+      'm14_planta_intermedia_ferton',
+      'm14_planta_intermedia_ferton_epilogo',
+      'm15_despacho_ferton',
+      'm15_despacho_ferton_epilogo',
+      'm16_audiencia_baron',
+      'm16_audiencia_baron_epilogo',
+      'm17_despertar_suenos',
+      'm17_despertar_suenos_epilogo',
+      'm18_primera_camara_gorgon',
+      'm18_primera_camara_gorgon_epilogo',
+      'm19_segunda_camara_aire',
+      'm19_segunda_camara_aire_epilogo',
+      'm20_tercera_camara_bulezau',
+    ].includes(selectedCombatMissionId!);
+
+  const resolveStoryPoseUrl = (
+    characterId: typeof currentLine.speakerId,
+    pose: string,
+    profile: (typeof CHARACTER_PROFILES)[keyof typeof CHARACTER_PROFILES]
+  ): string => {
+    let effectivePose = pose;
+    if (
+      characterId === 'edacorn' &&
+      hasEdacornSkullHelmet &&
+      !isPreBulezauHelmetMission &&
+      !isBulezauMazmorraEpilogue &&
+      !pose.startsWith('alas') &&
+      !pose.startsWith('casco_bulezau')
+    ) {
+      if (pose === 'saludo') effectivePose = 'casco_bulezau_saludo';
+      else if (pose === 'llegada') effectivePose = 'casco_bulezau_llegada';
+      else effectivePose = 'casco_bulezau';
+    }
+    return (
+      profile.poses[effectivePose] ||
+      Object.values(profile.poses)[0] ||
+      profile.avatar
+    );
+  };
+
+  const resolveStoryAvatarUrl = (
+    line: DialogueLine,
+    profile: (typeof CHARACTER_PROFILES)[keyof typeof CHARACTER_PROFILES]
+  ): string => {
+    if (
+      line.speakerId === 'edacorn' &&
+      (line.pose.startsWith('casco_bulezau') ||
+        (hasEdacornSkullHelmet && !isPreBulezauHelmetMission && !isBulezauMazmorraEpilogue))
+    ) {
+      return '/assets/portraits/edacorn_bulezau_thumb.webp';
+    }
+    return profile.avatar;
+  };
 
   // Speaker Animation States for Offscreen Slide-In & Slide-Out
   interface ActiveSpeakerState {
@@ -585,10 +796,10 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         setTimeout(() => {
           handleStartDrinkingContest();
         }, 1050);
-      } else if (isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isMansionFertonLlegadaMission || isBaronMansionMission || isAldeaEpilogue || isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue || isFertonEpilogue || isChispoEncuentroMission || isCallejonHoggoblinsEpilogue || isRecibidorMansionEpilogue || isDurnikEscalerasEpilogue || isPlantaIntermediaMansionEpilogue) {
+      } else if (isTome2Ch1CidMission || isCh6VerdadGabrielMission || isCh6ForzarPuertaEpilogue || isCh6CasaGabrielMission || isEventoColiseoEpilogue || isColiseoSuenosMission || isBulezauMazmorraEpilogue || isAireMazmorraEpilogue || isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isMansionFertonLlegadaMission || isBaronMansionMission || isAldeaEpilogue || isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue || isFertonEpilogue || isChispoEncuentroMission || isCallejonHoggoblinsEpilogue || isRecibidorMansionEpilogue || isDurnikEscalerasEpilogue || isPlantaIntermediaMansionEpilogue) {
         handleCompleteStory();
-      } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isRoboMission || isBosqueMission || isPuertasMission || isEmboscadaMission || isAsaltoOrcoMission || isFuriaCarmesiMission || (isFertonMission && !isFertonEpilogue) || (isCallejonHoggoblinsMission && !isCallejonHoggoblinsEpilogue) || (isRecibidorMansionMission && !isRecibidorMansionEpilogue) || (isDurnikEscalerasMission && !isDurnikEscalerasEpilogue) || (isPlantaIntermediaMansionMission && !isPlantaIntermediaMansionEpilogue) || (isGorgonMazmorraMission && !isGorgonMazmorraEpilogue)) {
-        setScreenFlash(isGorgonMazmorraMission ? 'pink' : isPlantaIntermediaMansionMission || isDurnikEscalerasMission || isRecibidorMansionMission ? 'gold' : isCallejonHoggoblinsMission ? 'red' : isFertonMission ? 'gold' : isTitanMission ? 'gold' : isZancudoMission ? 'purple' : isCavernaAzulMission ? 'cyan' : isFuriaCarmesiMission ? 'cyan' : 'red');
+      } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isRoboMission || isBosqueMission || isPuertasMission || isEmboscadaMission || isAsaltoOrcoMission || isFuriaCarmesiMission || (isFertonMission && !isFertonEpilogue) || (isCallejonHoggoblinsMission && !isCallejonHoggoblinsEpilogue) || (isRecibidorMansionMission && !isRecibidorMansionEpilogue) || (isDurnikEscalerasMission && !isDurnikEscalerasEpilogue) || (isPlantaIntermediaMansionMission && !isPlantaIntermediaMansionEpilogue) || (isGorgonMazmorraMission && !isGorgonMazmorraEpilogue) || (isAireMazmorraMission && !isAireMazmorraEpilogue) || (isBulezauMazmorraMission && !isBulezauMazmorraEpilogue)) {
+        setScreenFlash(isBulezauMazmorraMission ? 'purple' : isAireMazmorraMission ? 'cyan' : isGorgonMazmorraMission ? 'pink' : isPlantaIntermediaMansionMission || isDurnikEscalerasMission || isRecibidorMansionMission ? 'gold' : isCallejonHoggoblinsMission ? 'red' : isFertonMission ? 'gold' : isTitanMission ? 'gold' : isZancudoMission ? 'purple' : isCavernaAzulMission ? 'cyan' : isFuriaCarmesiMission ? 'cyan' : 'red');
         setBattleTransitionAlert(true);
         setTimeout(() => {
           handleStartCombatAfterStory();
@@ -607,7 +818,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         handleCompleteStory();
       }
     }
-  }, [isTyping, currentLine.text, currentLineIndex, dialogueLines.length, isGorgonMazmorraMission, isGorgonMazmorraEpilogue, isDespertarSuenosMission, isAudienciaBaronMission, isDespachoFertonMission, isPlantaIntermediaMansionMission, isPlantaIntermediaMansionEpilogue, isDurnikEscalerasMission, isDurnikEscalerasEpilogue, isRecibidorMansionMission, isRecibidorMansionEpilogue, isMansionFertonLlegadaMission, isTabernaDuergarEpilogue, isTabernaDuergarMission, isBaronMansionMission, isAldeaEpilogue, isLaberintoMission, isTitanMission, isTitanEpilogue, isZancudoMission, isZancudoEpilogue, isRoboMission, isRoboEpilogue, isBosqueMission, isBosqueEpilogue, isPuertasMission, isPuertasEpilogue, isEmboscadaMission, isEmboscadaEpilogue, isAsaltoOrcoMission, isAsaltoOrcoEpilogue, isMinasHistoriaMission, isFuriaCarmesiMission, isFuriaCarmesiEpilogue, isCavernaAzulMission, isCavernaAzulEpilogue, isFertonMission, isFertonEpilogue, isHobgoblinBossMission, isHobgoblinBossEpilogue, isChispoEncuentroMission, isCallejonHoggoblinsMission, isCallejonHoggoblinsEpilogue]);
+  }, [isTyping, currentLine.text, currentLineIndex, dialogueLines.length, isTome2Ch1CidMission, isCh6VerdadGabrielMission, isCh6ForzarPuertaEpilogue, isCh6CasaGabrielMission, isEventoColiseoEpilogue, isColiseoSuenosMission, isBulezauMazmorraMission, isBulezauMazmorraEpilogue, isAireMazmorraMission, isAireMazmorraEpilogue, isGorgonMazmorraMission, isGorgonMazmorraEpilogue, isDespertarSuenosMission, isAudienciaBaronMission, isDespachoFertonMission, isPlantaIntermediaMansionMission, isPlantaIntermediaMansionEpilogue, isDurnikEscalerasMission, isDurnikEscalerasEpilogue, isRecibidorMansionMission, isRecibidorMansionEpilogue, isMansionFertonLlegadaMission, isTabernaDuergarEpilogue, isTabernaDuergarMission, isBaronMansionMission, isAldeaEpilogue, isLaberintoMission, isTitanMission, isTitanEpilogue, isZancudoMission, isZancudoEpilogue, isRoboMission, isRoboEpilogue, isBosqueMission, isBosqueEpilogue, isPuertasMission, isPuertasEpilogue, isEmboscadaMission, isEmboscadaEpilogue, isAsaltoOrcoMission, isAsaltoOrcoEpilogue, isMinasHistoriaMission, isFuriaCarmesiMission, isFuriaCarmesiEpilogue, isCavernaAzulMission, isCavernaAzulEpilogue, isFertonMission, isFertonEpilogue, isHobgoblinBossMission, isHobgoblinBossEpilogue, isChispoEncuentroMission, isCallejonHoggoblinsMission, isCallejonHoggoblinsEpilogue]);
 
   const handleCompleteStory = () => {
     // Las bienvenidas del fogón y de la forja no son misiones: nunca deben
@@ -633,8 +844,128 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     setIsStoryCompleted(true);
     setIsAutoPlay(false);
 
-    if (isTabernaDuergarEpilogue) {
-      // Las estrellas y recompensas (Alcohol en Gas, oro, gemas) ya se otorgaron al ganar el concurso.
+    if (isTabernaDuergarEpilogue || isEventoColiseoEpilogue || isCh6ForzarPuertaEpilogue) {
+      // Las estrellas y recompensas ya se otorgaron al ganar el evento.
+      return;
+    }
+
+    if (isTome2Ch1CidMission) {
+      const alreadyCleared = isMissionCompleted('t2_c1_m5_carreta_cid');
+      completeQuestMission('t2_c1_m5_carreta_cid', 3);
+      if (!alreadyCleared) {
+        addGold(25000);
+        addCrystals(1000);
+        addShelfItem({
+          id: `salvoconducto_santuario_kaliria_${Date.now()}`,
+          name: 'Salvoconducto del Santuario de Kaliria',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/cid_icono.webp',
+          rarity: 'UR',
+          priceGold: 30000,
+          description: 'Carta de paso entregada por Cid, el caballero esclavo, tras rescatar a Caldo de Dragón entre los escombros del barracón y guiarlos hacia Artorias en Kaliria.',
+        });
+      }
+      return;
+    }
+
+    if (isCh6VerdadGabrielMission) {
+      const alreadyCleared = isMissionCompleted('m21d_verdad_gabriel');
+      completeQuestMission('m21d_verdad_gabriel', 3);
+      if (!alreadyCleared) {
+        addGold(225000);
+        addCrystals(9500);
+        addShelfItem({
+          id: `insignia_helada_gabriel_${Date.now()}`,
+          name: 'Insignia Helada del Verdadero Gabriel',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/verdad_gabriel_thumb.webp',
+          rarity: 'UR',
+          priceGold: 260000,
+          description: 'Emblema de la guardia de Icespear recuperado ante la tumba glacial del verdadero Capitán Gabriel tras descubrir que Cryovain se hizo pasar por él bajo órdenes de sus «Maestros».',
+        });
+      }
+      return;
+    }
+
+    if (isCh6CasaGabrielMission) {
+      const alreadyCleared = isMissionCompleted('m21b_casa_gabriel');
+      completeQuestMission('m21b_casa_gabriel', 3);
+      if (!alreadyCleared) {
+        addGold(200000);
+        addCrystals(8500);
+        addShelfItem({
+          id: `aldaba_helada_gabriel_${Date.now()}`,
+          name: 'Aldaba Escarchada de Gabriel',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/casa_gabriel_thumb.webp',
+          rarity: 'UR',
+          priceGold: 220000,
+          description: 'Aldaba de hierro cubierta de hielo recogida ante la puerta cerrada del Capitán Gabriel al regreso de Caldo de Dragón y Chispo Deez a Icespear.',
+        });
+      }
+      return;
+    }
+
+    if (isColiseoSuenosMission) {
+      const alreadyCleared = isMissionCompleted('m21_coliseo_suenos');
+      completeQuestMission('m21_coliseo_suenos', 3);
+      if (!alreadyCleared) {
+        addGold(190000);
+        addCrystals(8000);
+        addShelfItem({
+          id: `invitacion_coliseo_varianthel_${Date.now()}`,
+          name: 'Sello Real de Varianthel',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/varianthel_thumb.webp',
+          rarity: 'UR',
+          priceGold: 240000,
+          description: 'Pase onírico sellado por el Príncipe de los Sueños que habilita el acceso al Plano de los Sueños y al torneo del Coliseo de los Sueños.',
+        });
+      }
+      return;
+    }
+
+    if (isBulezauMazmorraEpilogue) {
+      const alreadyCleared = isMissionCompleted('m20_tercera_camara_bulezau');
+      completeQuestMission('m20_tercera_camara_bulezau', 3);
+      if (!alreadyCleared) {
+        addGold(175000);
+        addCrystals(7000);
+        addShelfItem({
+          id: `glandula_putrefaccion_bulezau_epilogo_${Date.now()}`,
+          name: 'Glándula de Putrefacción de la Tercera Cámara',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/bulezau_thumb.webp',
+          rarity: 'UR',
+          priceGold: 210000,
+          description: 'Reliquia abisal purificada tras abatir al Bulezau y disipar su miasma verdoso-amarillento en la Tercera Cámara.',
+        });
+      }
+      return;
+    }
+
+    if (isAireMazmorraEpilogue) {
+      const alreadyCleared = isMissionCompleted('m19_segunda_camara_aire');
+      completeQuestMission('m19_segunda_camara_aire', 3);
+      if (!alreadyCleared) {
+        addGold(160000);
+        addCrystals(6500);
+        addShelfItem({
+          id: `esencia_eterea_aire_epilogo_${Date.now()}`,
+          name: 'Esencia Etérea de la Segunda Cámara',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/elemental_aire_thumb.webp',
+          rarity: 'UR',
+          priceGold: 190000,
+          description: 'Núcleo de viento condensado recuperado al disipar al Elemental de Aire de la Segunda Cámara.',
+        });
+      }
       return;
     }
 
@@ -1179,6 +1510,26 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       finishOrderHqIntro();
       return;
     }
+    if (isTome2Ch1CidMission || isCh6VerdadGabrielMission || isCh6ForzarPuertaEpilogue || isCh6CasaGabrielMission || isEventoColiseoEpilogue || isColiseoSuenosMission) {
+      handleCompleteStory();
+      return;
+    }
+    if (isBulezauMazmorraEpilogue) {
+      handleCompleteStory();
+      return;
+    }
+    if (isBulezauMazmorraMission) {
+      handleStartCombatAfterStory();
+      return;
+    }
+    if (isAireMazmorraEpilogue) {
+      handleCompleteStory();
+      return;
+    }
+    if (isAireMazmorraMission) {
+      handleStartCombatAfterStory();
+      return;
+    }
     if (isGorgonMazmorraEpilogue) {
       handleCompleteStory();
       return;
@@ -1284,6 +1635,10 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       setSelectedCombatMissionId('m4_puertas_selladas');
     } else if (isBosqueMission) {
       setSelectedCombatMissionId('m3_bosque');
+    } else if (isBulezauMazmorraMission) {
+      setSelectedCombatMissionId('m20_tercera_camara_bulezau');
+    } else if (isAireMazmorraMission) {
+      setSelectedCombatMissionId('m19_segunda_camara_aire');
     } else if (isGorgonMazmorraMission) {
       setSelectedCombatMissionId('m18_primera_camara_gorgon');
     } else if (isPlantaIntermediaMansionMission) {
@@ -1300,6 +1655,14 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       setSelectedCombatMissionId('m9_emboscada_ferton');
     } else if (isRoboMission) {
       setSelectedCombatMissionId('m2_robo');
+    } else if (isTome2Ch1AranaMission) {
+      setSelectedCombatMissionId('t2_c1_m4_arana_acorazada');
+    } else if (isTome2Ch1ArmaduraMission) {
+      setSelectedCombatMissionId('t2_c1_m3_custodios_anillo');
+    } else if (isTome2Ch1JauriaMission) {
+      setSelectedCombatMissionId('t2_c1_m2_jauria_salas');
+    } else if (isTome2Ch1BarraconMission) {
+      setSelectedCombatMissionId('t2_c1_m1_trincheras_nomuertos');
     } else {
       setSelectedCombatMissionId('m1_tirano');
     }
@@ -1475,10 +1838,11 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         {/* Outgoing Speaker (Sliding Out Offscreen) */}
         {exitingSpeaker && (() => {
           const exitProf = CHARACTER_PROFILES[exitingSpeaker.characterId];
-          const exitPoseUrl =
-            exitProf.poses[exitingSpeaker.pose] ||
-            Object.values(exitProf.poses)[0] ||
-            exitProf.avatar;
+          const exitPoseUrl = resolveStoryPoseUrl(
+            exitingSpeaker.characterId,
+            exitingSpeaker.pose,
+            exitProf
+          );
           const exitAnim =
             exitingSpeaker.side === 'left'
               ? 'animate-fgo-exit-left'
@@ -1516,18 +1880,21 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         {/* Active Speaker (Sliding In From Offscreen or Hopping in Focus) */}
         {activeSpeaker && (() => {
           const activeProf = CHARACTER_PROFILES[activeSpeaker.characterId];
-          const activePoseUrl =
-            activeProf.poses[activeSpeaker.pose] ||
-            Object.values(activeProf.poses)[0] ||
-            activeProf.avatar;
+          const activePoseUrl = resolveStoryPoseUrl(
+            activeSpeaker.characterId,
+            activeSpeaker.pose,
+            activeProf
+          );
           const isTitanSleeping =
             activeSpeaker.characterId === 'titan' && activeSpeaker.pose === 'durmiendo';
+          // En las cinemáticas del Tomo II todos los personajes se colocan siempre en el centro.
+          const activeSide = isTome2Ch1Story ? 'center' : activeSpeaker.side;
           const enterAnim =
-            activeSpeaker.side === 'left'
+            activeSide === 'left'
               ? activeSpeaker.animType === 'enter'
                 ? 'animate-fgo-enter-left'
                 : 'animate-fgo-hop'
-              : activeSpeaker.side === 'right'
+              : activeSide === 'right'
               ? activeSpeaker.animType === 'enter'
                 ? 'animate-fgo-enter-right'
                 : 'animate-fgo-hop'
@@ -1535,9 +1902,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               ? 'animate-fgo-enter-center'
               : '-translate-x-1/2 animate-fgo-hop';
           const activePos =
-            activeSpeaker.side === 'left'
+            activeSide === 'left'
               ? 'left-[3%] sm:left-[8%]'
-              : activeSpeaker.side === 'right'
+              : activeSide === 'right'
               ? 'right-[3%] sm:right-[8%]'
               : 'left-1/2';
 
@@ -1592,7 +1959,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
             className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none drop-shadow-[0_-4px_20px_rgba(0,0,0,0.98)]"
           />
 
-          {/* SPEAKER RIBBON (Top-Left Golden Scroll on panel_dialogo_idl.webp) */}
+          {/* SPEAKER RIBBON (Top-Left Golden Scroll on panel_dialogo_idl.png) */}
           <div
             className="absolute left-[3.2%] top-[3%] w-[36%] h-[20%] flex flex-col justify-center items-center text-center px-1 pointer-events-none select-none z-10"
           >
@@ -1669,7 +2036,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                     className="flex gap-2.5 p-2 rounded-xl bg-[#130601] border border-[#4a1c07] shadow-sm"
                   >
                     <img
-                      src={charProf.avatar}
+                      src={resolveStoryAvatarUrl(line, charProf)}
                       alt={charProf.name}
                       className="w-10 h-10 rounded-lg object-cover border border-amber-600/60 shrink-0"
                     />
@@ -1717,7 +2084,17 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
             className="relative w-full max-w-xs p-4 bg-[#210c04] border-3 border-[#78350f] rounded-2xl text-center space-y-3 shadow-2xl"
           >
             <h4 className="font-serif font-black text-sm uppercase text-amber-300">
-              {isGorgonMazmorraEpilogue
+              {isCh6VerdadGabrielMission
+                ? '¿Saltar la Revelación de Cryovain?'
+                : isCh6ForzarPuertaEpilogue
+                ? '¿Saltar Desenlace de la Casa de Gabriel?'
+                : isCh6CasaGabrielMission
+                ? '¿Saltar Regreso a Icespear?'
+                : isAireMazmorraEpilogue
+                ? '¿Saltar Epílogo de la Segunda Cámara?'
+                : isAireMazmorraMission
+                ? '¿Saltar Escena e Iniciar Bossfight?'
+                : isGorgonMazmorraEpilogue
                 ? '¿Saltar Epílogo de la Primera Cámara?'
                 : isGorgonMazmorraMission
                 ? '¿Saltar Escena e Iniciar Bossfight?'
@@ -1760,7 +2137,17 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 : '¿Saltar Prólogo de Historia?'}
             </h4>
             <p className="text-[11px] text-stone-300 leading-relaxed">
-              {isGorgonMazmorraEpilogue
+              {isCh6VerdadGabrielMission
+                ? 'Saltarás el hallazgo del verdadero Capitán Gabriel congelado junto a sus hombres, la confesión de Cryovain sobre sus «Maestros» y su transformación en el Dragón Blanco.'
+                : isCh6ForzarPuertaEpilogue
+                ? 'Saltarás el hallazgo de la casa destrozada, el círculo arcano de sangre congelada y la aparición del Capitán Gabriel en la cueva de Cryovain.'
+                : isCh6CasaGabrielMission
+                ? 'Saltarás el regreso de Caldo de Dragón y Chispo Deez a Icespear ante la puerta cerrada del Capitán Gabriel.'
+                : isAireMazmorraEpilogue
+                ? 'Saltarás el final de la Segunda Cámara tras disipar al Elemental de Aire y pasarás al resumen de recompensas.'
+                : isAireMazmorraMission
+                ? 'Saltarás la entrada a la Segunda Cámara y la aparición del Elemental de Aire para comenzar directamente su bossfight.'
+                : isGorgonMazmorraEpilogue
                 ? 'Saltarás la caída del Gorgon de Hierro en la Primera Cámara y pasarás al resumen de recompensas.'
                 : isGorgonMazmorraMission
                 ? 'Saltarás la apertura rosada de la puerta y el encuentro con el Gorgon de Hierro para comenzar directamente su bossfight.'
@@ -1800,6 +2187,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 ? 'Pasarás directamente a la Sede de Orden, donde Nala te señalará qué pestaña tocar para aprender a usar la sede.'
                 : isRoboMission
                 ? 'Saltarás la escena cómica del asalto a la mansión y comenzarás de inmediato el combate contra las 4 oleadas de la guardia urbana en el callejón.'
+                : isTome2Ch1Story
+                ? 'Darás por vista la escena del barracón y pasarás directamente al combate de la misión.'
                 : 'Completarás la escena narrativa, firmarás el contrato del Capitán Gabriel y desbloquearás la batalla contra Cryovain.'}
             </p>
             <div className="flex items-center gap-2 pt-1">
@@ -1815,7 +2204,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 onClick={handleSkipStory}
                 className="flex-1 py-1.5 rounded-lg bg-gradient-to-r from-red-600 to-amber-600 text-white text-[10px] font-black uppercase tracking-wider cursor-pointer shadow hover:brightness-110"
               >
-                {isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isPlantaIntermediaMansionEpilogue || isDurnikEscalerasEpilogue || isRecibidorMansionEpilogue || isMansionFertonLlegadaMission || isTabernaDuergarEpilogue ? 'Finalizar' : isGorgonMazmorraMission || isPlantaIntermediaMansionMission || isDurnikEscalerasMission || isRecibidorMansionMission ? '¡Al Combate!' : isTabernaDuergarMission ? '¡Elegir Héroe!' : isKitchenMonstersIntro ? 'Ver Monstruos' : isKitchenIntro ? 'Al Tutorial' : isForgeIntro ? 'Al Yunque' : isBoticaIntro ? 'Al Alambique' : isRoboMission ? '¡A las Armas!' : 'Saltar'}
+                {isCh6VerdadGabrielMission || isCh6ForzarPuertaEpilogue || isCh6CasaGabrielMission || isAireMazmorraEpilogue || isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isPlantaIntermediaMansionEpilogue || isDurnikEscalerasEpilogue || isRecibidorMansionEpilogue || isMansionFertonLlegadaMission || isTabernaDuergarEpilogue ? 'Finalizar' : isAireMazmorraMission || isGorgonMazmorraMission || isPlantaIntermediaMansionMission || isDurnikEscalerasMission || isRecibidorMansionMission ? '¡Al Combate!' : isTabernaDuergarMission ? '¡Elegir Héroe!' : isKitchenMonstersIntro ? 'Ver Monstruos' : isKitchenIntro ? 'Al Tutorial' : isForgeIntro ? 'Al Yunque' : isBoticaIntro ? 'Al Alambique' : isRoboMission ? '¡A las Armas!' : 'Saltar'}
               </button>
             </div>
           </div>
@@ -1830,7 +2219,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               <Swords className="w-6 h-6 text-red-400" />
             </div>
             <span className="text-[10px] font-black uppercase tracking-widest text-red-400 block animate-pulse">
-              {isGorgonMazmorraMission
+              {isAireMazmorraMission
+                ? '¡TORBELLINO EN LA SEGUNDA CÁMARA! ¡JEFE!'
+                : isGorgonMazmorraMission
                 ? '¡LA PUERTA ROSADA SE ABRE! ¡JEFE DE CÁMARA!'
                 : isPlantaIntermediaMansionMission
                 ? '¡SE ACABÓ LA ILUSIÓN! ¡ALCOHOL EN GAS!'
@@ -1855,7 +2246,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 : '¡ALARMA EN EL CALLEJÓN!'}
             </span>
             <h3 className="font-serif font-black text-base uppercase text-amber-200">
-              {isGorgonMazmorraMission
+              {isAireMazmorraMission
+                ? '¡El Elemental de Aire!'
+                : isGorgonMazmorraMission
                 ? '¡El Gorgon de Hierro!'
                 : isPlantaIntermediaMansionMission
                 ? '¡4 Oleadas de Guardias y Hoggoblins Borrachos!'
@@ -1880,7 +2273,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 : '¡Rodeados por la Guardia!'}
             </h3>
             <p className="text-[11px] text-stone-200 leading-snug">
-              {isGorgonMazmorraMission
+              {isAireMazmorraMission
+                ? 'En la Segunda Cámara os aguarda un voraz Elemental de Aire. ¡Cuidado con sus tajos de vendaval, sus ráfagas de cuchillas y su vórtice capaz de inmovilizar a un héroe!'
+                : isGorgonMazmorraMission
                 ? 'En la Primera Cámara os aguarda un colosal toro de metal. ¡Cuidado con sus devastadoras cornadas perforantes y su aliento de niebla petrificante!'
                 : isPlantaIntermediaMansionMission
                 ? 'Caldo de Dragón se tapa con telas y suelta el alcohol en gas. ¡Barre 4 oleadas de entre 3 y 4 guardias áureos y hoggoblins tambaleantes y debilitados!'
@@ -1925,7 +2320,21 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
             {/* Mission Clear Banner */}
             <div>
               <span className="px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/60 text-[9px] font-black uppercase tracking-widest text-amber-300 inline-block mb-1">
-                {isGorgonMazmorraEpilogue
+                {isCh6VerdadGabrielMission
+                  ? 'CAPÍTULO VI • REVELACIÓN FINAL: EL FALSO CAPITÁN'
+                  : isCh6ForzarPuertaEpilogue
+                  ? 'CAPÍTULO VI • EPÍLOGO: LA TRAICIÓN EN LA CIMA'
+                  : isCh6CasaGabrielMission
+                  ? 'CAPÍTULO VI • HISTORIA: REGRESO A ICESPEAR'
+                  : isEventoColiseoEpilogue
+                  ? 'EVENTO COMPLETADO • EL COLISEO DE LOS SUEÑOS'
+                  : isColiseoSuenosMission
+                  ? 'CAPÍTULO V • NUEVO PLANO Y EVENTO DESBLOQUEADOS'
+                  : isBulezauMazmorraEpilogue
+                  ? 'EPÍLOGO: TERCERA CÁMARA • PORTAL ABIERTO'
+                  : isAireMazmorraEpilogue
+                  ? 'EPÍLOGO: SEGUNDA CÁMARA DE LA MAZMORRA'
+                  : isGorgonMazmorraEpilogue
                   ? 'EPÍLOGO: PRIMERA CÁMARA DE LA MAZMORRA'
                   : isDespertarSuenosMission
                   ? 'HISTORIA: CAPÍTULO V • EL REINO DE LOS SUEÑOS'
@@ -1975,10 +2384,26 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   ? 'HISTORIA: ROBO NO TAN JUSTO'
                   : isBosqueMission
                   ? 'HISTORIA: PISADAS EN LA NIEVE'
+                  : isTome2Ch1Story
+                  ? 'HISTORIA: TOMO II • EL BARRACÓN ABANDONADO'
                   : 'PRÓLOGO DE HISTORIA SUPERADO'}
               </span>
               <h3 className="font-serif font-black text-lg sm:text-xl uppercase text-amber-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                {isGorgonMazmorraEpilogue
+                {isCh6VerdadGabrielMission
+                  ? '¡CRYOVAIN SE TRANSFORMA ANTE VOSOTROS!'
+                  : isCh6ForzarPuertaEpilogue
+                  ? '¡TRAMPA EN LA CUEVA DE CRYOVAIN!'
+                  : isCh6CasaGabrielMission
+                  ? '¡NADIE ABRE EN CASA DE GABRIEL!'
+                  : isEventoColiseoEpilogue
+                  ? '¡CAMPEONES DEL COLISEO DE LOS SUEÑOS!'
+                  : isColiseoSuenosMission
+                  ? '¡VARIANTHEL Y EL COLISEO DE LOS SUEÑOS!'
+                  : isBulezauMazmorraEpilogue
+                  ? '¡BULEZAU ABATIDO • PORTAL AL REINO DE LOS SUEÑOS!'
+                  : isAireMazmorraEpilogue
+                  ? '¡ELEMENTAL DE AIRE DISIPADO!'
+                  : isGorgonMazmorraEpilogue
                   ? '¡GORGON DE HIERRO DERROTADO!'
                   : isDespertarSuenosMission
                   ? '¡HACIA LOS POZOS DE PELEA!'
@@ -2028,10 +2453,26 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   ? '¡Sorprendidos In Fraganti!'
                   : isBosqueMission
                   ? '¡Emboscada en el Bosque!'
+                  : isTome2Ch1Story
+                  ? tome2Ch1SkipTitle
                   : '¡Contrato de Cryovain Aceptado!'}
               </h3>
               <p className="text-[11px] text-stone-300 leading-snug mt-1">
-                {isGorgonMazmorraEpilogue
+                {isCh6VerdadGabrielMission
+                  ? 'Caldo de Dragón descubrió al verdadero Capitán Gabriel muerto y congelado junto a sus hombres antes siquiera de haberlos reclutado. El impostor confesó que Cryovain fingió ser Gabriel todo este tiempo bajo órdenes de sus «Maestros» y se transformó en el Dragón Blanco para matarlos.'
+                  : isCh6ForzarPuertaEpilogue
+                  ? 'Al entrar en la casa completamente destrozada, Caldo de Dragón y Chispo Deez hallaron un círculo arcano trazado con sangre congelada. Al acercarse a investigarlo, el hechizo los teletransportó directamente a la cueva de Cryovain... ¡con el Capitán Gabriel sonriendo delante de ellos!'
+                  : isCh6CasaGabrielMission
+                  ? 'Caldo de Dragón ha regresado a Icespear junto a Chispo Deez, listos para dar caza a Cryovain. Como nadie abre la puerta de la casa del Capitán Gabriel, el grupo decide forzar la entrada.'
+                  : isEventoColiseoEpilogue
+                  ? 'Caldo de Dragón ha arrasado las rondas del Coliseo de los Sueños ante la atenta mirada del Príncipe Varianthel. Todo el estadio onírico celebra vuestra victoria mientras Chispo Deez aguarda el duelo decisivo.'
+                  : isColiseoSuenosMission
+                  ? 'Varianthel, Príncipe de los Sueños, ha confesado que Chispo Deez es su nuevo campeón favorito y solo lo liberará si ganáis su torneo. Se ha desbloqueado el evento «El Coliseo de los Sueños» y el nuevo plano «Plano de los Sueños» en el Mapa del Mundo (Rosa de los Vientos).'
+                  : isBulezauMazmorraEpilogue
+                  ? 'Caldo de Dragón venció al Bulezau en la Tercera Cámara. Edacorn le arrancó la calavera al demonio y se la incrustó sobre su propio yelmo como su nuevo casco permanente en cinemáticas. Al disiparse la peste, el sello del fondo se rompió abriendo de par en par el Portal al Reino de los Sueños.'
+                  : isAireMazmorraEpilogue
+                  ? 'Tras abrir el sello posterior de la Primera Cámara, Caldo de Dragón se adentró en la sala ciclónea de la Segunda Cámara. Esquivando los tajos de vendaval, las ráfagas de cuchillas de aire y las prisiones de torbellino, lograron disipar al Elemental de Aire y despejar la vía hacia las siguientes cámaras.'
+                  : isGorgonMazmorraEpilogue
                   ? 'Tras abrirse la puerta con un resplandor rosado, Caldo de Dragón se enfrentó al Gorgon de Hierro en la Primera Cámara. Esquivando sus brutales cornadas metálicas y su espesa niebla petrificante, lograron tumbar al toro de acero y despejar el paso hacia las profundidades.'
                   : isDespertarSuenosMission
                   ? 'Caldo de Dragón despertó en la taberna del Mercado Negro descubriendo que Chispo Deez había desaparecido. Warthion los condujo ante el Barón, quien reveló que las antiguas runas de la mazmorra subterránea se han activado y que Chispo estaría en el Reino de los Sueños. Para rescatarlo, el grupo acepta completar la mazmorra que resguarda el portal oculto tras los pozos de pelea.'
@@ -2081,6 +2522,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   ? '¡El atraco a la mansión ha salido a pedir de boca... hasta que sonaron los silbatos de alarma! Cuatro oleadas de la guardia os rodean en el callejón.'
                   : isBosqueMission
                   ? '¡El anciano vagabundo os reveló la entrada secreta a la colonia minera de plata de Glimmerstone! Pero una jauría de goblins salta de los pinos para cortar vuestro paso.'
+                  : isTome2Ch1Story
+                  ? tome2Ch1SkipText
                   : 'El Capitán Gabriel se ha tragado su odio hacia los aventureros ante la desesperación de la masacre de su guardia. ¡Caldo de Dragón marcha hacia el glaciar!'}
               </p>
 
@@ -2095,7 +2538,21 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 {/* Reward 1: Oro */}
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <span className="font-mono text-xs font-black text-amber-400">
-                    {isGorgonMazmorraEpilogue
+                    {isCh6VerdadGabrielMission
+                      ? '+225,000'
+                      : isCh6ForzarPuertaEpilogue
+                      ? 'GANADO'
+                      : isCh6CasaGabrielMission
+                      ? '+200,000'
+                      : isEventoColiseoEpilogue
+                      ? 'GANADO'
+                      : isColiseoSuenosMission
+                      ? '+190,000'
+                      : isBulezauMazmorraEpilogue
+                      ? '+175,000'
+                      : isAireMazmorraEpilogue
+                      ? '+160,000'
+                      : isGorgonMazmorraEpilogue
                       ? '+145,000'
                       : isDespertarSuenosMission
                       ? '+130,000'
@@ -2152,7 +2609,21 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 {/* Reward 2: Gemas */}
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <span className="font-mono text-xs font-black text-sky-400">
-                    {isGorgonMazmorraEpilogue
+                    {isCh6VerdadGabrielMission
+                      ? '+9,500'
+                      : isCh6ForzarPuertaEpilogue
+                      ? 'GANADO'
+                      : isCh6CasaGabrielMission
+                      ? '+8,500'
+                      : isEventoColiseoEpilogue
+                      ? 'GANADO'
+                      : isColiseoSuenosMission
+                      ? '+8,000'
+                      : isBulezauMazmorraEpilogue
+                      ? '+7,000'
+                      : isAireMazmorraEpilogue
+                      ? '+6,500'
+                      : isGorgonMazmorraEpilogue
                       ? '+6,000'
                       : isDespertarSuenosMission
                       ? '+5,500'
@@ -2210,7 +2681,21 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <img
                     src={
-                      isGorgonMazmorraEpilogue
+                      isCh6VerdadGabrielMission
+                        ? '/assets/portraits/verdad_gabriel_thumb.webp'
+                        : isCh6ForzarPuertaEpilogue
+                        ? '/assets/portraits/puerta_gabriel_thumb.webp'
+                        : isCh6CasaGabrielMission
+                        ? '/assets/portraits/casa_gabriel_thumb.webp'
+                        : isEventoColiseoEpilogue
+                        ? '/assets/portraits/coliseo_onirico_thumb.webp'
+                        : isColiseoSuenosMission
+                        ? '/assets/portraits/varianthel_thumb.webp'
+                        : isBulezauMazmorraEpilogue
+                        ? '/assets/portraits/bulezau_thumb.webp'
+                        : isAireMazmorraEpilogue
+                        ? '/assets/portraits/elemental_aire_thumb.webp'
+                        : isGorgonMazmorraEpilogue
                         ? '/assets/portraits/gorgon_thumb.webp'
                         : isDespertarSuenosMission
                         ? '/assets/portraits/chispo_deez_icono.webp'
@@ -2254,6 +2739,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                         ? '/assets/combat/guardia_lanza_thumb.webp'
                         : isBosqueMission
                         ? '/assets/combat/goblin_garrote_thumb.webp'
+                        : isTome2Ch1Story
+                        ? tome2Ch1SkipIcon
                         : '/assets/items/escamas_de_cryovain.webp'
                     }
                     alt="Recompensa"
@@ -2261,7 +2748,21 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                     className="w-5 h-5 object-contain"
                   />
                   <span className="text-[8px] font-bold uppercase text-amber-300 mt-0.5 truncate max-w-[80px]">
-                    {isGorgonMazmorraEpilogue
+                    {isCh6VerdadGabrielMission
+                      ? 'INSIGNIA UR'
+                      : isCh6ForzarPuertaEpilogue
+                      ? 'CERROJO UR'
+                      : isCh6CasaGabrielMission
+                      ? 'ALDABA UR'
+                      : isEventoColiseoEpilogue
+                      ? 'LAUREL ONÍRICO'
+                      : isColiseoSuenosMission
+                      ? 'SELLO VARIANTHEL'
+                      : isBulezauMazmorraEpilogue
+                      ? 'GLÁNDULA UR'
+                      : isAireMazmorraEpilogue
+                      ? 'NÚCLEO AIRE UR'
+                      : isGorgonMazmorraEpilogue
                       ? 'PLACA GORGON UR'
                       : isDespertarSuenosMission
                       ? 'SELLO RÚNICO UR'
@@ -2311,6 +2812,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                       ? 'INSIGNIA'
                       : isBosqueMission
                       ? 'MAPA PLATA'
+                      : isTome2Ch1Story
+                      ? 'RELATO II'
                       : 'x2 ESCAMAS'}
                   </span>
                 </div>
@@ -2319,7 +2822,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
             {/* Action Buttons */}
             <div className="space-y-2 pt-1">
-              {!isGorgonMazmorraEpilogue && !isDespertarSuenosMission && !isAudienciaBaronMission && !isDespachoFertonMission && !isPlantaIntermediaMansionEpilogue && !isDurnikEscalerasEpilogue && !isRecibidorMansionEpilogue && !isMansionFertonLlegadaMission && !isTabernaDuergarEpilogue && !isBaronMansionMission && !isCallejonHoggoblinsEpilogue && !isChispoEncuentroMission && !isFertonEpilogue && !isCapitulo3IntroMission && !isAldeaEpilogue && !isLaberintoMission && !isRoboEpilogue && !isBosqueEpilogue && !isPuertasEpilogue && !isEmboscadaEpilogue && !isAsaltoOrcoEpilogue && !isFuriaCarmesiEpilogue && !isCavernaAzulEpilogue && !isZancudoEpilogue && (
+              {!isCh6VerdadGabrielMission && !isCh6ForzarPuertaEpilogue && !isCh6CasaGabrielMission && !isEventoColiseoEpilogue && !isColiseoSuenosMission && !isBulezauMazmorraEpilogue && !isAireMazmorraEpilogue && !isGorgonMazmorraEpilogue && !isDespertarSuenosMission && !isAudienciaBaronMission && !isDespachoFertonMission && !isPlantaIntermediaMansionEpilogue && !isDurnikEscalerasEpilogue && !isRecibidorMansionEpilogue && !isMansionFertonLlegadaMission && !isTabernaDuergarEpilogue && !isBaronMansionMission && !isCallejonHoggoblinsEpilogue && !isChispoEncuentroMission && !isFertonEpilogue && !isCapitulo3IntroMission && !isAldeaEpilogue && !isLaberintoMission && !isRoboEpilogue && !isBosqueEpilogue && !isPuertasEpilogue && !isEmboscadaEpilogue && !isAsaltoOrcoEpilogue && !isFuriaCarmesiEpilogue && !isCavernaAzulEpilogue && !isZancudoEpilogue && (
                 <button
                   type="button"
                   onClick={handleStartCombatAfterStory}
@@ -2327,7 +2830,11 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 >
                   <Swords className="w-4 h-4" />
                   <span>
-                    {isGorgonMazmorraMission
+                    {isBulezauMazmorraMission
+                      ? '¡Enfrentar al Bulezau!'
+                      : isAireMazmorraMission
+                      ? '¡Enfrentar al Elemental de Aire!'
+                      : isGorgonMazmorraMission
                       ? '¡Enfrentar al Gorgon de Hierro!'
                       : isPlantaIntermediaMansionMission
                       ? '¡Barrer las 4 Oleadas Borrachas! (3-4 Enemigos)'
@@ -2351,8 +2858,25 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                       ? '¡Combatir a la Guardia por Oleadas!'
                       : isBosqueMission
                       ? '¡Combatir la Emboscada Goblin!'
+                      : isTome2Ch1Story
+                      ? '¡Entrar en el Barracón!'
                       : '¡Ir al Combate contra Cryovain!'}
                   </span>
+                </button>
+              )}
+
+              {(isColiseoSuenosMission || isEventoColiseoEpilogue) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playSFX('click');
+                    setActiveWorldPlane('plano_suenos');
+                    navigateTo('world');
+                  }}
+                  className="w-full py-2.5 bg-gradient-to-r from-purple-700 via-fuchsia-600 to-cyan-600 hover:brightness-110 text-white font-black rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-[0_0_18px_rgba(192,132,252,0.7)] flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                >
+                  <Sparkles className="w-4 h-4 text-cyan-200" />
+                  <span>¡Viajar al Plano de los Sueños!</span>
                 </button>
               )}
 
@@ -2372,10 +2896,71 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 </button>
               )}
 
+              {isCh6CasaGabrielMission && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playSFX('click');
+                    setPendingMissionLaunch({
+                      missionId: 'm21c_forzar_puerta',
+                      destination: 'door_breach',
+                    });
+                    setSelectedCombatMissionId('m21c_forzar_puerta');
+                    navigateTo('party', true);
+                  }}
+                  className="w-full py-2.5 bg-gradient-to-r from-cyan-600 via-sky-600 to-indigo-600 hover:brightness-110 text-white font-black rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-[0_0_18px_rgba(34,211,238,0.55)] flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                >
+                  <Sparkles className="w-4 h-4 text-cyan-200" />
+                  <span>¡Forzar la Puerta de Gabriel!</span>
+                </button>
+              )}
+
+              {isCh6ForzarPuertaEpilogue && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playSFX('click');
+                    setSelectedCombatMissionId('m21d_verdad_gabriel');
+                    setCurrentLineIndex(0);
+                    setIsStoryCompleted(false);
+                    setIsAutoPlay(false);
+                  }}
+                  className="w-full py-2.5 bg-gradient-to-r from-sky-700 via-cyan-600 to-indigo-700 hover:brightness-110 text-white font-black rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-[0_0_18px_rgba(34,211,238,0.55)] flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                >
+                  <Sparkles className="w-4 h-4 text-cyan-200" />
+                  <span>¡Continuar: La Verdad Bajo el Hielo!</span>
+                </button>
+              )}
+
+              {isCh6VerdadGabrielMission && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playSFX('click');
+                    setPendingMissionLaunch({
+                      missionId: 'm22_cryovain_final',
+                      destination: 'combat',
+                    });
+                    setSelectedCombatMissionId('m22_cryovain_final');
+                    navigateTo('party', true);
+                  }}
+                  className="w-full py-2.5 bg-gradient-to-r from-red-700 via-orange-600 to-amber-600 hover:brightness-110 text-white font-black rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-[0_0_18px_rgba(239,68,68,0.65)] flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                >
+                  <Swords className="w-4 h-4 text-amber-200" />
+                  <span>¡Enfrentar a Cryovain, El Tirano Blanco!</span>
+                </button>
+              )}
+
               <button
                 type="button"
                 onClick={() => {
-                  if (isGorgonMazmorraMission || isDespertarSuenosMission) {
+                  if (isEventoColiseoEpilogue) {
+                    setActiveWorldPlane('plano_suenos');
+                    navigateTo('world');
+                  } else if (isCh6VerdadGabrielMission || isCh6ForzarPuertaEpilogue || isCh6CasaGabrielMission) {
+                    setActiveQuestChapter(6);
+                    handleReturnToQuests();
+                  } else if (isColiseoSuenosMission || isBulezauMazmorraEpilogue || isAireMazmorraMission || isGorgonMazmorraMission || isDespertarSuenosMission) {
                     setActiveQuestChapter(5);
                     handleReturnToQuests();
                   } else if (isAudienciaBaronMission || isDespachoFertonMission || isPlantaIntermediaMansionMission || isDurnikEscalerasMission || isRecibidorMansionMission || isMansionFertonLlegadaMission || isTabernaDuergarEpilogue) {
@@ -2400,12 +2985,22 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   }
                 }}
                 className={`w-full py-2.5 bg-gradient-to-r ${
-                  isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isPlantaIntermediaMansionEpilogue || isDurnikEscalerasEpilogue || isRecibidorMansionEpilogue || isMansionFertonLlegadaMission || isTabernaDuergarEpilogue || isBaronMansionMission || isCapitulo3IntroMission || isAldeaEpilogue || isLaberintoMission || isFuriaCarmesiEpilogue || isPuertasEpilogue
+                  isCh6VerdadGabrielMission || isCh6ForzarPuertaEpilogue || isCh6CasaGabrielMission || isEventoColiseoEpilogue || isColiseoSuenosMission || isBulezauMazmorraEpilogue || isAireMazmorraEpilogue || isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isPlantaIntermediaMansionEpilogue || isDurnikEscalerasEpilogue || isRecibidorMansionEpilogue || isMansionFertonLlegadaMission || isTabernaDuergarEpilogue || isBaronMansionMission || isCapitulo3IntroMission || isAldeaEpilogue || isLaberintoMission || isFuriaCarmesiEpilogue || isPuertasEpilogue
                     ? 'from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.7)] ring-2 ring-yellow-400/60'
                     : 'from-amber-700 via-amber-600 to-yellow-600 text-stone-950 font-black shadow-md'
                 } hover:brightness-110 rounded-xl text-xs uppercase tracking-wider cursor-pointer transition-all active:scale-95`}
               >
-                {isGorgonMazmorraEpilogue
+                {isCh6VerdadGabrielMission || isCh6ForzarPuertaEpilogue || isCh6CasaGabrielMission
+                  ? 'Volver a Misiones (Capítulo VI)'
+                  : isEventoColiseoEpilogue
+                  ? 'Volver al Coliseo (Mapa del Mundo)'
+                  : isColiseoSuenosMission
+                  ? '¡Torneo y Plano Desbloqueados! Volver a Misiones'
+                  : isBulezauMazmorraEpilogue
+                  ? '¡Portal Abierto! Ir a Misiones'
+                  : isAireMazmorraEpilogue
+                  ? '¡Segunda Cámara Despejada! Volver a Misiones'
+                  : isGorgonMazmorraEpilogue
                   ? '¡Primera Cámara Despejada! Volver a Misiones'
                   : isDespertarSuenosMission
                   ? '¡Rumbo a los Pozos de Pelea! Volver a Misiones'

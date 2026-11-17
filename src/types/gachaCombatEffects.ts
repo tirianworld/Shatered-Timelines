@@ -38,7 +38,9 @@ export type GachaEffectType =
   | 'restrained'
   | 'blinded'
   | 'exhaustion'
-  | 'blessed';
+  | 'blessed'
+  | 'wind_prison'
+  | 'frost_mist';
 
 export interface GachaEffectMeta {
   type: GachaEffectType;
@@ -622,6 +624,40 @@ export const GACHA_EFFECTS_CATALOG: Record<string, GachaEffectMeta> = {
     bgColor: 'bg-fuchsia-950/90',
     glowColor: '#e879f9',
     particleType: 'def_break',
+  },
+  wind_prison: {
+    type: 'wind_prison',
+    canonicalType: 'wind_prison',
+    name: 'Wind Prison',
+    nameEs: 'Prisión de Viento',
+    category: 'debuff',
+    shortDesc: 'Inmovilizado en un torbellino etéreo de viento comprimido.',
+    tacticalDesc: 'Corrientes ciclónicas rodean el cuerpo del héroe e impiden que actúe hasta que el vórtice se disipe.',
+    isBuff: false,
+    maxStacks: 1,
+    icon: '🌪️',
+    color: 'text-cyan-300',
+    borderColor: 'border-cyan-400',
+    bgColor: 'bg-cyan-950/90',
+    glowColor: '#22d3ee',
+    particleType: 'stun',
+  },
+  frost_mist: {
+    type: 'frost_mist',
+    canonicalType: 'frost_mist',
+    name: 'Frost Mist',
+    nameEs: 'Niebla Gélida',
+    category: 'buff',
+    shortDesc: 'Velo gélido sobre el campo: si Cryovain no recibe ataques en un turno, se cura un poco.',
+    tacticalDesc: 'Un aliento de niebla gélida cubre todo el campo de batalla. Si los héroes no atacan a Cryovain durante su turno con la bruma activa, absorberá el frío para curarse.',
+    isBuff: true,
+    maxStacks: 1,
+    icon: '🌫️',
+    color: 'text-cyan-200',
+    borderColor: 'border-cyan-400/80',
+    bgColor: 'bg-cyan-950/85',
+    glowColor: '#38bdf8',
+    particleType: 'regen',
   },
 };
 

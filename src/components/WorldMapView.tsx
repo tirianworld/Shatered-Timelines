@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
+
+type WorldPlaneId = 'plano_material' | 'plano_suenos';
 import {
   Swords,
   X,
@@ -11,6 +13,7 @@ import {
   Skull,
   MapPin,
   Sparkles,
+  Compass,
 } from 'lucide-react';
 
 export interface MapInteractiveLocation {
@@ -30,20 +33,31 @@ export interface MapInteractiveLocation {
   action: () => void;
   quickLinks?: Array<{
     label: string;
-    icon: 'potions' | 'tavern' | 'forge' | 'santuario' | 'quest';
+    icon: 'potions' | 'tavern' | 'forge' | 'santuario' | 'quest' | 'plane';
     action: () => void;
   }>;
 }
 
 export const WorldMapView: React.FC = () => {
-  const { navigateTo, setPendingMissionLaunch } = useGame();
+  const {
+    navigateTo,
+    setPendingMissionLaunch,
+    activeWorldPlane,
+    setActiveWorldPlane,
+    isDreamPlaneUnlocked,
+  } = useGame();
   const [selectedLocation, setSelectedLocation] = useState<MapInteractiveLocation | null>(null);
 
-  // Base dimensions matching icespear_map_8551bb2c (2048 x 1255 ratio = 1.6318)
-  const baseWidth = 1224;
-  const baseHeight = 750;
-  const mapWidth = baseWidth;
-  const mapHeight = baseHeight;
+  const effectivePlane: WorldPlaneId =
+    activeWorldPlane === 'plano_suenos' && isDreamPlaneUnlocked
+      ? 'plano_suenos'
+      : 'plano_material';
+
+  // Dimensions matching each map artwork aspect ratio
+  // Plano Material: 2048 x 1255 (1.6318) -> 1224 x 750
+  // Plano de los Sueños: 1600 x 900 (1.7778) -> 1333 x 750
+  const mapWidth = effectivePlane === 'plano_suenos' ? 1333 : 1224;
+  const mapHeight = 750;
 
   // Container & Pan state
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -86,29 +100,27 @@ export const WorldMapView: React.FC = () => {
     [containerSize.width, containerSize.height]
   );
 
-  // Center on Aldea & Santuario village
-  const centerOnSantuario = useCallback(
-    (currentMapW = mapWidth, currentMapH = mapHeight) => {
-      // Aldea is located around left: 59.2%, top: 57.5%
-      const villageX = currentMapW * 0.592;
-      const villageY = currentMapH * 0.575;
-      const targetX = -(villageX - containerSize.width / 2);
-      const targetY = -(villageY - containerSize.height / 2);
+  // Center on focal landmark for the active plane
+  const centerOnActivePlane = useCallback(
+    (plane: WorldPlaneId = effectivePlane, currentMapW = mapWidth, currentMapH = mapHeight) => {
+      const focalX = plane === 'plano_suenos' ? currentMapW * 0.505 : currentMapW * 0.592;
+      const focalY = plane === 'plano_suenos' ? currentMapH * 0.515 : currentMapH * 0.575;
+      const targetX = -(focalX - containerSize.width / 2);
+      const targetY = -(focalY - containerSize.height / 2);
       setPan(clampPan(targetX, targetY, currentMapW, currentMapH));
     },
-    [containerSize.width, containerSize.height, mapWidth, mapHeight, clampPan]
+    [effectivePlane, containerSize.width, containerSize.height, mapWidth, mapHeight, clampPan]
   );
 
-
-  // Initialize position centered on Aldea village on load
+  // Re-center when plane or container size changes
   useEffect(() => {
-    centerOnSantuario();
-  }, [containerSize.width, containerSize.height]);
+    centerOnActivePlane(effectivePlane, mapWidth, mapHeight);
+    setSelectedLocation(null);
+  }, [effectivePlane, mapWidth, mapHeight, containerSize.width, containerSize.height, centerOnActivePlane]);
 
   // Pointer event handlers for drag-to-pan
   const handlePointerDown = (e: React.PointerEvent) => {
     if (e.button !== 0) return;
-    // Don't hijack if clicking any button or interactive element
     const target = e.target as HTMLElement;
     if (target.closest('.map-control-btn') || target.closest('.map-location-btn')) {
       return;
@@ -128,7 +140,6 @@ export const WorldMapView: React.FC = () => {
     const dy = e.clientY - pointerStartRef.current.y;
     dragDistanceRef.current = Math.hypot(dx, dy);
 
-    // Only capture pointer once drag threshold is passed to preserve child click events
     if (dragDistanceRef.current > 6 && !pointerCapturedRef.current) {
       try {
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
@@ -162,8 +173,7 @@ export const WorldMapView: React.FC = () => {
     setSelectedLocation(loc);
   };
 
-  // Authentic Interactive Locations over the Map
-  const locations: MapInteractiveLocation[] = [
+  const materialLocations: MapInteractiveLocation[] = [
     {
       id: 'aldea_icespear',
       name: 'Aldea de Icespear',
@@ -205,7 +215,7 @@ export const WorldMapView: React.FC = () => {
       name: 'Asalto Orco • Paso Helado',
       subtitle: '¡Emergencia! Familia Tiefling Acorralada',
       typeBadge: 'Misión Aleatoria • Banda Caníbal',
-      badgeStyle: 'bg-red-950/90 border-red-500/80 text-red-200 animate-pulse',
+      badgeStyle: 'bg-red-950/90 border-red-500/80 text-red-200',
       description:
         '¡Una horda de orcos voraces liderada por el Caudillo Gorrak ha acorralado a una madre tiefling y a su pequeña hija! Claman que nunca han probado la carne de tiefling y pretenden devorarlas vivas. ¡Caldo de Dragón debe intervenir de inmediato!',
       top: '38.0%',
@@ -256,6 +266,43 @@ export const WorldMapView: React.FC = () => {
     },
   ];
 
+  const dreamLocations: MapInteractiveLocation[] = [
+    {
+      id: 'coliseo_suenos',
+      name: 'El Coliseo de los Sueños',
+      subtitle: 'Torneo de Varianthel • 3 Rondas',
+      typeBadge: 'Evento de Torneo • Arena de Varianthel',
+      badgeStyle: 'bg-purple-950/90 border-purple-400/80 text-purple-200',
+      description:
+        'La gran arena suspendida en el corazón del Plano de los Sueños. El Príncipe Varianthel observa desde su palco dorado: vence a sus Gladiadores Oníricos en tres rondas para liberar a Chispo Deez.',
+      top: '51.5%',
+      left: '50.5%',
+      widthPercent: 15,
+      aspectRatio: '1 / 1',
+      imageSrc: '/assets/combat/coliseo_onirico_icon.webp',
+      actionLabel: '¡Entrar al Torneo del Coliseo!',
+      actionIcon: 'swords',
+      action: () => {
+        setPendingMissionLaunch({ missionId: 'evento_coliseo_suenos', destination: 'combat' });
+        navigateTo('party');
+      },
+      quickLinks: [
+        {
+          label: 'Volver al Plano Material',
+          icon: 'plane',
+          action: () => setActiveWorldPlane('plano_material'),
+        },
+        {
+          label: 'Ver Misiones',
+          icon: 'quest',
+          action: () => navigateTo('quest'),
+        },
+      ],
+    },
+  ];
+
+  const locations = effectivePlane === 'plano_suenos' ? dreamLocations : materialLocations;
+
   return (
     <div
       ref={containerRef}
@@ -264,9 +311,9 @@ export const WorldMapView: React.FC = () => {
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       style={{ touchAction: 'none' }}
-      className={`relative w-full h-full min-h-[580px] flex-1 overflow-hidden select-none touch-none bg-[#101413] ${
-        isDragging ? 'cursor-grabbing' : 'cursor-grab'
-      }`}
+      className={`relative w-full h-full min-h-[580px] flex-1 overflow-hidden select-none touch-none ${
+        effectivePlane === 'plano_suenos' ? 'bg-[#12081f]' : 'bg-[#101413]'
+      } ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
     >
       {/* Draggable Map Plane (Artwork + Interactive Site Buttons) */}
       <div
@@ -278,11 +325,19 @@ export const WorldMapView: React.FC = () => {
         }}
         className="relative will-change-transform pointer-events-auto"
       >
-        {/* World Map Artwork: icespear_map_8551bb2c.webp */}
         <img
-          src="/assets/aistudio/icespear_map_8551bb2c.webp"
-          alt="Mapa del Mundo Icespear"
+          src={
+            effectivePlane === 'plano_suenos'
+              ? '/assets/backgrounds/plano_suenos_map.webp'
+              : '/assets/aistudio/icespear_map_8551bb2c.webp'
+          }
+          alt={
+            effectivePlane === 'plano_suenos'
+              ? 'Mapa del Plano de los Sueños'
+              : 'Mapa del Mundo Icespear'
+          }
           draggable={false}
+          referrerPolicy="no-referrer"
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
         />
 
@@ -307,16 +362,20 @@ export const WorldMapView: React.FC = () => {
               className="map-location-btn absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group focus:outline-none z-20 flex flex-col items-center touch-manipulation active:scale-95 transition-transform"
               title={loc.name}
             >
-              {/* Illustrated Icon with Hover Aura */}
               <div
                 style={{ aspectRatio: loc.aspectRatio }}
                 className="relative w-full rounded-full transition-transform duration-150 group-hover:scale-115"
               >
-                <div className="absolute inset-0 rounded-full bg-amber-500/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                <div
+                  className={`absolute inset-0 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${
+                    effectivePlane === 'plano_suenos' ? 'bg-purple-400/35' : 'bg-amber-500/20'
+                  }`}
+                />
                 <img
                   src={loc.imageSrc}
                   alt={loc.name}
                   draggable={false}
+                  referrerPolicy="no-referrer"
                   className="w-full h-full object-contain pointer-events-none select-none drop-shadow-[0_4px_14px_rgba(0,0,0,0.95)]"
                 />
               </div>
@@ -325,6 +384,27 @@ export const WorldMapView: React.FC = () => {
         </div>
       </div>
 
+      {/* Bottom Left: Rosa de los Vientos Plane Menu Button */}
+      <div className="absolute bottom-24 left-3 z-30 pointer-events-auto">
+        <button
+          type="button"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            sound.playSFX('click');
+            navigateTo('planes');
+          }}
+          className="map-control-btn group relative flex flex-col items-center cursor-pointer hover:scale-106 active:scale-95 transition-transform"
+          title="Rosa de los Vientos • Planos"
+        >
+          <img
+            src="/assets/items/rosa_vientos_icon.webp"
+            alt="Rosa de los Vientos"
+            referrerPolicy="no-referrer"
+            className="w-16 h-16 sm:w-18 sm:h-18 object-contain filter drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]"
+          />
+        </button>
+      </div>
 
       {/* Bottom Right: Circular SANTUARIO Cabin Button (Positioned safely above bottom footer) */}
       <div className="absolute bottom-24 right-3 z-30 pointer-events-auto">
@@ -342,6 +422,7 @@ export const WorldMapView: React.FC = () => {
           <img
             src="/assets/backgrounds/icespear SANTUARIO BUTTON.webp"
             alt="SANTUARIO"
+            referrerPolicy="no-referrer"
             className="w-16 h-16 sm:w-18 sm:h-18 object-contain filter drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]"
           />
         </button>
@@ -351,11 +432,14 @@ export const WorldMapView: React.FC = () => {
       {selectedLocation && (
         <div
           onClick={() => setSelectedLocation(null)}
+          onPointerDown={(e) => e.stopPropagation()}
           className="absolute inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xs p-4 pointer-events-auto select-none"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="wood-frame max-w-xs w-full p-4 sm:p-5 rounded-2xl space-y-3 text-center border-2 border-amber-600/80 shadow-[0_0_40px_rgba(0,0,0,0.95)] animate-in fade-in zoom-in-95 duration-150"
+            className={`wood-frame max-w-xs w-full p-4 sm:p-5 rounded-2xl space-y-3 text-center border-2 shadow-[0_0_40px_rgba(0,0,0,0.95)] animate-in fade-in zoom-in-95 duration-150 ${
+              effectivePlane === 'plano_suenos' ? 'border-purple-400/80' : 'border-amber-600/80'
+            }`}
           >
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-2 border-b border-amber-900/60">
@@ -371,6 +455,7 @@ export const WorldMapView: React.FC = () => {
                 type="button"
                 onClick={() => setSelectedLocation(null)}
                 className="text-stone-400 hover:text-white p-1 rounded hover:bg-stone-800/60 cursor-pointer"
+                aria-label="Cerrar detalles"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -382,6 +467,7 @@ export const WorldMapView: React.FC = () => {
               <img
                 src={selectedLocation.imageSrc}
                 alt={selectedLocation.name}
+                referrerPolicy="no-referrer"
                 className="max-h-full max-w-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
               />
             </div>
@@ -389,7 +475,7 @@ export const WorldMapView: React.FC = () => {
             {/* Type & Threat Badge */}
             <div className="flex justify-center">
               <span
-                className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border flex items-center gap-1 shadow-sm ${selectedLocation.badgeStyle}`}
+                className={`text-[10px] font-bold px-2.5 py-0.5 rounded-md border flex items-center gap-1 shadow-sm ${selectedLocation.badgeStyle}`}
               >
                 <Shield className="w-3 h-3" />
                 {selectedLocation.typeBadge}
@@ -442,6 +528,7 @@ export const WorldMapView: React.FC = () => {
                       {ql.icon === 'forge' && <Anvil className="w-3.5 h-3.5 text-orange-400" />}
                       {ql.icon === 'santuario' && <Sparkles className="w-3.5 h-3.5 text-yellow-400" />}
                       {ql.icon === 'quest' && <Swords className="w-3.5 h-3.5 text-amber-400" />}
+                      {ql.icon === 'plane' && <Compass className="w-3.5 h-3.5 text-purple-300" />}
                       <span>{ql.label}</span>
                     </button>
                   ))}

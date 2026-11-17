@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
+import { StageAmbientFx, AMBIENT_BY_BACKGROUND } from './StageAmbientFx';
 import { launchConfetti } from '../utils/confetti';
 import {
   Trophy,
@@ -57,6 +58,17 @@ import { DEFAULT_ENEMY_FRAME, type EnemyVfxFrame } from '../utils/enemyVfxFrame'
 import { getSpriteWeaponTip } from '../utils/spriteAlphaTrim';
 import { findAutoMergePair, resolveAutoMerges } from '../utils/autoMergeHand';
 import { getCombatVoice } from '../data/combatSfx';
+import { getHeroById } from '../data/heroesData';
+
+const ALBA_DORADA_HERO_IDS = [
+  'prometeo',
+  'raxxar',
+  'barled',
+  'ragnavaldr',
+  'kairon',
+  'smurph_draco',
+] as const;
+const DEFAULT_ALBA_DORADA_PARTY = ['prometeo', 'raxxar', 'barled', 'ragnavaldr'];
 import {
   STATUS_VFX_ASSETS,
   StatusConditionsVfxOverlay,
@@ -64,6 +76,7 @@ import {
   getStatusSpriteShaderFilter,
   normalizeConditionKey,
 } from './StatusConditionsVfxOverlay';
+import cryovainCavernaEspaciosaBg from '../assets/images/cryovain_caverna_espaciosa_1794919200004.jpg';
 
 export interface GachaSkillEffectApplication {
   type: GachaEffectType;
@@ -71,6 +84,26 @@ export interface GachaSkillEffectApplication {
   stacks: number;
   target: 'enemy' | 'hero';
 }
+
+const AIR_PRISON_STATUS_EFFECT: ActiveGachaEffect = {
+  id: 'fx_wind_prison_persistent',
+  type: 'wind_prison',
+  canonicalType: 'wind_prison',
+  name: 'Prisión de Viento',
+  description: 'Inmovilizado en un torbellino etéreo de viento comprimido.',
+  turnsRemaining: 1,
+  stacks: 1,
+  maxStacks: 1,
+  tier: 3,
+  sourceSkill: 'Prisión de Vórtice Etéreo',
+  isBuff: false,
+  category: 'debuff',
+  color: 'text-cyan-300',
+  borderColor: 'border-cyan-400',
+  bgColor: 'bg-cyan-950/90',
+  glowColor: '#22d3ee',
+  icon: '🌪️',
+};
 
 export interface CardTierInfo {
   tier: number; // 1 = Bronze, 2 = Silver, 3 = Gold
@@ -1705,7 +1738,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
         image: '/assets/skills/barled_inspiracion_tier_1.webp',
         damage: 0,
         title: 'Inspiración Bárdica I',
-        description: '������ [OUD ÁRABE]: Barled rasguea su Oud y sube de tier 1 carta de la mano al seleccionarla (+1 Rango).',
+        description: '🎶 [OUD ÁRABE]: Barled rasguea su Oud y sube de tier 1 carta de la mano al seleccionarla (+1 Rango).',
         gachaEffectBadge: '🎶 Inspiración • 1 Carta sube +1 Rango',
         gachaEffectsApplied: [],
         dndDamageType: 'force',
@@ -2258,7 +2291,16 @@ export type CombatEnemyId =
   | 'guarda_aurea_borracho_pesado'
   | 'hoggoblin_tunica_borracho_daga'
   | 'hoggoblin_tunica_borracho_ballesta'
-  | 'gorgon_metal';
+  | 'gorgon_metal'
+  | 'elemental_aire'
+  | 'bulezau'
+  | 'gladiador_onirico'
+  | 'cryovain_boss'
+  | 'no_muerto'
+  | 'soldado_no_muerto'
+  | 'perro_asalvajado'
+  | 'armadura_reanimada'
+  | 'arana_acorazada_boss';
 
 export interface EnemyConfig {
   id: CombatEnemyId;
@@ -2346,7 +2388,7 @@ export interface EnemyConfig {
     item: {
       id: string;
       name: string;
-      rarity: 'SR' | 'SSR';
+      rarity: 'SR' | 'SSR' | 'UR';
       count: number;
       icon: string;
       description: string;
@@ -4885,6 +4927,204 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         },
       },
     },
+    elemental_aire: {
+      id: 'elemental_aire',
+      missionId: 'm19_segunda_camara_aire',
+      name: 'Elemental de Aire',
+      title: 'Espíritu de Tormenta • Segunda Cámara de la Mazmorra',
+      chamberName: 'Segunda Cámara de la Mazmorra',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/elemental_aire_idle.webp',
+      attackSpriteUrl: '/assets/combat/elemental_aire_attack_tajo.webp',
+      hurtSpriteUrl: '/assets/combat/elemental_aire_hurt.webp',
+      thumbUrl: '/assets/portraits/elemental_aire_thumb.webp',
+      maxHp: 580,
+      width: 215,
+      height: 215,
+      scaleClass: 'w-[215px] h-[215px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Tajos de Aire',
+        desc: 'Desata arcos cortantes de viento comprimido que barren al objetivo con un sonoro ¡FSHH!.',
+        damage: [24, 34],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+      },
+      specialSkill: {
+        name: 'Cuchillas de Aire',
+        desc: 'Dispara una ráfaga de afiladas lanzas triangulares de aire a alta velocidad.',
+        damage: [26, 36],
+        vfx: 'shadow_needle',
+        sfx: 'slash',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 1,
+          title: 'Corte de Vendaval',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Prisión de Vórtice Etéreo!',
+        desc: 'Envuelve al héroe activo en un torbellino ascendente que lo inmoviliza por completo en el aire.',
+        damage: 44,
+        dndDamageType: 'force',
+      },
+      rewards: {
+        gold: 95000,
+        crystals: 3600,
+        item: {
+          id: 'nucleo_ciclonico_aire',
+          name: 'Núcleo Ciclónico del Elemental de Aire',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/elemental_aire_thumb.webp',
+          description: 'Esfera de corrientes en espiral recogida tras disipar al Elemental de Aire en la Segunda Cámara de la mazmorra.',
+        },
+      },
+    },
+    bulezau: {
+      id: 'bulezau',
+      missionId: 'm20_tercera_camara_bulezau',
+      name: 'Bulezau',
+      title: 'Demonio de Putrefacción • Tercera Cámara de la Mazmorra',
+      chamberName: 'Tercera Cámara de la Mazmorra',
+      chamberNumber: 3,
+      spriteUrl: '/assets/combat/bulezau_idle.webp',
+      attackSpriteUrl: '/assets/combat/bulezau_attack_toque.webp',
+      hurtSpriteUrl: '/assets/combat/bulezau_hurt.webp',
+      thumbUrl: '/assets/portraits/bulezau_thumb.webp',
+      maxHp: 640,
+      width: 215,
+      height: 225,
+      scaleClass: 'w-[215px] h-[225px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Toque de Putrefacción',
+        desc: 'Alarga su brazo corrompido para rozar a su presa, desatando humo verde amarillento cargado de moscas necróticas.',
+        damage: [25, 35],
+        vfx: 'void_miasma',
+        sfx: 'necrotic',
+        dndDamageType: 'necrotic',
+        condition: {
+          type: 'decay',
+          duration: 2,
+          stacks: 1,
+          title: 'Toque de Putrefacción',
+        },
+      },
+      specialSkill: {
+        name: 'Bola de Magia Pútrida',
+        desc: 'Concentra miasma pestilente y moscas entre sus manos para arrojar una esfera ardiente de fuego enfermizo.',
+        damage: [28, 38],
+        vfx: 'void_miasma',
+        sfx: 'magic',
+        dndDamageType: 'fire',
+        condition: {
+          type: 'poison',
+          duration: 2,
+          stacks: 1,
+          title: 'Miasma con Moscas',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Andanada de Fuego Pútrido!',
+        desc: 'Descarga una ráfaga múltiple de bolas ígneas hechas de humo bilioso y enjambres zumbantes que abrasan e infectan al objetivo.',
+        damage: 48,
+        dndDamageType: 'fire',
+        condition: {
+          type: 'poison',
+          duration: 3,
+          stacks: 2,
+          title: 'Fuego Infecto de Bulezau',
+        },
+      },
+      rewards: {
+        gold: 105000,
+        crystals: 4000,
+        item: {
+          id: 'glandula_putrefaccion_bulezau',
+          name: 'Glándula de Putrefacción del Bulezau',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/bulezau_thumb.webp',
+          description: 'Glándula corrupta que aún exuda vapor verdoso y zumbidos abisales, recogida tras abatir al Bulezau de la Tercera Cámara.',
+        },
+      },
+    },
+    cryovain_boss: {
+      id: 'cryovain_boss',
+      missionId: 'm22_cryovain_final',
+      name: 'Cryovain, El Tirano Blanco',
+      title: 'Gran Dragón Blanco • Cima de la Montaña Helada',
+      chamberName: 'Caverna de la Cima de la Montaña',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/cryovain_patas_idle.webp',
+      attackSpriteUrl: '/assets/combat/cryovain_patas_idle.webp',
+      hurtSpriteUrl: '/assets/combat/cryovain_patas_idle.webp',
+      thumbUrl: '/assets/portraits/cryovain_boss_thumb.webp',
+      maxHp: 900,
+      width: 368,
+      height: 492,
+      scaleClass: 'w-[368px] h-[492px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Zarpazo Glacial',
+        desc: 'Desplaza su colosal pata delantera y desgarrando con garras de escarcha pura.',
+        damage: [28, 38],
+        vfx: 'frost_blizzard',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 1,
+          title: 'Desgarro Glacial',
+        },
+      },
+      specialSkill: {
+        name: 'Mordisco Desgarrador',
+        desc: 'Baja su gigantesca cabeza desde las alturas para clavar sus colmillos helados sobre su presa.',
+        damage: [34, 46],
+        vfx: 'crimson_claw',
+        sfx: 'critical',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Fauces Rompehuesos',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Aliento de Hielo Concentrado!',
+        desc: 'Desciende su cabeza cargando energía glacial en su garganta y libera un rayo criogénico devastador.',
+        damage: 58,
+        dndDamageType: 'cold',
+        condition: {
+          type: 'frozen',
+          duration: 2,
+          stacks: 1,
+          title: 'Congelación Absoluta',
+        },
+      },
+      rewards: {
+        gold: 135000,
+        crystals: 4800,
+        item: {
+          id: 'corazon_helado_cryovain',
+          name: 'Corazón Helado de Cryovain',
+          rarity: 'UR',
+          count: 1,
+          icon: '/assets/items/Escamas de Cryovain.webp',
+          description: 'Trofeo supremo del Tirano Blanco abatido en la caverna helada de la cima de la montaña.',
+        },
+      },
+    },
     guarda_aurea_borracho_espada: {
       id: 'guarda_aurea_borracho_espada',
       missionId: 'm14_planta_intermedia_ferton',
@@ -5139,6 +5379,366 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         },
       },
     },
+    gladiador_onirico: {
+      id: 'gladiador_onirico',
+      missionId: 'evento_coliseo_suenos',
+      name: 'Gladiador Onírico',
+      title: 'Campeón Forjado en el Coliseo de Varianthel',
+      chamberName: 'Coliseo de los Sueños',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/gladiador_onirico_idle.webp',
+      attackSpriteUrl: '/assets/combat/gladiador_onirico_attack.webp',
+      hurtSpriteUrl: '/assets/combat/gladiador_onirico_hurt.webp',
+      thumbUrl: '/assets/portraits/gladiador_onirico_thumb.webp',
+      maxHp: 310,
+      width: 158,
+      height: 215,
+      scaleClass: 'w-[158px] h-[215px]',
+      isBoss: false,
+      isSemiboss: true,
+      normalSkill: {
+        name: 'Espada de Bruma',
+        desc: 'Traza un arco violeta con su alfanje cristalino nacido de los sueños de Varianthel.',
+        damage: [21, 29],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+      },
+      specialSkill: {
+        name: 'Escudo de Media Luna',
+        desc: 'Embiste con el escudo rúnico lunar, haciendo resonar una onda áurea aturdidora.',
+        damage: [25, 33],
+        vfx: 'earth_titan',
+        sfx: 'punch',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Impacto Lunar',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Veredicto del Eclipse Onírico!',
+        desc: 'Combina un golpe ascendente de escudo rúnico con un tajo doble de cristal violeta ante el público del Coliseo.',
+        damage: 44,
+        dndDamageType: 'radiant',
+        condition: {
+          type: 'atk_down',
+          duration: 2,
+          stacks: 1,
+          title: 'Deslumbramiento Onírico',
+        },
+      },
+      rewards: {
+        gold: 18000,
+        crystals: 650,
+        item: {
+          id: 'bronce_onirico_coliseo',
+          name: 'Fragmento de Escudo Lunar',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/gladiador_onirico_thumb.webp',
+          description: 'Trozo dorado con runas lunares violetas obtenido tras derrotar a un Gladiador Onírico en la arena de Varianthel.',
+        },
+      },
+    },
+    no_muerto: {
+      id: 'no_muerto',
+      missionId: 't2_c1_m1_trincheras_nomuertos',
+      name: 'No Muerto',
+      title: 'Cuerpo Errante · Fortaleza de No Muerto',
+      chamberName: 'Las Trincheras del Barracón',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/no_muerto_idle.webp',
+      attackSpriteUrl: '/assets/combat/no_muerto_attack.webp',
+      hurtSpriteUrl: '/assets/combat/no_muerto_hurt.webp',
+      thumbUrl: '/assets/portraits/no_muerto_thumb.webp',
+      maxHp: 340,
+      width: 142,
+      height: 194,
+      scaleClass: 'w-[142px] h-[194px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Golpetazo',
+        desc: 'Descarga un golpe torpe pero implacable con los brazos podridos.',
+        damage: [22, 30],
+        vfx: 'earth_titan',
+        sfx: 'punch',
+        dndDamageType: 'bludgeoning',
+      },
+      specialSkill: {
+        name: 'Fortaleza de No Muerto',
+        desc: 'Se reincorpora pese al daño y arremete con furia cadavérica.',
+        damage: [25, 34],
+        vfx: 'earth_titan',
+        sfx: 'punch',
+        dndDamageType: 'bludgeoning',
+      },
+      ultimateSkill: {
+        name: 'Acometida de las Trincheras',
+        desc: 'Se abalanza desde el barro para derribar al aventurero.',
+        damage: 44,
+        dndDamageType: 'bludgeoning',
+      },
+      rewards: {
+        gold: 950,
+        crystals: 40,
+        item: {
+          id: 'hueso_trincheras_barracon',
+          name: 'Fémur Agrietado de las Trincheras',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/no_muerto_thumb.webp',
+          description: 'Restos óseos reanimados recuperados en las trincheras del barracón.',
+        },
+      },
+    },
+    perro_asalvajado: {
+      id: 'perro_asalvajado',
+      missionId: 't2_c1_m2_jauria_salas',
+      name: 'Perro Asalvajado',
+      title: 'Bestia Mediana · Olfato y Oído Agudizados',
+      chamberName: 'Dependencias del Barracón',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/perro_asalvajado_idle.webp',
+      attackSpriteUrl: '/assets/combat/perro_asalvajado_attack.webp',
+      hurtSpriteUrl: '/assets/combat/perro_asalvajado_hurt.webp',
+      thumbUrl: '/assets/portraits/perro_asalvajado_thumb.webp',
+      maxHp: 370,
+      width: 150,
+      height: 184,
+      scaleClass: 'w-[150px] h-[184px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Mordisco',
+        desc: 'Se lanza directamente a las extremidades con fauces ferales.',
+        damage: [24, 33],
+        vfx: 'crimson_claw',
+        sfx: 'attack',
+        dndDamageType: 'piercing',
+      },
+      specialSkill: {
+        name: 'Dentellada Salvaje',
+        desc: 'Desgarra la armadura provocando una herida sangrante.',
+        damage: [28, 37],
+        vfx: 'crimson_claw',
+        sfx: 'critical',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 1,
+          title: 'Mordedura Sangrante',
+        },
+      },
+      ultimateSkill: {
+        name: 'Frenesí de Jauría',
+        desc: 'Salta con rabia ciega intentando derribar a su presa.',
+        damage: 47,
+        dndDamageType: 'piercing',
+      },
+      rewards: {
+        gold: 1100,
+        crystals: 45,
+        item: {
+          id: 'colmillo_perro_asalvajado',
+          name: 'Colmillo de Perro Asalvajado',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/perro_asalvajado_thumb.webp',
+          description: 'Colmillo afilado de las jaurías hambrientas del barracón.',
+        },
+      },
+    },
+    soldado_no_muerto: {
+      id: 'soldado_no_muerto',
+      missionId: 't2_c1_m2_jauria_salas',
+      name: 'Soldado No Muerto',
+      title: 'Guarnición Caída · Fortaleza de No Muerto',
+      chamberName: 'Salas del Barracón',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/soldado_no_muerto_idle.webp',
+      attackSpriteUrl: '/assets/combat/soldado_no_muerto_attack.webp',
+      hurtSpriteUrl: '/assets/combat/soldado_no_muerto_hurt.webp',
+      thumbUrl: '/assets/portraits/soldado_no_muerto_thumb.webp',
+      maxHp: 410,
+      width: 148,
+      height: 202,
+      scaleClass: 'w-[148px] h-[202px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Golpetazo de Espada',
+        desc: 'Lanza un tajo firme con su hoja mellada tras alzarse con su escudo.',
+        damage: [26, 35],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+      },
+      specialSkill: {
+        name: 'Estocada de la Vieja Guardia',
+        desc: 'Combina el peso del escudo abollado con un corte disciplinado.',
+        damage: [30, 40],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+      },
+      ultimateSkill: {
+        name: 'Asalto Sin Descanso',
+        desc: 'Desencadena una ofensiva implacable sin sentir dolor ni fatiga.',
+        damage: 50,
+        dndDamageType: 'slashing',
+      },
+      rewards: {
+        gold: 1350,
+        crystals: 55,
+        item: {
+          id: 'blason_soldado_hueco',
+          name: 'Jirón Carmesí de Soldado No Muerto',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/soldado_no_muerto_thumb.webp',
+          description: 'Retazo de capa carmesí de la antigua guarnición del barracón.',
+        },
+      },
+    },
+    armadura_reanimada: {
+      id: 'armadura_reanimada',
+      missionId: 't2_c1_m3_custodios_anillo',
+      name: 'Armadura Reanimada',
+      title: 'Constructo Centinela · Custodio del Anillo',
+      chamberName: 'Pasillo de la Bóveda Hexagonal',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/armadura_reanimada_idle.webp',
+      attackSpriteUrl: '/assets/combat/armadura_reanimada_attack.webp',
+      hurtSpriteUrl: '/assets/combat/armadura_reanimada_hurt.webp',
+      thumbUrl: '/assets/portraits/armadura_reanimada_thumb.webp',
+      maxHp: 680,
+      width: 156,
+      height: 214,
+      scaleClass: 'w-[156px] h-[214px]',
+      isBoss: false,
+      isSemiboss: true,
+      normalSkill: {
+        name: 'Golpe de Acero',
+        desc: 'Descarga su puño acorazado con fuerza mecánica implacable.',
+        damage: [28, 38],
+        vfx: 'earth_titan',
+        sfx: 'punch',
+        dndDamageType: 'bludgeoning',
+      },
+      specialSkill: {
+        name: 'Multiataque Implacable',
+        desc: 'Ejecuta dos golpes consecutivos con guantelete y espadón contra el grupo.',
+        damage: [32, 42],
+        vfx: 'earth_titan',
+        sfx: 'critical',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Coraza Quebrada',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Sentencia de Hierro Hueco!',
+        desc: 'Salta con toda la masa de su armadura encantada haciendo temblar las losas.',
+        damage: 54,
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'stun',
+          duration: 1,
+          stacks: 1,
+          title: 'Impacto Aturdidor',
+        },
+      },
+      rewards: {
+        gold: 3200,
+        crystals: 120,
+        item: {
+          id: 'anillo_ladron_barracon',
+          name: 'Anillo de Ladrón del Barracón',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/armadura_reanimada_thumb.webp',
+          description: 'Anillo guardado en el cofre hexagonal que protege la Armadura Reanimada.',
+        },
+      },
+    },
+    arana_acorazada_boss: {
+      id: 'arana_acorazada_boss',
+      missionId: 't2_c1_m4_arana_acorazada',
+      name: 'Araña Acorazada',
+      title: 'Jefe del Barracón · Bestia Colosal Blindada',
+      chamberName: 'Sala Hexagonal Incandescente',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/arana_acorazada_idle.webp',
+      attackSpriteUrl: '/assets/combat/arana_acorazada_attack_barrido.webp',
+      hurtSpriteUrl: '/assets/combat/arana_acorazada_hurt.webp',
+      thumbUrl: '/assets/portraits/arana_acorazada_thumb.webp',
+      maxHp: 780,
+      width: 356,
+      height: 440,
+      scaleClass: 'w-[356px] h-[440px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Barrido de Piernas',
+        desc: 'Barre toda la vanguardia con sus colosales patas blindadas con púas de hierro.',
+        damage: [28, 38],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'atk_down',
+          duration: 2,
+          stacks: 1,
+          title: 'Barrido Aplastante',
+        },
+      },
+      specialSkill: {
+        name: 'Escupir Bola de Fuego',
+        desc: 'Lanza desde sus mandíbulas un proyectil ígneo que abrasa el suelo de piedra.',
+        damage: [32, 43],
+        vfx: 'crimson_claw',
+        sfx: 'magic',
+        dndDamageType: 'fire',
+        condition: {
+          type: 'burn',
+          duration: 2,
+          stacks: 1,
+          title: 'Llamas Incandescentes',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Aliento de Fuego Incandescente!',
+        desc: 'Desciende su cabeza acorazada y exhala un torrente de fuego abrasador que envuelve la cámara hexagonal.',
+        damage: 56,
+        dndDamageType: 'fire',
+        condition: {
+          type: 'burn',
+          duration: 3,
+          stacks: 2,
+          title: 'Fuego de la Cámara Hexagonal',
+        },
+      },
+      rewards: {
+        gold: 16000,
+        crystals: 550,
+        item: {
+          id: 'ojo_arana_acorazada',
+          name: 'Ojo de la Araña Acorazada',
+          rarity: 'UR',
+          count: 1,
+          icon: '/assets/portraits/arana_acorazada_thumb.webp',
+          description: 'Ojo ígneo intacto recuperado del coloso arácnido entre piedra negra incandescente.',
+        },
+      },
+    },
   };
 
 export const HOBGOBLIN_SKILLS_BY_PHASE = {
@@ -5310,8 +5910,45 @@ export const PLANTA_INTERMEDIA_CHAMBERS: BaseChamber[] = [
   { floor: 4, name: 'Oleada 4: Retaguardia Completamente Ebria', isBoss: true, enemyConfigIds: ['guarda_aurea_borracho_pesado', 'guarda_aurea_borracho_alabarda', 'hoggoblin_tunica_borracho_daga', 'hoggoblin_tunica_borracho_ballesta'], missionId: 'm14_planta_intermedia_ferton' },
 ];
 
+export const COLISEO_SUENOS_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Ronda 1: Clasificatoria del Coliseo Onírico', isBoss: false, enemyConfigIds: ['gladiador_onirico', 'gladiador_onirico'], missionId: 'evento_coliseo_suenos' },
+  { floor: 2, name: 'Ronda 2: Semifinal de los Sueños Dorados', isBoss: false, enemyConfigIds: ['gladiador_onirico', 'gladiador_onirico', 'gladiador_onirico'], missionId: 'evento_coliseo_suenos' },
+  { floor: 3, name: 'Ronda 3: Gran Final por Chispo Deez', isBoss: true, enemyConfigIds: ['gladiador_onirico', 'gladiador_onirico', 'gladiador_onirico'], missionId: 'evento_coliseo_suenos' },
+];
+
 export const GORGON_MAZMORRA_CHAMBERS: BaseChamber[] = [
   { floor: 1, name: 'Jefe: Gorgon de Hierro en la Primera Cámara', isBoss: true, enemyConfigIds: ['gorgon_metal'], missionId: 'm18_primera_camara_gorgon' },
+];
+
+export const AIRE_MAZMORRA_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Jefe: Elemental de Aire en la Segunda Cámara', isBoss: true, enemyConfigIds: ['elemental_aire'], missionId: 'm19_segunda_camara_aire' },
+];
+
+export const BULEZAU_MAZMORRA_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Jefe: Bulezau en la Tercera Cámara', isBoss: true, enemyConfigIds: ['bulezau'], missionId: 'm20_tercera_camara_bulezau' },
+];
+
+export const CRYOVAIN_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Cima Helada: Cryovain, El Tirano Blanco', isBoss: true, enemyConfigIds: ['cryovain_boss'], missionId: 'm22_cryovain_final' },
+];
+
+export const TOMO2_C1_M1_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Oleada 1: Entrada a las Trincheras', isBoss: false, enemyConfigIds: ['no_muerto', 'no_muerto'], missionId: 't2_c1_m1_trincheras_nomuertos' },
+  { floor: 2, name: 'Oleada 2: Patios de Tierra Batida', isBoss: true, enemyConfigIds: ['no_muerto', 'no_muerto', 'no_muerto'], missionId: 't2_c1_m1_trincheras_nomuertos' },
+];
+
+export const TOMO2_C1_M2_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Oleada 1: Jauría del Barracón', isBoss: false, enemyConfigIds: ['perro_asalvajado', 'perro_asalvajado'], missionId: 't2_c1_m2_jauria_salas' },
+  { floor: 2, name: 'Oleada 2: Salas en Ruinas', isBoss: true, enemyConfigIds: ['perro_asalvajado', 'soldado_no_muerto', 'soldado_no_muerto'], missionId: 't2_c1_m2_jauria_salas' },
+];
+
+export const TOMO2_C1_M3_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Oleada 1: Guardia del Pasillo Superior', isBoss: false, enemyConfigIds: ['soldado_no_muerto', 'soldado_no_muerto', 'soldado_no_muerto'], missionId: 't2_c1_m3_custodios_anillo' },
+  { floor: 2, name: 'Oleada 2: Centinela del Anillo de Ladrón', isBoss: true, enemyConfigIds: ['armadura_reanimada'], missionId: 't2_c1_m3_custodios_anillo' },
+];
+
+export const TOMO2_C1_M4_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Sala Hexagonal: La Araña Acorazada', isBoss: true, enemyConfigIds: ['arana_acorazada_boss'], missionId: 't2_c1_m4_arana_acorazada' },
 ];
 
 export const DURNIK_ESCALERAS_CHAMBERS: BaseChamber[] = [
@@ -5465,7 +6102,27 @@ export interface AccumulatedLoot {
 
 export const createChamberEnemies = (floor: number, missionId?: string | null): ChamberEnemyState[] => {
   let configIds: CombatEnemyId[] = [];
-  if (missionId === 'm18_primera_camara_gorgon') {
+  if (missionId === 'evento_coliseo_suenos') {
+    const chamber = COLISEO_SUENOS_CHAMBERS[floor - 1] || COLISEO_SUENOS_CHAMBERS[0];
+    configIds = chamber.enemyConfigIds;
+  } else if (missionId === 'm22_cryovain_final') {
+    configIds = ['cryovain_boss'];
+  } else if (missionId === 't2_c1_m4_arana_acorazada') {
+    configIds = ['arana_acorazada_boss'];
+  } else if (missionId === 't2_c1_m3_custodios_anillo') {
+    const chamber = TOMO2_C1_M3_CHAMBERS[floor - 1] || TOMO2_C1_M3_CHAMBERS[0];
+    configIds = chamber.enemyConfigIds;
+  } else if (missionId === 't2_c1_m2_jauria_salas') {
+    const chamber = TOMO2_C1_M2_CHAMBERS[floor - 1] || TOMO2_C1_M2_CHAMBERS[0];
+    configIds = chamber.enemyConfigIds;
+  } else if (missionId === 't2_c1_m1_trincheras_nomuertos') {
+    const chamber = TOMO2_C1_M1_CHAMBERS[floor - 1] || TOMO2_C1_M1_CHAMBERS[0];
+    configIds = chamber.enemyConfigIds;
+  } else if (missionId === 'm20_tercera_camara_bulezau') {
+    configIds = ['bulezau'];
+  } else if (missionId === 'm19_segunda_camara_aire') {
+    configIds = ['elemental_aire'];
+  } else if (missionId === 'm18_primera_camara_gorgon') {
     configIds = ['gorgon_metal'];
   } else if (missionId === 'm14_planta_intermedia_ferton') {
     const chamber = PLANTA_INTERMEDIA_CHAMBERS[floor - 1] || PLANTA_INTERMEDIA_CHAMBERS[0];
@@ -5547,7 +6204,16 @@ export const createChamberEnemies = (floor: number, missionId?: string | null): 
     configIds = getInfiniteChamberEnemies(floor);
   }
 
-  const hpScale = floor <= 10 ? 1 : 1 + (floor - 10) * 0.08;
+  const hpScale =
+    missionId === 'evento_coliseo_suenos'
+      ? floor >= 3
+        ? 1.25
+        : floor === 2
+        ? 1.1
+        : 1
+      : floor <= 10
+      ? 1
+      : 1 + (floor - 10) * 0.08;
   const isAlcoholGasMission = missionId === 'm14_planta_intermedia_ferton';
 
   return configIds.map((cfgId, idx) => {
@@ -5649,6 +6315,15 @@ const ENEMY_CHAPTER_BY_MISSION: Record<string, number> = {
   m16_audiencia_baron: 4,
   m17_despertar_suenos: 5,
   m18_primera_camara_gorgon: 5,
+  m19_segunda_camara_aire: 5,
+  m20_tercera_camara_bulezau: 5,
+  m21_coliseo_suenos: 5,
+  evento_coliseo_suenos: 5,
+  m22_cryovain_final: 6,
+  t2_c1_m1_trincheras_nomuertos: 6,
+  t2_c1_m2_jauria_salas: 6,
+  t2_c1_m3_custodios_anillo: 6,
+  t2_c1_m4_arana_acorazada: 6,
 };
 
 export const CombatView: React.FC = () => {
@@ -5671,6 +6346,13 @@ export const CombatView: React.FC = () => {
   // Determine starting floor based on selected mission
   const getInitialFloor = (): number => {
     if (
+      selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos' ||
+      selectedCombatMissionId === 't2_c1_m2_jauria_salas' ||
+      selectedCombatMissionId === 't2_c1_m3_custodios_anillo' ||
+      selectedCombatMissionId === 't2_c1_m4_arana_acorazada' ||
+      selectedCombatMissionId === 'm22_cryovain_final' ||
+      selectedCombatMissionId === 'm20_tercera_camara_bulezau' ||
+      selectedCombatMissionId === 'm19_segunda_camara_aire' ||
       selectedCombatMissionId === 'm18_primera_camara_gorgon' ||
       selectedCombatMissionId === 'm14_planta_intermedia_ferton' ||
       selectedCombatMissionId === 'm13_escaleras_durnik' ||
@@ -5680,6 +6362,7 @@ export const CombatView: React.FC = () => {
       selectedCombatMissionId === 'm9_emboscada_ferton' ||
       selectedCombatMissionId === 'evento_asalto_orco' ||
       selectedCombatMissionId === 'evento_emboscada_bandidos' ||
+      selectedCombatMissionId === 'evento_coliseo_suenos' ||
       selectedCombatMissionId === 'm1_tirano' ||
       selectedCombatMissionId === 'm2_robo' ||
       selectedCombatMissionId === 'm3_bosque' ||
@@ -5874,19 +6557,97 @@ export const CombatView: React.FC = () => {
   const [isZancudoRoaring, setIsZancudoRoaring] = useState<boolean>(false);
   const zancudoRoarTimersRef = useRef<number[]>([]);
   const [gorgonAttackPose, setGorgonAttackPose] = useState<'cornada' | 'aliento'>('cornada');
+  const [elementalAireAttackPose, setElementalAireAttackPose] = useState<'tajo' | 'vortice'>('tajo');
+  const [bulezauAttackPose, setBulezauAttackPose] = useState<'toque' | 'orbe'>('toque');
+  const [cryovainAttackPose, setCryovainAttackPose] = useState<'idle' | 'garra' | 'pisoton' | 'mordisco' | 'aliento' | 'rugido' | 'niebla'>('idle');
+  const [cryovainCameraMode, setCryovainCameraMode] = useState<'idle' | 'boss_focus'>('idle');
+  const [isCryovainRoaring, setIsCryovainRoaring] = useState<boolean>(false);
+  // Progresión del combate contra Cryovain:
+  // 1 = Zarpazo inicial + Pisotón doble | 2 = Mordiscos, Zarpazos y Pisotón | 3 = Aliento + todo | 4 = Rugido (+Resistencia y +Daño) | 5 = Niebla Helada
+  const cryoStageRef = useRef<1 | 2 | 3 | 4 | 5>(1);
+  const cryoStageTurnsRef = useRef<number>(0);
+  const cryoTurnCountRef = useRef<number>(0);
+  const cryoHasRoaredRef = useRef<boolean>(false);
+  const cryoHasSummonedMistRef = useRef<boolean>(false);
+  const cryoTookDamageThisTurnRef = useRef<boolean>(false);
+  const cryoIntroUidRef = useRef<string | null>(null);
+  const cryoTimersRef = useRef<number[]>([]);
+  const resetCryovainCombatState = useCallback((clearIntro = false) => {
+    cryoTimersRef.current.forEach((id) => window.clearTimeout(id));
+    cryoTimersRef.current = [];
+    cryoStageRef.current = 1;
+    cryoStageTurnsRef.current = 0;
+    cryoTurnCountRef.current = 0;
+    cryoHasRoaredRef.current = false;
+    cryoHasSummonedMistRef.current = false;
+    cryoTookDamageThisTurnRef.current = false;
+    if (clearIntro) {
+      cryoIntroUidRef.current = null;
+    }
+    setCryovainAttackPose('idle');
+    setCryovainCameraMode('idle');
+    setIsCryovainRoaring(false);
+  }, []);
+  const [aranaAttackPose, setAranaAttackPose] = useState<'idle' | 'barrido' | 'telarana' | 'bola_fuego' | 'aliento' | 'chirrido' | 'ceniza'>('idle');
+  const [aranaCameraMode, setAranaCameraMode] = useState<'idle' | 'boss_focus'>('idle');
+  const [isAranaRoaring, setIsAranaRoaring] = useState<boolean>(false);
+  const aranaStageTurnsRef = useRef<number>(0);
+  const aranaTurnCountRef = useRef<number>(0);
+  const aranaHasRoaredRef = useRef<boolean>(false);
+  const aranaHasCenizaRef = useRef<boolean>(false);
+  const aranaTookDamageThisTurnRef = useRef<boolean>(false);
+  const aranaIntroUidRef = useRef<string | null>(null);
+  const aranaTimersRef = useRef<number[]>([]);
+  const resetAranaCombatState = useCallback((clearIntro = false) => {
+    aranaTimersRef.current.forEach((id) => window.clearTimeout(id));
+    aranaTimersRef.current = [];
+    aranaStageTurnsRef.current = 0;
+    aranaTurnCountRef.current = 0;
+    aranaHasRoaredRef.current = false;
+    aranaHasCenizaRef.current = false;
+    aranaTookDamageThisTurnRef.current = false;
+    if (clearIntro) {
+      aranaIntroUidRef.current = null;
+    }
+    setAranaAttackPose('idle');
+    setAranaCameraMode('idle');
+    setIsAranaRoaring(false);
+  }, []);
+  const [airPrisonHero, setAirPrisonHero] = useState<{ heroId: string; turnsRemaining: number } | null>(null);
+  const [airPrisonVfxKey, setAirPrisonVfxKey] = useState<number>(1);
+  const airPrisonHeroRef = useRef<{ heroId: string; turnsRemaining: number } | null>(null);
+  airPrisonHeroRef.current = airPrisonHero;
+
+  const normalizeCombatHeroId = (heroId: string): string => {
+    if (heroId === 'smurph') return 'smurph_draco';
+    if (heroId === 'arlem') return 'arlem_diaz';
+    if (heroId === 'chispo') return 'chispo_deez';
+    if (heroId === 'giovani_vazquez') return 'giovani';
+    return heroId;
+  };
+
+  const isTome2Combat = Boolean(selectedCombatMissionId?.startsWith('t2_'));
 
   // Vida compartida del grupo: la barra es una sola para todos, pero su máximo sale de sumar
   // el 75 % de la vida máxima de cada héroe del equipo (h1×0.75 + h2×0.75 + h3×0.75 + h4×0.75).
   const MAX_HERO_HP = useMemo(() => {
-    const assignedIds = Array.from(new Set(team.filter((id): id is string => Boolean(id)))).slice(0, 4);
+    const rawIds = Array.from(new Set(team.filter((id): id is string => Boolean(id))));
+    const assignedIds = isTome2Combat
+      ? (() => {
+          const t2Ids = rawIds.filter((id) =>
+            (ALBA_DORADA_HERO_IDS as readonly string[]).includes(id)
+          );
+          return (t2Ids.length > 0 ? t2Ids : DEFAULT_ALBA_DORADA_PARTY).slice(0, 4);
+        })()
+      : rawIds.slice(0, 4);
     const total = assignedIds.reduce((sum, heroId) => {
-      const hero = heroes.find((h) => h.id === heroId);
+      const hero = heroes.find((h) => h.id === heroId) ?? getHeroById(heroId);
       return sum + (hero?.stats?.maxHp ?? 0);
     }, 0);
     // Sin equipo asignado se mantiene la base de siempre para no dejar la partida con 1 HP.
     if (total <= 0) return 100;
     return Math.max(1, Math.round(total * 0.75));
-  }, [team, heroes]);
+  }, [team, heroes, isTome2Combat]);
   const [heroHp, setHeroHp] = useState<number>(MAX_HERO_HP);
   const heroHpRef = useRef<number>(MAX_HERO_HP);
   const heroMaxHp = MAX_HERO_HP;
@@ -6080,6 +6841,34 @@ export const CombatView: React.FC = () => {
       '/assets/combat/gorgon_ono_shhhhh.webp',
       '/assets/combat/edacorn_vfx_slash.webp',
       '/assets/portraits/gorgon_thumb.webp',
+      // Elemental de Aire (Capítulo V - Segunda Cámara) & VFX
+      '/assets/backgrounds/segunda_camara_aire.webp',
+      '/assets/combat/elemental_aire_idle.webp',
+      '/assets/combat/elemental_aire_attack_tajo.webp',
+      '/assets/combat/elemental_aire_attack_vortice.webp',
+      '/assets/combat/elemental_aire_hurt.webp',
+      '/assets/combat/elemental_aire_vfx_tajo.webp',
+      '/assets/combat/elemental_aire_vfx_cuchilla.webp',
+      '/assets/combat/elemental_aire_vfx_prision.webp',
+      '/assets/combat/elemental_aire_ono_fshh.webp',
+      '/assets/portraits/elemental_aire_thumb.webp',
+      // Bulezau (Capítulo V - Tercera Cámara) & VFX
+      '/assets/backgrounds/tercera_camara_bulezau.webp',
+      '/assets/combat/bulezau_idle.webp',
+      '/assets/combat/bulezau_attack_toque.webp',
+      '/assets/combat/bulezau_attack_orbe.webp',
+      '/assets/combat/bulezau_hurt.webp',
+      '/assets/combat/bulezau_vfx_toque_humo.webp',
+      '/assets/combat/bulezau_vfx_bola_putrida.webp',
+      '/assets/combat/bulezau_ono_bzzz.webp',
+      '/assets/portraits/bulezau_thumb.webp',
+      // Coliseo de los Sueños & Gladiadores Oníricos
+      '/assets/backgrounds/coliseo_onirico_bg.webp',
+      '/assets/combat/gladiador_onirico_idle.webp',
+      '/assets/combat/gladiador_onirico_attack.webp',
+      '/assets/combat/gladiador_onirico_hurt.webp',
+      '/assets/portraits/gladiador_onirico_thumb.webp',
+      '/assets/portraits/coliseo_onirico_thumb.webp',
     ];
     sprites.forEach((src) => {
       const img = new Image();
@@ -6090,18 +6879,32 @@ export const CombatView: React.FC = () => {
   // Active Hero Selection: Defaults to mission hero or first non-null member in user's team preset
   const defaultHeroId = useMemo(() => {
     if (selectedCombatMissionId === 'm3_cuevas_rojo') return 'edacorn';
+    if (isTome2Combat) {
+      const firstT2Assigned = team.find(
+        (h) => h && (ALBA_DORADA_HERO_IDS as readonly string[]).includes(h)
+      );
+      return firstT2Assigned || 'prometeo';
+    }
     const firstAssigned = team.find((h) => h !== null && h !== undefined);
     return firstAssigned || 'pepe_loux';
-  }, [selectedCombatMissionId, team]);
+  }, [selectedCombatMissionId, team, isTome2Combat]);
 
   const partyHeroesList = useMemo(() => {
     const rawAssigned = team.filter((id): id is string => Boolean(id));
+    if (isTome2Combat) {
+      const t2Unique = Array.from(
+        new Set(
+          rawAssigned.filter((id) => (ALBA_DORADA_HERO_IDS as readonly string[]).includes(id))
+        )
+      );
+      return t2Unique.length >= 1 ? t2Unique : [...DEFAULT_ALBA_DORADA_PARTY];
+    }
     const unique = Array.from(new Set(rawAssigned));
     if (unique.length >= 2) {
       return unique;
     }
     return ['smurph_draco', 'roxanne', 'magordito', 'kairon', 'ragnavaldr', 'chispo_deez', 'giovani', 'prometeo', 'edacorn', 'pepe_loux', 'arlem_diaz'];
-  }, [team]);
+  }, [team, isTome2Combat]);
 
   const [activeCombatHeroId, setActiveCombatHeroId] = useState<string>(defaultHeroId);
   const activeCombatHeroIdRef = useRef<string>(defaultHeroId);
@@ -6689,7 +7492,8 @@ export const CombatView: React.FC = () => {
   const measureEnemyVfxFrame = (withWeaponTip = false): EnemyVfxFrame => {
     const wrapper = document.querySelector('[data-enemy-sprite]') as HTMLElement | null;
     const host = wrapper?.parentElement as HTMLElement | null;
-    const img = wrapper?.querySelector('img:not([data-enemy-shadow])') as HTMLImageElement | null;
+    const img = (wrapper?.querySelector('[data-enemy-main]') ??
+      wrapper?.querySelector('img:not([data-enemy-shadow])')) as HTMLImageElement | null;
     if (!wrapper || !host) return DEFAULT_ENEMY_FRAME;
     const hostRect = host.getBoundingClientRect();
     if (!hostRect.width || !hostRect.height) return DEFAULT_ENEMY_FRAME;
@@ -6701,6 +7505,8 @@ export const CombatView: React.FC = () => {
     const headX = toX(rect.left + anchor.hx * rect.width);
     const headY = toY(rect.top + anchor.hy * rect.height);
     const imgSrc = img?.getAttribute('src') ?? '';
+    const cryoHeadEl = wrapper.querySelector('[data-cryovain-head]') as HTMLElement | null;
+    const cryoHeadRect = cryoHeadEl ? cryoHeadEl.getBoundingClientRect() : null;
     const base: EnemyVfxFrame = {
       x: toX(rect.left + anchor.c * rect.width),
       y: (footY + headY) / 2,
@@ -6715,9 +7521,40 @@ export const CombatView: React.FC = () => {
             mouthX: toX(rect.left + 0.27 * rect.width),
             mouthY: toY(rect.top + 0.425 * rect.height),
           }
+        : imgSrc.includes('arana_acorazada')
+        ? {
+            mouthX: toX(rect.left + 0.28 * rect.width),
+            mouthY: toY(rect.top + 0.44 * rect.height),
+          }
+        : imgSrc.includes('cryovain')
+        ? cryoHeadRect && cryoHeadRect.width > 0
+          ? {
+              mouthX: toX(cryoHeadRect.left + 0.375 * cryoHeadRect.width),
+              mouthY: toY(cryoHeadRect.top + 0.548 * cryoHeadRect.height),
+            }
+          : {
+              mouthX: toX(rect.left + 0.32 * rect.width),
+              mouthY: toY(rect.top + 0.38 * rect.height),
+            }
         : {}),
     };
     if (!withWeaponTip) return base;
+    if (imgSrc.includes('arana_acorazada')) {
+      return { ...base, tipFx: 0.14, tipFy: 0.52 };
+    }
+    if (imgSrc.includes('cryovain')) {
+      return { ...base, tipFx: 0.08, tipFy: 0.72 };
+    }
+    if (imgSrc.includes('elemental_aire')) {
+      const tip = getSpriteWeaponTip(imgSrc);
+      return tip ? { ...base, tipFx: tip.fx, tipFy: tip.fy } : { ...base, tipFx: 0.16, tipFy: 0.62 };
+    }
+    if (imgSrc.includes('bulezau_attack_toque')) {
+      return { ...base, tipFx: 0.04, tipFy: 0.37 };
+    }
+    if (imgSrc.includes('bulezau_attack_orbe')) {
+      return { ...base, tipFx: 0.12, tipFy: 0.41 };
+    }
     // Punta del arma medida sobre el alfa del sprite (aún puede estar cargándose).
     const tip = getSpriteWeaponTip(imgSrc);
     return tip ? { ...base, tipFx: tip.fx, tipFy: tip.fy } : base;
@@ -6773,6 +7610,23 @@ export const CombatView: React.FC = () => {
     return `${getSpriteAnchorTransform(url, s)} scale(${s})`;
   };
 
+  /**
+   * Respiración idle propia de cada sprite: el ritmo y la profundidad salen de su URL
+   * (así cada criatura y cada héroe late distinto) y las criaturas grandes respiran
+   * más despacio y más hondo que las pequeñas.
+   */
+  const getBreathVars = (spriteUrl: string, weight = 1): React.CSSProperties => {
+    let hash = 0;
+    for (let i = 0; i < spriteUrl.length; i++) {
+      hash = (hash * 31 + spriteUrl.charCodeAt(i)) % 100000;
+    }
+    const spread = (hash % 97) / 96;
+    return {
+      '--breath-amp': ((0.009 + spread * 0.011) * weight).toFixed(4),
+      '--breath-dur': `${((2.7 + spread * 1.6) * weight).toFixed(2)}s`,
+    } as React.CSSProperties;
+  };
+
   const getEnemySpriteUrl = (enemy: ChamberEnemyState): string => {
     if (isDevoradorRoaring && enemy.configId.includes('devorador')) {
       return '/assets/combat/devorador_quitinoso_roar.webp';
@@ -6783,11 +7637,42 @@ export const CombatView: React.FC = () => {
     if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
       return enemy.hurtSpriteUrl || enemy.spriteUrl;
     }
+    if (enemy.configId === 'arana_acorazada_boss') {
+      if (
+        enemy.animation === 'strike' ||
+        enemyAnimation === 'strike' ||
+        isAranaRoaring ||
+        aranaAttackPose === 'chirrido' ||
+        aranaAttackPose === 'ceniza'
+      ) {
+        if (aranaAttackPose === 'aliento' || aranaAttackPose === 'ceniza' || aranaAttackPose === 'chirrido') {
+          return '/assets/combat/arana_acorazada_attack_aliento.webp';
+        }
+        if (aranaAttackPose === 'bola_fuego') {
+          return '/assets/combat/arana_acorazada_attack_bola.webp';
+        }
+        if (aranaAttackPose === 'telarana') {
+          return '/assets/combat/arana_acorazada_attack_telarana.webp';
+        }
+        return '/assets/combat/arana_acorazada_attack_barrido.webp';
+      }
+      return '/assets/combat/arana_acorazada_idle.webp';
+    }
     if (enemy.animation === 'strike' || enemyAnimation === 'strike') {
       if (enemy.configId === 'gorgon_metal') {
         return gorgonAttackPose === 'aliento'
           ? '/assets/combat/gorgon_attack_aliento.webp'
           : '/assets/combat/gorgon_attack_cornada.webp';
+      }
+      if (enemy.configId === 'elemental_aire') {
+        return elementalAireAttackPose === 'vortice'
+          ? '/assets/combat/elemental_aire_attack_vortice.webp'
+          : '/assets/combat/elemental_aire_attack_tajo.webp';
+      }
+      if (enemy.configId === 'bulezau') {
+        return bulezauAttackPose === 'orbe'
+          ? '/assets/combat/bulezau_attack_orbe.webp'
+          : '/assets/combat/bulezau_attack_toque.webp';
       }
       return enemy.attackSpriteUrl || enemy.spriteUrl;
     }
@@ -6816,6 +7701,12 @@ export const CombatView: React.FC = () => {
     zancudoRoarTimersRef.current = [];
     setIsZancudoRoaring(false);
     setGorgonAttackPose('cornada');
+    setElementalAireAttackPose('tajo');
+    setBulezauAttackPose('toque');
+    resetCryovainCombatState(true);
+    resetAranaCombatState(true);
+    setAirPrisonHero(null);
+    airPrisonHeroRef.current = null;
 
     const initFloor = getInitialFloor();
     setCurrentFloor(initFloor);
@@ -6842,8 +7733,60 @@ export const CombatView: React.FC = () => {
         window.clearInterval(id);
       });
       devoradorTransitionTimersRef.current = [];
+      cryoTimersRef.current.forEach((id) => window.clearTimeout(id));
+      cryoTimersRef.current = [];
+      aranaTimersRef.current.forEach((id) => window.clearTimeout(id));
+      aranaTimersRef.current = [];
     };
-  }, [selectedCombatMissionId, createInitialHandForHero]);
+  }, [selectedCombatMissionId, createInitialHandForHero, resetCryovainCombatState, resetAranaCombatState]);
+
+  // Intro cinematográfica del jefe Cryovain: zoom centrado sobre el dragón y retorno a la arena
+  useEffect(() => {
+    if (
+      targetEnemy?.configId === 'cryovain_boss' &&
+      targetEnemy.hp > 0 &&
+      !targetEnemy.isAshDissolving &&
+      cryoIntroUidRef.current !== targetEnemy.uid
+    ) {
+      cryoIntroUidRef.current = targetEnemy.uid;
+      const tZoomIn = window.setTimeout(() => {
+        setCryovainCameraMode('boss_focus');
+        setIsCryovainRoaring(true);
+        setCryovainAttackPose('rugido');
+        sound.playSFX('roar');
+      }, 180);
+      const tZoomOut = window.setTimeout(() => {
+        setCryovainCameraMode('idle');
+        setIsCryovainRoaring(false);
+        setCryovainAttackPose('idle');
+      }, 1450);
+      cryoTimersRef.current.push(tZoomIn, tZoomOut);
+    }
+  }, [targetEnemy?.uid, targetEnemy?.configId, targetEnemy?.hp, targetEnemy?.isAshDissolving]);
+
+  // Intro cinematográfica del jefe Araña Acorazada: zoom centrado sobre la bestia y retorno a la arena
+  useEffect(() => {
+    if (
+      targetEnemy?.configId === 'arana_acorazada_boss' &&
+      targetEnemy.hp > 0 &&
+      !targetEnemy.isAshDissolving &&
+      aranaIntroUidRef.current !== targetEnemy.uid
+    ) {
+      aranaIntroUidRef.current = targetEnemy.uid;
+      const tZoomIn = window.setTimeout(() => {
+        setAranaCameraMode('boss_focus');
+        setIsAranaRoaring(true);
+        setAranaAttackPose('chirrido');
+        sound.playSFX('roar');
+      }, 180);
+      const tZoomOut = window.setTimeout(() => {
+        setAranaCameraMode('idle');
+        setIsAranaRoaring(false);
+        setAranaAttackPose('idle');
+      }, 1450);
+      aranaTimersRef.current.push(tZoomIn, tZoomOut);
+    }
+  }, [targetEnemy?.uid, targetEnemy?.configId, targetEnemy?.hp, targetEnemy?.isAshDissolving]);
 
 
 
@@ -6981,6 +7924,45 @@ export const CombatView: React.FC = () => {
       '/assets/skills/raxxar_ultimate.webp',
       '/assets/skills/roxanne_ultimate.webp',
       '/assets/skills/smurph_ultimate.webp',
+      // Cryovain Capítulo VI (Sangre y Hielo)
+      '/assets/combat/cryovain_patas_idle.webp',
+      '/assets/combat/cryovain_patas_garra.webp',
+      '/assets/combat/cryovain_patas_pisoton.webp',
+      '/assets/combat/cryovain_cabeza_mordisco.webp',
+      '/assets/combat/cryovain_cabeza_aliento.webp',
+      '/assets/combat/cryovain_cabeza_rugido.webp',
+      '/assets/combat/cryovain_ala_fondo.webp',
+      '/assets/combat/cryovain_vfx_garra_hielo.webp',
+      '/assets/combat/cryovain_vfx_mordisco.webp',
+      '/assets/combat/cryovain_vfx_aliento_hielo.webp',
+      cryovainCavernaEspaciosaBg,
+      '/assets/portraits/cryovain_boss_thumb.webp',
+      // Tomo II Capítulo I: Barracón Abandonado
+      '/assets/combat/no_muerto_idle.webp',
+      '/assets/combat/no_muerto_attack.webp',
+      '/assets/combat/no_muerto_hurt.webp',
+      '/assets/combat/soldado_no_muerto_idle.webp',
+      '/assets/combat/soldado_no_muerto_attack.webp',
+      '/assets/combat/soldado_no_muerto_hurt.webp',
+      '/assets/combat/perro_asalvajado_idle.webp',
+      '/assets/combat/perro_asalvajado_attack.webp',
+      '/assets/combat/perro_asalvajado_hurt.webp',
+      '/assets/combat/armadura_reanimada_idle.webp',
+      '/assets/combat/armadura_reanimada_attack.webp',
+      '/assets/combat/armadura_reanimada_hurt.webp',
+      '/assets/combat/arana_acorazada_idle.webp',
+      '/assets/combat/arana_acorazada_hurt.webp',
+      '/assets/combat/arana_acorazada_attack_barrido.webp',
+      '/assets/combat/arana_acorazada_attack_telarana.webp',
+      '/assets/combat/arana_acorazada_attack_bola.webp',
+      '/assets/combat/arana_acorazada_attack_aliento.webp',
+      '/assets/portraits/no_muerto_thumb.webp',
+      '/assets/portraits/soldado_no_muerto_thumb.webp',
+      '/assets/portraits/perro_asalvajado_thumb.webp',
+      '/assets/portraits/armadura_reanimada_thumb.webp',
+      '/assets/portraits/arana_acorazada_thumb.webp',
+      '/assets/backgrounds/barracon_combate.webp',
+      '/assets/backgrounds/sala_arana_acorazada.webp',
       // Status Condition Cartoon VFX Assets
       ...STATUS_VFX_ASSETS,
     ];
@@ -7163,9 +8145,14 @@ export const CombatView: React.FC = () => {
     stepNext();
   };
 
-  const heroStatusShaderFilter = getStatusSpriteShaderFilter(
-    activeHeroStatusShowcase?.effect ?? null
-  );
+  const isCurrentHeroAirPrisoned =
+    Boolean(airPrisonHero) &&
+    airPrisonHero!.turnsRemaining > 0 &&
+    normalizeCombatHeroId(activeCombatHeroId) === airPrisonHero!.heroId;
+
+  const heroStatusShaderFilter =
+    getStatusSpriteShaderFilter(activeHeroStatusShowcase?.effect ?? null) ??
+    (isCurrentHeroAirPrisoned ? 'url(#status-sprite-wind-prison)' : undefined);
   const enemyStatusShaderFilter = getStatusSpriteShaderFilter(
     activeEnemyStatusShowcase?.effect ?? null
   );
@@ -7341,12 +8328,12 @@ export const CombatView: React.FC = () => {
   useEffect(() => {
     if (!activeEnemyAttackVisual) return;
     setEnemyVfxFrame(measureEnemyVfxFrame(true));
-    const timers = [40, 90, 160, 260].map((delay) =>
+    const timers = [40, 100, 175, 225, 290, 360].map((delay) =>
       window.setTimeout(() => setEnemyVfxFrame(measureEnemyVfxFrame(true)), delay)
     );
     return () => timers.forEach((id) => window.clearTimeout(id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeEnemyAttackVisual?.vfxKey, targetEnemy?.uid]);
+  }, [activeEnemyAttackVisual?.vfxKey, targetEnemy?.uid, cryovainAttackPose, aranaAttackPose]);
 
   const switchActiveEnemy = useCallback(
     (newIdx: number, isAiSwitch = false) => {
@@ -7754,6 +8741,8 @@ export const CombatView: React.FC = () => {
     setActiveVfx({ type: 'none', tier: 1 });
     setBossTransitioning(false);
     setWaveClearBanner(null);
+    resetCryovainCombatState(false);
+    resetAranaCombatState(false);
     refillHandToFull();
   };
 
@@ -7777,7 +8766,11 @@ export const CombatView: React.FC = () => {
     heroHpRef.current = MAX_HERO_HP;
     setHeroHp(MAX_HERO_HP);
     setHeroConditions([]);
+    setAirPrisonHero(null);
+    airPrisonHeroRef.current = null;
     setUltimateOrbs(0);
+    resetCryovainCombatState(true);
+    resetAranaCombatState(true);
     // Nueva expedición: el cronómetro de las estrellas vuelve a cero (las muertes siguen contadas).
     runStartedAtRef.current = Date.now();
     startChamber(1);
@@ -7801,7 +8794,8 @@ export const CombatView: React.FC = () => {
     });
     const wasMapEvent =
       selectedCombatMissionId === 'evento_emboscada_bandidos' ||
-      selectedCombatMissionId === 'evento_asalto_orco';
+      selectedCombatMissionId === 'evento_asalto_orco' ||
+      selectedCombatMissionId === 'evento_coliseo_suenos';
     setSelectedCombatMissionId(null);
     navigateTo(wasMapEvent ? 'world' : 'quest');
   };
@@ -7830,6 +8824,12 @@ export const CombatView: React.FC = () => {
 
           const updatedEnemies = activeEnemiesRef.current.map((e) => {
             if (e.uid !== target.uid) return e;
+            if (e.configId === 'cryovain_boss' && dmg > 0) {
+              cryoTookDamageThisTurnRef.current = true;
+            }
+            if (e.configId === 'arana_acorazada_boss' && dmg > 0) {
+              aranaTookDamageThisTurnRef.current = true;
+            }
             let conds = stackGachaEffect(e.conditions, 'stun', 1, 1, landingData.tier, 'Aterrizaje Heroico').updatedEffects;
             conds = stackGachaEffect(conds, 'def_break', 2, 1, landingData.tier, 'Aterrizaje Heroico').updatedEffects;
             return {
@@ -8031,9 +9031,10 @@ export const CombatView: React.FC = () => {
           });
         });
 
-        // Check if Hero is incapacitated (Paralyze or Stun)
+        // Check if Hero is incapacitated (Frozen, Paralyze or Stun)
         const hardCC = remainingEffects.find(
           (c) =>
+            c.type === 'frozen' ||
             c.type === 'paralyze' ||
             c.type === 'paralyzed' ||
             c.type === 'stun' ||
@@ -8042,13 +9043,35 @@ export const CombatView: React.FC = () => {
         if (hardCC) {
           willSkipPlayerTurn = true;
           skipReason =
-            hardCC.type === 'stun' || hardCC.type === 'stunned'
+            hardCC.type === 'frozen'
+              ? 'Congelación'
+              : hardCC.type === 'stun' || hardCC.type === 'stunned'
               ? 'Aturdimiento'
               : 'Parálisis';
         }
 
         return remainingEffects;
       });
+
+      const currentPrison = airPrisonHeroRef.current;
+      if (currentPrison && currentPrison.turnsRemaining > 0) {
+        const nextTurns = currentPrison.turnsRemaining - 1;
+        if (nextTurns <= 0) {
+          airPrisonHeroRef.current = null;
+          setAirPrisonHero(null);
+          queueStatusNotification({
+            icon: '🌪️',
+            title: 'Prisión de Aire Disipada',
+            detail: '¡El vórtice que inmovilizaba al héroe se ha desvanecido!',
+            target: 'hero',
+            isBuff: true,
+          });
+        } else {
+          const nextPrison = { heroId: currentPrison.heroId, turnsRemaining: nextTurns };
+          airPrisonHeroRef.current = nextPrison;
+          setAirPrisonHero(nextPrison);
+        }
+      }
 
       setTurnCounter((prev) => prev + 1);
       setHeroStatusTrigger((prev) => prev + 1);
@@ -8078,9 +9101,9 @@ export const CombatView: React.FC = () => {
           sound.playSFX('necrotic');
 
           queueStatusNotification({
-            icon: '⚡',
+            icon: skipReason === 'Congelación' ? '❄️' : '⚡',
             title: `¡Turno Omitido (${skipReason})!`,
-            detail: 'Magordito no puede actuar. ¡Los enemigos toman un turno consecutivo!',
+            detail: `${getHeroName()} no puede actuar. ¡Los enemigos toman un turno consecutivo!`,
             target: 'hero',
             isBuff: false,
           });
@@ -8481,6 +9504,87 @@ export const CombatView: React.FC = () => {
       return;
     }
 
+    // Specialized 3-Round Tournament Progression for El Coliseo de los Sueños (evento_coliseo_suenos)
+    if (selectedCombatMissionId === 'evento_coliseo_suenos') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      const roundGold = 25000 + currentFloor * 15000;
+      const roundCrystals = 900 + currentFloor * 450;
+
+      const firstEnemyCfg =
+        DUNGEON_ENEMIES[activeEnemiesRef.current[0]?.configId] || DUNGEON_ENEMIES['gladiador_onirico'];
+      const itemDrop = {
+        id: `${firstEnemyCfg.rewards.item.id}_r${currentFloor}`,
+        name: firstEnemyCfg.rewards.item.name,
+        count: 1,
+        icon: firstEnemyCfg.rewards.item.icon,
+        rarity: firstEnemyCfg.rewards.item.rarity,
+        description: firstEnemyCfg.rewards.item.description,
+      };
+
+      setAccumulatedLoot((prev) => ({
+        gold: prev.gold + roundGold,
+        crystals: prev.crystals + roundCrystals,
+        items: [...prev.items, itemDrop],
+      }));
+
+      if (currentFloor >= 3) {
+        addGold(120000);
+        addCrystals(5000);
+        addShelfItem({
+          id: `laurel_coliseo_onirico_${Date.now()}`,
+          name: 'Laurel del Coliseo Onírico',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/coliseo_onirico_thumb.webp',
+          rarity: 'UR',
+          priceGold: 280000,
+          description: 'Corona trenzada con polvo estelar y oro onírico otorgada a los campeones que triunfan en el torneo de Varianthel.',
+        });
+
+        if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+        if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+        accumulatedLoot.items.forEach((it) =>
+          addShelfItem({
+            id: `${it.id}_${Date.now()}`,
+            name: it.name,
+            category: 'materials',
+            rarity: it.rarity as any,
+            count: it.count,
+            icon: it.icon,
+            description: it.description,
+          })
+        );
+        setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+        setWaveClearBanner({
+          floor: 3,
+          gold: 120000,
+          crystals: 5000,
+          nextFloor: 3,
+        });
+
+        setTimeout(() => {
+          setSelectedCombatMissionId('evento_coliseo_suenos_epilogo');
+          navigateTo('story');
+        }, 1600);
+        return;
+      }
+
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold: roundGold,
+        crystals: roundCrystals,
+        nextFloor: currentFloor + 1,
+      });
+
+      setTimeout(() => {
+        startChamber(currentFloor + 1);
+      }, 1800);
+      return;
+    }
+
     // Specialized Victory Handling for Evento de Emboscada de Bandidos
     if (selectedCombatMissionId === 'evento_emboscada_bandidos') {
       sound.playSFX('victory');
@@ -8679,6 +9783,104 @@ export const CombatView: React.FC = () => {
       });
 
       setSelectedCombatMissionId('m18_primera_camara_gorgon_epilogo');
+      setTimeout(() => {
+        navigateTo('story');
+      }, 1500);
+      return;
+    }
+
+    // Specialized Victory Handling for Elemental de Aire Bossfight (m19_segunda_camara_aire)
+    if (selectedCombatMissionId === 'm19_segunda_camara_aire') {
+      sound.playSFX('victory');
+      launchConfetti();
+      setAirPrisonHero(null);
+      airPrisonHeroRef.current = null;
+
+      completeQuestMission('m19_segunda_camara_aire', computeMissionStars());
+      addGold(95000);
+      addCrystals(3600);
+      addShelfItem({
+        id: `nucleo_ciclonico_aire_${Date.now()}`,
+        name: 'Núcleo Ciclónico del Elemental de Aire',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/portraits/elemental_aire_thumb.webp',
+        rarity: 'UR',
+        priceGold: 135000,
+        description: 'Esfera de corrientes en espiral recogida tras disipar al Elemental de Aire en la Segunda Cámara de la mazmorra.',
+      });
+
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          description: it.description,
+        })
+      );
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+      setWaveClearBanner({
+        floor: 1,
+        gold: 95000,
+        crystals: 3600,
+        nextFloor: 1,
+      });
+
+      setSelectedCombatMissionId('m19_segunda_camara_aire_epilogo');
+      setTimeout(() => {
+        navigateTo('story');
+      }, 1500);
+      return;
+    }
+
+    // Specialized Victory Handling for Bulezau Bossfight (m20_tercera_camara_bulezau)
+    if (selectedCombatMissionId === 'm20_tercera_camara_bulezau') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      completeQuestMission('m20_tercera_camara_bulezau', computeMissionStars());
+      addGold(105000);
+      addCrystals(4000);
+      addShelfItem({
+        id: `glandula_putrefaccion_bulezau_${Date.now()}`,
+        name: 'Glándula de Putrefacción del Bulezau',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/portraits/bulezau_thumb.webp',
+        rarity: 'UR',
+        priceGold: 155000,
+        description: 'Glándula corrupta que aún exuda vapor verdoso y zumbidos abisales, recogida tras abatir al Bulezau de la Tercera Cámara.',
+      });
+
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          description: it.description,
+        })
+      );
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+      setWaveClearBanner({
+        floor: 1,
+        gold: 105000,
+        crystals: 4000,
+        nextFloor: 1,
+      });
+
+      setSelectedCombatMissionId('m20_tercera_camara_bulezau_epilogo');
       setTimeout(() => {
         navigateTo('story');
       }, 1500);
@@ -9232,6 +10434,389 @@ export const CombatView: React.FC = () => {
       return;
     }
 
+    // Tomo II - Capítulo I, Misión 1: Las Trincheras (2 oleadas de No Muertos)
+    if (selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      const waveGold = 900 + currentFloor * 350;
+      const waveCrystals = 35 + currentFloor * 15;
+
+      const firstEnemyCfg =
+        DUNGEON_ENEMIES[activeEnemiesRef.current[0]?.configId] || DUNGEON_ENEMIES['no_muerto'];
+      const itemDrop = {
+        id: `${firstEnemyCfg.rewards.item.id}_w${currentFloor}`,
+        name: firstEnemyCfg.rewards.item.name,
+        count: 1,
+        icon: firstEnemyCfg.rewards.item.icon,
+        rarity: firstEnemyCfg.rewards.item.rarity,
+        description: firstEnemyCfg.rewards.item.description,
+      };
+
+      setAccumulatedLoot((prev) => ({
+        gold: prev.gold + waveGold,
+        crystals: prev.crystals + waveCrystals,
+        items: [...prev.items, itemDrop],
+      }));
+
+      if (currentFloor >= 2) {
+        completeQuestMission('t2_c1_m1_trincheras_nomuertos', computeMissionStars());
+        addGold(3000);
+        addCrystals(120);
+        addShelfItem({
+          id: `hueso_trincheras_barracon_${Date.now()}`,
+          name: 'Fémur Agrietado de las Trincheras',
+          category: 'materials',
+          count: 3,
+          icon: '/assets/portraits/no_muerto_thumb.webp',
+          rarity: 'R',
+          priceGold: 1800,
+          description: 'Restos óseos reanimados recuperados de los no muertos que custodian la entrada al barracón.',
+        });
+
+        if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+        if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+        accumulatedLoot.items.forEach((it) =>
+          addShelfItem({
+            id: `${it.id}_${Date.now()}`,
+            name: it.name,
+            category: 'materials',
+            rarity: it.rarity as any,
+            count: it.count,
+            icon: it.icon,
+            description: it.description,
+          })
+        );
+        setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+        setWaveClearBanner({
+          floor: 2,
+          gold: 3000,
+          crystals: 120,
+          nextFloor: 2,
+        });
+
+        setActiveQuestChapter(1);
+        setSelectedCombatMissionId(null);
+        setTimeout(() => {
+          navigateTo('quest');
+        }, 1500);
+        return;
+      }
+
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold: waveGold,
+        crystals: waveCrystals,
+        nextFloor: currentFloor + 1,
+      });
+
+      setTimeout(() => {
+        startChamber(currentFloor + 1);
+      }, 1800);
+      return;
+    }
+
+    // Tomo II - Capítulo I, Misión 2: Perros Asalvajados y Soldados Huecos (2 oleadas)
+    if (selectedCombatMissionId === 't2_c1_m2_jauria_salas') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      const waveGold = 1200 + currentFloor * 450;
+      const waveCrystals = 45 + currentFloor * 20;
+
+      const firstEnemyCfg =
+        DUNGEON_ENEMIES[activeEnemiesRef.current[0]?.configId] || DUNGEON_ENEMIES['perro_asalvajado'];
+      const itemDrop = {
+        id: `${firstEnemyCfg.rewards.item.id}_w${currentFloor}`,
+        name: firstEnemyCfg.rewards.item.name,
+        count: 1,
+        icon: firstEnemyCfg.rewards.item.icon,
+        rarity: firstEnemyCfg.rewards.item.rarity,
+        description: firstEnemyCfg.rewards.item.description,
+      };
+
+      setAccumulatedLoot((prev) => ({
+        gold: prev.gold + waveGold,
+        crystals: prev.crystals + waveCrystals,
+        items: [...prev.items, itemDrop],
+      }));
+
+      if (currentFloor >= 2) {
+        completeQuestMission('t2_c1_m2_jauria_salas', computeMissionStars());
+        addGold(4500);
+        addCrystals(180);
+        addShelfItem({
+          id: `colmillo_perro_asalvajado_${Date.now()}`,
+          name: 'Colmillo de Perro Asalvajado',
+          category: 'materials',
+          count: 2,
+          icon: '/assets/portraits/perro_asalvajado_thumb.webp',
+          rarity: 'SR',
+          priceGold: 2600,
+          description: 'Canino afilado de las jaurías hambrientas del barracón en ruinas.',
+        });
+        addShelfItem({
+          id: `blason_soldado_hueco_${Date.now()}`,
+          name: 'Jirón Carmesí de Soldado No Muerto',
+          category: 'materials',
+          count: 2,
+          icon: '/assets/portraits/soldado_no_muerto_thumb.webp',
+          rarity: 'SR',
+          priceGold: 2900,
+          description: 'Retazo de capa harapienta perteneciente a la antigua guarnición.',
+        });
+
+        if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+        if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+        accumulatedLoot.items.forEach((it) =>
+          addShelfItem({
+            id: `${it.id}_${Date.now()}`,
+            name: it.name,
+            category: 'materials',
+            rarity: it.rarity as any,
+            count: it.count,
+            icon: it.icon,
+            description: it.description,
+          })
+        );
+        setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+        setWaveClearBanner({
+          floor: 2,
+          gold: 4500,
+          crystals: 180,
+          nextFloor: 2,
+        });
+
+        setActiveQuestChapter(1);
+        setSelectedCombatMissionId(null);
+        setTimeout(() => {
+          navigateTo('quest');
+        }, 1500);
+        return;
+      }
+
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold: waveGold,
+        crystals: waveCrystals,
+        nextFloor: currentFloor + 1,
+      });
+
+      setTimeout(() => {
+        startChamber(currentFloor + 1);
+      }, 1800);
+      return;
+    }
+
+    // Tomo II - Capítulo I, Misión 3: La Alfombra y la Armadura Reanimada (2 oleadas)
+    if (selectedCombatMissionId === 't2_c1_m3_custodios_anillo') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      const waveGold = 1800 + currentFloor * 650;
+      const waveCrystals = 65 + currentFloor * 30;
+
+      const firstEnemyCfg =
+        DUNGEON_ENEMIES[activeEnemiesRef.current[0]?.configId] || DUNGEON_ENEMIES['soldado_no_muerto'];
+      const itemDrop = {
+        id: `${firstEnemyCfg.rewards.item.id}_w${currentFloor}`,
+        name: firstEnemyCfg.rewards.item.name,
+        count: 1,
+        icon: firstEnemyCfg.rewards.item.icon,
+        rarity: firstEnemyCfg.rewards.item.rarity,
+        description: firstEnemyCfg.rewards.item.description,
+      };
+
+      setAccumulatedLoot((prev) => ({
+        gold: prev.gold + waveGold,
+        crystals: prev.crystals + waveCrystals,
+        items: [...prev.items, itemDrop],
+      }));
+
+      if (currentFloor >= 2) {
+        completeQuestMission('t2_c1_m3_custodios_anillo', computeMissionStars());
+        addGold(7500);
+        addCrystals(280);
+        addShelfItem({
+          id: `anillo_ladron_barracon_${Date.now()}`,
+          name: 'Anillo de Ladrón del Barracón',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/armadura_reanimada_thumb.webp',
+          rarity: 'SSR',
+          priceGold: 12000,
+          description: 'Sortija grabada extraída del cofre hexagonal tras vencer a la Armadura Reanimada.',
+        });
+
+        if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+        if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+        accumulatedLoot.items.forEach((it) =>
+          addShelfItem({
+            id: `${it.id}_${Date.now()}`,
+            name: it.name,
+            category: 'materials',
+            rarity: it.rarity as any,
+            count: it.count,
+            icon: it.icon,
+            description: it.description,
+          })
+        );
+        setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+        setWaveClearBanner({
+          floor: 2,
+          gold: 7500,
+          crystals: 280,
+          nextFloor: 2,
+        });
+
+        setActiveQuestChapter(1);
+        setSelectedCombatMissionId(null);
+        setTimeout(() => {
+          navigateTo('quest');
+        }, 1500);
+        return;
+      }
+
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold: waveGold,
+        crystals: waveCrystals,
+        nextFloor: currentFloor + 1,
+      });
+
+      setTimeout(() => {
+        startChamber(currentFloor + 1);
+      }, 1800);
+      return;
+    }
+
+    // Bossfight Tomo II - Capítulo I: La Araña Acorazada (t2_c1_m4_arana_acorazada)
+    if (selectedCombatMissionId === 't2_c1_m4_arana_acorazada') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      const bossGold = 16000;
+      const bossCrystals = 550;
+
+      completeQuestMission('t2_c1_m4_arana_acorazada', computeMissionStars());
+      addGold(bossGold);
+      addCrystals(bossCrystals);
+      addShelfItem({
+        id: `ojo_arana_acorazada_${Date.now()}`,
+        name: 'Ojo de la Araña Acorazada',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/portraits/arana_acorazada_thumb.webp',
+        rarity: 'UR',
+        priceGold: 35000,
+        description: 'Orbe ígneo cristalizado del colosal arácnido blindado de la cámara hexagonal.',
+      });
+      addShelfItem({
+        id: `telarana_arana_acorazada_${Date.now()}`,
+        name: 'Telaraña de la Araña Acorazada',
+        category: 'materials',
+        count: 2,
+        icon: '/assets/portraits/arana_acorazada_thumb.webp',
+        rarity: 'UR',
+        priceGold: 18000,
+        description: 'Madeja de seda acerada altamente inflamable obtenida en las ruinas incandescentes.',
+      });
+
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          description: it.description,
+        })
+      );
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+      setWaveClearBanner({
+        floor: 1,
+        gold: bossGold,
+        crystals: bossCrystals,
+        nextFloor: 1,
+      });
+
+      setActiveQuestChapter(1);
+      setSelectedCombatMissionId(null);
+      setTimeout(() => {
+        navigateTo('quest');
+      }, 1700);
+      return;
+    }
+
+    // Final Bossfight Capítulo VI: Sangre y Hielo (m22_cryovain_final)
+    if (selectedCombatMissionId === 'm22_cryovain_final') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      const bossGold = 135000;
+      const bossCrystals = 4800;
+
+      completeQuestMission('m22_cryovain_final', computeMissionStars());
+      addGold(bossGold);
+      addCrystals(bossCrystals);
+      addShelfItem({
+        id: `corazon_helado_cryovain_${Date.now()}`,
+        name: 'Corazón Helado de Cryovain',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/items/Escamas de Cryovain.webp',
+        rarity: 'UR',
+        priceGold: 45000,
+        description: 'Trofeo supremo del Tirano Blanco abatido en la caverna helada de la cima de la montaña.',
+      });
+      addShelfItem({
+        id: `escamas_de_cryovain_${Date.now()}`,
+        name: 'Escamas de Cryovain',
+        category: 'materials',
+        count: 5,
+        icon: '/assets/items/Escamas de Cryovain.webp',
+        rarity: 'UR',
+        priceGold: 25000,
+        description: 'Escamas dracónicas blancas gélidas desprendidas del gran dragón Cryovain.',
+      });
+
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          description: it.description,
+        })
+      );
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+      setWaveClearBanner({
+        floor: 1,
+        gold: bossGold,
+        crystals: bossCrystals,
+        nextFloor: 1,
+      });
+
+      setActiveQuestChapter(6);
+      setSelectedCombatMissionId(null);
+      setTimeout(() => {
+        navigateTo('quest');
+      }, 1700);
+      return;
+    }
+
     // Standard Chamber Cleared!
     sound.playSFX('victory');
     launchConfetti();
@@ -9417,9 +11002,87 @@ export const CombatView: React.FC = () => {
   };
 
   const continueEnemyAction = (actingEnemy: ChamberEnemyState) => {
+    // Niebla Helada de Cryovain: si termina el turno del jugador sin haberle infligido daño estando activa, se cura un poco
+    let workingEnemy = actingEnemy;
+    if (workingEnemy.configId === 'cryovain_boss') {
+      const hasFrostMist = workingEnemy.conditions.some((c) => c.type === 'frost_mist');
+      const tookDamage = cryoTookDamageThisTurnRef.current;
+      cryoTookDamageThisTurnRef.current = false;
+
+      if (hasFrostMist && !tookDamage && workingEnemy.hp > 0 && workingEnemy.hp < workingEnemy.maxHp) {
+        const mistHeal = Math.max(28, Math.round(workingEnemy.maxHp * 0.08));
+        const healedHp = Math.min(workingEnemy.maxHp, workingEnemy.hp + mistHeal);
+        workingEnemy = { ...workingEnemy, hp: healedHp };
+        activeEnemiesRef.current = activeEnemiesRef.current.map((e) =>
+          e.uid === workingEnemy.uid ? { ...e, hp: healedHp } : e
+        );
+        setActiveEnemies((prev) =>
+          prev.map((e) => (e.uid === workingEnemy.uid ? { ...e, hp: healedHp } : e))
+        );
+        const cryoSlot = activeEnemiesRef.current.findIndex((e) => e.uid === workingEnemy.uid);
+        sound.playSFX('powerup');
+        spawnFloating(
+          `+${mistHeal}`,
+          true,
+          true,
+          2,
+          false,
+          cryoSlot >= 0 ? cryoSlot : undefined,
+          'cold',
+          '❄️ NIEBLA GÉLIDA',
+          '#7dd3fc'
+        );
+        queueStatusNotification({
+          icon: '❄️',
+          title: 'Regeneración en la Niebla Gélida',
+          detail: `Cryovain no recibió ataques este turno y absorbe la bruma (+${mistHeal} PV).`,
+          target: 'enemy',
+          isBuff: true,
+        });
+      }
+    }
+
+    // Capullo de Ceniza de la Araña Acorazada: si termina el turno del jugador sin recibir daño, se regenera entre brasas
+    if (workingEnemy.configId === 'arana_acorazada_boss') {
+      const hasAshShroud = workingEnemy.conditions.some((c) => c.type === 'frost_mist');
+      const tookDamage = aranaTookDamageThisTurnRef.current;
+      aranaTookDamageThisTurnRef.current = false;
+
+      if (hasAshShroud && !tookDamage && workingEnemy.hp > 0 && workingEnemy.hp < workingEnemy.maxHp) {
+        const ashHeal = Math.max(24, Math.round(workingEnemy.maxHp * 0.08));
+        const healedHp = Math.min(workingEnemy.maxHp, workingEnemy.hp + ashHeal);
+        workingEnemy = { ...workingEnemy, hp: healedHp };
+        activeEnemiesRef.current = activeEnemiesRef.current.map((e) =>
+          e.uid === workingEnemy.uid ? { ...e, hp: healedHp } : e
+        );
+        setActiveEnemies((prev) =>
+          prev.map((e) => (e.uid === workingEnemy.uid ? { ...e, hp: healedHp } : e))
+        );
+        const aranaSlot = activeEnemiesRef.current.findIndex((e) => e.uid === workingEnemy.uid);
+        sound.playSFX('powerup');
+        spawnFloating(
+          `+${ashHeal}`,
+          true,
+          true,
+          2,
+          false,
+          aranaSlot >= 0 ? aranaSlot : undefined,
+          'fire',
+          '🔥 CAPULLO DE CENIZA',
+          '#fb923c'
+        );
+        queueStatusNotification({
+          icon: '🔥',
+          title: 'Regeneración en Capullo de Ceniza',
+          detail: `La Araña Acorazada no recibió ataques este turno y recompone su coraza entre brasas (+${ashHeal} PV).`,
+          target: 'enemy',
+          isBuff: true,
+        });
+      }
+    }
 
     // Check Freezing (Frío - Congelación Glacial)
-    const isFrozen = actingEnemy.conditions.some((c) => c.type === 'frozen');
+    const isFrozen = workingEnemy.conditions.some((c) => c.type === 'frozen');
     if (isFrozen) {
       sound.playSFX('laser');
 
@@ -9563,10 +11226,360 @@ export const CombatView: React.FC = () => {
     const currentHobPhase = (actingEnemy.hobgoblinPhase || 1) as 1 | 2 | 3;
     const hobPhaseData = HOBGOBLIN_SKILLS_BY_PHASE[currentHobPhase];
 
-    const isDevoradorP2 = actingEnemy.configId === 'devorador_quitinoso_p2';
+    const isDevoradorP2 = workingEnemy.configId === 'devorador_quitinoso_p2';
+    const isElementalAire = workingEnemy.configId === 'elemental_aire';
+    const isBulezau = workingEnemy.configId === 'bulezau';
+    const isCryovain = workingEnemy.configId === 'cryovain_boss';
+    const isArana = workingEnemy.configId === 'arana_acorazada_boss';
+
+    // Flujo dinámico de Cryovain:
+    // Primeros 4 turnos garantiza Zarpazo -> Mordisco -> Pisotón doble -> Aliento de Hielo
+    // (o Aliento inmediato con isUlt), con Rugido y Niebla Helada en fase media/baja de PV.
+    let cryoAction: 'garra' | 'pisoton' | 'mordisco' | 'aliento' | 'rugido' | 'niebla' = 'garra';
+    if (isCryovain) {
+      const hpRatio = workingEnemy.hp / Math.max(1, workingEnemy.maxHp);
+      const hasFrostMist = workingEnemy.conditions.some((c) => c.type === 'frost_mist');
+      const hasRoarBuffs =
+        workingEnemy.conditions.some((c) => c.type === 'def_buff') ||
+        workingEnemy.conditions.some((c) => c.type === 'atk_buff');
+      const cryoTurnIdx = cryoTurnCountRef.current;
+
+      if (!cryoHasSummonedMistRef.current && hpRatio <= 0.25) {
+        cryoAction = 'niebla';
+        cryoHasSummonedMistRef.current = true;
+        cryoStageRef.current = 5;
+      } else if (cryoTurnIdx < 4) {
+        const openingSeq: Array<'garra' | 'mordisco' | 'pisoton' | 'aliento'> = [
+          'garra',
+          'mordisco',
+          'pisoton',
+          'aliento',
+        ];
+        cryoAction = isUlt ? 'aliento' : openingSeq[cryoTurnIdx];
+        cryoStageRef.current = cryoTurnIdx < 2 ? 1 : cryoTurnIdx === 2 ? 2 : 3;
+      } else if (!cryoHasRoaredRef.current && (hpRatio <= 0.6 || cryoTurnIdx === 4)) {
+        cryoAction = 'rugido';
+        cryoHasRoaredRef.current = true;
+        cryoStageRef.current = 4;
+      } else if (!hasFrostMist && hpRatio <= 0.25 && cryoStageTurnsRef.current >= 4 && cryoStageTurnsRef.current % 4 === 0) {
+        cryoAction = 'niebla';
+        cryoStageTurnsRef.current += 1;
+      } else if (!hasRoarBuffs && hpRatio <= 0.3 && cryoStageTurnsRef.current % 5 === 3) {
+        cryoAction = 'rugido';
+        cryoStageTurnsRef.current += 1;
+      } else {
+        const seqLoop: Array<'mordisco' | 'aliento' | 'pisoton' | 'garra'> = [
+          'mordisco',
+          'aliento',
+          'pisoton',
+          'garra',
+        ];
+        cryoAction = isUlt ? 'aliento' : seqLoop[cryoStageTurnsRef.current % seqLoop.length];
+        cryoStageTurnsRef.current += 1;
+      }
+      cryoTurnCountRef.current += 1;
+    }
+
+    // Flujo dinámico de la Araña Acorazada (misma arquitectura multi-fase que Cryovain):
+    // Turnos 0..3: Barrido de Piernas -> Telaraña de Escupir -> Escupir Bola de Fuego -> Aliento de Fuego Incandescente.
+    // Mitad de PV: Chirrido Acorazado (+Def/+Atk). Baja PV (<=25%): Capullo de Ceniza y Brasa.
+    let aranaAction: 'barrido' | 'telarana' | 'bola_fuego' | 'aliento' | 'chirrido' | 'ceniza' = 'barrido';
+    if (isArana) {
+      const hpRatio = workingEnemy.hp / Math.max(1, workingEnemy.maxHp);
+      const hasAshShroud = workingEnemy.conditions.some((c) => c.type === 'frost_mist');
+      const hasRoarBuffs =
+        workingEnemy.conditions.some((c) => c.type === 'def_buff') ||
+        workingEnemy.conditions.some((c) => c.type === 'atk_buff');
+      const aranaTurnIdx = aranaTurnCountRef.current;
+
+      if (!aranaHasCenizaRef.current && hpRatio <= 0.25) {
+        aranaAction = 'ceniza';
+        aranaHasCenizaRef.current = true;
+      } else if (aranaTurnIdx < 4) {
+        const openingSeq: Array<'barrido' | 'telarana' | 'bola_fuego' | 'aliento'> = [
+          'barrido',
+          'telarana',
+          'bola_fuego',
+          'aliento',
+        ];
+        aranaAction = isUlt ? 'aliento' : openingSeq[aranaTurnIdx];
+      } else if (!aranaHasRoaredRef.current && (hpRatio <= 0.6 || aranaTurnIdx === 4)) {
+        aranaAction = 'chirrido';
+        aranaHasRoaredRef.current = true;
+      } else if (!hasAshShroud && hpRatio <= 0.25 && aranaStageTurnsRef.current >= 4 && aranaStageTurnsRef.current % 4 === 0) {
+        aranaAction = 'ceniza';
+        aranaStageTurnsRef.current += 1;
+      } else if (!hasRoarBuffs && hpRatio <= 0.3 && aranaStageTurnsRef.current % 5 === 3) {
+        aranaAction = 'chirrido';
+        aranaStageTurnsRef.current += 1;
+      } else {
+        const seqLoop: Array<'bola_fuego' | 'aliento' | 'telarana' | 'barrido'> = [
+          'bola_fuego',
+          'aliento',
+          'telarana',
+          'barrido',
+        ];
+        aranaAction = isUlt ? 'aliento' : seqLoop[aranaStageTurnsRef.current % seqLoop.length];
+        aranaStageTurnsRef.current += 1;
+      }
+      aranaTurnCountRef.current += 1;
+    }
+
+    // Acciones cinematográficas sin impacto directo de Cryovain: Rugido (+Resistencia y +Daño) y Aliento de Niebla Gélida (1/4 PV)
+    if (isCryovain && (cryoAction === 'rugido' || cryoAction === 'niebla')) {
+      setCryovainCameraMode('boss_focus');
+      setCryovainAttackPose(cryoAction);
+
+      if (cryoAction === 'rugido') {
+        setIsCryovainRoaring(true);
+        setScreenShake('heavy');
+        sound.playSFX('roar');
+        sound.playSFX('powerup');
+
+        const applyRoarBuffs = (e: ChamberEnemyState): ChamberEnemyState => {
+          if (e.uid !== workingEnemy.uid) return e;
+          let conds = stackGachaEffect(e.conditions, 'def_buff', 5, 2, 2, 'Escamas de Escarcha').updatedEffects;
+          conds = stackGachaEffect(conds, 'atk_buff', 5, 2, 2, 'Furia del Tirano').updatedEffects;
+          return {
+            ...e,
+            animation: 'idle',
+            conditions: conds,
+            ultimateOrbs: Math.min(5, e.ultimateOrbs + 1),
+          };
+        };
+        activeEnemiesRef.current = activeEnemiesRef.current.map(applyRoarBuffs);
+        setActiveEnemies((prev) => prev.map(applyRoarBuffs));
+      } else {
+        setScreenFlash('cyan');
+        sound.playSFX('laser');
+        sound.playSFX('powerup');
+        cryoTookDamageThisTurnRef.current = false;
+
+        setActiveEnemyAttackVisual({
+          enemyConfigId: 'cryovain_boss',
+          skillName: 'Aliento de Niebla Gélida',
+          dndDamageType: 'cold',
+          vfxType: 'frost_blizzard',
+          themeColor: '#bae6fd',
+          isUlt: false,
+          isSpecial: false,
+          vfxKey: Date.now(),
+        });
+
+        const applyFrostMist = (e: ChamberEnemyState): ChamberEnemyState => {
+          if (e.uid !== workingEnemy.uid) return e;
+          const conds = stackGachaEffect(
+            e.conditions,
+            'frost_mist',
+            5,
+            1,
+            4,
+            'Niebla Gélida'
+          ).updatedEffects;
+          return {
+            ...e,
+            animation: 'idle',
+            conditions: conds,
+            ultimateOrbs: Math.min(5, e.ultimateOrbs + 1),
+          };
+        };
+        activeEnemiesRef.current = activeEnemiesRef.current.map(applyFrostMist);
+        setActiveEnemies((prev) => prev.map(applyFrostMist));
+
+        queueStatusNotification({
+          icon: '🌫️',
+          title: '¡Aliento de Niebla Gélida!',
+          detail: 'Cryovain cubre todo el campo con bruma glacial. ¡Atácale en tu turno o se curará!',
+          target: 'enemy',
+          isBuff: true,
+        });
+      }
+
+      const tClearFlash = window.setTimeout(() => setScreenFlash(null), 260);
+      const tEndZoom = window.setTimeout(() => {
+        setCryovainCameraMode('idle');
+        setIsCryovainRoaring(false);
+        setCryovainAttackPose('idle');
+        if (cryoAction === 'niebla') {
+          setActiveEnemyAttackVisual(null);
+        }
+        setActiveEnemies((prev) =>
+          prev.map((e) => (e.uid === workingEnemy.uid ? { ...e, animation: 'idle' } : e))
+        );
+        finalizeEnemyPhase();
+      }, cryoAction === 'niebla' ? 1380 : 1150);
+      cryoTimersRef.current.push(tClearFlash, tEndZoom);
+      return;
+    }
+
+    // Acciones cinematográficas sin impacto directo de la Araña Acorazada: Chirrido Acorazado y Capullo de Ceniza
+    if (isArana && (aranaAction === 'chirrido' || aranaAction === 'ceniza')) {
+      setAranaCameraMode('boss_focus');
+      setAranaAttackPose(aranaAction);
+
+      if (aranaAction === 'chirrido') {
+        setIsAranaRoaring(true);
+        setScreenShake('heavy');
+        sound.playSFX('roar');
+        sound.playSFX('powerup');
+
+        const applyChirridoBuffs = (e: ChamberEnemyState): ChamberEnemyState => {
+          if (e.uid !== workingEnemy.uid) return e;
+          let conds = stackGachaEffect(e.conditions, 'def_buff', 5, 2, 2, 'Quitina Blindada').updatedEffects;
+          conds = stackGachaEffect(conds, 'atk_buff', 5, 2, 2, 'Furia Arácnida').updatedEffects;
+          return {
+            ...e,
+            animation: 'idle',
+            conditions: conds,
+            ultimateOrbs: Math.min(5, e.ultimateOrbs + 1),
+          };
+        };
+        activeEnemiesRef.current = activeEnemiesRef.current.map(applyChirridoBuffs);
+        setActiveEnemies((prev) => prev.map(applyChirridoBuffs));
+      } else {
+        setScreenFlash('red');
+        sound.playSFX('laser');
+        sound.playSFX('powerup');
+        aranaTookDamageThisTurnRef.current = false;
+
+        setActiveEnemyAttackVisual({
+          enemyConfigId: 'arana_acorazada_boss',
+          skillName: 'Capullo de Ceniza y Brasa',
+          dndDamageType: 'fire',
+          vfxType: 'crimson_claw',
+          themeColor: '#f97316',
+          isUlt: false,
+          isSpecial: false,
+          vfxKey: Date.now(),
+        });
+
+        const applyAshShroud = (e: ChamberEnemyState): ChamberEnemyState => {
+          if (e.uid !== workingEnemy.uid) return e;
+          const conds = stackGachaEffect(
+            e.conditions,
+            'frost_mist',
+            5,
+            1,
+            4,
+            'Capullo de Ceniza'
+          ).updatedEffects;
+          return {
+            ...e,
+            animation: 'idle',
+            conditions: conds,
+            ultimateOrbs: Math.min(5, e.ultimateOrbs + 1),
+          };
+        };
+        activeEnemiesRef.current = activeEnemiesRef.current.map(applyAshShroud);
+        setActiveEnemies((prev) => prev.map(applyAshShroud));
+
+        queueStatusNotification({
+          icon: '🔥',
+          title: '¡Capullo de Ceniza Incandescente!',
+          detail: 'La Araña Acorazada envuelve la cámara en brasas y seda ígnea. ¡Atácala en tu turno o se curará!',
+          target: 'enemy',
+          isBuff: true,
+        });
+      }
+
+      const tClearFlash = window.setTimeout(() => setScreenFlash(null), 260);
+      const tEndZoom = window.setTimeout(() => {
+        setAranaCameraMode('idle');
+        setIsAranaRoaring(false);
+        setAranaAttackPose('idle');
+        if (aranaAction === 'ceniza') {
+          setActiveEnemyAttackVisual(null);
+        }
+        setActiveEnemies((prev) =>
+          prev.map((e) => (e.uid === workingEnemy.uid ? { ...e, animation: 'idle' } : e))
+        );
+        finalizeEnemyPhase();
+      }, aranaAction === 'ceniza' ? 1320 : 1120);
+      aranaTimersRef.current.push(tClearFlash, tEndZoom);
+      return;
+    }
+
+    const aireAttackKind: 'tajo' | 'cuchillas' | 'prision' = isElementalAire
+      ? isUlt || turnCounter % 3 === 0
+        ? 'prision'
+        : turnCounter % 3 === 2
+        ? 'cuchillas'
+        : 'tajo'
+      : 'tajo';
+    const bulezauAttackKind: 'toque' | 'bola' | 'andanada' = isBulezau
+      ? isUlt || turnCounter % 3 === 0
+        ? 'andanada'
+        : turnCounter % 3 === 2
+        ? 'bola'
+        : 'toque'
+      : 'toque';
+    const cryoAttackKind: 'garra' | 'pisoton' | 'mordisco' | 'aliento' =
+      cryoAction === 'aliento' || cryoAction === 'mordisco' || cryoAction === 'pisoton'
+        ? cryoAction
+        : 'garra';
+    const cryoStompSkill = {
+      name: 'Pisotón Doble Glacial',
+      desc: 'Se alza sobre sus cuartos traseros y deja caer ambas patas delanteras con furia sísmica.',
+      damage: [30, 40] as [number, number],
+      vfx: 'earth_titan' as const,
+      sfx: 'critical',
+      dndDamageType: 'bludgeoning' as DndDamageType,
+      condition: {
+        type: 'atk_down' as const,
+        duration: 2,
+        stacks: 1,
+        title: 'Temblor Glacial',
+      },
+    };
+    const aranaAttackKind: 'barrido' | 'telarana' | 'bola_fuego' | 'aliento' =
+      aranaAction === 'aliento' || aranaAction === 'bola_fuego' || aranaAction === 'telarana'
+        ? aranaAction
+        : 'barrido';
+    const aranaWebSpitSkill = {
+      name: 'Telaraña de Escupir',
+      desc: 'Escupe una red tensa de seda acerada desde sus quelíceros para inmovilizar a su presa.',
+      damage: [24, 34] as [number, number],
+      vfx: 'crimson_claw' as const,
+      sfx: 'magic',
+      dndDamageType: 'piercing' as DndDamageType,
+      condition: {
+        type: 'stun' as const,
+        duration: 1,
+        stacks: 1,
+        title: 'Inmovilizado por Telaraña',
+      },
+    };
 
     const skill = actingEnemy.configId === 'hobgoblin_capataz'
       ? (isUlt ? hobPhaseData.ultimate : hobPhaseData.normal)
+      : isCryovain
+      ? cryoAttackKind === 'aliento'
+        ? enemyCfg.ultimateSkill
+        : cryoAttackKind === 'mordisco'
+        ? enemyCfg.specialSkill
+        : cryoAttackKind === 'pisoton'
+        ? cryoStompSkill
+        : enemyCfg.normalSkill
+      : isArana
+      ? aranaAttackKind === 'aliento'
+        ? enemyCfg.ultimateSkill
+        : aranaAttackKind === 'bola_fuego'
+        ? enemyCfg.specialSkill
+        : aranaAttackKind === 'telarana'
+        ? aranaWebSpitSkill
+        : enemyCfg.normalSkill
+      : isElementalAire
+      ? aireAttackKind === 'prision'
+        ? enemyCfg.ultimateSkill
+        : aireAttackKind === 'cuchillas'
+        ? enemyCfg.specialSkill
+        : enemyCfg.normalSkill
+      : isBulezau
+      ? bulezauAttackKind === 'andanada'
+        ? enemyCfg.ultimateSkill
+        : bulezauAttackKind === 'bola'
+        ? enemyCfg.specialSkill
+        : enemyCfg.normalSkill
       : isUlt
       ? enemyCfg.ultimateSkill
       : isDevoradorP2
@@ -9719,6 +11732,108 @@ export const CombatView: React.FC = () => {
         attackSfx = isUlt ? 'critical' : isMistBreath ? 'necrotic' : 'slash';
         break;
       }
+      case 'elemental_aire': {
+        setElementalAireAttackPose(aireAttackKind === 'prision' ? 'vortice' : 'tajo');
+        vfxType = aireAttackKind === 'prision' ? 'frost_blizzard' : aireAttackKind === 'cuchillas' ? 'shadow_needle' : 'crimson_claw';
+        themeColor = '#38bdf8';
+        attackSfx = aireAttackKind === 'prision' ? 'powerup' : 'slash';
+        break;
+      }
+      case 'bulezau': {
+        setBulezauAttackPose(bulezauAttackKind === 'toque' ? 'toque' : 'orbe');
+        vfxType = 'void_miasma';
+        themeColor = '#a3e635';
+        attackSfx = bulezauAttackKind === 'toque' ? 'necrotic' : 'magic';
+        break;
+      }
+      case 'cryovain_boss': {
+        setCryovainCameraMode('boss_focus');
+        setCryovainAttackPose(cryoAttackKind);
+        vfxType =
+          cryoAttackKind === 'mordisco'
+            ? 'crimson_claw'
+            : cryoAttackKind === 'pisoton'
+            ? 'earth_titan'
+            : 'frost_blizzard';
+        themeColor = cryoAttackKind === 'mordisco' ? '#ef4444' : '#38bdf8';
+        attackSfx =
+          cryoAttackKind === 'aliento'
+            ? 'laser'
+            : cryoAttackKind === 'mordisco' || cryoAttackKind === 'pisoton'
+            ? 'critical'
+            : 'slash';
+        if (cryoAttackKind === 'pisoton') {
+          const tStompImpactShake = window.setTimeout(() => {
+            setScreenShake('heavy');
+            const tStopShake = window.setTimeout(() => setScreenShake('none'), 240);
+            cryoTimersRef.current.push(tStopShake);
+          }, 340);
+          cryoTimersRef.current.push(tStompImpactShake);
+        }
+        const tCryoZoomBack = window.setTimeout(() => {
+          setCryovainCameraMode('idle');
+        }, cryoAttackKind === 'aliento' ? 210 : cryoAttackKind === 'pisoton' ? 380 : 340);
+        cryoTimersRef.current.push(tCryoZoomBack);
+        break;
+      }
+      case 'no_muerto':
+        vfxType = 'crimson_claw';
+        themeColor = '#94a3b8';
+        attackSfx = isUlt ? 'critical' : 'slash';
+        break;
+      case 'soldado_no_muerto':
+        vfxType = 'crimson_claw';
+        themeColor = '#ef4444';
+        attackSfx = isUlt ? 'critical' : 'slash';
+        break;
+      case 'perro_asalvajado':
+        vfxType = 'crimson_claw';
+        themeColor = '#dc2626';
+        attackSfx = isUlt ? 'critical' : 'bite';
+        break;
+      case 'armadura_reanimada':
+        vfxType = 'earth_titan';
+        themeColor = '#fbbf24';
+        attackSfx = isUlt ? 'critical' : 'punch';
+        break;
+      case 'arana_acorazada_boss': {
+        setAranaCameraMode('boss_focus');
+        setAranaAttackPose(aranaAttackKind);
+        vfxType =
+          aranaAttackKind === 'aliento' || aranaAttackKind === 'bola_fuego'
+            ? 'crimson_claw'
+            : aranaAttackKind === 'telarana'
+            ? 'frost_blizzard'
+            : 'earth_titan';
+        themeColor =
+          aranaAttackKind === 'telarana' ? '#e7e5e4' : '#f97316';
+        attackSfx =
+          aranaAttackKind === 'aliento'
+            ? 'laser'
+            : aranaAttackKind === 'bola_fuego'
+            ? 'magic'
+            : aranaAttackKind === 'telarana'
+            ? 'laser2'
+            : 'slash';
+        if (aranaAttackKind === 'barrido') {
+          const tAranaShake = window.setTimeout(() => {
+            setScreenShake('heavy');
+            const tStopShake = window.setTimeout(() => setScreenShake('none'), 240);
+            aranaTimersRef.current.push(tStopShake);
+          }, 260);
+          aranaTimersRef.current.push(tAranaShake);
+        }
+        const tAranaZoomBack = window.setTimeout(() => {
+          setAranaCameraMode('idle');
+        }, aranaAttackKind === 'aliento' ? 230 : 340);
+        aranaTimersRef.current.push(tAranaZoomBack);
+        break;
+      }
+      case 'gladiador_onirico':
+        vfxType = isUlt || turnCounter % 2 === 1 ? 'crimson_claw' : 'earth_titan';
+        themeColor = isUlt ? '#d8b4fe' : turnCounter % 2 === 1 ? '#c084fc' : '#fbbf24';
+        attackSfx = isUlt ? 'critical' : turnCounter % 2 === 1 ? 'slash' : 'punch';
+        break;
       case 'guarda_aurea_borracho_espada':
       case 'guarda_aurea_borracho_alabarda':
         vfxType = 'crimson_claw';
@@ -9777,8 +11892,24 @@ export const CombatView: React.FC = () => {
       dndDamageType: skill.dndDamageType || 'slashing',
       vfxType,
       themeColor,
-      isUlt,
-      isSpecial: !isUlt && !isDevoradorP2 && turnCounter % 2 === 0,
+      isUlt: isCryovain
+        ? cryoAttackKind === 'aliento'
+        : isArana
+        ? aranaAttackKind === 'aliento'
+        : isElementalAire
+        ? aireAttackKind === 'prision'
+        : isBulezau
+        ? bulezauAttackKind === 'andanada'
+        : isUlt,
+      isSpecial: isCryovain
+        ? cryoAttackKind === 'mordisco'
+        : isArana
+        ? aranaAttackKind === 'bola_fuego'
+        : isElementalAire
+        ? aireAttackKind === 'cuchillas'
+        : isBulezau
+        ? bulezauAttackKind === 'bola'
+        : !isUlt && !isDevoradorP2 && turnCounter % 2 === 0,
       hobgoblinPhase: actingEnemy.configId === 'hobgoblin_capataz' ? currentHobPhase : undefined,
       vfxKey: Date.now(),
     });
@@ -9787,6 +11918,14 @@ export const CombatView: React.FC = () => {
 
     setTimeout(() => {
       // Return animation to idle
+      if (isCryovain) {
+        setCryovainAttackPose('idle');
+        setCryovainCameraMode('idle');
+      }
+      if (isArana) {
+        setAranaAttackPose('idle');
+        setAranaCameraMode('idle');
+      }
       setActiveEnemies((prev) =>
         prev.map((e) => (e.uid === actingEnemy.uid ? { ...e, animation: 'idle' } : e))
       );
@@ -9839,13 +11978,14 @@ export const CombatView: React.FC = () => {
         return;
       }
 
-      // Check hero dodge
+      // Check hero dodge (frozen targets cannot dodge)
       const hasteHero = heroConditions.find((c) => c.type === 'haste');
-      if (hasteHero && Math.random() < 0.25) {
+      const isHeroFrozen = heroConditions.some((c) => c.type === 'frozen');
+      if (hasteHero && !isHeroFrozen && Math.random() < 0.25) {
         queueStatusNotification({
           icon: '💨',
           title: 'Evasión Táctica',
-          detail: 'Magordito esquivó el ataque',
+          detail: `${getHeroName()} esquivó el ataque`,
           target: 'hero',
           isBuff: true,
         });
@@ -9869,10 +12009,16 @@ export const CombatView: React.FC = () => {
       // Poder de la sala (capítulo + profundidad), independiente de la vida del grupo.
       dmg = Math.round(dmg * ENEMY_DAMAGE_SCALE);
 
-      const enemyAtkDown = actingEnemy.conditions.find((c) => c.type === 'atk_down' || c.type === 'frightened');
+      const enemyAtkDown = workingEnemy.conditions.find((c) => c.type === 'atk_down' || c.type === 'frightened');
       if (enemyAtkDown) {
         const atkDownFactor = enemyAtkDown.stacks >= 3 ? 0.65 : enemyAtkDown.stacks === 2 ? 0.72 : 0.8;
         dmg = Math.max(1, Math.round(dmg * atkDownFactor));
+      }
+
+      const enemyAtkBuff = workingEnemy.conditions.find((c) => c.type === 'atk_buff');
+      if (enemyAtkBuff) {
+        const atkUpFactor = enemyAtkBuff.stacks >= 3 ? 1.5 : enemyAtkBuff.stacks === 2 ? 1.35 : 1.2;
+        dmg = Math.max(1, Math.round(dmg * atkUpFactor));
       }
 
       const heroDefBuff = heroConditions.find((c) => c.type === 'def_buff');
@@ -9894,23 +12040,6 @@ export const CombatView: React.FC = () => {
         dmg = reducedDmg;
 
       }
-
-      // Food Protective Barrier / Shield
-      if (foodShieldHp > 0) {
-        if (foodShieldHp >= dmg) {
-          setFoodShieldHp((prev) => prev - dmg);
-
-          dmg = 0;
-        } else {
-          dmg -= foodShieldHp;
-
-          setFoodShieldHp(0);
-        }
-      }
-
-      heroHpRef.current = Math.max(0, heroHpRef.current - dmg);
-      const nextHp = heroHpRef.current;
-      setHeroHp(nextHp);
 
       const skillObj = skill as Record<string, unknown>;
       let enemyDndType: DndDamageType =
@@ -9949,11 +12078,55 @@ export const CombatView: React.FC = () => {
         }
       }
 
+      // Daño elemental de Hielo (Cold): +25% daño por fragmentación glacial si el héroe ya sufre escarcha o congelación
+      if (
+        enemyDndType === 'cold' &&
+        heroConditions.some((c) => c.type === 'chilled' || c.type === 'chill' || c.type === 'frozen')
+      ) {
+        dmg = Math.round(dmg * 1.25);
+      }
+
+      // Food Protective Barrier / Shield
+      if (foodShieldHp > 0) {
+        if (foodShieldHp >= dmg) {
+          setFoodShieldHp((prev) => prev - dmg);
+
+          dmg = 0;
+        } else {
+          dmg -= foodShieldHp;
+
+          setFoodShieldHp(0);
+        }
+      }
+
+      heroHpRef.current = Math.max(0, heroHpRef.current - dmg);
+      const nextHp = heroHpRef.current;
+      setHeroHp(nextHp);
+
       triggerHeroHitReaction(enemyDndType);
-      sound.playSFX('hurt');
+      sound.playSFX(enemyDndType === 'cold' ? 'laser' : 'hurt');
+      if (enemyDndType === 'cold') {
+        sound.playSFX('hurt');
+        setScreenFlash('cyan');
+        setTimeout(() => setScreenFlash(null), 240);
+      }
       setScreenShake(vfxType === 'earth_titan' || isUlt ? 'heavy' : 'medium');
       setTimeout(() => setScreenShake('none'), 200);
-      spawnFloating(`-${dmg}`, false, false);
+      if (enemyDndType === 'cold') {
+        spawnFloating(
+          `❄️ -${dmg}`,
+          false,
+          false,
+          isUlt ? 2 : 1,
+          isUlt,
+          undefined,
+          'cold',
+          undefined,
+          '#38bdf8'
+        );
+      } else {
+        spawnFloating(`-${dmg}`, false, false, 1, false, undefined, enemyDndType);
+      }
 
       // Edacorn Counterattack (Contraataque): Immediate Riposte
       // Solo responde si el ataque del enemigo le quita vida de verdad (si el daño queda
@@ -9969,6 +12142,12 @@ export const CombatView: React.FC = () => {
           setHeroCastSkill('contraataque');
           triggerEnemyHitReaction('piercing');
           const nextEnemyHp = Math.max(0, actingEnemy.hp - counterDmg);
+          if (actingEnemy.configId === 'cryovain_boss' && counterDmg > 0) {
+            cryoTookDamageThisTurnRef.current = true;
+          }
+          if (actingEnemy.configId === 'arana_acorazada_boss' && counterDmg > 0) {
+            aranaTookDamageThisTurnRef.current = true;
+          }
           setActiveEnemies((prev) =>
             prev.map((e) =>
               e.uid === actingEnemy.uid
@@ -10144,12 +12323,71 @@ export const CombatView: React.FC = () => {
             isBuff: false,
           });
         }
-      } else if (skill.condition) {
+      } else if (isElementalAire && aireAttackKind === 'prision') {
+        const trappedId = normalizeCombatHeroId(activeCombatHeroIdRef.current);
+        const trapDuration = partyHeroesList.length > 1 ? 3 : 2;
+        const nextPrison = { heroId: trappedId, turnsRemaining: trapDuration };
+        airPrisonHeroRef.current = nextPrison;
+        setAirPrisonHero(nextPrison);
+        setAirPrisonVfxKey((prev) => prev + 1);
+        sound.playSFX('debuff');
+        // Si solo hay un héroe disponible en la formación, el turno avanza solo con aturdimiento temporal para evitar bloqueo.
+        if (partyHeroesList.length <= 1) {
+          setHeroConditions((prev) => {
+            const res = stackGachaEffect(
+              prev,
+              'stun',
+              2,
+              1,
+              1,
+              'Prisión de Vórtice Etéreo'
+            );
+            return res.updatedEffects;
+          });
+          setHeroStatusTrigger((prev) => prev + 1);
+        }
+        setDndProcBanner({
+          text: `🌪️ ¡${getHeroName().toUpperCase()} INMOVILIZADO EN PRISIÓN DE AIRE!`,
+          color: '#38bdf8',
+          icon: '🌪️',
+        });
+        setTimeout(() => setDndProcBanner(null), 2800);
+        queueStatusNotification({
+          icon: '🌪️',
+          title: '¡Inmovilizado por Aire!',
+          detail:
+            partyHeroesList.length > 1
+              ? `${getHeroName()} ha quedado atrapado en un vórtice. ¡Cambia a otro héroe arriba a la derecha!`
+              : `${getHeroName()} ha quedado atrapado en un vórtice durante 1 turno.`,
+          target: 'hero',
+          isBuff: false,
+        });
+      } else if (skill.condition || enemyDndType === 'cold') {
         sound.playSFX('debuff');
         const cond = skill.condition;
         setHeroConditions((prev) => {
-          const res = stackGachaEffect(prev, cond.type, cond.duration, cond.stacks, 1, cond.title);
-          return res.updatedEffects;
+          let nextEffects = prev;
+          if (enemyDndType === 'cold') {
+            nextEffects = stackGachaEffect(
+              nextEffects,
+              'chilled',
+              3,
+              1,
+              1,
+              'Escarcha Gélida'
+            ).updatedEffects;
+          }
+          if (cond) {
+            nextEffects = stackGachaEffect(
+              nextEffects,
+              cond.type,
+              cond.duration,
+              cond.stacks,
+              1,
+              cond.title
+            ).updatedEffects;
+          }
+          return nextEffects;
         });
         setHeroStatusTrigger((prev) => prev + 1);
       }
@@ -10194,7 +12432,7 @@ export const CombatView: React.FC = () => {
       }
 
       setTimeout(finalizeEnemyPhase, 400);
-    }, 700);
+    }, (isCryovain && cryoAttackKind === 'aliento') || (isArana && aranaAttackKind === 'aliento') ? 980 : 700);
   };
 
   // Fate/Grand Order (FGO): Execute Player Noble Phantasm (Cataclismo Astral / Stella Judicium)
@@ -10298,6 +12536,19 @@ export const CombatView: React.FC = () => {
               (selectedCombatMissionId === 'm4_puertas_selladas' && e.isBoss);
             if (isPuertasBoss) {
               dmg = Math.round(dmg * 0.50);
+            }
+
+            const enemyDefBuff = e.conditions.find((c) => c.type === 'def_buff');
+            if (enemyDefBuff) {
+              const resistFactor = enemyDefBuff.stacks >= 3 ? 0.55 : enemyDefBuff.stacks === 2 ? 0.65 : 0.75;
+              dmg = Math.max(1, Math.round(dmg * resistFactor));
+            }
+
+            if (e.configId === 'cryovain_boss' && dmg > 0) {
+              cryoTookDamageThisTurnRef.current = true;
+            }
+            if (e.configId === 'arana_acorazada_boss' && dmg > 0) {
+              aranaTookDamageThisTurnRef.current = true;
             }
 
             if (e.configId === 'hobgoblin_capataz') {
@@ -10417,12 +12668,37 @@ export const CombatView: React.FC = () => {
       return;
     }
 
-    const heroStunned = heroConditions.find((c) => c.type === 'stun' || c.type === 'stunned');
-    if (heroStunned) {
+    const isTrappedInAirPrison =
+      Boolean(airPrisonHeroRef.current) &&
+      airPrisonHeroRef.current!.turnsRemaining > 0 &&
+      normalizeCombatHeroId(activeCombatHeroIdRef.current) === airPrisonHeroRef.current!.heroId;
+
+    if (isTrappedInAirPrison && partyHeroesList.length > 1) {
       sound.playSFX('skill');
+      setHeroTwitching(true);
+      setTimeout(() => setHeroTwitching(false), 600);
       queueStatusNotification({
-        icon: '💫',
-        title: 'Magordito Aturdido',
+        icon: '🌪️',
+        title: `${getHeroName()} Inmovilizado por Aire`,
+        detail: '¡Cambia a otro miembro del equipo arriba a la derecha para actuar!',
+        target: 'hero',
+        isBuff: false,
+      });
+      return;
+    }
+
+    const heroStunned = heroConditions.find(
+      (c) => c.type === 'stun' || c.type === 'stunned' || c.type === 'frozen'
+    );
+    if (heroStunned || isTrappedInAirPrison) {
+      sound.playSFX(heroStunned?.type === 'frozen' ? 'laser' : 'skill');
+      queueStatusNotification({
+        icon: isTrappedInAirPrison ? '🌪️' : heroStunned?.type === 'frozen' ? '❄️' : '💫',
+        title: isTrappedInAirPrison
+          ? `${getHeroName()} Inmovilizado`
+          : heroStunned?.type === 'frozen'
+          ? `${getHeroName()} Congelado`
+          : `${getHeroName()} Aturdido`,
         detail: 'Acción cancelada este turno',
         target: 'hero',
         isBuff: false,
@@ -11000,8 +13276,10 @@ export const CombatView: React.FC = () => {
         baseDmg = Math.round(baseDmg * 1.25);
       }
 
-      // Hero ATK Down: -25% to -45% damage
-      const heroAtkDown = heroConditions.find((c) => c.type === 'atk_down' || c.type === 'frightened');
+      // Hero ATK Down / Chilled: -25% to -45% damage
+      const heroAtkDown = heroConditions.find(
+        (c) => c.type === 'atk_down' || c.type === 'frightened' || c.type === 'chilled' || c.type === 'chill'
+      );
       if (heroAtkDown) {
         const penaltyRate = 0.25 + (heroAtkDown.stacks - 1) * 0.10;
         baseDmg = Math.max(1, Math.round(baseDmg * (1 - penaltyRate)));
@@ -11024,6 +13302,13 @@ export const CombatView: React.FC = () => {
         return;
       }
       const targetSlot = activeEnemies.findIndex((e) => e.uid === target.uid);
+
+      // Enemy DEF Buff (Resistencia): -25% / -35% / -45% damage taken
+      const enemyDefBuff = target.conditions.find((c) => c.type === 'def_buff');
+      if (enemyDefBuff) {
+        const resistFactor = enemyDefBuff.stacks >= 3 ? 0.55 : enemyDefBuff.stacks === 2 ? 0.65 : 0.75;
+        baseDmg = Math.max(1, Math.round(baseDmg * resistFactor));
+      }
 
       // Enemy DEF Break: +35% / +50% / +65% damage taken
       const enemyDefBreak = target.conditions.find((c) => c.type === 'def_break' || c.type === 'prone' || c.type === 'restrained');
@@ -11217,6 +13502,12 @@ export const CombatView: React.FC = () => {
       const allEffectsToApply = [...baseEffects, ...extraEffects];
 
       const targetUid = target.uid;
+      if (target.configId === 'cryovain_boss' && finalCalculatedDamage > 0) {
+        cryoTookDamageThisTurnRef.current = true;
+      }
+      if (target.configId === 'arana_acorazada_boss' && finalCalculatedDamage > 0) {
+        aranaTookDamageThisTurnRef.current = true;
+      }
       let targetNextHp = Math.max(0, target.hp - finalCalculatedDamage);
       let targetHobPhase = target.hobgoblinPhase || 1;
       let targetSpriteUrl = target.spriteUrl;
@@ -11521,13 +13812,28 @@ export const CombatView: React.FC = () => {
   const handlePointerDown = (index: number, e: React.PointerEvent<HTMLDivElement>) => {
     if (battleState !== 'idle' || aliveEnemies.length === 0) return;
 
-    // CC check: Stun and Paralyze immobilize the hero completely
-    const isPlayerIncapacitated = heroConditions.some((c) =>
-      ['stun', 'stunned', 'paralyze', 'paralyzed'].includes(c.id.toLowerCase())
-    );
+    // CC check: Stun, Paralyze, or Air Prison immobilize the hero completely
+    const isTrappedByAirPrison =
+      Boolean(airPrisonHeroRef.current) &&
+      airPrisonHeroRef.current!.turnsRemaining > 0 &&
+      normalizeCombatHeroId(activeCombatHeroIdRef.current) === airPrisonHeroRef.current!.heroId;
+    const isPlayerIncapacitated =
+      isTrappedByAirPrison ||
+      heroConditions.some((c) =>
+        ['stun', 'stunned', 'paralyze', 'paralyzed'].includes(c.type.toLowerCase())
+      );
     if (isPlayerIncapacitated) {
       setHeroTwitching(true);
       setTimeout(() => setHeroTwitching(false), 600);
+      if (isTrappedByAirPrison && partyHeroesList.length > 1) {
+        queueStatusNotification({
+          icon: '🌪️',
+          title: `${getHeroName()} Inmovilizado por Aire`,
+          detail: '¡Elige otro héroe en los retratos arriba a la derecha!',
+          target: 'hero',
+          isBuff: false,
+        });
+      }
       return;
     }
 
@@ -11733,6 +14039,67 @@ export const CombatView: React.FC = () => {
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-between bg-[#290a03] select-none overflow-hidden font-sans">
       <StatusShadersSvgDefs />
+      <svg
+        width="0"
+        height="0"
+        className="absolute pointer-events-none opacity-0"
+        aria-hidden="true"
+      >
+        <defs>
+          {/* ELEMENTAL DE AIRE: Shader sutil de turbulencia de viento + aura etérea cian */}
+          <filter
+            id="enemy-shader-elemental-aire"
+            filterUnits="objectBoundingBox"
+            x="-28%"
+            y="-28%"
+            width="156%"
+            height="156%"
+          >
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.014 0.042"
+              numOctaves="2"
+              seed="14"
+              result="windNoise"
+            >
+              <animate
+                attributeName="baseFrequency"
+                values="0.013 0.040;0.022 0.062;0.016 0.048;0.013 0.040"
+                dur="2.4s"
+                repeatCount="indefinite"
+              />
+            </feTurbulence>
+            <feDisplacementMap
+              in="SourceGraphic"
+              in2="windNoise"
+              scale="2.6"
+              xChannelSelector="R"
+              yChannelSelector="G"
+              result="windBody"
+            />
+            <feMorphology in="SourceAlpha" operator="dilate" radius="3.2" result="auraDilated" />
+            <feDisplacementMap
+              in="auraDilated"
+              in2="windNoise"
+              scale="6.5"
+              xChannelSelector="R"
+              yChannelSelector="G"
+              result="auraWarped"
+            />
+            <feFlood floodColor="#38bdf8" floodOpacity="0.48" result="cyanFlood" />
+            <feComposite in="cyanFlood" in2="auraWarped" operator="in" result="cyanAura" />
+            <feGaussianBlur in="cyanAura" stdDeviation="3.6" result="cyanGlow" />
+            <feMorphology in="SourceAlpha" operator="dilate" radius="1.1" result="rimAlpha" />
+            <feFlood floodColor="#e0f2fe" floodOpacity="0.58" result="rimFlood" />
+            <feComposite in="rimFlood" in2="rimAlpha" operator="in" result="iceRim" />
+            <feMerge>
+              <feMergeNode in="cyanGlow" />
+              <feMergeNode in="iceRim" />
+              <feMergeNode in="windBody" />
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
       {/* KEYFRAME ANIMATIONS: IDLE SWAY, DRAGGED PENDULUM, READY-TO-COMBINE HOP, CARTOON COMBINATION BURST */}
       <style>{`
         /* CELESTIAL ULTIMATE KEYFRAMES */
@@ -12282,6 +14649,26 @@ export const CombatView: React.FC = () => {
           will-change: filter;
         }
 
+        .dnd-impact-sprite-cold {
+          animation: spriteColdHitCore 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+          will-change: filter;
+        }
+
+        @keyframes spriteColdHitCore {
+          0%, 55% {
+            filter: brightness(1.85) saturate(2.5) hue-rotate(150deg) drop-shadow(0 0 22px #38bdf8);
+            opacity: 1;
+          }
+          82% {
+            filter: brightness(1.35) saturate(1.7) drop-shadow(0 0 14px #7dd3fc);
+            opacity: 1;
+          }
+          100% {
+            filter: brightness(1) contrast(1);
+            opacity: 1;
+          }
+        }
+
         @keyframes spriteWhiteoutCore {
           0%, 75% {
             filter: brightness(0) invert(1) drop-shadow(0 0 4px #ffffff);
@@ -12530,6 +14917,171 @@ export const CombatView: React.FC = () => {
           0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px #ef4444); }
           50% { transform: scale(1.1); filter: drop-shadow(0 0 24px #f59e0b) drop-shadow(0 0 40px #ef4444); }
         }
+
+        /* SECOND AIR CHAMBER ANIMATED BACKGROUND & ELEMENTAL DE AIRE MOTION */
+        @keyframes airChamberBreath {
+          0%, 100% { transform: scale(1.03) translate3d(0px, 0px, 0px); }
+          50% { transform: scale(1.055) translate3d(-4px, -2px, 0px); }
+        }
+        @keyframes airChamberPortalPulse {
+          0%, 100% { opacity: 0.42; transform: scale(0.95); }
+          50% { opacity: 0.78; transform: scale(1.08); }
+        }
+        @keyframes airElementalFloat {
+          0%, 100% { transform: translateY(0px) rotate(-0.7deg) skewX(-0.9deg) scale(1, 1); }
+          25% { transform: translateY(-6px) rotate(0.9deg) skewX(1.1deg) scale(1.015, 0.988); }
+          50% { transform: translateY(-2px) rotate(-0.4deg) skewX(-0.6deg) scale(0.992, 1.012); }
+          75% { transform: translateY(-8px) rotate(1.1deg) skewX(0.9deg) scale(1.012, 0.99); }
+        }
+        @keyframes airElementalSlipstream {
+          0%, 100% { transform: translate(-2.5px, 0px) scale(1.015) skewX(-1.4deg); opacity: 0.18; }
+          50% { transform: translate(3px, -3.5px) scale(1.035) skewX(1.6deg); opacity: 0.34; }
+        }
+        @keyframes airElementalBaseSpin {
+          0% { transform: rotateX(68deg) rotateZ(0deg) scale(0.96); opacity: 0.55; }
+          50% { transform: rotateX(68deg) rotateZ(180deg) scale(1.06); opacity: 0.85; }
+          100% { transform: rotateX(68deg) rotateZ(360deg) scale(0.96); opacity: 0.55; }
+        }
+        @keyframes airElementalShadowPulse {
+          0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.48; }
+          50% { transform: translateX(-50%) scale(0.9); opacity: 0.34; }
+        }
+
+        /* CRYOVAIN FGO MULTI-PART GIANT DRAGON BOSS KEYFRAMES */
+        @keyframes cryovainBodyBreath {
+          0%, 100% { transform: scaleY(1) scaleX(1); }
+          50% { transform: scaleY(0.986) scaleX(1.014); }
+        }
+        @keyframes cryovainWingBreath {
+          0%, 100% { transform: rotate(-16deg) translate(0px, 0px) scale(1); }
+          50% { transform: rotate(-19deg) translate(-4px, -7px) scale(1.028); }
+        }
+        @keyframes cryovainTailSway {
+          0%, 100% { transform: rotate(0deg) translate(0px, 0px); }
+          50% { transform: rotate(2.4deg) translate(3px, -2px); }
+        }
+        @keyframes cryovainTorsoClawSwipe {
+          0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+          20% { transform: translate(10px, -12px) rotate(3deg) scale(1.02); }
+          48% { transform: translate(-28px, 6px) rotate(-4deg) scale(1.04); }
+          76% { transform: translate(-12px, 2px) rotate(-2deg) scale(1.02); }
+          100% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+        }
+        @keyframes cryovainWingClawFlare {
+          0% { transform: rotate(-16deg) translate(0px, 0px) scale(1); }
+          22% { transform: rotate(-7deg) translate(16px, -22px) scale(1.06); }
+          50% { transform: rotate(-27deg) translate(-44px, 8px) scale(1.08); }
+          74% { transform: rotate(-20deg) translate(-16px, 2px) scale(1.02); }
+          100% { transform: rotate(-16deg) translate(0px, 0px) scale(1); }
+        }
+        @keyframes cryovainTailClawWhip {
+          0% { transform: rotate(0deg) translate(0px, 0px); }
+          22% { transform: rotate(-4deg) translate(16px, -14px); }
+          50% { transform: rotate(7deg) translate(-40px, 6px); }
+          74% { transform: rotate(3deg) translate(-14px, 2px); }
+          100% { transform: rotate(0deg) translate(0px, 0px); }
+        }
+        @keyframes cryovainTorsoDoubleStomp {
+          0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+          20% { transform: translate(4px, -14px) rotate(2deg) scale(1.03); }
+          46% { transform: translate(-6px, -22px) rotate(3deg) scale(1.04); }
+          68% { transform: translate(-12px, 12px) rotate(-2deg) scaleY(0.95) scaleX(1.04); }
+          85% { transform: translate(-4px, 4px) rotate(-1deg) scale(1.01); }
+          100% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+        }
+        @keyframes cryovainWingStompFlare {
+          0% { transform: rotate(-16deg) translate(0px, 0px) scale(1); }
+          14% { transform: rotate(-12deg) translate(2px, 8px) scale(1.02); }
+          38% { transform: rotate(-3deg) translate(-6px, -48px) scale(1.11); }
+          62% { transform: rotate(-26deg) translate(-12px, 14px) scale(1.05); }
+          100% { transform: rotate(-16deg) translate(0px, 0px) scale(1); }
+        }
+        @keyframes cryovainTailStompSlam {
+          0% { transform: rotate(0deg) translate(0px, 0px); }
+          38% { transform: rotate(-6deg) translate(-6px, -40px); }
+          62% { transform: rotate(6deg) translate(-10px, 12px); }
+          100% { transform: rotate(0deg) translate(0px, 0px); }
+        }
+        @keyframes cryovainStompShockwave {
+          0%, 48% { transform: translateX(-50%) scale(0.35); opacity: 0; }
+          62% { transform: translateX(-50%) scale(1.05); opacity: 0.95; }
+          100% { transform: translateX(-50%) scale(1.55); opacity: 0; }
+        }
+        @keyframes cryovainHeadBiteDescend {
+          0% { transform: translate(22px, -220px) rotate(6deg) scale(0.95); opacity: 0; }
+          24% { transform: translate(-4px, 16px) rotate(-2deg) scale(1.01); opacity: 1; }
+          48% { transform: translate(-12px, 34px) rotate(-5deg) scale(1.04); opacity: 1; }
+          78% { transform: translate(-6px, 22px) rotate(-3deg) scale(1.02); opacity: 1; }
+          100% { transform: translate(18px, -210px) rotate(6deg) scale(0.95); opacity: 0; }
+        }
+        @keyframes cryovainHeadBreathDescend {
+          0% { transform: translate(28px, -210px) rotate(8deg) scale(0.95); opacity: 0; }
+          18% { transform: translate(0px, 30px) rotate(-2deg) scale(1.01); opacity: 1; }
+          84% { transform: translate(-4px, 36px) rotate(-3deg) scale(1.03); opacity: 1; }
+          100% { transform: translate(24px, -200px) rotate(8deg) scale(0.95); opacity: 0; }
+        }
+        @keyframes cryovainHeadRoar {
+          0% { transform: translate(22px, -190px) rotate(4deg) scale(0.96); opacity: 0; }
+          22% { transform: translate(-4px, 20px) rotate(4deg) scale(1.04); opacity: 1; }
+          48% { transform: translate(-8px, 14px) rotate(8deg) scale(1.07); opacity: 1; }
+          78% { transform: translate(-4px, 22px) rotate(3deg) scale(1.03); opacity: 1; }
+          100% { transform: translate(20px, -190px) rotate(4deg) scale(0.96); opacity: 0; }
+        }
+        @keyframes cryovainMistDrift {
+          0%, 100% { transform: translate3d(-14px, 0px, 0px) scale(1.04); opacity: 0.65; }
+          50% { transform: translate3d(16px, -6px, 0px) scale(1.1); opacity: 0.88; }
+        }
+        @keyframes cryovainSnowfall {
+          0% { transform: translate3d(18px, -18px, 0px); opacity: 0; }
+          18% { opacity: 0.85; }
+          85% { opacity: 0.75; }
+          100% { transform: translate3d(-65px, 280px, 0px); opacity: 0; }
+        }
+
+        /* ARAÑA ACORAZADA SINGLE-SPRITE ANIMATED COLOSSAL BOSS KEYFRAMES */
+        @keyframes aranaBodyBreath {
+          0%, 100% { transform: scaleY(1) scaleX(1) translateY(0px); }
+          50% { transform: scaleY(0.982) scaleX(1.02) translateY(3px); }
+        }
+        @keyframes aranaLegSweep {
+          0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+          20% { transform: translate(16px, -14px) rotate(5deg) scale(1.03); }
+          48% { transform: translate(-34px, 8px) rotate(-6deg) scale(1.05); }
+          78% { transform: translate(-12px, 3px) rotate(-2deg) scale(1.02); }
+          100% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+        }
+        @keyframes aranaSingleSpitLunge {
+          0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+          24% { transform: translate(12px, -10px) rotate(3deg) scale(1.02); }
+          54% { transform: translate(-24px, 6px) rotate(-4deg) scale(1.06); }
+          80% { transform: translate(-10px, 2px) rotate(-2deg) scale(1.03); }
+          100% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+        }
+        @keyframes aranaSingleBreathAttack {
+          0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+          18% { transform: translate(14px, -12px) rotate(4deg) scale(1.04); }
+          46% { transform: translate(-22px, 8px) rotate(-3deg) scale(1.07); }
+          82% { transform: translate(-14px, 6px) rotate(-2deg) scale(1.05); }
+          100% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+        }
+        @keyframes aranaSingleRoar {
+          0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+          22% { transform: translate(8px, -16px) rotate(4deg) scale(1.06); }
+          48% { transform: translate(-12px, -8px) rotate(-3deg) scale(1.08); }
+          76% { transform: translate(-6px, -4px) rotate(2deg) scale(1.04); }
+          100% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+        }
+        @keyframes aranaStompShockwave {
+          0%, 35% { transform: translateX(-50%) scale(0.35); opacity: 0; }
+          58% { transform: translateX(-50%) scale(1.08); opacity: 0.95; }
+          100% { transform: translateX(-50%) scale(1.55); opacity: 0; }
+        }
+        @keyframes aranaEmberRise {
+          0% { transform: translate3d(0px, 20px, 0px) scale(0.9); opacity: 0; }
+          22% { opacity: 0.9; }
+          82% { opacity: 0.72; }
+          100% { transform: translate3d(-24px, -240px, 0px) scale(0.4); opacity: 0; }
+        }
       `}</style>
 
       {/* ========================================================================= */}
@@ -12706,7 +15258,11 @@ export const CombatView: React.FC = () => {
       {/* ========================================================================= */}
       <div
         ref={arenaRef}
-        className={`relative w-full flex-1 min-h-[300px] flex items-center justify-center overflow-visible ${
+        className={`relative w-full flex-1 min-h-[300px] flex items-center justify-center ${
+          targetEnemy?.configId === 'cryovain_boss' || targetEnemy?.configId === 'arana_acorazada_boss'
+            ? 'overflow-hidden'
+            : 'overflow-visible'
+        } ${
           screenShake === 'heavy'
             ? 'animate-[gachaCameraShakeHeavy_0.36s_ease-in-out]'
             : screenShake === 'medium'
@@ -12716,6 +15272,19 @@ export const CombatView: React.FC = () => {
             : ''
         }`}
       >
+        {/* Capa de cámara cinematográfica de la arena (zoom centrado sobre Cryovain o la Araña Acorazada y retorno fluido) */}
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            transformOrigin: '58% 52%',
+            transform:
+              (targetEnemy?.configId === 'cryovain_boss' && cryovainCameraMode === 'boss_focus') ||
+              (targetEnemy?.configId === 'arana_acorazada_boss' && aranaCameraMode === 'boss_focus')
+                ? 'scale(1.24) translate3d(-12px, 0px, 0px)'
+                : 'scale(1) translate3d(0px, 0px, 0px)',
+            transition: 'transform 540ms cubic-bezier(0.22, 1, 0.36, 1)',
+          }}
+        >
         {/* Línea limpia de la Velada Encantadora de Roxanne: une al héroe con el enemigo encantado */}
         {targetEnemy.conditions.some((c) => c.type === 'charmed') && (
           <svg
@@ -12736,224 +15305,282 @@ export const CombatView: React.FC = () => {
           </svg>
         )}
         {/* Arena Cave / Mansion / Forest / Sealed Gates / Bandits Ambush Background */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <img
-            src={
-              selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
-                ? '/assets/backgrounds/primera_camara_gorgon.webp'
-                : selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm14_planta_intermedia_ferton_epilogo'
-                ? '/assets/backgrounds/planta_intermedia_mansion_ferton.webp'
-                : selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm13_escaleras_durnik_epilogo'
-                ? '/assets/backgrounds/escaleras_mansion_ferton.webp'
-                : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
-                ? '/assets/backgrounds/recibidor_mansion_ferton.webp'
-                : selectedCombatMissionId === 'm10c_callejon_hoggoblins'
-                ? '/assets/backgrounds/callejon_trasero_taberna.webp'
-                : selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm9_emboscada_ferton'
-                ? '/assets/backgrounds/camino_bosque_carromatos.webp'
-                : selectedCombatMissionId === 'm5_cuevas_zancudo'
-                ? '/assets/backgrounds/mina_underdark_telaranas.webp'
-                : selectedCombatMissionId === 'm4_cuevas_azul'
-                ? '/assets/backgrounds/cueva_congelada.webp'
-                : selectedCombatMissionId === 'm3_cuevas_rojo'
-                ? '/assets/backgrounds/cueva_huevos_carmesis.webp'
-                : selectedCombatMissionId === 'evento_asalto_orco'
-                ? '/assets/backgrounds/asalto_orco_combate.webp'
-                : selectedCombatMissionId === 'evento_emboscada_bandidos'
-                ? '/assets/backgrounds/emboscada_combate.webp'
-                : selectedCombatMissionId === 'm4_puertas_selladas'
-                ? '/assets/backgrounds/puertas_selladas_glimmerstone.webp'
-                : selectedCombatMissionId === 'm3_bosque'
-                ? '/assets/backgrounds/bosque_icespear.webp'
-                : selectedCombatMissionId === 'm2_robo'
-                ? '/assets/backgrounds/icespear_combate_guardias.webp'
-                : '/assets/aistudio/image_4daa80e0.webp'
-            }
-            alt={
-              selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
-                ? 'Primera Cámara de la Mazmorra con el Gorgon de Hierro'
-                : selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm14_planta_intermedia_ferton_epilogo'
-                ? 'Planta Intermedia de la Mansión Ferton con Alcohol en Gas'
-                : selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm13_escaleras_durnik_epilogo'
-                ? 'Escaleras hacia la Planta Intermedia de la Mansión Ferton'
-                : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
-                ? 'Recibidor de la Mansión Ferton'
-                : selectedCombatMissionId === 'm10_hobgoblin_boss'
-                ? 'Confrontación con el Capataz Hoggoblin de Ferton'
-                : selectedCombatMissionId === 'm9_emboscada_ferton'
-                ? 'Paso Nevado con Carromatos y Guardia Áurea'
-                : selectedCombatMissionId === 'm5_cuevas_zancudo'
-                ? 'Mina Enana en Ruinas con Telarañas en el Underdark'
-                : selectedCombatMissionId === 'm4_cuevas_azul'
-                ? 'Caverna Congelada de los Acechadores Gélidos'
-                : selectedCombatMissionId === 'm3_cuevas_rojo'
-                ? 'Cueva de Huevos Carmesís'
-                : selectedCombatMissionId === 'evento_asalto_orco'
-                ? 'Asalto Orco en el Paso Helado'
-                : selectedCombatMissionId === 'evento_emboscada_bandidos'
-                ? 'Emboscada de Bandidos en el Vado'
-                : selectedCombatMissionId === 'm4_puertas_selladas'
-                ? 'Puertas Selladas de Glimmerstone'
-                : selectedCombatMissionId === 'm3_bosque'
-                ? 'Bosque Invernal de Icespear'
-                : selectedCombatMissionId === 'm2_robo'
-                ? 'Mansión y Callejón de Icespear'
-                : 'Cueva de Icespear'
-            }
-            referrerPolicy="no-referrer"
-            className="w-full h-full object-cover object-center filter brightness-[0.98]"
-          />
-          {selectedCombatMissionId === 'm14_planta_intermedia_ferton' && (
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 pointer-events-none bg-gradient-to-t from-lime-400/20 via-amber-200/10 to-emerald-400/15 animate-pulse"
-            />
-          )}
-        </div>
+        {(() => {
+          const isCryovainCaveCombat =
+            selectedCombatMissionId === 'm22_cryovain_final' ||
+            targetEnemy?.configId === 'cryovain_boss';
+          const isAranaChamberCombat =
+            selectedCombatMissionId === 't2_c1_m4_arana_acorazada' ||
+            targetEnemy?.configId === 'arana_acorazada_boss';
+          const isBarraconCombat =
+            selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos' ||
+            selectedCombatMissionId === 't2_c1_m2_jauria_salas' ||
+            selectedCombatMissionId === 't2_c1_m3_custodios_anillo';
+          const isAirChamberCombat =
+            selectedCombatMissionId === 'm19_segunda_camara_aire' ||
+            selectedCombatMissionId === 'm19_segunda_camara_aire_epilogo' ||
+            targetEnemy?.configId === 'elemental_aire';
+          const isBulezauChamberCombat =
+            selectedCombatMissionId === 'm20_tercera_camara_bulezau' ||
+            selectedCombatMissionId === 'm20_tercera_camara_bulezau_epilogo' ||
+            targetEnemy?.configId === 'bulezau';
+          const isColiseoSuenosCombat =
+            selectedCombatMissionId === 'evento_coliseo_suenos' ||
+            selectedCombatMissionId === 'evento_coliseo_suenos_epilogo' ||
+            targetEnemy?.configId === 'gladiador_onirico';
+          const backgroundSrc = (
+                  isCryovainCaveCombat
+                    ? cryovainCavernaEspaciosaBg
+                    : isAranaChamberCombat
+                    ? '/assets/backgrounds/sala_arana_acorazada.webp'
+                    : isBarraconCombat
+                    ? '/assets/backgrounds/barracon_combate.webp'
+                    : isColiseoSuenosCombat
+                    ? '/assets/backgrounds/coliseo_onirico_bg.webp'
+                    : isBulezauChamberCombat
+                    ? '/assets/backgrounds/tercera_camara_bulezau.webp'
+                    : isAirChamberCombat
+                    ? '/assets/backgrounds/segunda_camara_aire.webp'
+                    : selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
+                    ? '/assets/backgrounds/primera_camara_gorgon.webp'
+                    : selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm14_planta_intermedia_ferton_epilogo'
+                    ? '/assets/backgrounds/planta_intermedia_mansion_ferton.webp'
+                    : selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm13_escaleras_durnik_epilogo'
+                    ? '/assets/backgrounds/escaleras_mansion_ferton.webp'
+                    : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
+                    ? '/assets/backgrounds/recibidor_mansion_ferton.webp'
+                    : selectedCombatMissionId === 'm10c_callejon_hoggoblins'
+                    ? '/assets/backgrounds/callejon_trasero_taberna.webp'
+                    : selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm9_emboscada_ferton'
+                    ? '/assets/backgrounds/camino_bosque_carromatos.webp'
+                    : selectedCombatMissionId === 'm5_cuevas_zancudo'
+                    ? '/assets/backgrounds/mina_underdark_telaranas.webp'
+                    : selectedCombatMissionId === 'm4_cuevas_azul'
+                    ? '/assets/backgrounds/cueva_congelada.webp'
+                    : selectedCombatMissionId === 'm3_cuevas_rojo'
+                    ? '/assets/backgrounds/cueva_huevos_carmesis.webp'
+                    : selectedCombatMissionId === 'evento_asalto_orco'
+                    ? '/assets/backgrounds/asalto_orco_combate.webp'
+                    : selectedCombatMissionId === 'evento_emboscada_bandidos'
+                    ? '/assets/backgrounds/emboscada_combate.webp'
+                    : selectedCombatMissionId === 'm4_puertas_selladas'
+                    ? '/assets/backgrounds/puertas_selladas_glimmerstone.webp'
+                    : selectedCombatMissionId === 'm3_bosque'
+                    ? '/assets/backgrounds/bosque_icespear.webp'
+                    : selectedCombatMissionId === 'm2_robo'
+                    ? '/assets/backgrounds/icespear_combate_guardias.webp'
+                    : '/assets/aistudio/image_4daa80e0.webp'
+          );
 
-
-        {/* Tactical Multi-Enemy Formation Roster (solo informativo: el jugador no puede cambiar de objetivo) */}
-        {activeEnemies.length > 1 && (
-          <div className="absolute top-2 right-2 z-30 flex items-center gap-1.5 p-1 rounded-xl bg-slate-950/90 border border-amber-900/70 shadow-xl backdrop-blur-xs select-none pointer-events-none">
-            {activeEnemies.map((enemy, idx) => {
-              const isSelected = idx === selectedEnemyIdx;
-              const isDead = enemy.hp <= 0 || enemy.isAshDissolving;
-              const hpPct = Math.max(0, Math.min(100, (enemy.hp / enemy.maxHp) * 100));
-              const isMineral = enemy.configId === 'mineral_descarga';
-              return (
-                <div
-                  key={enemy.uid}
-                  role="img"
-                  aria-label={enemy.name}
-                  className={`relative w-8 h-8 rounded-lg overflow-hidden border transition-all duration-200 ${
-                    isSelected
-                      ? isMineral
-                        ? 'border-cyan-300 ring-2 ring-cyan-400/80 scale-110 shadow-[0_0_14px_#38bdf8] bg-cyan-950/60'
-                        : 'border-yellow-400 ring-2 ring-yellow-400/80 scale-105 shadow-[0_0_12px_#f59e0b] bg-amber-950/40'
-                      : isDead
-                      ? 'border-stone-800 opacity-35 grayscale bg-black/80'
-                      : 'border-stone-700/80 bg-stone-900/85'
-                  }`}
-                >
-                  <img src={enemy.thumbUrl} alt={enemy.name} className="w-full h-full object-contain p-0.5 pointer-events-none" />
-                  {/* HP Mini Bar */}
-                  <div className="absolute bottom-0 inset-x-0 h-1 bg-black/90 pointer-events-none">
-                    <div
-                      className={`h-full transition-all duration-200 ${hpPct > 50 ? 'bg-emerald-400' : hpPct > 20 ? 'bg-amber-400' : 'bg-rose-500'}`}
-                      style={{ width: `${hpPct}%` }}
+          return (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+              <img
+                src={backgroundSrc}
+                alt={
+                  isCryovainCaveCombat
+                    ? 'Cueva Helada en la Cima de la Montaña de Cryovain'
+                    : isAranaChamberCombat
+                    ? 'Sala Hexagonal Incandescente de la Araña Acorazada'
+                    : isBarraconCombat
+                    ? 'Barracón Abandonado y Trincheras en Ruinas'
+                    : isColiseoSuenosCombat
+                    ? 'Arena del Coliseo de los Sueños de Varianthel'
+                    : isBulezauChamberCombat
+                    ? 'Tercera Cámara de la Mazmorra con el Bulezau'
+                    : isAirChamberCombat
+                    ? 'Segunda Cámara de la Mazmorra con el Elemental de Aire'
+                    : selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
+                    ? 'Primera Cámara de la Mazmorra con el Gorgon de Hierro'
+                    : selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm14_planta_intermedia_ferton_epilogo'
+                    ? 'Planta Intermedia de la Mansión Ferton con Alcohol en Gas'
+                    : selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm13_escaleras_durnik_epilogo'
+                    ? 'Escaleras hacia la Planta Intermedia de la Mansión Ferton'
+                    : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
+                    ? 'Recibidor de la Mansión Ferton'
+                    : selectedCombatMissionId === 'm10_hobgoblin_boss'
+                    ? 'Confrontación con el Capataz Hoggoblin de Ferton'
+                    : selectedCombatMissionId === 'm9_emboscada_ferton'
+                    ? 'Paso Nevado con Carromatos y Guardia Áurea'
+                    : selectedCombatMissionId === 'm5_cuevas_zancudo'
+                    ? 'Mina Enana en Ruinas con Telarañas en el Underdark'
+                    : selectedCombatMissionId === 'm4_cuevas_azul'
+                    ? 'Caverna Congelada de los Acechadores Gélidos'
+                    : selectedCombatMissionId === 'm3_cuevas_rojo'
+                    ? 'Cueva de Huevos Carmesís'
+                    : selectedCombatMissionId === 'evento_asalto_orco'
+                    ? 'Asalto Orco en el Paso Helado'
+                    : selectedCombatMissionId === 'evento_emboscada_bandidos'
+                    ? 'Emboscada de Bandidos en el Vado'
+                    : selectedCombatMissionId === 'm4_puertas_selladas'
+                    ? 'Puertas Selladas de Glimmerstone'
+                    : selectedCombatMissionId === 'm3_bosque'
+                    ? 'Bosque Invernal de Icespear'
+                    : selectedCombatMissionId === 'm2_robo'
+                    ? 'Mansión y Callejón de Icespear'
+                    : 'Cueva de Icespear'
+                }
+                referrerPolicy="no-referrer"
+                className={`w-full h-full object-cover object-center filter brightness-[0.98] ${
+                  isAirChamberCombat ? 'animate-[airChamberBreath_9s_ease-in-out_infinite]' : ''
+                }`}
+              />
+              {!isCryovainCaveCombat &&
+                !isAranaChamberCombat &&
+                !(
+                  selectedCombatMissionId === 'm14_planta_intermedia_ferton' ||
+                  selectedCombatMissionId === 'm14_planta_intermedia_ferton_epilogo'
+                ) && (
+                  <StageAmbientFx effect={AMBIENT_BY_BACKGROUND[backgroundSrc] ?? 'snow'} />
+                )}
+              {isCryovainCaveCombat && (
+                <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden">
+                  {/* Ventisca de la cima montañosa entrando a la caverna */}
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        'radial-gradient(circle at 28% 22%, rgba(224,242,254,0.22) 0%, rgba(56,189,248,0.08) 45%, rgba(2,6,23,0.34) 100%)',
+                    }}
+                  />
+                  {[6, 15, 24, 34, 46, 58, 68, 79, 88, 94].map((leftPct, i) => (
+                    <span
+                      key={i}
+                      className="absolute rounded-full bg-cyan-50/85 shadow-[0_0_6px_rgba(186,230,253,0.9)]"
+                      style={{
+                        left: `${leftPct}%`,
+                        top: `${(i % 3) * 14 - 8}%`,
+                        width: `${i % 2 === 0 ? 3.5 : 2.5}px`,
+                        height: `${i % 2 === 0 ? 3.5 : 2.5}px`,
+                        animation: `cryovainSnowfall ${2.6 + (i % 4) * 0.55}s linear ${(i * 0.31).toFixed(2)}s infinite`,
+                      }}
                     />
-                  </div>
-                  {enemy.isBoss && (
-                    <span className="absolute top-0 right-0 px-0.5 text-[7px] font-black bg-red-600 text-white rounded-bl leading-none pointer-events-none">
-                      ★
-                    </span>
-                  )}
-                  {isMineral && (
-                    <span className="absolute top-0 right-0 px-0.5 text-[8px] font-black bg-cyan-500 text-slate-950 rounded-bl leading-none pointer-events-none">
-                      ⚡
-                    </span>
-                  )}
-                  {isDead && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-[10px] pointer-events-none">
-                      ☠️
-                    </div>
-                  )}
+                  ))}
                 </div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Saquitos de botin: nacen sobre el enemigo derrotado, caen a su sombra y se vuelven ceniza */}
-        <div ref={lootLayerRef} className="absolute inset-0 pointer-events-none z-40">
-          {lootSacks.map((sack) => (
-            <div
-              key={sack.key}
-              className="absolute -translate-x-1/2 -translate-y-1/2"
-              style={{ left: sack.left, top: sack.top }}
-            >
-              <div
-                className={`relative flex flex-col items-center ${sack.dissolving ? 'animate-loot-ash' : 'animate-loot-fall'}`}
-                style={{ '--loot-fall': `${sack.fall}px` } as React.CSSProperties}
-              >
-                <LootSackIcon className="w-10 h-10 drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
-                {sack.dissolving && <AshDisintegrationEffect active width={44} height={44} />}
-              </div>
+              )}
+              {isAranaChamberCombat && (
+                <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        'radial-gradient(circle at 64% 62%, rgba(249,115,22,0.24) 0%, rgba(194,65,12,0.12) 48%, rgba(12,10,9,0.35) 100%)',
+                    }}
+                  />
+                  {[8, 19, 31, 44, 57, 68, 79, 90].map((leftPct, i) => (
+                    <span
+                      key={i}
+                      className="absolute rounded-full bg-orange-300/90 shadow-[0_0_8px_rgba(251,146,60,0.95)]"
+                      style={{
+                        left: `${leftPct}%`,
+                        bottom: `${(i % 3) * 10 - 6}%`,
+                        width: `${i % 2 === 0 ? 4 : 2.5}px`,
+                        height: `${i % 2 === 0 ? 4 : 2.5}px`,
+                        animation: `aranaEmberRise ${2.8 + (i % 4) * 0.55}s linear ${(i * 0.34).toFixed(2)}s infinite`,
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+              {isAranaChamberCombat && targetEnemy?.conditions.some((c) => c.type === 'frost_mist') && (
+                <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden z-[5]">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        'linear-gradient(to top, rgba(251,146,60,0.36) 0%, rgba(234,88,12,0.22) 48%, rgba(120,53,15,0.14) 100%)',
+                    }}
+                  />
+                  <div
+                    className="absolute inset-x-[-18%] bottom-[-8%] h-[78%] animate-[cryovainMistDrift_5.2s_ease-in-out_infinite]"
+                    style={{
+                      background:
+                        'radial-gradient(ellipse at 52% 68%, rgba(254,215,170,0.48) 0%, rgba(251,146,60,0.34) 48%, transparent 82%)',
+                      filter: 'blur(12px)',
+                    }}
+                  />
+                </div>
+              )}
+              {isCryovainCaveCombat && targetEnemy?.conditions.some((c) => c.type === 'frost_mist') && (
+                <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden z-[5]">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        'linear-gradient(to top, rgba(224,242,254,0.44) 0%, rgba(125,211,252,0.28) 48%, rgba(186,230,253,0.18) 100%)',
+                    }}
+                  />
+                  <div
+                    className="absolute inset-x-[-18%] bottom-[-8%] h-[78%] animate-[cryovainMistDrift_5.2s_ease-in-out_infinite]"
+                    style={{
+                      background:
+                        'radial-gradient(ellipse at 52% 68%, rgba(240,249,255,0.62) 0%, rgba(186,230,253,0.42) 48%, transparent 82%)',
+                      filter: 'blur(12px)',
+                    }}
+                  />
+                  <div
+                    className="absolute inset-x-[-16%] top-[10%] h-[74%] animate-[cryovainMistDrift_6.6s_ease-in-out_infinite]"
+                    style={{
+                      animationDirection: 'reverse',
+                      background:
+                        'radial-gradient(ellipse at 36% 52%, rgba(224,242,254,0.52) 0%, rgba(125,211,252,0.28) 54%, transparent 84%)',
+                      filter: 'blur(14px)',
+                    }}
+                  />
+                </div>
+              )}
+              {isAirChamberCombat && (
+                <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden">
+                  {/* Resplandor pulsante del portal arcano magenta al fondo */}
+                  <div
+                    className="absolute left-[46%] top-[24%] w-[150px] h-[150px] -translate-x-1/2 -translate-y-1/2 rounded-full animate-[airChamberPortalPulse_3.4s_ease-in-out_infinite]"
+                    style={{
+                      background:
+                        'radial-gradient(circle, rgba(244,114,182,0.52) 0%, rgba(192,132,252,0.28) 42%, transparent 74%)',
+                      mixBlendMode: 'screen',
+                      filter: 'blur(8px)',
+                    }}
+                  />
+                  {/* Reflejos rúnicos en columnas laterales */}
+                  <div
+                    className="absolute inset-y-0 left-0 w-[24%] animate-pulse"
+                    style={{
+                      background:
+                        'radial-gradient(ellipse at 18% 42%, rgba(232,121,249,0.22) 0%, rgba(56,189,248,0.12) 48%, transparent 75%)',
+                      mixBlendMode: 'screen',
+                    }}
+                  />
+                  <div
+                    className="absolute inset-y-0 right-0 w-[24%] animate-pulse"
+                    style={{
+                      animationDelay: '1.1s',
+                      background:
+                        'radial-gradient(ellipse at 82% 45%, rgba(56,189,248,0.24) 0%, rgba(232,121,249,0.14) 50%, transparent 76%)',
+                      mixBlendMode: 'screen',
+                    }}
+                  />
+                </div>
+              )}
+              {selectedCombatMissionId === 'm14_planta_intermedia_ferton' && (
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 pointer-events-none bg-gradient-to-t from-lime-400/20 via-amber-200/10 to-emerald-400/15 animate-pulse"
+                />
+              )}
             </div>
-          ))}
-        </div>
+          );
+        })()}
 
-        {/* Tier 3 Dramatic Cinematic Dark Contrast Vignette */}
-        {tier3Cinematic && (
-          <div className="absolute inset-0 bg-black/55 pointer-events-none z-45 animate-[gachaScreenFlash_0.35s_ease-out_forwards] backdrop-blur-[0.5px]" />
-        )}
 
-        {/* AAA Gacha Impact Screen Flash */}
-        {screenFlash && (
-          <div
-            className={`absolute inset-0 pointer-events-none z-50 animate-[gachaScreenFlash_0.18s_ease-out_forwards] ${
-              screenFlash === 'cyan'
-                ? 'bg-gradient-to-r from-cyan-400/35 via-white/45 to-cyan-400/35'
-                : screenFlash === 'purple'
-                ? 'bg-gradient-to-r from-purple-500/35 via-white/45 to-purple-500/35'
-                : screenFlash === 'red'
-                ? 'bg-gradient-to-r from-red-600/40 via-red-500/30 to-red-600/40'
-                : screenFlash === 'green'
-                ? 'bg-gradient-to-r from-emerald-500/40 via-lime-300/40 to-emerald-500/40'
-                : 'bg-gradient-to-r from-amber-300/35 via-white/45 to-amber-300/35'
-            }`}
-            style={{ mixBlendMode: 'screen' }}
-          />
-        )}
+        {/* Tactical Multi-Enemy Formation Roster + Loot + Flashes + Floating Texts serán movidos fuera de la capa de zoom al cerrar arenaCameraLayer */}
 
-        {/* Floating Damage Numbers with Official Vector Damage Emblems */}
-        {floatingTexts.map((item) => (
-          <div
-            key={item.id}
-            style={{
-              left: item.isEnemy
-                ? item.slotIndex === 0
-                  ? '78%'
-                  : item.slotIndex === 1
-                  ? '62%'
-                  : item.slotIndex === 2
-                  ? '46%'
-                  : '72%'
-                : '26%',
-              top: item.isEnemy ? (item.tier === 3 ? '30%' : '35%') : '39%',
-            }}
-            className={`absolute pointer-events-none z-50 transform -translate-x-1/2 font-black tracking-wider animate-bounce flex flex-col items-center gap-0.5 ${
-              item.isHeal
-                ? item.tier === 3
-                  ? 'text-emerald-300 drop-shadow-[0_0_18px_#10b981] scale-125'
-                  : item.tier === 2
-                  ? 'text-emerald-400 drop-shadow-[0_0_12px_#10b981] scale-110'
-                  : 'text-emerald-400 drop-shadow-[0_0_8px_#10b981]'
-                : item.isEnemy
-                ? item.tier === 3
-                  ? 'text-yellow-200 drop-shadow-[0_0_20px_#f59e0b] scale-135'
-                  : item.tier === 2
-                  ? 'text-amber-300 drop-shadow-[0_0_14px_#38bdf8] scale-115'
-                  : 'text-yellow-300 drop-shadow-[0_3px_10px_rgba(220,38,38,1)]'
-                : 'text-red-500 drop-shadow-[0_3px_10px_rgba(0,0,0,1)]'
-            }`}
-          >
-            {/* Clean Cartoon Damage and Heal Indicator (Zero Icons) */}
-
-            <span
-              style={item.badgeColor ? { color: item.badgeColor, textShadow: `0 0 16px ${item.badgeColor}` } : undefined}
-              className={item.tier === 3 ? 'text-3xl font-black drop-shadow-[0_2px_8px_rgba(0,0,0,1)]' : item.tier === 2 ? 'text-2xl font-black drop-shadow-[0_2px_6px_rgba(0,0,0,1)]' : 'text-xl font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,1)]'}
-            >
-              {item.text}
-            </span>
-          </div>
-        ))}
-
-        {/* HERO: MAGORDITO / SMURPH DRACO (Scaled down 25% and pushed left for increased separation, moved 5% upwards) */}
+        {/* HERO: MAGORDITO / SMURPH DRACO (En Cryovain o Araña Acorazada pasa a primer plano izquierdo para dar espacio al jefe centrado) */}
         <div
           key="hero-sprite-wrapper"
           style={{
-            bottom: 'calc(5% + 4px)',
+            bottom:
+              targetEnemy?.configId === 'cryovain_boss' || targetEnemy?.configId === 'arana_acorazada_boss'
+                ? '3.5%'
+                : 'calc(5% + 4px)',
             transform:
               isSmurphAirborne
                 ? 'translateY(-340px) scale(0.85)'
@@ -12965,7 +15592,11 @@ export const CombatView: React.FC = () => {
                 ? 'translateX(35px)' // avanza al atacar, sin zoom
                 : undefined,
           }}
-          className={`absolute left-[6.5%] w-[149px] h-[256px] flex items-end justify-center transition-all duration-300 z-30 ${
+          className={`absolute ${
+            targetEnemy?.configId === 'cryovain_boss' || targetEnemy?.configId === 'arana_acorazada_boss'
+              ? 'left-[4%]'
+              : 'left-[6.5%]'
+          } w-[149px] h-[256px] flex items-end justify-center transition-all duration-300 z-30 ${
             isHeroHitShaking
               ? 'animate-[heroHitShake_0.42s_cubic-bezier(0.2,0.8,0.2,1)_forwards]'
               : heroTwitching
@@ -13016,6 +15647,19 @@ export const CombatView: React.FC = () => {
               </div>
             )}
 
+            {/* Aura helada reactiva cuando el héroe recibe daño de hielo */}
+            {isHeroHitShaking && heroImpactDamageType === 'cold' && (
+              <div
+                aria-hidden="true"
+                className="absolute inset-[-10%] pointer-events-none z-[19] rounded-full animate-pulse"
+                style={{
+                  background:
+                    'radial-gradient(circle, rgba(224,242,254,0.75) 0%, rgba(56,189,248,0.45) 48%, transparent 76%)',
+                  mixBlendMode: 'screen',
+                }}
+              />
+            )}
+
             <img
               ref={heroSpriteImgRef}
               key="hero-sprite-img"
@@ -13023,6 +15667,7 @@ export const CombatView: React.FC = () => {
                 translate: getHeroSpriteTranslate(),
                 scale: getHeroSpriteScale(),
                 transformOrigin: 'bottom center',
+                ...getBreathVars(getHeroSpriteUrl()),
                 filter:
                   !isHeroHitShaking && !isHeroAshDissolving
                     ? heroStatusShaderFilter
@@ -13034,7 +15679,9 @@ export const CombatView: React.FC = () => {
                 isHeroAshDissolving
                   ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
                   : isHeroHitShaking
-                  ? 'dnd-impact-sprite-whiteout'
+                  ? heroImpactDamageType === 'cold'
+                    ? 'dnd-impact-sprite-cold'
+                    : 'dnd-impact-sprite-whiteout'
                   : ''
               } ${
                 isEdacornStealthed
@@ -13046,7 +15693,32 @@ export const CombatView: React.FC = () => {
                   : isSmurphLandingAction
                   ? 'filter drop-shadow-[0_0_35px_rgba(56,189,248,1)] brightness-125'
                   : ''
+              } ${
+                (heroAnimation === 'idle' || heroAnimation === 'lunge') &&
+                !isHeroHitShaking &&
+                !isHeroAshDissolving
+                  ? 'combat-sprite-breath'
+                  : ''
               }`}
+            />
+
+            {/* Elemental de Aire: Prisión de Vórtice Etéreo adaptada al contorno real del sprite */}
+            {isCurrentHeroAirPrisoned && airPrisonHero && (
+              <div className="absolute -top-9 left-1/2 -translate-x-1/2 pointer-events-none z-30 flex flex-col items-center whitespace-nowrap">
+                <span className="px-2 py-0.5 rounded-full bg-cyan-950/90 border border-cyan-400 text-cyan-200 font-black text-[9px] tracking-wider uppercase shadow-[0_0_12px_#22d3ee]">
+                  🌪️ INMOVILIZADO ({airPrisonHero.turnsRemaining}T)
+                </span>
+              </div>
+            )}
+            <StatusConditionsVfxOverlay
+              activeEffect={isCurrentHeroAirPrisoned ? AIR_PRISON_STATUS_EFFECT : null}
+              cueKey={airPrisonVfxKey}
+              durationMs={600}
+              persistent={true}
+              spriteUrl={getHeroSpriteUrl()}
+              spriteImgRef={heroSpriteImgRef}
+              scaleKey={`${getHeroSpriteUrl()}-${getHeroSpriteScale()}-${heroAnimation}-${isSmurphAirborne ? 'air' : 'ground'}`}
+              disabled={isHeroAshDissolving || heroHp <= 0}
             />
 
             {/* Roxanne: shader rosa por encima del sprite (velada / inspiración), más épico por tier */}
@@ -13223,22 +15895,98 @@ export const CombatView: React.FC = () => {
           />
         )}
 
+        {/* NIEBLA GÉLIDA EN PRIMER PLANO CUBRIENDO EL CAMPO DE BATALLA */}
+        {targetEnemy?.configId === 'cryovain_boss' &&
+          targetEnemy.hp > 0 &&
+          !targetEnemy.isAshDissolving &&
+          targetEnemy.conditions.some((c) => c.type === 'frost_mist') && (
+            <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden z-[22]">
+              <div
+                className="absolute inset-0"
+                style={{
+                  boxShadow: 'inset 0 0 54px rgba(186,230,253,0.52), inset 0 -46px 64px rgba(224,242,254,0.44)',
+                  background:
+                    'linear-gradient(to top, rgba(224,242,254,0.34) 0%, rgba(186,230,253,0.14) 55%, rgba(125,211,252,0.08) 100%)',
+                }}
+              />
+              <div
+                className="absolute inset-x-[-20%] bottom-[-6%] h-[58%] animate-[cryovainMistDrift_4.8s_ease-in-out_infinite]"
+                style={{
+                  background:
+                    'radial-gradient(ellipse at 28% 72%, rgba(240,249,255,0.46) 0%, rgba(186,230,253,0.28) 46%, transparent 78%), radial-gradient(ellipse at 74% 66%, rgba(224,242,254,0.42) 0%, rgba(125,211,252,0.24) 48%, transparent 80%)',
+                  filter: 'blur(11px)',
+                }}
+              />
+              <div
+                className="absolute inset-x-[-18%] bottom-[12%] h-[46%] animate-[cryovainMistDrift_6.2s_ease-in-out_infinite]"
+                style={{
+                  animationDirection: 'reverse',
+                  background:
+                    'radial-gradient(ellipse at 50% 58%, rgba(240,249,255,0.34) 0%, rgba(186,230,253,0.18) 54%, transparent 82%)',
+                  filter: 'blur(13px)',
+                }}
+              />
+            </div>
+          )}
+
+        {/* CAPULLO DE CENIZA EN PRIMER PLANO CUBRIENDO EL CAMPO DE BATALLA */}
+        {targetEnemy?.configId === 'arana_acorazada_boss' &&
+          targetEnemy.hp > 0 &&
+          !targetEnemy.isAshDissolving &&
+          targetEnemy.conditions.some((c) => c.type === 'frost_mist') && (
+            <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden z-[22]">
+              <div
+                className="absolute inset-0"
+                style={{
+                  boxShadow: 'inset 0 0 54px rgba(249,115,22,0.52), inset 0 -46px 64px rgba(234,88,12,0.42)',
+                  background:
+                    'linear-gradient(to top, rgba(251,146,60,0.32) 0%, rgba(234,88,12,0.14) 55%, rgba(120,53,15,0.08) 100%)',
+                }}
+              />
+              <div
+                className="absolute inset-x-[-20%] bottom-[-6%] h-[58%] animate-[cryovainMistDrift_4.8s_ease-in-out_infinite]"
+                style={{
+                  background:
+                    'radial-gradient(ellipse at 28% 72%, rgba(254,215,170,0.42) 0%, rgba(249,115,22,0.26) 46%, transparent 78%), radial-gradient(ellipse at 74% 66%, rgba(253,186,116,0.38) 0%, rgba(234,88,12,0.22) 48%, transparent 80%)',
+                  filter: 'blur(11px)',
+                }}
+              />
+            </div>
+          )}
+
         {/* ENEMY ATTACK VFX OVERLAY */}
         <EnemyAttackVfxOverlay activeAttack={activeEnemyAttackVisual} enemyFrame={enemyVfxFrame} />
         {/* SINGLE ACTIVE ENEMY IN ARENA (1 vs 1 Pokemon Style, Stably Mounted) */}
         {targetEnemy && (
+          <div
+            className={
+              targetEnemy.configId === 'cryovain_boss' || targetEnemy.configId === 'arana_acorazada_boss'
+                ? 'absolute inset-0 overflow-hidden pointer-events-none z-[14]'
+                : 'absolute inset-0 overflow-visible pointer-events-none z-20'
+            }
+          >
           <div
             key={`active-enemy-${targetEnemy.uid}`}
             data-enemy-sprite={targetEnemy.uid}
             style={{
               transform:
                 targetEnemy.animation === 'strike'
-                  ? 'translateX(-40px)'
+                  ? targetEnemy.configId === 'bulezau' && bulezauAttackPose === 'toque'
+                    ? 'translateX(-118px)'
+                    : targetEnemy.configId === 'cryovain_boss' || targetEnemy.configId === 'arana_acorazada_boss'
+                    ? 'translateX(-4px)'
+                    : 'translateX(-40px)'
                   : enemySwitchState === 'exit'
                   ? 'translateX(120px)'
                   : undefined,
             }}
-            className={`absolute right-[5%] bottom-[21%] z-20 ${targetEnemy.scaleClass} flex items-end justify-center transition-all duration-300 ${
+            className={`absolute ${
+              targetEnemy.configId === 'cryovain_boss'
+                ? 'left-[calc(56%-184px)] bottom-[2%] z-[14]'
+                : targetEnemy.configId === 'arana_acorazada_boss'
+                ? 'left-[calc(56%-178px)] bottom-[3%] z-[14]'
+                : 'right-[5%] bottom-[21%] z-20'
+            } ${targetEnemy.scaleClass} flex items-end justify-center transition-all duration-300 ${
               targetEnemy.hp <= 0 &&
               !targetEnemy.isAshDissolving &&
               !(
@@ -13252,6 +16000,10 @@ export const CombatView: React.FC = () => {
                 ? 'animate-[devoradorRoarTremor_0.34s_ease-in-out_infinite] filter drop-shadow-[0_0_26px_rgba(220,38,38,0.85)]'
                 : isZancudoRoaring && targetEnemy.configId === 'semiboss_zancudo'
                 ? 'animate-[devoradorRoarTremor_0.34s_ease-in-out_infinite] filter drop-shadow-[0_0_28px_rgba(168,85,247,0.9)]'
+                : isCryovainRoaring && targetEnemy.configId === 'cryovain_boss'
+                ? 'animate-[devoradorRoarTremor_0.34s_ease-in-out_infinite] filter drop-shadow-[0_0_30px_rgba(56,189,248,0.9)]'
+                : isAranaRoaring && targetEnemy.configId === 'arana_acorazada_boss'
+                ? 'animate-[devoradorRoarTremor_0.34s_ease-in-out_infinite] filter drop-shadow-[0_0_30px_rgba(249,115,22,0.92)]'
                 : isEnemyHitShaking
                 ? 'animate-[enemyHitShake_0.42s_cubic-bezier(0.2,0.8,0.2,1)_forwards]'
                 : enemyTwitching
@@ -13271,10 +16023,9 @@ export const CombatView: React.FC = () => {
               alt="Sombra"
               data-enemy-shadow=""
               style={{
-                // La sombra va atada al cuerpo del enemigo, no a la compensación de la pose ni VFX.
-                width: 140,
-                height: 18,
-                bottom: -9,
+                width: targetEnemy.configId === 'cryovain_boss' ? 320 : targetEnemy.configId === 'arana_acorazada_boss' ? 310 : 140,
+                height: targetEnemy.configId === 'cryovain_boss' || targetEnemy.configId === 'arana_acorazada_boss' ? 38 : 18,
+                bottom: targetEnemy.configId === 'cryovain_boss' || targetEnemy.configId === 'arana_acorazada_boss' ? '6%' : -9,
               }}
               className={`absolute left-1/2 transform -translate-x-1/2 object-fill pointer-events-none z-0 transition-opacity duration-1000 ${
                 targetEnemy.isAshDissolving ||
@@ -13284,13 +16035,280 @@ export const CombatView: React.FC = () => {
                     (targetEnemy.hasPhaseTwo || isDevoradorRoaring || isDevoradorRefilling)
                   ))
                   ? 'opacity-0'
+                  : targetEnemy.configId === 'elemental_aire'
+                  ? 'opacity-50 animate-[airElementalShadowPulse_3.4s_ease-in-out_infinite]'
                   : 'opacity-50'
               }`}
             />
 
             {/* Enemy Sprite (Transparent Background, Stably Mounted) */}
             <div className="relative w-full h-full flex items-end justify-center">
-              {targetEnemy.configId === 'medusa' ? (
+              {targetEnemy.configId === 'arana_acorazada_boss' ? (
+                <div className="relative w-full h-full flex items-end justify-center overflow-visible">
+                  <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={356} height={440} />
+
+                  {/* Aura incandescente bajo la Araña Acorazada */}
+                  {!targetEnemy.isAshDissolving && targetEnemy.hp > 0 && (
+                    <div className="absolute -bottom-1 left-[48%] -translate-x-1/2 w-[300px] h-[44px] rounded-full bg-orange-500/24 blur-md pointer-events-none z-[1]" />
+                  )}
+
+                  {/* Onda de choque de hierro y brasas al ejecutar Barrido de Piernas */}
+                  {targetEnemy.animation === 'strike' &&
+                    aranaAttackPose === 'barrido' &&
+                    !targetEnemy.isAshDissolving && (
+                      <div
+                        aria-hidden="true"
+                        className="absolute left-[46%] bottom-[3%] w-[320px] h-[52px] rounded-full border-4 border-orange-300/90 bg-orange-500/25 shadow-[0_0_28px_rgba(249,115,22,0.85)] pointer-events-none z-[14] animate-[aranaStompShockwave_0.68s_ease-out_forwards]"
+                      />
+                    )}
+
+                  {/* Ondas expansivas al lanzar Chirrido Acorazado */}
+                  {isAranaRoaring && !targetEnemy.isAshDissolving && (
+                    <div className="absolute inset-0 pointer-events-none z-[15] flex items-center justify-center">
+                      <div className="w-[260px] h-[260px] rounded-full border-4 border-orange-400/85 bg-orange-500/15 shadow-[0_0_40px_rgba(249,115,22,0.85)] animate-[devoradorRoarWave_0.55s_ease-out_infinite]" />
+                      <div
+                        className="absolute w-[210px] h-[210px] rounded-full border-2 border-amber-200/80 animate-[devoradorRoarWave_0.55s_ease-out_infinite]"
+                        style={{ animationDelay: '0.22s' }}
+                      />
+                    </div>
+                  )}
+
+                  {/* Sprite único animado de la Araña Acorazada (cambia de pose según ataque, daño o reposo) */}
+                  <img
+                    ref={enemySpriteImgRef}
+                    data-enemy-main=""
+                    key={`enemy-arana-single-${targetEnemy.uid}`}
+                    src={getEnemySpriteUrl(targetEnemy)}
+                    style={{
+                      transformOrigin: 'bottom center',
+                      ...(!isEnemyHitShaking && !targetEnemy.isAshDissolving
+                        ? enemyStatusShaderFilter
+                          ? { filter: enemyStatusShaderFilter }
+                          : undefined
+                        : undefined),
+                    }}
+                    alt="Araña Acorazada"
+                    className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-[10] ${
+                      targetEnemy.isAshDissolving
+                        ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                        : isEnemyHitShaking
+                        ? getDndImpactAnimationClass(enemyImpactDamageType)
+                        : targetEnemy.animation === 'strike' && aranaAttackPose === 'barrido'
+                        ? 'animate-[aranaLegSweep_0.66s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_28px_rgba(249,115,22,0.82)]'
+                        : targetEnemy.animation === 'strike' &&
+                          (aranaAttackPose === 'telarana' || aranaAttackPose === 'bola_fuego')
+                        ? 'animate-[aranaSingleSpitLunge_0.68s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_28px_rgba(249,115,22,0.85)]'
+                        : (targetEnemy.animation === 'strike' && aranaAttackPose === 'aliento') ||
+                          aranaAttackPose === 'ceniza'
+                        ? 'animate-[aranaSingleBreathAttack_1.04s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_30px_rgba(249,115,22,0.92)]'
+                        : aranaAttackPose === 'chirrido' || isAranaRoaring
+                        ? 'animate-[aranaSingleRoar_1.06s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_30px_rgba(249,115,22,0.92)]'
+                        : 'animate-[aranaBodyBreath_3.6s_ease-in-out_infinite] filter drop-shadow-[0_0_20px_rgba(249,115,22,0.42)]'
+                    }`}
+                  />
+
+                  {/* Capullo de ceniza envolviendo las patas de la Araña Acorazada */}
+                  {!targetEnemy.isAshDissolving &&
+                    targetEnemy.hp > 0 &&
+                    targetEnemy.conditions.some((c) => c.type === 'frost_mist') && (
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-x-[-14%] bottom-[-8px] h-[96px] pointer-events-none z-[13] animate-[cryovainMistDrift_4.4s_ease-in-out_infinite]"
+                        style={{
+                          background:
+                            'radial-gradient(ellipse at 48% 68%, rgba(254,215,170,0.52) 0%, rgba(249,115,22,0.32) 46%, transparent 78%)',
+                          filter: 'blur(9px)',
+                        }}
+                      />
+                    )}
+
+                  <StatusConditionsVfxOverlay
+                    activeEffect={activeEnemyStatusShowcase?.effect ?? null}
+                    cueKey={activeEnemyStatusShowcase?.key ?? 0}
+                    durationMs={activeEnemyStatusShowcase?.durationMs ?? 450}
+                    spriteUrl={getEnemySpriteUrl(targetEnemy)}
+                    spriteImgRef={enemySpriteImgRef}
+                    scaleKey={`${targetEnemy.uid}-${aranaAttackPose}-${targetEnemy.animation}-${isEnemyHitShaking}`}
+                    disabled={targetEnemy.isAshDissolving || targetEnemy.hp <= 0}
+                  />
+                </div>
+              ) : targetEnemy.configId === 'cryovain_boss' ? (
+                <div className="relative w-full h-full flex items-end justify-center overflow-visible">
+                  <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={368} height={492} />
+
+                  {/* Aura gélida colosal bajo las garras del Tirano Blanco */}
+                  {!targetEnemy.isAshDissolving && targetEnemy.hp > 0 && (
+                    <div className="absolute -bottom-1 left-[46%] -translate-x-1/2 w-[300px] h-[44px] rounded-full bg-sky-400/22 blur-md pointer-events-none z-[1]" />
+                  )}
+
+                  {/* Onda de choque helada bajo las dos patas delanteras al ejecutar el pisotón */}
+                  {targetEnemy.animation === 'strike' &&
+                    cryovainAttackPose === 'pisoton' &&
+                    !targetEnemy.isAshDissolving && (
+                      <div
+                        aria-hidden="true"
+                        className="absolute left-[46%] bottom-[3%] w-[330px] h-[56px] rounded-full border-4 border-cyan-200/90 bg-sky-400/25 shadow-[0_0_28px_rgba(56,189,248,0.85)] pointer-events-none z-[14] animate-[cryovainStompShockwave_0.72s_ease-out_forwards]"
+                      />
+                    )}
+
+                  {/* Ondas expansivas al rugir */}
+                  {isCryovainRoaring && !targetEnemy.isAshDissolving && (
+                    <div className="absolute inset-0 pointer-events-none z-[15] flex items-center justify-center">
+                      <div className="w-[260px] h-[260px] rounded-full border-4 border-sky-300/85 bg-cyan-500/12 shadow-[0_0_40px_rgba(56,189,248,0.85)] animate-[devoradorRoarWave_0.55s_ease-out_infinite]" />
+                      <div
+                        className="absolute w-[210px] h-[210px] rounded-full border-2 border-white/75 animate-[devoradorRoarWave_0.55s_ease-out_infinite]"
+                        style={{ animationDelay: '0.22s' }}
+                      />
+                    </div>
+                  )}
+
+                  {/* CAPA 1A (FGO Rig): Cola trasera encajada detrás de la cadera y curvando bajo las patas */}
+                  <img
+                    src="/assets/combat/cryovain_ala_fondo.webp"
+                    alt=""
+                    aria-hidden="true"
+                    data-enemy-shadow=""
+                    style={{
+                      clipPath: 'polygon(0% 72%, 68% 72%, 74% 63%, 82% 55%, 100% 55%, 100% 100%, 0% 100%)',
+                      transformOrigin: '88% 58%',
+                    }}
+                    className={`absolute left-[18%] bottom-[11%] w-[78%] h-[78%] object-contain pointer-events-none z-[3] ${
+                      targetEnemy.isAshDissolving
+                        ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                        : isEnemyHitShaking
+                        ? getDndImpactAnimationClass(enemyImpactDamageType)
+                        : targetEnemy.animation === 'strike' && cryovainAttackPose === 'garra'
+                        ? 'animate-[cryovainTailClawWhip_0.64s_cubic-bezier(0.16,1,0.3,1)_forwards] brightness-95'
+                        : targetEnemy.animation === 'strike' && cryovainAttackPose === 'pisoton'
+                        ? 'animate-[cryovainTailStompSlam_0.72s_cubic-bezier(0.22,1,0.36,1)_forwards] brightness-95'
+                        : 'animate-[cryovainTailSway_4.8s_ease-in-out_infinite] brightness-95'
+                    }`}
+                  />
+
+                  {/* CAPA 1B (FGO Rig): Ala trasera encajada directamente sobre el hombro y espalda */}
+                  <img
+                    src="/assets/combat/cryovain_ala_fondo.webp"
+                    alt=""
+                    aria-hidden="true"
+                    data-enemy-shadow=""
+                    style={{
+                      clipPath: 'polygon(0% 0%, 100% 0%, 100% 58%, 85% 58%, 74% 63%, 68% 72%, 0% 72%)',
+                      transformOrigin: '95% 52%',
+                    }}
+                    className={`absolute left-[-8%] top-[14%] w-[72%] h-[72%] object-contain pointer-events-none z-[4] ${
+                      targetEnemy.isAshDissolving
+                        ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                        : isEnemyHitShaking
+                        ? getDndImpactAnimationClass(enemyImpactDamageType)
+                        : targetEnemy.animation === 'strike' && cryovainAttackPose === 'garra'
+                        ? 'animate-[cryovainWingClawFlare_0.64s_cubic-bezier(0.16,1,0.3,1)_forwards] brightness-95'
+                        : targetEnemy.animation === 'strike' && cryovainAttackPose === 'pisoton'
+                        ? 'animate-[cryovainWingStompFlare_0.72s_cubic-bezier(0.22,1,0.36,1)_forwards] brightness-95'
+                        : 'animate-[cryovainWingBreath_4.2s_ease-in-out_infinite] brightness-95'
+                    }`}
+                  />
+
+                  {/* CAPA 2 (FGO Rig): Torso y patas delanteras con sprites dedicados para reposo, zarpazo y doble pisotón */}
+                  <img
+                    ref={enemySpriteImgRef}
+                    data-enemy-main=""
+                    key={`enemy-cryovain-legs-${targetEnemy.uid}`}
+                    src={
+                      targetEnemy.animation === 'strike' && cryovainAttackPose === 'garra'
+                        ? '/assets/combat/cryovain_patas_garra.webp'
+                        : targetEnemy.animation === 'strike' && cryovainAttackPose === 'pisoton'
+                        ? '/assets/combat/cryovain_patas_pisoton.webp'
+                        : '/assets/combat/cryovain_patas_idle.webp'
+                    }
+                    style={{
+                      transformOrigin: 'bottom center',
+                      ...(!isEnemyHitShaking && !targetEnemy.isAshDissolving
+                        ? enemyStatusShaderFilter
+                          ? { filter: enemyStatusShaderFilter }
+                          : undefined
+                        : undefined),
+                    }}
+                    alt="Cryovain, El Tirano Blanco"
+                    className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-[10] ${
+                      targetEnemy.isAshDissolving
+                        ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                        : isEnemyHitShaking
+                        ? getDndImpactAnimationClass(enemyImpactDamageType)
+                        : targetEnemy.animation === 'strike' && cryovainAttackPose === 'garra'
+                        ? 'animate-[cryovainTorsoClawSwipe_0.64s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_28px_rgba(56,189,248,0.75)]'
+                        : targetEnemy.animation === 'strike' && cryovainAttackPose === 'pisoton'
+                        ? 'animate-[cryovainTorsoDoubleStomp_0.72s_cubic-bezier(0.22,1,0.36,1)_forwards] filter drop-shadow-[0_0_30px_rgba(56,189,248,0.85)]'
+                        : 'animate-[cryovainBodyBreath_3.6s_ease-in-out_infinite] filter drop-shadow-[0_0_24px_rgba(56,189,248,0.45)]'
+                    }`}
+                  />
+
+                  {/* Niebla Helada envolviendo las patas de Cryovain */}
+                  {!targetEnemy.isAshDissolving &&
+                    targetEnemy.hp > 0 &&
+                    targetEnemy.conditions.some((c) => c.type === 'frost_mist') && (
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-x-[-14%] bottom-[-8px] h-[96px] pointer-events-none z-[13] animate-[cryovainMistDrift_4.4s_ease-in-out_infinite]"
+                        style={{
+                          background:
+                            'radial-gradient(ellipse at 48% 68%, rgba(224,242,254,0.58) 0%, rgba(125,211,252,0.34) 46%, transparent 78%)',
+                          filter: 'blur(9px)',
+                        }}
+                      />
+                    )}
+
+                  {/* CAPA 4 (FGO Rig - Ataque 2): Cabeza bajando desde arriba con cuello continuo fuera de plano */}
+                  {targetEnemy.animation === 'strike' &&
+                    cryovainAttackPose === 'mordisco' &&
+                    !targetEnemy.isAshDissolving && (
+                      <img
+                        data-cryovain-head=""
+                        src="/assets/combat/cryovain_cabeza_mordisco.webp"
+                        alt="Mordisco de Cryovain"
+                        className="absolute left-[-16%] top-[-2%] w-[90%] h-[90%] object-contain pointer-events-none z-[18] origin-top-right animate-[cryovainHeadBiteDescend_0.68s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_24px_rgba(239,68,68,0.68)]"
+                      />
+                    )}
+
+                  {/* CAPA 5 (FGO Rig - Ataque 3 / Niebla Gélida): Cabeza bajando desde arriba exhalando aliento glacial */}
+                  {((targetEnemy.animation === 'strike' && cryovainAttackPose === 'aliento') ||
+                    cryovainAttackPose === 'niebla') &&
+                    !targetEnemy.isAshDissolving && (
+                      <img
+                        data-cryovain-head=""
+                        src="/assets/combat/cryovain_cabeza_aliento.webp"
+                        alt={cryovainAttackPose === 'niebla' ? 'Aliento de Niebla Gélida de Cryovain' : 'Aliento Helado de Cryovain'}
+                        className="absolute left-[-4%] top-[-4%] w-[90%] h-[90%] object-contain pointer-events-none z-[18] origin-top-right animate-[cryovainHeadBreathDescend_1.04s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_30px_rgba(56,189,248,0.95)]"
+                      />
+                    )}
+
+                  {/* CAPA 6 (FGO Rig - Rugido): Cabeza con fauces abiertas rugiendo hacia la arena (sin aliento) */}
+                  {cryovainAttackPose === 'rugido' &&
+                    !targetEnemy.isAshDissolving && (
+                      <img
+                        data-cryovain-head=""
+                        src="/assets/combat/cryovain_cabeza_rugido.webp"
+                        alt="Rugido de Cryovain"
+                        className="absolute left-[-10%] top-[-4%] w-[90%] h-[90%] object-contain pointer-events-none z-[18] origin-top-right animate-[cryovainHeadRoar_1.08s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_32px_rgba(56,189,248,0.95)]"
+                      />
+                    )}
+
+                  <StatusConditionsVfxOverlay
+                    activeEffect={activeEnemyStatusShowcase?.effect ?? null}
+                    cueKey={activeEnemyStatusShowcase?.key ?? 0}
+                    durationMs={activeEnemyStatusShowcase?.durationMs ?? 450}
+                    spriteUrl={
+                      targetEnemy.animation === 'strike' && cryovainAttackPose === 'garra'
+                        ? '/assets/combat/cryovain_patas_garra.webp'
+                        : targetEnemy.animation === 'strike' && cryovainAttackPose === 'pisoton'
+                        ? '/assets/combat/cryovain_patas_pisoton.webp'
+                        : '/assets/combat/cryovain_patas_idle.webp'
+                    }
+                    spriteImgRef={enemySpriteImgRef}
+                    scaleKey={`${targetEnemy.uid}-${cryovainAttackPose}-${targetEnemy.animation}`}
+                    disabled={targetEnemy.isAshDissolving || targetEnemy.hp <= 0}
+                  />
+                </div>
+              ) : targetEnemy.configId === 'medusa' ? (
                 <div className="relative w-full h-full flex items-center justify-center animate-[medusaHoverFloat_3.2s_ease-in-out_infinite]">
                   <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={136} height={192} />
                   {!targetEnemy.isAshDissolving && (
@@ -13391,39 +16409,119 @@ export const CombatView: React.FC = () => {
                     </div>
                   )}
 
-                  <span
-                    className="relative flex h-full shrink-0 items-end justify-center"
-                    style={{ transform: getEnemySpriteTransform(targetEnemy), transformOrigin: 'bottom center' }}
+                  {/* Anillo giratorio sutil de vórtice en la base del Elemental de Aire */}
+                  {targetEnemy.configId === 'elemental_aire' && !targetEnemy.isAshDissolving && targetEnemy.hp > 0 && (
+                    <div
+                      aria-hidden="true"
+                      className="absolute bottom-[-8px] left-1/2 -translate-x-1/2 w-[136px] h-[64px] pointer-events-none z-[12] flex items-center justify-center"
+                      style={{ perspective: '240px' }}
+                    >
+                      <svg
+                        viewBox="0 0 120 120"
+                        className="w-[116px] h-[116px] overflow-visible animate-[airElementalBaseSpin_2.2s_linear_infinite]"
+                        style={{ mixBlendMode: 'screen' }}
+                      >
+                        <circle
+                          cx="60"
+                          cy="60"
+                          r="46"
+                          fill="none"
+                          stroke="#67e8f9"
+                          strokeWidth="3.2"
+                          strokeLinecap="round"
+                          strokeDasharray="48 26 24 28"
+                          opacity="0.72"
+                        />
+                        <circle
+                          cx="60"
+                          cy="60"
+                          r="32"
+                          fill="none"
+                          stroke="#ecfeff"
+                          strokeWidth="2.4"
+                          strokeLinecap="round"
+                          strokeDasharray="32 24 18 22"
+                          opacity="0.62"
+                        />
+                      </svg>
+                    </div>
+                  )}
+
+                  <div
+                    className={`relative flex h-full w-full items-end justify-center ${
+                      targetEnemy.configId === 'elemental_aire' &&
+                      !targetEnemy.isAshDissolving &&
+                      !isEnemyHitShaking
+                        ? 'animate-[airElementalFloat_3.4s_ease-in-out_infinite]'
+                        : ''
+                    }`}
                   >
-                    <img
-                      ref={enemySpriteImgRef}
-                      key={`enemy-sprite-img-${targetEnemy.uid}`}
-                      src={getEnemySpriteUrl(targetEnemy)}
-                      style={
-                        !isEnemyHitShaking && !targetEnemy.isAshDissolving && enemyStatusShaderFilter
-                          ? { filter: enemyStatusShaderFilter }
-                          : undefined
-                      }
-                      alt={targetEnemy.name}
-                      className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
-                        targetEnemy.isAshDissolving
-                          ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
-                          : isEnemyHitShaking
-                          ? getDndImpactAnimationClass(enemyImpactDamageType)
-                          : targetEnemy.configId === 'semiboss_melenudo'
-                          ? targetEnemy.ultimateOrbs >= 6
-                            ? 'filter drop-shadow-[0_0_25px_#38bdf8] brightness-110'
-                            : targetEnemy.ultimateOrbs >= 4
-                            ? 'filter drop-shadow-[0_0_18px_#f59e0b]'
-                            : 'filter drop-shadow-[0_0_14px_rgba(249,115,22,0.6)]'
-                          : targetEnemy.isSemiboss
-                          ? 'filter drop-shadow-[0_0_14px_rgba(249,115,22,0.5)]'
-                          : targetEnemy.isBoss
-                          ? 'filter drop-shadow-[0_0_18px_rgba(220,38,38,0.6)]'
-                          : ''
-                      }`}
-                    />
-                  </span>
+                    <span
+                      className="relative flex h-full shrink-0 items-end justify-center"
+                      style={{ transform: getEnemySpriteTransform(targetEnemy), transformOrigin: 'bottom center' }}
+                    >
+                      {/* Estela etérea en contrafase para dar sensación de aire vivo alrededor del Elemental */}
+                      {targetEnemy.configId === 'elemental_aire' &&
+                        !targetEnemy.isAshDissolving &&
+                        !isEnemyHitShaking && (
+                          <img
+                            src={getEnemySpriteUrl(targetEnemy)}
+                            alt=""
+                            aria-hidden="true"
+                            style={{
+                              mixBlendMode: 'screen',
+                              filter: 'brightness(1.45) saturate(1.4) blur(1.5px)',
+                            }}
+                            className="absolute inset-0 h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-[8] animate-[airElementalSlipstream_2.1s_ease-in-out_infinite]"
+                          />
+                        )}
+                      <img
+                        ref={enemySpriteImgRef}
+                        key={`enemy-sprite-img-${targetEnemy.uid}`}
+                        src={getEnemySpriteUrl(targetEnemy)}
+                        style={{
+                          ...getBreathVars(
+                            getEnemySpriteUrl(targetEnemy),
+                            targetEnemy.isBoss || targetEnemy.isSemiboss ? 1.5 : 1,
+                          ),
+                          filter:
+                            !isEnemyHitShaking && !targetEnemy.isAshDissolving
+                              ? enemyStatusShaderFilter
+                                ? enemyStatusShaderFilter
+                                : targetEnemy.configId === 'elemental_aire'
+                                ? 'url(#enemy-shader-elemental-aire)'
+                                : undefined
+                              : undefined,
+                        }}
+                        alt={targetEnemy.name}
+                        className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
+                          targetEnemy.isAshDissolving
+                            ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                            : isEnemyHitShaking
+                            ? getDndImpactAnimationClass(enemyImpactDamageType)
+                            : targetEnemy.configId === 'elemental_aire'
+                            ? 'filter drop-shadow-[0_0_18px_rgba(34,211,238,0.68)]'
+                            : targetEnemy.configId === 'semiboss_melenudo'
+                            ? targetEnemy.ultimateOrbs >= 6
+                              ? 'filter drop-shadow-[0_0_25px_#38bdf8] brightness-110'
+                              : targetEnemy.ultimateOrbs >= 4
+                              ? 'filter drop-shadow-[0_0_18px_#f59e0b]'
+                              : 'filter drop-shadow-[0_0_14px_rgba(249,115,22,0.6)]'
+                            : targetEnemy.isSemiboss
+                            ? 'filter drop-shadow-[0_0_14px_rgba(249,115,22,0.5)]'
+                            : targetEnemy.isBoss
+                            ? 'filter drop-shadow-[0_0_18px_rgba(220,38,38,0.6)]'
+                            : ''
+                        } ${
+                          !targetEnemy.isAshDissolving &&
+                          !isEnemyHitShaking &&
+                          (targetEnemy.animation === 'idle' || targetEnemy.animation === 'strike')
+                            ? 'combat-sprite-breath'
+                            : ''
+                        }`}
+                      />
+                    </span>
+                  </div>
 
                   {/* Status Condition Sequential Turn-Start VFX */}
                   <StatusConditionsVfxOverlay
@@ -13450,6 +16548,7 @@ export const CombatView: React.FC = () => {
                 </div>
               )}
             </div>
+          </div>
           </div>
         )}
 
@@ -13543,14 +16642,159 @@ export const CombatView: React.FC = () => {
           );
         })()}
 
+        </div>
+        {/* Fin de arenaCameraLayer */}
 
+        {/* Tactical Multi-Enemy Formation Roster (solo informativo: el jugador no puede cambiar de objetivo) */}
+        {activeEnemies.length > 1 && (
+          <div className="absolute top-2 right-2 z-30 flex items-center gap-1.5 p-1 rounded-xl bg-slate-950/90 border border-amber-900/70 shadow-xl backdrop-blur-xs select-none pointer-events-none">
+            {activeEnemies.map((enemy, idx) => {
+              const isSelected = idx === selectedEnemyIdx;
+              const isDead = enemy.hp <= 0 || enemy.isAshDissolving;
+              const hpPct = Math.max(0, Math.min(100, (enemy.hp / enemy.maxHp) * 100));
+              const isMineral = enemy.configId === 'mineral_descarga';
+              return (
+                <div
+                  key={enemy.uid}
+                  role="img"
+                  aria-label={enemy.name}
+                  className={`relative w-8 h-8 rounded-lg overflow-hidden border transition-all duration-200 ${
+                    isSelected
+                      ? isMineral
+                        ? 'border-cyan-300 ring-2 ring-cyan-400/80 scale-110 shadow-[0_0_14px_#38bdf8] bg-cyan-950/60'
+                        : 'border-yellow-400 ring-2 ring-yellow-400/80 scale-105 shadow-[0_0_12px_#f59e0b] bg-amber-950/40'
+                      : isDead
+                      ? 'border-stone-800 opacity-35 grayscale bg-black/80'
+                      : 'border-stone-700/80 bg-stone-900/85'
+                  }`}
+                >
+                  <img src={enemy.thumbUrl} alt={enemy.name} className="w-full h-full object-contain p-0.5 pointer-events-none" />
+                  <div className="absolute bottom-0 inset-x-0 h-1 bg-black/90 pointer-events-none">
+                    <div
+                      className={`h-full transition-all duration-200 ${hpPct > 50 ? 'bg-emerald-400' : hpPct > 20 ? 'bg-amber-400' : 'bg-rose-500'}`}
+                      style={{ width: `${hpPct}%` }}
+                    />
+                  </div>
+                  {enemy.isBoss && (
+                    <span className="absolute top-0 right-0 px-0.5 text-[7px] font-black bg-red-600 text-white rounded-bl leading-none pointer-events-none">
+                      ★
+                    </span>
+                  )}
+                  {isMineral && (
+                    <span className="absolute top-0 right-0 px-0.5 text-[8px] font-black bg-cyan-500 text-slate-950 rounded-bl leading-none pointer-events-none">
+                      ⚡
+                    </span>
+                  )}
+                  {isDead && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-[10px] pointer-events-none">
+                      ☠️
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Saquitos de botin: nacen sobre el enemigo derrotado, caen a su sombra y se vuelven ceniza */}
+        <div ref={lootLayerRef} className="absolute inset-0 pointer-events-none z-40">
+          {lootSacks.map((sack) => (
+            <div
+              key={sack.key}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: sack.left, top: sack.top }}
+            >
+              <div
+                className={`relative flex flex-col items-center ${sack.dissolving ? 'animate-loot-ash' : 'animate-loot-fall'}`}
+                style={{ '--loot-fall': `${sack.fall}px` } as React.CSSProperties}
+              >
+                <LootSackIcon className="w-10 h-10 drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
+                {sack.dissolving && <AshDisintegrationEffect active width={44} height={44} />}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Tier 3 Dramatic Cinematic Dark Contrast Vignette */}
+        {tier3Cinematic && (
+          <div className="absolute inset-0 bg-black/55 pointer-events-none z-45 animate-[gachaScreenFlash_0.35s_ease-out_forwards] backdrop-blur-[0.5px]" />
+        )}
+
+        {/* AAA Gacha Impact Screen Flash */}
+        {screenFlash && (
+          <div
+            className={`absolute inset-0 pointer-events-none z-50 animate-[gachaScreenFlash_0.18s_ease-out_forwards] ${
+              screenFlash === 'cyan'
+                ? 'bg-gradient-to-r from-cyan-400/35 via-white/45 to-cyan-400/35'
+                : screenFlash === 'purple'
+                ? 'bg-gradient-to-r from-purple-500/35 via-white/45 to-purple-500/35'
+                : screenFlash === 'red'
+                ? 'bg-gradient-to-r from-red-600/40 via-red-500/30 to-red-600/40'
+                : screenFlash === 'green'
+                ? 'bg-gradient-to-r from-emerald-500/40 via-lime-300/40 to-emerald-500/40'
+                : 'bg-gradient-to-r from-amber-300/35 via-white/45 to-amber-300/35'
+            }`}
+            style={{ mixBlendMode: 'screen' }}
+          />
+        )}
+
+        {/* Floating Damage Numbers with Official Vector Damage Emblems */}
+        {floatingTexts.map((item) => (
+          <div
+            key={item.id}
+            style={{
+              left: item.isEnemy
+                ? item.slotIndex === 0
+                  ? targetEnemy?.configId === 'cryovain_boss' || targetEnemy?.configId === 'arana_acorazada_boss'
+                    ? '56%'
+                    : '78%'
+                  : item.slotIndex === 1
+                  ? '62%'
+                  : item.slotIndex === 2
+                  ? '46%'
+                  : '72%'
+                : '26%',
+              top: item.isEnemy ? (item.tier === 3 ? '30%' : '35%') : '39%',
+            }}
+            className={`absolute pointer-events-none z-50 transform -translate-x-1/2 font-black tracking-wider animate-bounce flex flex-col items-center gap-0.5 ${
+              item.isHeal
+                ? item.tier === 3
+                  ? 'text-emerald-300 drop-shadow-[0_0_18px_#10b981] scale-125'
+                  : item.tier === 2
+                  ? 'text-emerald-400 drop-shadow-[0_0_12px_#10b981] scale-110'
+                  : 'text-emerald-400 drop-shadow-[0_0_8px_#10b981]'
+                : item.isEnemy
+                ? item.tier === 3
+                  ? 'text-yellow-200 drop-shadow-[0_0_20px_#f59e0b] scale-135'
+                  : item.tier === 2
+                  ? 'text-amber-300 drop-shadow-[0_0_14px_#38bdf8] scale-115'
+                  : 'text-yellow-300 drop-shadow-[0_3px_10px_rgba(220,38,38,1)]'
+                : 'text-red-500 drop-shadow-[0_3px_10px_rgba(0,0,0,1)]'
+            }`}
+          >
+            <span
+              style={item.badgeColor ? { color: item.badgeColor, textShadow: `0 0 16px ${item.badgeColor}` } : undefined}
+              className={item.tier === 3 ? 'text-3xl font-black drop-shadow-[0_2px_8px_rgba(0,0,0,1)]' : item.tier === 2 ? 'text-2xl font-black drop-shadow-[0_2px_6px_rgba(0,0,0,1)]' : 'text-xl font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,1)]'}
+            >
+              {item.text}
+            </span>
+          </div>
+        ))}
 
         {/* Wave Clear Automatic Progression Banner */}
         {waveClearBanner && (
           <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/65 backdrop-blur-xs pointer-events-none animate-in fade-in zoom-in-95 duration-200">
             <div className="px-6 py-4 rounded-2xl bg-gradient-to-r from-amber-950 via-yellow-900 to-amber-950 border-2 border-yellow-400 shadow-[0_0_40px_rgba(245,158,11,0.9)] text-center animate-bounce">
               <div className="text-[11px] uppercase tracking-widest text-amber-300 font-black mb-1">
-                {selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
+                {selectedCombatMissionId === 'evento_coliseo_suenos'
+                  ? waveClearBanner.floor >= 3
+                    ? '¡CAMPEONES DEL COLISEO DE LOS SUEÑOS!'
+                    : `¡RONDA ${waveClearBanner.floor} DE 3 DEL TORNEO GANADA!`
+                  : selectedCombatMissionId === 'm20_tercera_camara_bulezau' || selectedCombatMissionId === 'm20_tercera_camara_bulezau_epilogo'
+                  ? '¡BULEZAU DE PUTREFACCIÓN ABATIDO!'
+                  : selectedCombatMissionId === 'm19_segunda_camara_aire' || selectedCombatMissionId === 'm19_segunda_camara_aire_epilogo'
+                  ? '¡ELEMENTAL DE AIRE DISIPADO!'
+                  : selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
                   ? '¡GORGON DE HIERRO ABATIDO!'
                   : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
                   ? waveClearBanner.floor >= 4
@@ -13577,7 +16821,15 @@ export const CombatView: React.FC = () => {
                   : `¡VICTORIA EN SALA ${waveClearBanner.floor}!`}
               </div>
               <div className="text-xl font-black text-white flex items-center gap-2 justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
-                {selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
+                {selectedCombatMissionId === 'evento_coliseo_suenos'
+                  ? waveClearBanner.floor >= 3
+                    ? '¡TORNEO ONÍRICO CONQUISTADO!'
+                    : '¡GLADIADORES ONÍRICOS VENCIDOS!'
+                  : selectedCombatMissionId === 'm20_tercera_camara_bulezau' || selectedCombatMissionId === 'm20_tercera_camara_bulezau_epilogo'
+                  ? '¡TERCERA CÁMARA DESPEJADA!'
+                  : selectedCombatMissionId === 'm19_segunda_camara_aire' || selectedCombatMissionId === 'm19_segunda_camara_aire_epilogo'
+                  ? '¡SEGUNDA CÁMARA DESPEJADA!'
+                  : selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
                   ? '¡PRIMERA CÁMARA DESPEJADA!'
                   : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
                   ? waveClearBanner.floor >= 4
@@ -13604,7 +16856,15 @@ export const CombatView: React.FC = () => {
                   : '¡SALA SUPERADA!'}
               </div>
               <div className="text-xs text-yellow-200 mt-2 font-mono font-bold">
-                {selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
+                {selectedCombatMissionId === 'evento_coliseo_suenos'
+                  ? waveClearBanner.floor >= 3
+                    ? 'Varianthel se alza de su palco para cumplir su palabra con Chispo Deez...'
+                    : `Siguiente: Ronda ${waveClearBanner.nextFloor} de 3 (${COLISEO_SUENOS_CHAMBERS[waveClearBanner.nextFloor - 1]?.name?.split(': ')[1] || 'Gran Final'})...`
+                  : selectedCombatMissionId === 'm20_tercera_camara_bulezau' || selectedCombatMissionId === 'm20_tercera_camara_bulezau_epilogo'
+                  ? 'El enjambre de moscas y el humo pútrido se disipan hacia el portal rosado...'
+                  : selectedCombatMissionId === 'm19_segunda_camara_aire' || selectedCombatMissionId === 'm19_segunda_camara_aire_epilogo'
+                  ? 'El torbellino se disipa entre corrientes celestes hacia el núcleo etéreo...'
+                  : selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
                   ? 'El toro de metal se desploma entre chispas y niebla disipada...'
                   : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
                   ? waveClearBanner.floor >= 4
@@ -13990,18 +17250,30 @@ export const CombatView: React.FC = () => {
                 : heroId === 'edacorn'
                 ? 'Edacorn'
                 : 'Magordito';
+            const isHeroInAirPrison =
+              Boolean(airPrisonHero) &&
+              airPrisonHero!.turnsRemaining > 0 &&
+              normalizeCombatHeroId(heroId) === airPrisonHero!.heroId;
             return (
               <button
                 key={heroId}
                 onClick={() => handleSwitchActiveHero(heroId)}
                 disabled={battleState !== 'idle'}
+                title={isHeroInAirPrison ? `${heroLabel} (Inmovilizado por aire)` : heroLabel}
                 className={`relative w-6 h-6 rounded-full overflow-hidden border-2 transition-all cursor-pointer ${
-                  isActive
+                  isHeroInAirPrison
+                    ? 'border-cyan-400 ring-2 ring-cyan-300/70'
+                    : isActive
                     ? 'border-yellow-400 scale-120 shadow-[0_0_8px_#facc15]'
                     : 'border-stone-600 opacity-60 hover:opacity-100 hover:scale-110'
                 }`}
               >
                 <img src={heroPortrait} alt={heroLabel} className="w-full h-full object-cover" />
+                {isHeroInAirPrison && (
+                  <span className="absolute inset-0 bg-cyan-950/75 flex items-center justify-center text-[10px] leading-none pointer-events-none">
+                    🌪️
+                  </span>
+                )}
               </button>
             );
           })}
@@ -14345,7 +17617,23 @@ export const CombatView: React.FC = () => {
         <div className="absolute inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="relative w-full max-w-[340px] bg-[#1a0604] border-2 border-red-700 rounded-2xl p-5 shadow-[0_0_30px_rgba(220,38,38,0.6)] flex flex-col items-center text-center animate-in fade-in zoom-in-95">
             <h3 className="text-xl font-serif font-black text-red-400 tracking-wider mb-1">
-              {selectedCombatMissionId === 'm18_primera_camara_gorgon'
+              {selectedCombatMissionId === 'm22_cryovain_final'
+                ? 'BATALLA FINAL CONTRA CRYOVAIN FALLIDA'
+                : selectedCombatMissionId === 't2_c1_m4_arana_acorazada'
+                ? 'COMBATE CONTRA LA ARAÑA ACORAZADA FALLIDO'
+                : selectedCombatMissionId === 't2_c1_m3_custodios_anillo'
+                ? 'CUSTODIOS DEL ANILLO: FALLIDO'
+                : selectedCombatMissionId === 't2_c1_m2_jauria_salas'
+                ? 'INCURSIÓN AL BARRACÓN FALLIDA'
+                : selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos'
+                ? 'TRINCHERAS DEL BARRACÓN FALLIDAS'
+                : selectedCombatMissionId === 'evento_coliseo_suenos'
+                ? 'TORNEO DEL COLISEO FALLIDO'
+                : selectedCombatMissionId === 'm20_tercera_camara_bulezau'
+                ? 'COMBATE CONTRA EL BULEZAU FALLIDO'
+                : selectedCombatMissionId === 'm19_segunda_camara_aire'
+                ? 'COMBATE CONTRA EL ELEMENTAL DE AIRE FALLIDO'
+                : selectedCombatMissionId === 'm18_primera_camara_gorgon'
                 ? 'COMBATE CONTRA EL GORGON FALLIDO'
                 : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
                 ? 'PLANTA INTERMEDIA FALLIDA'
@@ -14364,7 +17652,23 @@ export const CombatView: React.FC = () => {
                 : 'EXPEDICIÓN FINALIZADA'}
             </h3>
             <p className="text-xs text-stone-300 mb-1">
-              {selectedCombatMissionId === 'm18_primera_camara_gorgon' ? (
+              {selectedCombatMissionId === 'm22_cryovain_final' ? (
+                <>Has caído ante el aliento y las garras de <b className="text-sky-300">Cryovain</b> en la cueva de la cima helada.</>
+              ) : selectedCombatMissionId === 't2_c1_m4_arana_acorazada' ? (
+                <>Has caído ante las patas acorazadas y el fuego de la <b className="text-orange-400">Araña Acorazada</b> en la sala hexagonal.</>
+              ) : selectedCombatMissionId === 't2_c1_m3_custodios_anillo' ? (
+                <>Has caído ante los custodios del anillo durante la <b className="text-amber-300">Oleada {currentFloor} de 2</b>.</>
+              ) : selectedCombatMissionId === 't2_c1_m2_jauria_salas' ? (
+                <>Has caído frente a la jauría y los soldados no muertos en la <b className="text-amber-300">Oleada {currentFloor} de 2</b>.</>
+              ) : selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos' ? (
+                <>Has caído en las trincheras ante los no muertos en la <b className="text-amber-300">Oleada {currentFloor} de 2</b>.</>
+              ) : selectedCombatMissionId === 'evento_coliseo_suenos' ? (
+                <>Has caído en la arena del Coliseo durante la <b className="text-amber-300">Ronda {currentFloor} de 3</b>.</>
+              ) : selectedCombatMissionId === 'm20_tercera_camara_bulezau' ? (
+                <>Has caído ante el Bulezau en la Tercera Cámara de la mazmorra.</>
+              ) : selectedCombatMissionId === 'm19_segunda_camara_aire' ? (
+                <>Has caído ante el Elemental de Aire en la Segunda Cámara de la mazmorra.</>
+              ) : selectedCombatMissionId === 'm18_primera_camara_gorgon' ? (
                 <>Has caído ante el Gorgon de Hierro en la Primera Cámara de la mazmorra.</>
               ) : selectedCombatMissionId === 'm14_planta_intermedia_ferton' ? (
                 <>Has caído en la planta intermedia durante la <b className="text-amber-300">Oleada {currentFloor} de 4</b>.</>
@@ -14384,7 +17688,7 @@ export const CombatView: React.FC = () => {
                 <>Has caído en combate en la <b className="text-amber-300">Sala {currentFloor}</b>.</>
               )}
             </p>
-            {selectedCombatMissionId !== 'm18_primera_camara_gorgon' && selectedCombatMissionId !== 'm14_planta_intermedia_ferton' && selectedCombatMissionId !== 'm13_escaleras_durnik' && selectedCombatMissionId !== 'm12_recibidor_mansion_ferton' && selectedCombatMissionId !== 'm2_robo' && selectedCombatMissionId !== 'm3_bosque' && selectedCombatMissionId !== 'm9_emboscada_ferton' && selectedCombatMissionId !== 'm10_hobgoblin_boss' && (
+            {selectedCombatMissionId !== 'm22_cryovain_final' && selectedCombatMissionId !== 't2_c1_m4_arana_acorazada' && selectedCombatMissionId !== 't2_c1_m3_custodios_anillo' && selectedCombatMissionId !== 't2_c1_m2_jauria_salas' && selectedCombatMissionId !== 't2_c1_m1_trincheras_nomuertos' && selectedCombatMissionId !== 'evento_coliseo_suenos' && selectedCombatMissionId !== 'm20_tercera_camara_bulezau' && selectedCombatMissionId !== 'm19_segunda_camara_aire' && selectedCombatMissionId !== 'm18_primera_camara_gorgon' && selectedCombatMissionId !== 'm14_planta_intermedia_ferton' && selectedCombatMissionId !== 'm13_escaleras_durnik' && selectedCombatMissionId !== 'm12_recibidor_mansion_ferton' && selectedCombatMissionId !== 'm2_robo' && selectedCombatMissionId !== 'm3_bosque' && selectedCombatMissionId !== 'm9_emboscada_ferton' && selectedCombatMissionId !== 'm10_hobgoblin_boss' && (
               <div className="text-[10px] text-stone-400 font-mono mb-3">
                 Récord alcanzado: <b className="text-amber-400 font-bold">Sala {bestFloor}</b>
               </div>
@@ -14393,7 +17697,23 @@ export const CombatView: React.FC = () => {
             {/* Accumulated Loot to bank */}
             <div className="w-full bg-black/60 border border-red-950 rounded-xl p-3 mb-4 flex flex-col gap-1.5 text-left">
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 text-center">
-                {selectedCombatMissionId === 'm18_primera_camara_gorgon'
+                {selectedCombatMissionId === 'm22_cryovain_final'
+                  ? 'Botín de la Cima Helada'
+                  : selectedCombatMissionId === 't2_c1_m4_arana_acorazada'
+                  ? 'Botín de la Sala Hexagonal'
+                  : selectedCombatMissionId === 't2_c1_m3_custodios_anillo'
+                  ? 'Botín de la Sala del Anillo'
+                  : selectedCombatMissionId === 't2_c1_m2_jauria_salas'
+                  ? 'Botín del Barracón en Ruinas'
+                  : selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos'
+                  ? 'Botín de las Trincheras'
+                  : selectedCombatMissionId === 'evento_coliseo_suenos'
+                  ? 'Botín del Coliseo Onírico'
+                  : selectedCombatMissionId === 'm20_tercera_camara_bulezau'
+                  ? 'Botín de la Tercera Cámara'
+                  : selectedCombatMissionId === 'm19_segunda_camara_aire'
+                  ? 'Botín de la Segunda Cámara'
+                  : selectedCombatMissionId === 'm18_primera_camara_gorgon'
                   ? 'Botín de la Primera Cámara'
                   : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
                   ? 'Botín de la Planta Intermedia'
@@ -14433,14 +17753,30 @@ export const CombatView: React.FC = () => {
                 onClick={handleRetreatAndClaim}
                 className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-lg"
               >
-                {selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm12_recibidor_mansion_ferton' || selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' || selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm10c_callejon_hoggoblins' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
+                {selectedCombatMissionId === 'evento_coliseo_suenos' ? 'Volver al Plano de los Sueños' : selectedCombatMissionId === 'm22_cryovain_final' || selectedCombatMissionId === 't2_c1_m4_arana_acorazada' || selectedCombatMissionId === 't2_c1_m3_custodios_anillo' || selectedCombatMissionId === 't2_c1_m2_jauria_salas' || selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos' || selectedCombatMissionId === 'm20_tercera_camara_bulezau' || selectedCombatMissionId === 'm19_segunda_camara_aire' || selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm12_recibidor_mansion_ferton' || selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' || selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm10c_callejon_hoggoblins' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
               </button>
 
               <button
                 onClick={handleRestartBattle}
                 className="w-full py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs rounded-xl cursor-pointer"
               >
-                {selectedCombatMissionId === 'm18_primera_camara_gorgon'
+                {selectedCombatMissionId === 'm22_cryovain_final'
+                  ? 'Reintentar Jefe Final: Cryovain'
+                  : selectedCombatMissionId === 't2_c1_m4_arana_acorazada'
+                  ? 'Reintentar Jefe: Araña Acorazada'
+                  : selectedCombatMissionId === 't2_c1_m3_custodios_anillo'
+                  ? 'Reintentar Custodios del Anillo (Oleada 1)'
+                  : selectedCombatMissionId === 't2_c1_m2_jauria_salas'
+                  ? 'Reintentar Barracón en Ruinas (Oleada 1)'
+                  : selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos'
+                  ? 'Reintentar Trincheras (Oleada 1)'
+                  : selectedCombatMissionId === 'evento_coliseo_suenos'
+                  ? 'Reintentar Torneo del Coliseo (Ronda 1)'
+                  : selectedCombatMissionId === 'm20_tercera_camara_bulezau'
+                  ? 'Reintentar Jefe: Bulezau'
+                  : selectedCombatMissionId === 'm19_segunda_camara_aire'
+                  ? 'Reintentar Jefe: Elemental de Aire'
+                  : selectedCombatMissionId === 'm18_primera_camara_gorgon'
                   ? 'Reintentar Jefe: Gorgon de Hierro'
                   : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
                   ? 'Reintentar Planta Intermedia (Oleada 1)'

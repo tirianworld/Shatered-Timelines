@@ -23,7 +23,8 @@ export type ConditionKey =
   | 'def_buff'
   | 'atk_buff'
   | 'regen'
-  | 'haste';
+  | 'haste'
+  | 'wind_prison';
 
 export type AuraMotifKind =
   | 'flames'
@@ -36,6 +37,7 @@ export type AuraMotifKind =
   | 'power'
   | 'regen'
   | 'wind'
+  | 'wind_prison'
   | 'charm'
   | 'faerie'
   | 'confused'
@@ -66,6 +68,7 @@ export function normalizeConditionKey(raw: GachaEffectType | string): ConditionK
       return 'frozen';
     case 'chill':
     case 'chilled':
+    case 'frost_mist':
       return 'chill';
     case 'paralyze':
     case 'paralyzed':
@@ -116,6 +119,9 @@ export function normalizeConditionKey(raw: GachaEffectType | string): ConditionK
       return 'regen';
     case 'haste':
       return 'haste';
+    case 'wind_prison':
+    case 'air_prison':
+      return 'wind_prison';
     default:
       return null;
   }
@@ -428,6 +434,20 @@ export const STATUS_AURA_REGISTRY: Record<ConditionKey, StatusAuraConfig> = {
     highlight: '#ffffff',
     glow: 'rgba(103,232,249,0.5)',
     cssFilter: 'drop-shadow(0 0 5px rgba(103,232,249,0.52))',
+    blendMode: 'screen',
+  },
+  wind_prison: {
+    key: 'wind_prison',
+    label: 'Prisión de Viento',
+    svgFilterId: 'status-sprite-wind-prison',
+    auraShaderId: 'aura-shader-wind-prison',
+    motif: 'wind_prison',
+    spriteUrl: '/assets/combat/elemental_aire_vfx_prision.webp',
+    primary: '#22d3ee',
+    secondary: '#0284c7',
+    highlight: '#ecfeff',
+    glow: 'rgba(34,211,238,0.58)',
+    cssFilter: 'drop-shadow(0 0 6px rgba(34,211,238,0.62)) drop-shadow(0 0 2px rgba(236,254,255,0.55))',
     blendMode: 'screen',
   },
 };
@@ -948,6 +968,59 @@ export const StatusAuraSvgFilterDefs: React.FC = () => (
           <feMergeNode in="SourceGraphic" />
         </feMerge>
       </filter>
+
+      {/* PRISIÓN DE VIENTO (SPRITE DEL HÉROE): contorno de corrientes etéreas cian alrededor de la silueta */}
+      <filter id="status-sprite-wind-prison" x="-35%" y="-35%" width="170%" height="170%">
+        <feMorphology in="SourceAlpha" operator="dilate" radius="5.5" result="wpAlpha" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.020 0.052" numOctaves="2" seed="14" result="wpNoise">
+          <animate
+            attributeName="baseFrequency"
+            values="0.018 0.046;0.026 0.064;0.018 0.046"
+            dur="0.85s"
+            repeatCount="indefinite"
+          />
+        </feTurbulence>
+        <feDisplacementMap in="wpAlpha" in2="wpNoise" scale="7.5" xChannelSelector="R" yChannelSelector="G" result="wpCloud" />
+        <feFlood floodColor="#06b6d4" floodOpacity="0.85" result="wpFlood" />
+        <feComposite in="wpFlood" in2="wpCloud" operator="in" result="wpShell" />
+        <feGaussianBlur in="wpShell" stdDeviation="3.4" result="wpGlow" />
+        <feMorphology in="SourceAlpha" operator="dilate" radius="1.8" result="wpRimAlpha" />
+        <feFlood floodColor="#ecfeff" floodOpacity="0.92" result="wpRimFlood" />
+        <feComposite in="wpRimFlood" in2="wpRimAlpha" operator="in" result="wpRim" />
+        <feColorMatrix
+          in="SourceGraphic"
+          type="matrix"
+          values="0.88 0.06 0.12 0 0.02  0.04 1.02 0.12 0 0.04  0.06 0.14 1.12 0 0.08  0 0 0 1 0"
+          result="wpTinted"
+        />
+        <feMerge>
+          <feMergeNode in="wpGlow" />
+          <feMergeNode in="wpShell" />
+          <feMergeNode in="wpRim" />
+          <feMergeNode in="wpTinted" />
+        </feMerge>
+      </filter>
+
+      {/* PRISIÓN DE VIENTO (AURA WARPEADA): turbulencia fluida continua de torbellino */}
+      <filter id="aura-shader-wind-prison" filterUnits="objectBoundingBox" x="-55%" y="-55%" width="210%" height="210%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.018 0.042" numOctaves="2" seed="8" result="wpAuraNoise">
+          <animate
+            attributeName="baseFrequency"
+            values="0.015 0.036;0.025 0.056;0.018 0.044;0.015 0.036"
+            dur="0.68s"
+            repeatCount="indefinite"
+          />
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="wpAuraNoise" scale="4.4" xChannelSelector="R" yChannelSelector="G" result="wpWarped" />
+        <feGaussianBlur in="wpWarped" stdDeviation="1.7" result="wpBloomRaw" />
+        <feComponentTransfer in="wpBloomRaw" result="wpBloom">
+          <feFuncA type="linear" slope="0.46" />
+        </feComponentTransfer>
+        <feMerge>
+          <feMergeNode in="wpBloom" />
+          <feMergeNode in="wpWarped" />
+        </feMerge>
+      </filter>
     </defs>
   </svg>
 );
@@ -974,6 +1047,7 @@ export interface StatusAuraManagerProps {
   cueKey: number;
   durationMs: number;
   box: AuraAnchorBox;
+  persistent?: boolean;
 }
 
 interface AnalyzedAuraFrame {
@@ -1264,7 +1338,13 @@ function drawContourWarpedAura(
   }
 }
 
-function getSpriteAnimationForMotif(motif: AuraMotifKind, dur: string): string {
+function getSpriteAnimationForMotif(motif: AuraMotifKind, dur: string, persistent?: boolean): string {
+  if (persistent) {
+    if (motif === 'wind_prison') {
+      return `statusAuraWindPrisonLoop 1.55s ease-in-out infinite`;
+    }
+    return `statusAuraWindPrisonLoop 1.6s ease-in-out infinite`;
+  }
   switch (motif) {
     case 'flames':
     case 'power':
@@ -1278,6 +1358,8 @@ function getSpriteAnimationForMotif(motif: AuraMotifKind, dur: string): string {
       return `statusAuraHaloOrbit ${dur} cubic-bezier(0.22, 1, 0.36, 1) both`;
     case 'wind':
       return `statusAuraGaleDash ${dur} cubic-bezier(0.16, 1, 0.3, 1) both`;
+    case 'wind_prison':
+      return `statusAuraChainSnap ${dur} cubic-bezier(0.22, 1, 0.36, 1) both`;
     case 'shatter':
       return `statusAuraArmorFracture ${dur} cubic-bezier(0.22, 1, 0.36, 1) both`;
     case 'chains':
@@ -1309,6 +1391,7 @@ export const StatusAuraManager: React.FC<StatusAuraManagerProps> = ({
   cueKey,
   durationMs,
   box,
+  persistent = false,
 }) => {
   const rawUid = useId();
   const uid = rawUid.replace(/[^a-zA-Z0-9_-]/g, '');
@@ -1333,9 +1416,14 @@ export const StatusAuraManager: React.FC<StatusAuraManagerProps> = ({
 
   const refDim = Math.min(box.bodyH, contourSpanInfo.span);
   const baseWallPx = Math.max(16, Math.min(44, refDim * 0.22));
-  const padOut = baseWallPx * 0.72;
-  const padTop = Math.max(8, Math.min(24, box.bodyH * 0.09));
-  const padBottom = Math.max(5, Math.min(18, box.bodyH * 0.06));
+  const isWindPrison = config.motif === 'wind_prison';
+  const padOut = baseWallPx * (isWindPrison ? 0.86 : 0.72);
+  const padTop = isWindPrison
+    ? Math.max(14, Math.min(34, box.bodyH * 0.14))
+    : Math.max(8, Math.min(24, box.bodyH * 0.09));
+  const padBottom = isWindPrison
+    ? Math.max(10, Math.min(22, box.bodyH * 0.085))
+    : Math.max(5, Math.min(18, box.bodyH * 0.06));
   const bodySpanH = Math.max(40, box.bodyBotY - box.crownY);
 
   const auraLeft = contourSpanInfo.minL - padOut;
@@ -1514,16 +1602,44 @@ export const StatusAuraManager: React.FC<StatusAuraManagerProps> = ({
       }),
     };
   }, [config.motif, config.key, box.contourPx, auraLeft, padOut, padTop, bodySpanH, auraH, refDim]);
+  // Corrientes envolventes siguiendo la silueta para Prisión de Viento
+  const windPrisonStreams = useMemo(() => {
+    if (config.motif !== 'wind_prison') return null;
+    const sampleSpan = (v: number, padFactor: number) => {
+      const [cl, cr] = sampleCharContourAt(box.contourPx, auraLeft, padTop, bodySpanH, auraH, v);
+      return {
+        y: v * auraH,
+        l: cl - padOut * padFactor,
+        r: cr + padOut * padFactor,
+      };
+    };
+    const makeSwirlArc = (v1: number, v2: number, padFactor: number, bowY: number, reverse = false) => {
+      const p1 = sampleSpan(v1, padFactor);
+      const p2 = sampleSpan(v2, padFactor);
+      const xStart = reverse ? p1.r : p1.l;
+      const xEnd = reverse ? p2.l : p2.r;
+      const midX = (xStart + xEnd) * 0.5;
+      const midY = (p1.y + p2.y) * 0.5 + bowY;
+      return `M ${xStart.toFixed(1)} ${p1.y.toFixed(1)} Q ${midX.toFixed(1)} ${midY.toFixed(1)} ${xEnd.toFixed(1)} ${p2.y.toFixed(1)}`;
+    };
+    return [
+      { d: makeSwirlArc(0.16, 0.28, 0.52, -7, false), width: 2.6, color: '#67e8f9', dur: '1.1s', delay: '0s' },
+      { d: makeSwirlArc(0.36, 0.48, 0.48, 8, true), width: 2.2, color: '#ecfeff', dur: '0.95s', delay: '0.18s' },
+      { d: makeSwirlArc(0.56, 0.68, 0.54, 9, false), width: 2.8, color: '#22d3ee', dur: '1.2s', delay: '0.32s' },
+      { d: makeSwirlArc(0.76, 0.88, 0.58, 7, true), width: 2.4, color: '#a5f3fc', dur: '1.05s', delay: '0.12s' },
+    ];
+  }, [config.motif, box.contourPx, auraLeft, padOut, padTop, bodySpanH, auraH]);
+
   // Terminar el fade-out ~45ms antes del desmontaje para evitar cortes bruscos al cambiar de estado.
   const animDurMs = Math.max(240, durationMs - 45);
   const dur = `${animDurMs}ms`;
-  const spriteAnim = getSpriteAnimationForMotif(config.motif, dur);
+  const spriteAnim = getSpriteAnimationForMotif(config.motif, dur, persistent);
   const isSoftTranslucent =
     config.motif === 'shield' ||
     config.motif === 'radiance' ||
     config.motif === 'wind' ||
     config.motif === 'shadow';
-  const spriteMaxOpacity = isHeadHalo ? 0.86 : isSoftTranslucent ? 0.62 : 0.74;
+  const spriteMaxOpacity = isHeadHalo ? 0.86 : config.motif === 'wind_prison' ? 0.86 : isSoftTranslucent ? 0.62 : 0.74;
   const combinedSpriteFilter = `url(#${config.auraShaderId}) ${config.cssFilter}`;
 
   useLayoutEffect(() => {
@@ -1593,11 +1709,37 @@ export const StatusAuraManager: React.FC<StatusAuraManagerProps> = ({
         top: auraTop,
         width: auraW,
         height: auraH,
-        animation: `statusAuraLifecycle ${dur} cubic-bezier(0.22, 1, 0.36, 1) both`,
+        animation: persistent
+          ? `statusAuraPersistentEnter 280ms cubic-bezier(0.22, 1, 0.36, 1) forwards`
+          : `statusAuraLifecycle ${dur} cubic-bezier(0.22, 1, 0.36, 1) both`,
       }}
       aria-hidden="true"
     >
       <style>{`
+        @keyframes statusAuraPersistentEnter {
+          0% { opacity: 0; transform: scale(0.9); }
+          100% { opacity: 0.95; transform: scale(1); }
+        }
+        @keyframes statusAuraWindPrisonLoop {
+          0%, 100% { transform: translateX(0px) translateY(0px) scaleX(1) scaleY(1) skewX(0deg); opacity: ${spriteMaxOpacity}; }
+          25% { transform: translateX(-1.5px) translateY(-2px) scaleX(1.022) scaleY(0.992) skewX(-1.2deg); opacity: ${Math.min(1, spriteMaxOpacity + 0.05)}; }
+          50% { transform: translateX(1px) translateY(0.5px) scaleX(0.988) scaleY(1.015) skewX(1.1deg); opacity: ${spriteMaxOpacity * 0.94}; }
+          75% { transform: translateX(1.5px) translateY(-1.5px) scaleX(1.018) scaleY(0.995) skewX(-0.8deg); opacity: ${Math.min(1, spriteMaxOpacity + 0.04)}; }
+        }
+        @keyframes statusAuraWindPrisonEcho {
+          0%, 100% { opacity: 0.18; transform: scale(1.01) translateY(0px); }
+          50% { opacity: 0.32; transform: scale(1.05) translateY(-2px); }
+        }
+        @keyframes statusAuraGroundPersistent {
+          0%, 100% { opacity: 0.48; transform: scale(0.96); }
+          50% { opacity: 0.72; transform: scale(1.05); }
+        }
+        @keyframes statusAuraWindStreamFlow {
+          0% { stroke-dashoffset: 64; opacity: 0.15; }
+          35% { opacity: 0.92; }
+          80% { opacity: 0.78; }
+          100% { stroke-dashoffset: -64; opacity: 0.1; }
+        }
         @keyframes statusAuraLifecycle {
           0% { opacity: 0; transform: scale(0.94); }
           16% { opacity: 0.92; transform: scale(1.01); }
@@ -1761,7 +1903,9 @@ export const StatusAuraManager: React.FC<StatusAuraManagerProps> = ({
         className="absolute inset-0 w-full h-full overflow-visible pointer-events-none"
         style={{
           transformOrigin: `${(footCenterX / vbW) * 100}% ${Math.min(96, (footCenterY / vbH) * 100)}%`,
-          animation: `statusAuraGroundPulse ${dur} ease-out both`,
+          animation: persistent
+            ? `statusAuraGroundPersistent 1.75s ease-in-out infinite`
+            : `statusAuraGroundPulse ${dur} ease-out both`,
         }}
       >
         <defs>
@@ -1828,7 +1972,9 @@ export const StatusAuraManager: React.FC<StatusAuraManagerProps> = ({
                 config.motif === 'bleed'
                   ? 'blur(4px) saturate(1.4) brightness(0.88)'
                   : 'blur(4px) brightness(1.22)',
-              animation: `statusAuraEchoSurge ${dur} ease-out both`,
+              animation: persistent
+                ? `statusAuraWindPrisonEcho 1.85s ease-in-out infinite`
+                : `statusAuraEchoSurge ${dur} ease-out both`,
             }}
           />
           <canvas
@@ -1840,6 +1986,30 @@ export const StatusAuraManager: React.FC<StatusAuraManagerProps> = ({
               animation: spriteAnim,
             }}
           />
+
+          {/* Ráfagas vectoriales envolventes siguiendo el contorno para Prisión de Viento */}
+          {windPrisonStreams && (
+            <svg
+              viewBox={`0 0 ${auraW} ${auraH}`}
+              className="absolute inset-0 w-full h-full overflow-visible pointer-events-none"
+            >
+              {windPrisonStreams.map((stream, idx) => (
+                <path
+                  key={`wp-stream-${idx}`}
+                  d={stream.d}
+                  fill="none"
+                  stroke={stream.color}
+                  strokeWidth={stream.width}
+                  strokeLinecap="round"
+                  strokeDasharray="34 28"
+                  style={{
+                    filter: 'drop-shadow(0 0 5px rgba(34,211,238,0.85))',
+                    animation: `statusAuraWindStreamFlow ${stream.dur} ${stream.delay} linear infinite`,
+                  }}
+                />
+              ))}
+            </svg>
+          )}
 
           {/* Arcos voltaicos azul/amarillo y chispas eléctricas para Rayo y Trueno */}
           {voltaicFx && (

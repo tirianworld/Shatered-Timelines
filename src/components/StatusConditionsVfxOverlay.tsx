@@ -28,6 +28,7 @@ export interface StatusConditionsVfxOverlayProps {
   spriteImgRef: React.RefObject<HTMLImageElement | null>;
   scaleKey?: string | number;
   disabled?: boolean;
+  persistent?: boolean;
 }
 
 export const StatusConditionsVfxOverlay: React.FC<StatusConditionsVfxOverlayProps> = ({
@@ -38,6 +39,7 @@ export const StatusConditionsVfxOverlay: React.FC<StatusConditionsVfxOverlayProp
   spriteImgRef,
   scaleKey,
   disabled = false,
+  persistent = false,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const auraConfig = disabled ? null : getAuraConfigForCondition(activeEffect);
@@ -159,6 +161,7 @@ export const StatusConditionsVfxOverlay: React.FC<StatusConditionsVfxOverlayProp
         cueKey={cueKey}
         durationMs={durationMs}
         box={box}
+        persistent={persistent}
       />
     </div>
   );

@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
 import { safeStorage } from '../utils/storage';
-import { X, CheckCircle2, Sparkles } from 'lucide-react';
+import { X, CheckCircle2, Sparkles, BookOpen, ChevronLeft } from 'lucide-react';
 import { AutoRepeatModal } from './AutoRepeatModal';
+import { QuestLibraryView } from './QuestLibraryView';
 
 interface QuestMission {
   id: string;
@@ -18,9 +19,26 @@ interface QuestMission {
 }
 
 export const QuestView: React.FC = () => {
+  const { activeQuestTome, setActiveQuestTome } = useGame();
+
+  if (!activeQuestTome) {
+    return (
+      <QuestLibraryView
+        onSelectTome={(tomeId) => {
+          setActiveQuestTome(tomeId);
+        }}
+      />
+    );
+  }
+
+  return <QuestTomeContent onBackToLibrary={() => setActiveQuestTome(null)} />;
+};
+
+const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToLibrary }) => {
   const {
     questProgress,
     isMissionCompleted,
+    activeQuestTome,
     activeQuestChapter,
     setActiveQuestChapter,
     setPendingMissionLaunch,
@@ -30,6 +48,8 @@ export const QuestView: React.FC = () => {
     addCrystals,
     addShelfItem,
   } = useGame();
+
+  const isTome2 = activeQuestTome === 'tome_2_boletaria';
 
   const isChapter2Unlocked =
     questProgress.allMissionsCompleted ||
@@ -52,12 +72,17 @@ export const QuestView: React.FC = () => {
     questProgress.completedMissions.includes('m16_audiencia_baron') ||
     questProgress.chapter >= 5;
 
+  const isChapter6Unlocked =
+    questProgress.allMissionsCompleted ||
+    questProgress.completedMissions.includes('m21_coliseo_suenos') ||
+    questProgress.chapter >= 6;
+
 
   // Chapter 1 missions - Exclusively Icespear story & boss (no cave missions)
   const chapter1Missions: QuestMission[] = [
     {
       id: 'm1_tirano',
-      title: 'El Tirano de Hielo',
+      title: 'Tirano de Escarcha',
       iconType: 'boss',
       difficulty: 'Facil',
       description:
@@ -69,7 +94,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm2_robo',
-      title: 'Robo no tan Justo',
+      title: 'Botín de Sangre',
       iconType: 'swords',
       difficulty: 'Facil',
       description:
@@ -81,7 +106,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm3_bosque',
-      title: 'Pisadas en la Nieve',
+      title: 'Susurros de Nieve',
       iconType: 'swords',
       difficulty: 'Normal',
       description:
@@ -93,7 +118,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm4_puertas_selladas',
-      title: 'Las Puertas Selladas',
+      title: 'Puertas de Escarcha',
       iconType: 'boss',
       difficulty: 'Dificil',
       description:
@@ -109,7 +134,7 @@ export const QuestView: React.FC = () => {
   const chapter2Missions: QuestMission[] = [
     {
       id: 'm5_minas_historia',
-      title: 'Bajo la Montaña',
+      title: 'Minas de Glimmerstone',
       iconType: 'boss',
       difficulty: 'Facil',
       description:
@@ -133,7 +158,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm4_cuevas_azul',
-      title: 'Infección Glacial',
+      title: 'Plaga de Escarcha',
       iconType: 'boss',
       difficulty: 'Dificil',
       description:
@@ -145,7 +170,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm5_cuevas_zancudo',
-      title: 'El Zancudo Espectral',
+      title: 'Zancudo Espectral',
       iconType: 'boss',
       difficulty: 'Dificil',
       description:
@@ -157,7 +182,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm6_puerta_laberinto',
-      title: 'El Laberinto de Lloth',
+      title: 'Laberinto de Lloth',
       iconType: 'skull',
       difficulty: 'Pesadilla',
       description:
@@ -169,7 +194,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm7_epilogo_aldea',
-      title: 'El Retorno a Glimmerstone',
+      title: 'Regreso a Glimmerstone',
       iconType: 'boss',
       difficulty: 'Pesadilla',
       description:
@@ -185,7 +210,7 @@ export const QuestView: React.FC = () => {
   const chapter3Missions: QuestMission[] = [
     {
       id: 'm8_intro_capitulo3',
-      title: 'El Campamento Orco',
+      title: 'Tambores de Guerra',
       iconType: 'boss',
       difficulty: 'Facil',
       description:
@@ -197,7 +222,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm9_emboscada_ferton',
-      title: 'La Guardia Áurea',
+      title: 'Lanzas de Oro',
       iconType: 'skull',
       difficulty: 'Pesadilla',
       description:
@@ -209,7 +234,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm10_hobgoblin_boss',
-      title: 'El Capataz de Ferton',
+      title: 'Látigo del Capataz',
       iconType: 'boss',
       difficulty: 'Pesadilla',
       description:
@@ -221,7 +246,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm10b_encuentro_chispo',
-      title: 'El Paladín de Glimmerstone',
+      title: 'Luz del Paladín',
       iconType: 'boss',
       difficulty: 'Facil',
       description:
@@ -233,7 +258,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm10c_callejon_hoggoblins',
-      title: 'Saludos en el Callejón',
+      title: 'Susurros del Callejón',
       iconType: 'swords',
       difficulty: 'Pesadilla',
       description:
@@ -245,7 +270,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm10d_mansion_baron',
-      title: 'El Rey de Negro',
+      title: 'Máscara del Barón',
       iconType: 'boss',
       difficulty: 'Dificil',
       description:
@@ -257,7 +282,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm10e_taberna_duergar',
-      title: 'El Concurso de Ultrak',
+      title: 'Barriles de Ultrak',
       iconType: 'boss',
       difficulty: 'Normal',
       description:
@@ -273,7 +298,7 @@ export const QuestView: React.FC = () => {
   const chapter4Missions: QuestMission[] = [
     {
       id: 'm11_llegada_mansion_ferton',
-      title: 'La Mansión de Ferton',
+      title: 'Sombras de Ferton',
       iconType: 'boss',
       difficulty: 'Normal',
       description:
@@ -285,7 +310,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm12_recibidor_mansion_ferton',
-      title: 'El Recibidor de la Mansión',
+      title: 'Recibidor Maldito',
       iconType: 'boss',
       difficulty: 'Dificil',
       description:
@@ -297,7 +322,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm13_escaleras_durnik',
-      title: 'Las Escaleras: Durnik',
+      title: 'Escaleras de Sangre',
       iconType: 'boss',
       difficulty: 'Extremo',
       description:
@@ -309,7 +334,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm14_planta_intermedia_ferton',
-      title: 'La Planta Intermedia: Alcohol en Gas',
+      title: 'Botellas y Llamas',
       iconType: 'boss',
       difficulty: 'Dificil',
       description:
@@ -321,7 +346,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm15_despacho_ferton',
-      title: 'El Fin de Ferton: Cenizas',
+      title: 'Cenizas de Ferton',
       iconType: 'boss',
       difficulty: 'Extremo',
       description:
@@ -349,7 +374,7 @@ export const QuestView: React.FC = () => {
   const chapter5Missions: QuestMission[] = [
     {
       id: 'm17_despertar_suenos',
-      title: 'El Despertar en el Mercado Negro',
+      title: 'Despertar en Cenizas',
       iconType: 'boss',
       difficulty: 'Normal',
       description:
@@ -361,7 +386,7 @@ export const QuestView: React.FC = () => {
     },
     {
       id: 'm18_primera_camara_gorgon',
-      title: 'La Puerta Rosada y la Primera Cámara',
+      title: 'Mirada de Hierro',
       iconType: 'boss',
       difficulty: 'Dificil',
       description:
@@ -371,29 +396,187 @@ export const QuestView: React.FC = () => {
       stageId: 'stage_primera_camara_gorgon',
       isStory: true,
     },
+    {
+      id: 'm19_segunda_camara_aire',
+      title: 'Suspiro del Viento',
+      iconType: 'boss',
+      difficulty: 'Dificil',
+      description:
+        '¡Segunda Cámara de la Mazmorra! Al cruzar el sello posterior de la sala del Gorgon, un ciclón viviente bloquea el paso. Este Elemental de Aire desata tajos de vendaval, lanza ráfagas de cuchillas cortantes y puede atrapar a un héroe en una prisión de torbellino.',
+      portrait: '/assets/portraits/elemental_aire_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_segunda_camara_aire',
+      isStory: true,
+    },
+    {
+      id: 'm20_tercera_camara_bulezau',
+      title: 'Colmillos del Bulezau',
+      iconType: 'boss',
+      difficulty: 'Dificil',
+      description:
+        '¡Tercera Cámara de la Mazmorra! Tras cruzar el portal rosado de la sala del viento, un demonio caprino de piel enfermiza resguarda el sello del portal al Reino de los Sueños. Su toque exuda humo verde amarillento con moscas y lanza bolas ardientes de esa misma magia infecta.',
+      portrait: '/assets/portraits/bulezau_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_tercera_camara_bulezau',
+      isStory: true,
+    },
+    {
+      id: 'm21_coliseo_suenos',
+      title: 'Ecos del Coliseo',
+      iconType: 'boss',
+      difficulty: 'Dificil',
+      description:
+        '¡Cinemática en el Reino de los Sueños! Al cruzar el portal abierto tras la Tercera Cámara, Caldo de Dragón llega al imponente Coliseo de los Sueños. Allí les recibe Varianthel, alto elfo eladrin y Príncipe de los Sueños, quien revela tener a Chispo Deez como su nuevo campeón favorito. Desbloquea el evento El Coliseo de los Sueños y el Plano de los Sueños en el Mapa del Mundo.',
+      portrait: '/assets/portraits/coliseo_onirico_thumb.webp',
+      portraitClass: 'scale-[1.08] object-center',
+      stageId: 'stage_coliseo_suenos',
+      isStory: true,
+    },
   ];
 
-  // Active missions list based on selected chapter
-  const missions =
-    activeQuestChapter === 5 && isChapter5Unlocked
-      ? chapter5Missions
-      : activeQuestChapter === 4 && isChapter4Unlocked
-      ? chapter4Missions
-      : activeQuestChapter === 3 && isChapter3Unlocked
-      ? chapter3Missions
-      : activeQuestChapter === 2 && isChapter2Unlocked
-      ? chapter2Missions
-      : chapter1Missions;
-  const currentChapter =
-    activeQuestChapter === 5 && isChapter5Unlocked
-      ? 5
-      : activeQuestChapter === 4 && isChapter4Unlocked
-      ? 4
-      : activeQuestChapter === 3 && isChapter3Unlocked
-      ? 3
-      : activeQuestChapter === 2 && isChapter2Unlocked
-      ? 2
-      : 1;
+  // Chapter 6 missions - Sangre y Hielo
+  const chapter6Missions: QuestMission[] = [
+    {
+      id: 'm21b_casa_gabriel',
+      title: 'Casa Sin Voces',
+      iconType: 'swords',
+      difficulty: 'Normal',
+      description:
+        'Caldo de Dragón regresa a Icespear con Chispo Deez, convencidos de estar listos para dar caza a Cryovain. Pero al llamar a la casa del Capitán Gabriel, nadie responde...',
+      portrait: '/assets/portraits/casa_gabriel_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_casa_gabriel',
+      isStory: true,
+    },
+    {
+      id: 'm21c_forzar_puerta',
+      title: 'Puerta de Hielo',
+      iconType: 'swords',
+      difficulty: 'Dificil',
+      description:
+        'El portón de roble y hierro del Capitán Gabriel está atrancado por el hielo. Supera el minijuego de skillchecks para reventar la cerradura y entrar en la casa.',
+      portrait: '/assets/portraits/puerta_gabriel_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_forzar_puerta',
+      isStory: true,
+    },
+    {
+      id: 'm21d_verdad_gabriel',
+      title: 'Máscara de Hielo',
+      iconType: 'skull',
+      difficulty: 'Extremo',
+      description:
+        '¡Cinemática de revelación! En la cueva descubren al verdadero Capitán Gabriel muerto y congelado junto a sus hombres antes siquiera de reclutarlos. El impostor confiesa ser Cryovain bajo órdenes de sus «Maestros» y se transforma en el Dragón Blanco.',
+      portrait: '/assets/portraits/verdad_gabriel_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_verdad_gabriel',
+      isStory: true,
+    },
+    {
+      id: 'm22_cryovain_final',
+      title: 'Cryovain de Escarcha',
+      iconType: 'boss',
+      difficulty: 'Pesadilla',
+      description:
+        '¡Batalla Final de Sangre y Hielo! En la caverna de la cima montañosa, el colosal dragón blanco Cryovain desata zarpazos glaciales, desciende para morder y concentra un aliento helado mortal.',
+      portrait: '/assets/portraits/cryovain_boss_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_cryovain_final',
+      isStory: false,
+    },
+  ];
+
+  // Tomo II - Capítulo I: Barracón Abandonado
+  const tome2Chapter1Missions: QuestMission[] = [
+    {
+      id: 't2_c1_m1_trincheras_nomuertos',
+      title: 'Trincheras Malditas',
+      iconType: 'swords',
+      difficulty: 'Facil',
+      description:
+        'Adéntrate en las trincheras de tierra batida a la entrada del barracón y despeja a los primeros no muertos que vagan entre las sombras.',
+      portrait: '/assets/portraits/no_muerto_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_t2_c1_m1',
+      isStory: true,
+    },
+    {
+      id: 't2_c1_m2_jauria_salas',
+      title: 'Jauría Hueca',
+      iconType: 'swords',
+      difficulty: 'Normal',
+      description:
+        'Cruza las dependencias en ruinas evitando los derrumbes mientras rechazas las embestidas de perros asalvajados y soldados no muertos.',
+      portrait: '/assets/portraits/soldado_no_muerto_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_t2_c1_m2',
+      isStory: true,
+    },
+    {
+      id: 't2_c1_m3_custodios_anillo',
+      title: 'Armadura Viva',
+      iconType: 'swords',
+      difficulty: 'Dificil',
+      description:
+        'Alcanza el pasillo de la trampilla secreta y derrota a los últimos soldados no muertos y a la Armadura Reanimada que guarda el Anillo de Ladrón.',
+      portrait: '/assets/portraits/armadura_reanimada_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_t2_c1_m3',
+      isStory: true,
+    },
+    {
+      id: 't2_c1_m4_arana_acorazada',
+      title: 'Telar de Acero',
+      iconType: 'boss',
+      difficulty: 'Pesadilla',
+      description:
+        'En la cámara hexagonal bajo el barracón aguarda una colosal Araña Acorazada. Resiste sus barridos, telarañas y su Aliento de Fuego.',
+      portrait: '/assets/portraits/arana_acorazada_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_t2_c1_m4',
+      isStory: true,
+    },
+    {
+      id: 't2_c1_m5_carreta_cid',
+      title: 'Camino al Santuario',
+      iconType: 'boss',
+      difficulty: 'Facil',
+      description:
+        'Tras el colapso entre piedra negra incandescente, el misterioso caballero esclavo Cid os recoge en su carreta rumbo al Santuario de Kaliria.',
+      portrait: '/assets/portraits/cid_icono.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_t2_c1_m5',
+      isStory: true,
+    },
+  ];
+
+  // Active missions list based on selected tome and chapter
+  const missions = isTome2
+    ? tome2Chapter1Missions
+    : activeQuestChapter === 6 && isChapter6Unlocked
+    ? chapter6Missions
+    : activeQuestChapter === 5 && isChapter5Unlocked
+    ? chapter5Missions
+    : activeQuestChapter === 4 && isChapter4Unlocked
+    ? chapter4Missions
+    : activeQuestChapter === 3 && isChapter3Unlocked
+    ? chapter3Missions
+    : activeQuestChapter === 2 && isChapter2Unlocked
+    ? chapter2Missions
+    : chapter1Missions;
+  const currentChapter = isTome2
+    ? 1
+    : activeQuestChapter === 6 && isChapter6Unlocked
+    ? 6
+    : activeQuestChapter === 5 && isChapter5Unlocked
+    ? 5
+    : activeQuestChapter === 4 && isChapter4Unlocked
+    ? 4
+    : activeQuestChapter === 3 && isChapter3Unlocked
+    ? 3
+    : activeQuestChapter === 2 && isChapter2Unlocked
+    ? 2
+    : 1;
 
   // Chest claimed states per chapter
   const [chestClaimedCh1, setChestClaimedCh1] = useState<boolean>(() => {
@@ -410,6 +593,12 @@ export const QuestView: React.FC = () => {
   });
   const [chestClaimedCh5, setChestClaimedCh5] = useState<boolean>(() => {
     return safeStorage.getItem('cdd_quest_chest_ch5_claimed') === 'true';
+  });
+  const [chestClaimedCh6, setChestClaimedCh6] = useState<boolean>(() => {
+    return safeStorage.getItem('cdd_quest_chest_ch6_claimed') === 'true';
+  });
+  const [chestClaimedT2Ch1, setChestClaimedT2Ch1] = useState<boolean>(() => {
+    return safeStorage.getItem('cdd_quest_chest_t2_ch1_claimed') === 'true';
   });
   const [showChestModal, setShowChestModal] = useState(false);
   const [autoRepeatMission, setAutoRepeatMission] = useState<QuestMission | null>(null);
@@ -440,7 +629,7 @@ export const QuestView: React.FC = () => {
   useEffect(() => {
     const el = chapterTabsRef.current;
     if (!el) return;
-    if (currentChapter === 5) {
+    if (currentChapter === 5 || currentChapter === 6) {
       el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
     } else if (currentChapter === 1) {
       el.scrollTo({ left: 0, behavior: 'smooth' });
@@ -547,6 +736,17 @@ export const QuestView: React.FC = () => {
       return;
     }
 
+    if (mission.id === 'm21c_forzar_puerta') {
+      if (forceStory) {
+        setSelectedCombatMissionId('m21c_forzar_puerta_epilogo');
+        navigateTo('story');
+        return;
+      }
+      setPendingMissionLaunch({ missionId: 'm21c_forzar_puerta', destination: 'door_breach' });
+      navigateTo('party');
+      return;
+    }
+
     const playsStory =
       (mission.id === 'm1_tirano' ||
         mission.id === 'm2_robo' ||
@@ -567,6 +767,11 @@ export const QuestView: React.FC = () => {
         mission.id === 'm16_audiencia_baron' ||
         mission.id === 'm17_despertar_suenos' ||
         mission.id === 'm18_primera_camara_gorgon' ||
+        mission.id === 'm19_segunda_camara_aire' ||
+        mission.id === 'm20_tercera_camara_bulezau' ||
+        mission.id === 'm21_coliseo_suenos' ||
+        mission.id === 'm21b_casa_gabriel' ||
+        mission.id === 'm21d_verdad_gabriel' ||
         mission.isStory) &&
       (!questProgress.completedMissions.includes(mission.id) || forceStory || mission.isStory);
 
@@ -574,6 +779,9 @@ export const QuestView: React.FC = () => {
     let missionId = mission.id;
     if (playsStory && forceStory && questProgress.completedMissions.includes(mission.id)) {
       const epilogues: Record<string, string> = {
+        t2_c1_m1_trincheras_nomuertos: 't2_c1_m1_trincheras_nomuertos_epilogo',
+        m20_tercera_camara_bulezau: 'm20_tercera_camara_bulezau_epilogo',
+        m19_segunda_camara_aire: 'm19_segunda_camara_aire_epilogo',
         m18_primera_camara_gorgon: 'm18_primera_camara_gorgon_epilogo',
         m14_planta_intermedia_ferton: 'm14_planta_intermedia_ferton_epilogo',
         m13_escaleras_durnik: 'm13_escaleras_durnik_epilogo',
@@ -598,6 +806,27 @@ export const QuestView: React.FC = () => {
 
   const handleClaimChest = () => {
     sound.playSFX('victory');
+    if (isTome2) {
+      if (!chestClaimedT2Ch1 && isChapterFullyCompleted) {
+        addGold(25000);
+        addCrystals(1000);
+        addShelfItem({
+          id: 'recompensa_barracon_abandonado_telarana',
+          name: 'Reliquia del Barracón Abandonado',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/arana_acorazada_thumb.webp',
+          rarity: 'UR',
+          priceGold: 15000,
+          description:
+            'Trofeo del Barracón Abandonado con seda de la Araña Acorazada y esquirlas de piedra negra incandescente.',
+        });
+        setChestClaimedT2Ch1(true);
+        safeStorage.setItem('cdd_quest_chest_t2_ch1_claimed', 'true');
+      }
+      setShowChestModal(true);
+      return;
+    }
     if (currentChapter === 1) {
       if (!chestClaimedCh1 && isChapterFullyCompleted) {
         addGold(15000);
@@ -663,17 +892,40 @@ export const QuestView: React.FC = () => {
         setChestClaimedCh5(true);
         safeStorage.setItem('cdd_quest_chest_ch5_claimed', 'true');
       }
+    } else if (currentChapter === 6) {
+      if (!chestClaimedCh6 && isChapterFullyCompleted) {
+        addGold(100000);
+        addCrystals(3000);
+        addShelfItem({
+          id: 'recompensa_sangre_hielo_cryovain',
+          name: 'Escamas de Cryovain',
+          category: 'materials',
+          count: 5,
+          icon: '/assets/items/Escamas de Cryovain.webp',
+          rarity: 'UR',
+          priceGold: 25000,
+          description: 'Escamas dracónicas blancas gélidas arrancadas a Cryovain en la cima helada.',
+        });
+        setChestClaimedCh6(true);
+        safeStorage.setItem('cdd_quest_chest_ch6_claimed', 'true');
+      }
     }
     setShowChestModal(true);
   };
 
   const handleSelectChapter = (chapterNum: number) => {
     if (didDragChapterTabs.current) return;
+    if (isTome2) {
+      if (chapterNum !== 1) return;
+      sound.playSFX('click');
+      return;
+    }
     // Capítulos bloqueados: pulsar no hace nada (ni sonido ni aviso).
     if (chapterNum === 2 && !isChapter2Unlocked) return;
     if (chapterNum === 3 && !isChapter3Unlocked) return;
     if (chapterNum === 4 && !isChapter4Unlocked) return;
     if (chapterNum === 5 && !isChapter5Unlocked) return;
+    if (chapterNum === 6 && !isChapter6Unlocked) return;
     sound.playSFX('click');
     setActiveQuestChapter(chapterNum);
   };
@@ -686,20 +938,22 @@ export const QuestView: React.FC = () => {
     3: { top: '0.9%', height: '16.0%' },
     4: { top: '1.3%', height: '16.8%' },
     5: { top: '1.3%', height: '16.8%' },
+    6: { top: '1.3%', height: '16.8%' },
   };
-  const chapterTabsBand = CHAPTER_TABS_BAND[currentChapter] ?? CHAPTER_TABS_BAND[1];
+  const chapterTabsBand = isTome2
+    ? CHAPTER_TABS_BAND[1]
+    : CHAPTER_TABS_BAND[currentChapter] ?? CHAPTER_TABS_BAND[1];
 
   return (
     <div className="relative w-full h-full flex flex-col justify-start bg-transparent select-none overflow-hidden">
-      {/* 1. AUTHENTIC FULL-BLEED BACKGROUND:
-          - Chapter 1: fondo_icespear_1.webp
-          - Chapter 2: image_5518948d.webp (User-provided ornate mine background with tracks and lantern)
-          - Chapter 3: image_0fed218e.webp (User-provided ornate Mercado Negro board with auction house and fortress)
-          - Chapter 4: tablon_mansion_ferton_ch4.webp (Ferton's Mansion board with framed mansion window)
-          - Chapter 5: tablon_reino_suenos_ch5.webp (El Reino de los Sueños narrow-window board) */}
+      {/* 1. AUTHENTIC FULL-BLEED BACKGROUND */}
       <img
         src={
-          currentChapter === 5
+          isTome2
+            ? '/assets/backgrounds/tablon_barracon_abandonado_ch1.webp'
+            : currentChapter === 6
+            ? '/assets/backgrounds/tablon_sangre_hielo_ch6.webp'
+            : currentChapter === 5
             ? '/assets/backgrounds/tablon_reino_suenos_ch5.webp'
             : currentChapter === 4
             ? '/assets/backgrounds/tablon_mansion_ferton_ch4.webp'
@@ -710,7 +964,11 @@ export const QuestView: React.FC = () => {
             : '/assets/backgrounds/fondo_icespear_1.webp'
         }
         alt={
-          currentChapter === 5
+          isTome2
+            ? 'Tablón de Misiones del Barracón Abandonado'
+            : currentChapter === 6
+            ? 'Tablón de Misiones de Sangre y Hielo'
+            : currentChapter === 5
             ? 'Tablón de Misiones de El Reino de los Sueños'
             : currentChapter === 4
             ? 'Tablón de Misiones de la Mansión Ferton'
@@ -748,6 +1006,84 @@ export const QuestView: React.FC = () => {
             className="flex items-center gap-1.5 h-10 sm:h-11 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing select-none touch-pan-x"
             title="Pulsa y arrastra para deslizar entre capítulos"
           >
+            {isTome2 ? (
+              <>
+                {/* TOMO 2 TAB 1: CAPITULO I BARRACÓN */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectChapter(1)}
+                  className="relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-all brightness-110 scale-[1.03] drop-shadow-[0_0_10px_rgba(245,158,11,0.95)]"
+                >
+                  <img
+                    src="/assets/items/boton_historia.webp"
+                    alt="Capitulo I"
+                    draggable={false}
+                    className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                  />
+                  <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase leading-tight text-amber-100 drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                    CAPITULO I
+                  </span>
+                  <span className="relative z-10 text-[7px] sm:text-[8px] font-bold uppercase leading-tight tracking-wider text-amber-200 drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                    BARRACÓN
+                  </span>
+                </button>
+
+                {/* TOMO 2 TAB 2: CAPITULO II SANTUARIO (Bloqueado) */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectChapter(2)}
+                  className="relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
+                  title="Capítulo II: Santuario (Próximamente)"
+                >
+                  <img
+                    src="/assets/items/boton_historia.webp"
+                    alt="Capitulo II Bloqueado"
+                    draggable={false}
+                    className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                  />
+                  <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                    CAPITULO II
+                  </span>
+                  <span className="relative z-10 text-[7px] sm:text-[8px] font-bold uppercase text-stone-400 leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                    SANTUARIO
+                  </span>
+                  <img
+                    src="/assets/items/CANDADO.webp"
+                    alt="Bloqueado"
+                    draggable={false}
+                    className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
+                  />
+                </button>
+
+                {/* TOMO 2 TAB 3: CAPITULO III BOLETARIA (Bloqueado) */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectChapter(3)}
+                  className="relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
+                  title="Capítulo III: Boletaria (Próximamente)"
+                >
+                  <img
+                    src="/assets/items/boton_historia.webp"
+                    alt="Capitulo III Bloqueado"
+                    draggable={false}
+                    className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                  />
+                  <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                    CAPITULO III
+                  </span>
+                  <span className="relative z-10 text-[7px] sm:text-[8px] font-bold uppercase text-stone-400 leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                    BOLETARIA
+                  </span>
+                  <img
+                    src="/assets/items/CANDADO.webp"
+                    alt="Bloqueado"
+                    draggable={false}
+                    className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
+                  />
+                </button>
+              </>
+            ) : (
+              <>
             {/* TAB 1: CAPITULO I ICESPEAR */}
             <button
               type="button"
@@ -1020,6 +1356,69 @@ export const QuestView: React.FC = () => {
                 />
               </button>
             )}
+
+            {/* TAB 6: CAPITULO VI SANGRE Y HIELO */}
+            {isChapter6Unlocked ? (
+              <button
+                type="button"
+                onClick={() => handleSelectChapter(6)}
+                className={`relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-all px-1 ${
+                  currentChapter === 6
+                    ? 'brightness-110 scale-[1.03] drop-shadow-[0_0_10px_rgba(56,189,248,0.95)]'
+                    : 'brightness-95 hover:brightness-110 drop-shadow-[0_0_6px_rgba(56,189,248,0.5)]'
+                }`}
+                title="Capítulo VI: Sangre y Hielo"
+              >
+                <img
+                  src="/assets/items/boton_historia.webp"
+                  alt="Capitulo VI"
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                />
+                <span
+                  className={`relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                    currentChapter === 6 ? 'text-cyan-100 font-black' : 'text-[#d6c2a5]'
+                  }`}
+                >
+                  CAPITULO VI
+                </span>
+                <span
+                  className={`relative z-10 text-[5.5px] sm:text-[6.5px] font-bold uppercase leading-tight tracking-tight text-center truncate max-w-full drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                    currentChapter === 6 ? 'text-rose-200' : 'text-stone-300'
+                  }`}
+                >
+                  SANGRE Y HIELO
+                </span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleSelectChapter(6)}
+                className="relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all px-1"
+                title="Capítulo VI: Sangre y Hielo (Bloqueado)"
+              >
+                <img
+                  src="/assets/items/boton_historia.webp"
+                  alt="Capitulo VI Bloqueado"
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                />
+                <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                  CAPITULO VI
+                </span>
+                <span className="relative z-10 text-[5.5px] sm:text-[6.5px] font-bold uppercase text-stone-400 leading-tight tracking-tight text-center truncate max-w-full drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                  SANGRE Y HIELO
+                </span>
+                <img
+                  src="/assets/items/CANDADO.webp"
+                  alt="Bloqueado"
+                  draggable={false}
+                  className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
+                />
+              </button>
+            )}
+              </>
+            )}
           </div>
 
               </div>
@@ -1029,7 +1428,21 @@ export const QuestView: React.FC = () => {
       </div>
 
       {/* 3. CABIN / MINE ILLUSTRATION SPACER (Framed window shows cabin in Ch1 or Mine Tunnel in Ch2) */}
-      <div className="relative z-10 w-full h-[14.5%] sm:h-[15%] min-h-[92px] max-h-[135px] shrink-0 pointer-events-none" />
+      <div className="relative z-10 w-full h-[14.5%] sm:h-[15%] min-h-[92px] max-h-[135px] shrink-0 pointer-events-none">
+        <button
+          type="button"
+          onClick={() => {
+            sound.playSFX('click');
+            onBackToLibrary();
+          }}
+          className="pointer-events-auto absolute top-1.5 left-[4.5%] inline-flex items-center gap-1.5 min-h-[32px] px-2.5 py-1 rounded-lg bg-[#170803]/88 hover:bg-[#2b1007]/95 border border-[#7c3f18]/80 text-amber-100 text-[11px] font-bold shadow-[0_3px_10px_rgba(0,0,0,0.8)] cursor-pointer transition-all active:scale-95 whitespace-nowrap"
+          title="Volver a la Librería de Tomos"
+        >
+          <ChevronLeft className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <BookOpen className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+          <span>Tomos</span>
+        </button>
+      </div>
 
       {/* 4. MAIN CONTENT AREA ON WOODEN PLANKS */}
       <div className="relative z-10 w-full flex-1 flex flex-col px-[4%] sm:px-[4.5%] pb-2 overflow-hidden min-h-0">
@@ -1038,7 +1451,11 @@ export const QuestView: React.FC = () => {
           <div className="flex-1 space-y-1">
             <div className="flex items-center justify-between text-[10px] sm:text-[10.5px] font-black text-[#d6c2a5] tracking-wide uppercase">
               <span>
-                {currentChapter === 5
+                {isTome2
+                  ? 'PROGRESO CAPÍTULO I • BARRACÓN ABANDONADO'
+                  : currentChapter === 6
+                  ? 'PROGRESO CAPÍTULO VI • SANGRE Y HIELO'
+                  : currentChapter === 5
                   ? 'PROGRESO CAPÍTULO V • EL REINO DE LOS SUEÑOS'
                   : currentChapter === 4
                   ? 'PROGRESO CAPÍTULO IV • MANSIÓN FERTON'
@@ -1057,7 +1474,11 @@ export const QuestView: React.FC = () => {
             <div className="relative w-full h-4 sm:h-4.5 rounded-full bg-[#0c0401] border border-[#521c08] p-0.5 overflow-hidden shadow-inner">
               <div
                 className={`h-full rounded-full ${
-                  currentChapter === 5
+                  isTome2
+                    ? 'bg-gradient-to-r from-[#b45309] via-[#d97706] to-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.8)]'
+                    : currentChapter === 6
+                    ? 'bg-gradient-to-r from-[#991b1b] via-[#38bdf8] to-[#e0f2fe] shadow-[0_0_10px_rgba(56,189,248,0.85)]'
+                    : currentChapter === 5
                     ? 'bg-gradient-to-r from-[#4f46e5] via-[#9333ea] to-[#ec4899] shadow-[0_0_10px_rgba(168,85,247,0.85)]'
                     : currentChapter === 4
                     ? 'bg-gradient-to-r from-[#f59e0b] via-[#ea580c] to-[#b91c1c] shadow-[0_0_10px_rgba(245,158,11,0.8)]'
@@ -1080,7 +1501,11 @@ export const QuestView: React.FC = () => {
               isChapterFullyCompleted ? 'ring-2 ring-amber-400/80 animate-pulse' : ''
             }`}
             title={
-              currentChapter === 5
+              isTome2
+                ? 'Cofre del Barracón Abandonado'
+                : currentChapter === 6
+                ? 'Cofre de Sangre y Hielo'
+                : currentChapter === 5
                 ? 'Cofre del Reino de los Sueños'
                 : currentChapter === 4
                 ? 'Cofre de la Mansión Ferton'
@@ -1109,6 +1534,16 @@ export const QuestView: React.FC = () => {
           onPointerLeave={handleContentPointerUp}
           className="w-full flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden scroll-smooth flex flex-col gap-2.5 sm:gap-3 mt-1.5 pb-28 sm:pb-32 cursor-grab active:cursor-grabbing touch-pan-y"
         >
+          {missions.length === 0 && (
+            <div className="relative w-full rounded-xl overflow-hidden border-2 border-[#3b170c] bg-[#1a0b04]/85 px-4 py-6 text-center shadow-[inset_0_2px_10px_rgba(0,0,0,0.75)] flex flex-col items-center justify-center space-y-2 mt-2">
+              <h3 className="font-serif font-black text-sm text-amber-200 tracking-wide">
+                Capítulo I · Barracón Abandonado
+              </h3>
+              <p className="text-xs text-stone-300 leading-relaxed max-w-[260px]">
+                Sin misiones disponibles de momento. Las incursiones en el barracón se desbloquearán próximamente.
+              </p>
+            </div>
+          )}
           {missions.map((mission, idx) => {
             const isCompleted = isMissionCompleted(mission.id);
             // In chapter 2/3/4/5, first mission is automatically unlocked once Chapter is opened
@@ -1131,15 +1566,24 @@ export const QuestView: React.FC = () => {
             const isAudienciaBaronMission = mission.id === 'm16_audiencia_baron';
             const isDespertarSuenosMission = mission.id === 'm17_despertar_suenos';
             const isGorgonMazmorraMission = mission.id === 'm18_primera_camara_gorgon';
+            const isAireMazmorraMission = mission.id === 'm19_segunda_camara_aire';
+            const isBulezauMazmorraMission = mission.id === 'm20_tercera_camara_bulezau';
+            const isColiseoSuenosMission = mission.id === 'm21_coliseo_suenos';
+            const isCasaGabrielMission = mission.id === 'm21b_casa_gabriel';
+            const isForzarPuertaMission = mission.id === 'm21c_forzar_puerta';
+            const isVerdadGabrielMission = mission.id === 'm21d_verdad_gabriel';
             const isStoryMission =
               ((mission.isStory &&
                 !isFertonMission &&
                 !isCallejonHoggoblinsMission &&
                 !isTabernaDuergarMission &&
+                !isForzarPuertaMission &&
                 !isRecibidorMansionMission &&
                 !isDurnikEscalerasMission &&
                 !isPlantaIntermediaMansionMission &&
-                !isGorgonMazmorraMission) ||
+                !isGorgonMazmorraMission &&
+                !isAireMazmorraMission &&
+                !isBulezauMazmorraMission) ||
                 mission.id === 'm1_tirano' ||
                 mission.id === 'm5_minas_historia');
             const earnedMissionStars = isCompleted
@@ -1157,7 +1601,11 @@ export const QuestView: React.FC = () => {
               mission.id === 'm4_puertas_selladas' ||
               mission.id === 'm10_hobgoblin_boss' ||
               mission.id === 'm13_escaleras_durnik' ||
-              mission.id === 'm18_primera_camara_gorgon';
+              mission.id === 'm18_primera_camara_gorgon' ||
+              mission.id === 'm19_segunda_camara_aire' ||
+              mission.id === 'm20_tercera_camara_bulezau' ||
+              mission.id === 'm22_cryovain_final' ||
+              mission.id === 't2_c1_m4_arana_acorazada';
             // Misiones que son escena narrativa (cinemática) y no un combate.
             const isCinematicMission =
               isLaberintoMission ||
@@ -1166,15 +1614,20 @@ export const QuestView: React.FC = () => {
               isDespachoFertonMission ||
               isAudienciaBaronMission ||
               isDespertarSuenosMission ||
+              isColiseoSuenosMission ||
+              isCasaGabrielMission ||
+              isVerdadGabrielMission ||
               isAldeaEpilogueMission ||
-              mission.id === 'm10b_encuentro_chispo';
-            const missionTypeLabel: 'Combate' | 'Jefe' | 'Historia' | 'Minijuego' = isTabernaDuergarMission
-              ? 'Minijuego'
-              : isBossMission
-              ? 'Jefe'
-              : isCinematicMission
-              ? 'Historia'
-              : 'Combate';
+              mission.id === 'm10b_encuentro_chispo' ||
+              mission.id === 't2_c1_m5_carreta_cid';
+            const missionTypeLabel: 'Combate' | 'Jefe' | 'Historia' | 'Minijuego' =
+              isTabernaDuergarMission || isForzarPuertaMission
+                ? 'Minijuego'
+                : isBossMission
+                ? 'Jefe'
+                : isCinematicMission
+                ? 'Historia'
+                : 'Combate';
 
             if (isCompleted || isUnlocked) {
               return (
@@ -1237,7 +1690,13 @@ export const QuestView: React.FC = () => {
                         handleLaunchMission(mission, false);
                       }}
                       className="w-[86px] sm:w-[92px] py-1.5 px-2 rounded-lg border border-[#fed7aa]/50 bg-gradient-to-b from-[#f97316] via-[#ea580c] to-[#c2410c] shadow-[0_2px_8px_rgba(234,88,12,0.6)] hover:brightness-110 active:scale-95 transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5"
-                      title={isTabernaDuergarMission ? 'Entrar al concurso' : 'Entrar a combate'}
+                      title={
+                        isForzarPuertaMission
+                          ? 'Forzar la puerta'
+                          : isTabernaDuergarMission
+                          ? 'Entrar al concurso'
+                          : 'Entrar a combate'
+                      }
                     >
                       <div className="flex items-center gap-0.5">
                         {[1, 2, 3].map((starIdx) => (
@@ -1254,7 +1713,13 @@ export const QuestView: React.FC = () => {
                         ))}
                       </div>
                       <span className="text-[10px] sm:text-[10.5px] font-black uppercase tracking-wider text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)] leading-tight">
-                        {isTabernaDuergarMission ? 'CONCURSO' : isStoryMission ? 'HISTORIA' : 'COMBATE'}
+                        {isForzarPuertaMission
+                          ? 'FORZAR'
+                          : isTabernaDuergarMission
+                          ? 'CONCURSO'
+                          : isStoryMission
+                          ? 'HISTORIA'
+                          : 'COMBATE'}
                       </span>
                     </button>
 
@@ -1281,7 +1746,13 @@ export const QuestView: React.FC = () => {
                         mission.id === 'm15_despacho_ferton' ||
                         mission.id === 'm16_audiencia_baron' ||
                         mission.id === 'm17_despertar_suenos' ||
-                        mission.id === 'm18_primera_camara_gorgon';
+                        mission.id === 'm18_primera_camara_gorgon' ||
+                        mission.id === 'm19_segunda_camara_aire' ||
+                        mission.id === 'm20_tercera_camara_bulezau' ||
+                        mission.id === 'm21_coliseo_suenos' ||
+                        mission.id === 'm21b_casa_gabriel' ||
+                        mission.id === 'm21c_forzar_puerta' ||
+                        mission.id === 'm21d_verdad_gabriel';
 
                       if (
                         hasStoryBtn &&
@@ -1291,7 +1762,12 @@ export const QuestView: React.FC = () => {
                           mission.id === 'm11_llegada_mansion_ferton' ||
                           mission.id === 'm15_despacho_ferton' ||
                           mission.id === 'm16_audiencia_baron' ||
-                          mission.id === 'm17_despertar_suenos')
+                          mission.id === 'm17_despertar_suenos' ||
+                          mission.id === 'm21_coliseo_suenos' ||
+                          mission.id === 'm21b_casa_gabriel' ||
+                          mission.id === 'm21c_forzar_puerta' ||
+                          mission.id === 'm21d_verdad_gabriel' ||
+                          mission.id === 't2_c1_m5_carreta_cid')
                       ) {
                         return (
                           <button
@@ -1452,7 +1928,11 @@ export const QuestView: React.FC = () => {
             </div>
 
             <h3 className="font-serif font-black text-base uppercase text-amber-300 drop-shadow">
-              {currentChapter === 5
+              {isTome2
+                ? '¡Cofre del Barracón Abandonado!'
+                : currentChapter === 6
+                ? '¡Cofre de Sangre y Hielo!'
+                : currentChapter === 5
                 ? '¡Cofre del Reino de los Sueños!'
                 : currentChapter === 4
                 ? '¡Cofre de la Mansión Ferton!'
@@ -1464,11 +1944,15 @@ export const QuestView: React.FC = () => {
             </h3>
 
             <p className="text-xs text-stone-300">
-              {currentChapter === 5 && totalCount === 0
+              {isTome2 && totalCount === 0
+                ? 'Las misiones del Capítulo I: Barracón Abandonado estarán disponibles próximamente. ¡Completa el capítulo cuando lleguen para abrir este cofre!'
+                : currentChapter === 5 && totalCount === 0
                 ? 'Las misiones del Capítulo V: El Reino de los Sueños estarán disponibles próximamente. ¡Completa el capítulo cuando lleguen para abrir este cofre!'
                 : isChapterFullyCompleted
                 ? `¡Has completado con éxito todas las misiones del Capítulo ${
-                    currentChapter === 5
+                    currentChapter === 6
+                      ? 'VI'
+                      : currentChapter === 5
                       ? 'V'
                       : currentChapter === 4
                       ? 'IV'
@@ -1479,7 +1963,9 @@ export const QuestView: React.FC = () => {
                       : 'I'
                   }! Recompensas entregadas a tu bastión:`
                 : `Avanza y supera las misiones del Capítulo ${
-                    currentChapter === 5
+                    currentChapter === 6
+                      ? 'VI'
+                      : currentChapter === 5
                       ? 'V'
                       : currentChapter === 4
                       ? 'IV'
@@ -1495,18 +1981,22 @@ export const QuestView: React.FC = () => {
               <div className="flex items-center justify-center gap-4 py-2 bg-[#140602] rounded-lg border border-amber-900/60">
                 <div className="flex items-center gap-1.5 text-xs font-black text-amber-400 font-mono">
                   <span>
-                    +{currentChapter === 5 ? '60,000' : currentChapter === 4 ? '45,000' : currentChapter === 3 ? '35,000' : currentChapter === 2 ? '25,000' : '15,000'}
+                    +{isTome2 ? '25,000' : currentChapter === 6 ? '100,000' : currentChapter === 5 ? '60,000' : currentChapter === 4 ? '45,000' : currentChapter === 3 ? '35,000' : currentChapter === 2 ? '25,000' : '15,000'}
                   </span>
                   <img src="/assets/items/moneda_de_moonhaven.webp" alt="Oro" className="w-3.5 h-3.5 object-contain" />
                 </div>
                 <div className="flex items-center gap-1.5 text-xs font-black text-sky-400 font-mono">
-                  <span>+{currentChapter === 5 ? '2,000' : currentChapter === 4 ? '1,500' : currentChapter === 3 ? '1,200' : currentChapter === 2 ? '800' : '500'}</span>
+                  <span>+{isTome2 ? '1,000' : currentChapter === 6 ? '3,000' : currentChapter === 5 ? '2,000' : currentChapter === 4 ? '1,500' : currentChapter === 3 ? '1,200' : currentChapter === 2 ? '800' : '500'}</span>
                   <img src="/assets/items/gema_del_recuerdo.webp" alt="Gemas" className="w-3.5 h-3.5 object-contain" />
                 </div>
               </div>
             ) : (
               <div className="py-2 px-3 rounded-lg bg-black/50 border border-stone-800 text-[11px] text-amber-200/90 font-mono">
-                {currentChapter === 5
+                {isTome2
+                  ? 'Recompensa final: +25,000 Oro, +1,000 Gemas y Reliquia del Barracón'
+                  : currentChapter === 6
+                  ? 'Recompensa final: +100,000 Oro, +3,000 Gemas y 5x Escamas de Cryovain'
+                  : currentChapter === 5
                   ? 'Recompensa final: +60,000 Oro y +2,000 Gemas'
                   : currentChapter === 4
                   ? 'Recompensa final: +45,000 Oro, +1,500 Gemas y Lacre Dorado'

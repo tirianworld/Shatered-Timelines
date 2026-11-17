@@ -6,8 +6,18 @@ import { CANONICAL_HEROES_LIST, CanonicalHeroItem } from './HeroesView';
 import { getHeroLuck, getDrinkingDifficultyFromLuck } from '../utils/heroLuck';
 
 const STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v4';
+const STORAGE_T2_PARTIES_KEY = 'cdd_gacha_v2_t2_party_presets_v1';
 const LEGACY_STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v3';
 const REFERENCE_PARTY = ['edacorn', 'arlem_diaz', 'magordito', 'pepe_loux'];
+const ALBA_DORADA_HERO_IDS = [
+  'prometeo',
+  'raxxar',
+  'barled',
+  'ragnavaldr',
+  'kairon',
+  'smurph_draco',
+] as const;
+const DEFAULT_ALBA_DORADA_PARTY: (string | null)[] = ['prometeo', 'raxxar', 'barled', 'ragnavaldr'];
 
 interface PartySelectionViewProps {
   onClose?: () => void;
@@ -27,9 +37,15 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
     navigateTo,
   } = useGame();
 
-  const isSingleHeroMission = pendingMissionLaunch?.missionId === 'm10e_taberna_duergar';
+  const isTome2Mission = Boolean(pendingMissionLaunch?.missionId?.startsWith('t2_'));
+  const isDoorBreachMission = pendingMissionLaunch?.missionId === 'm21c_forzar_puerta';
+  const isSingleHeroMission =
+    pendingMissionLaunch?.missionId === 'm10e_taberna_duergar' || isDoorBreachMission;
 
-  // Los equipos solo admiten héroes desbloqueados.
+  const activeStorageKey = isTome2Mission ? STORAGE_T2_PARTIES_KEY : STORAGE_PARTIES_KEY;
+  const albaDoradaSet = useMemo(() => new Set<string>(ALBA_DORADA_HERO_IDS), []);
+
+  // Los equipos del Tomo I admiten héroes desbloqueados; en el Tomo II solo participa Alba Dorada.
   const ownedHeroIds = useMemo(() => new Set(ownedHeroes.map((h) => h.id)), [ownedHeroes]);
   const ownedHeroById = useMemo(
     () => new Map(ownedHeroes.map((h) => [h.id, h])),
@@ -54,15 +70,32 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
   // 5 Party Presets (each with 4 slots)
   const [parties, setParties] = useState<(string | null)[][]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_PARTIES_KEY);
+      const saved = localStorage.getItem(activeStorageKey);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length === 5) {
+          if (isTome2Mission) {
+            return parsed.map((slotList) =>
+              Array.isArray(slotList)
+                ? slotList.map((id) => (typeof id === 'string' && albaDoradaSet.has(id) ? id : null))
+                : [null, null, null, null]
+            );
+          }
           return parsed;
         }
       }
     } catch {
       // Ignore JSON error
+    }
+
+    if (isTome2Mission) {
+      return [
+        [...DEFAULT_ALBA_DORADA_PARTY],
+        [null, null, null, null],
+        [null, null, null, null],
+        [null, null, null, null],
+        [null, null, null, null],
+      ];
     }
 
     // Default: Party 1 initialized with current team (or Gromock if empty), others empty
@@ -80,11 +113,16 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
 
   // Al abrir la pestaña, sincroniza el equipo de combate con el preset inicial
-  // descartando cualquier héroe que no esté desbloqueado.
+  // descartando cualquier héroe que no pertenezca al tomo o no esté desbloqueado.
   useEffect(() => {
     const first = parties[0] || [];
-    const safe = first.map((id) => (id && ownedHeroIds.has(id) ? id : null));
-    setEntireTeam(safe.some((id) => id) ? safe : [...REFERENCE_PARTY]);
+    if (isTome2Mission) {
+      const safeT2 = first.map((id) => (id && albaDoradaSet.has(id) ? id : null));
+      setEntireTeam(safeT2.some((id) => id) ? safeT2 : [...DEFAULT_ALBA_DORADA_PARTY]);
+    } else {
+      const safe = first.map((id) => (id && ownedHeroIds.has(id) ? id : null));
+      setEntireTeam(safe.some((id) => id) ? safe : [...REFERENCE_PARTY]);
+    }
   }, []);
 
   // Current active 4-hero slots
@@ -94,7 +132,7 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
   const saveAndSyncParties = (newParties: (string | null)[][], presetIdx = activePreset) => {
     setParties(newParties);
     try {
-      localStorage.setItem(STORAGE_PARTIES_KEY, JSON.stringify(newParties));
+      localStorage.setItem(activeStorageKey, JSON.stringify(newParties));
     } catch {
       // Ignore
     }
@@ -223,10 +261,14 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
         <div className="relative z-10 w-full bg-[#0a0302] border-b-2 border-[#2b0d04] py-2 px-4 flex items-center justify-between gap-2 shrink-0 shadow-md">
           <div className="min-w-0">
             <p className="text-xs font-serif font-black text-amber-200 tracking-wide truncate">
-              Concurso de Ultrak · Elige 1 Héroe
+              {isDoorBreachMission
+                ? 'Forzar la Puerta · Elige 1 Héroe'
+                : 'Concurso de Ultrak · Elige 1 Héroe'}
             </p>
             <p className="text-[10px] text-stone-300 truncate">
-              Cuanta más Suerte tenga, más grande y pausada será la zona verde
+              {isDoorBreachMission
+                ? 'Cuanta más Suerte tenga, más amplia y precisa será la zona iluminada'
+                : 'Cuanta más Suerte tenga, más grande y pausada será la zona verde'}
             </p>
           </div>
           <div className="flex items-center gap-1 shrink-0 bg-[#241006] border border-amber-700/60 rounded-lg px-2 py-1">
@@ -241,25 +283,32 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
           </div>
         </div>
       ) : (
-        <div className="relative z-10 w-full bg-[#0a0302] border-b-2 border-[#2b0d04] py-1.5 px-4 flex items-center justify-center gap-3 sm:gap-4 shrink-0 shadow-md">
-          {[0, 1, 2, 3, 4].map((idx) => {
-            const isCurrent = activePreset === idx;
-            return (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => handleSelectPreset(idx)}
-                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-95 ${
-                  isCurrent
-                    ? 'bg-[#3d1607] border-2 border-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.7)] ring-1 ring-amber-300 text-amber-100 font-black text-sm sm:text-base font-serif scale-105'
-                    : 'bg-[#180703] border-2 border-[#6d2a0e] text-stone-300 hover:text-white hover:border-amber-600 font-bold text-sm sm:text-base font-serif opacity-85 hover:opacity-100'
-                }`}
-                title={`Equipo ${idx + 1}`}
-              >
-                <span className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">{idx + 1}</span>
-              </button>
-            );
-          })}
+        <div className="relative z-10 w-full bg-[#0a0302] border-b-2 border-[#2b0d04] py-1.5 px-4 flex flex-col items-center justify-center gap-1 shrink-0 shadow-md">
+          <div className="flex items-center justify-center gap-3 sm:gap-4">
+            {[0, 1, 2, 3, 4].map((idx) => {
+              const isCurrent = activePreset === idx;
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => handleSelectPreset(idx)}
+                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-95 ${
+                    isCurrent
+                      ? 'bg-[#3d1607] border-2 border-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.7)] ring-1 ring-amber-300 text-amber-100 font-black text-sm sm:text-base font-serif scale-105'
+                      : 'bg-[#180703] border-2 border-[#6d2a0e] text-stone-300 hover:text-white hover:border-amber-600 font-bold text-sm sm:text-base font-serif opacity-85 hover:opacity-100'
+                  }`}
+                  title={`Equipo ${idx + 1}`}
+                >
+                  <span className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">{idx + 1}</span>
+                </button>
+              );
+            })}
+          </div>
+          {isTome2Mission && (
+            <p className="text-[10px] font-bold tracking-wide text-amber-300/95 text-center leading-tight">
+              Tomo II · Alba Dorada (nombre provisional)
+            </p>
+          )}
         </div>
       )}
 
@@ -322,7 +371,9 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
               </div>
             ) : (
               <div className="h-28 flex items-center justify-center text-xs font-bold text-amber-300">
-                Elige 1 héroe abajo para competir ante Ultrak
+                {isDoorBreachMission
+                  ? 'Elige 1 héroe abajo para forzar la puerta de Gabriel'
+                  : 'Elige 1 héroe abajo para competir ante Ultrak'}
               </div>
             )}
           </div>
@@ -402,7 +453,9 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
           {/* Scrollable Hero Cards Area */}
           <div className="flex-1 w-full overflow-y-auto no-scrollbar pt-0.5">
             <div className="grid grid-cols-5 gap-1 sm:gap-1.5 pb-2">
-              {CANONICAL_HEROES_LIST.filter((h) => ownedHeroIds.has(h.id)).map((hero) => {
+              {CANONICAL_HEROES_LIST.filter((h) =>
+                isTome2Mission ? albaDoradaSet.has(h.id) : ownedHeroIds.has(h.id)
+              ).map((hero) => {
                 const inTeam = isSingleHeroMission
                   ? selectedSoloHeroId === hero.id
                   : currentSlots.includes(hero.id);
@@ -494,7 +547,9 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
             }`}
           >
             {hasHeroInParty
-              ? isSingleHeroMission
+              ? isDoorBreachMission
+                ? 'Forzar la puerta'
+                : isSingleHeroMission
                 ? 'Comenzar concurso'
                 : 'Comenzar misión'
               : isSingleHeroMission

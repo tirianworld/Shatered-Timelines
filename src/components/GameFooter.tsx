@@ -47,7 +47,7 @@ export const GameFooter: React.FC = () => {
         {navButtons.map((btn) => {
           const isActive =
             currentTab === btn.id ||
-            (btn.id === 'santuario' && ['santuario', 'camp', 'world', 'tavern', 'forge'].includes(currentTab)) ||
+            (btn.id === 'santuario' && ['santuario', 'camp', 'world', 'planes', 'tavern', 'forge'].includes(currentTab)) ||
             (btn.id === 'quest' && currentTab === 'combat') ||
             (btn.id === 'draw' && currentTab === 'gacha');
 

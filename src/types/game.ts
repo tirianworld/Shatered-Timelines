@@ -16,6 +16,7 @@ export type HeroClass =
   | 'Caballero'
   | 'Bardo'
   | 'Cazador de Sangre'
+  | 'Brujo Hexblade'
   | 'Gunslinger';
 
 export type Alianza =

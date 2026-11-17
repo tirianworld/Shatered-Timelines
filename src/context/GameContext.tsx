@@ -47,7 +47,7 @@ export interface ShelfItem {
 
 export type PendingMissionLaunch = {
   missionId: string;
-  destination: 'story' | 'combat' | 'drinking_contest';
+  destination: 'story' | 'combat' | 'drinking_contest' | 'door_breach';
 };
 
 interface GameContextType {
@@ -88,6 +88,10 @@ interface GameContextType {
   goBack: () => void;
   activeSanctuary: 'icespear' | 'mercado_negro';
   setActiveSanctuary: (sanctuary: 'icespear' | 'mercado_negro') => void;
+  activeWorldPlane: 'plano_material' | 'plano_suenos';
+  setActiveWorldPlane: (plane: 'plano_material' | 'plano_suenos') => void;
+  isDreamPlaneUnlocked: boolean;
+  isColiseoEventUnlocked: boolean;
   selectedBanner: SummonBanner;
   setSelectedBanner: (banner: SummonBanner) => void;
   questProgress: {
@@ -97,6 +101,8 @@ interface GameContextType {
     allMissionsCompleted?: boolean;
   };
   isMissionCompleted: (missionId: string) => boolean;
+  activeQuestTome: string | null;
+  setActiveQuestTome: (tomeId: string | null) => void;
   activeQuestChapter: number;
   setActiveQuestChapter: (chapter: number) => void;
   completeQuestMission: (missionId: string, stars: number) => void;
@@ -289,6 +295,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     safeStorage.setItem(`${STORAGE_KEY}_active_sanctuary`, JSON.stringify(activeSanctuary));
   }, [activeSanctuary]);
+
+  const [activeWorldPlane, setActiveWorldPlane] = useState<'plano_material' | 'plano_suenos'>(() => {
+    const saved = safeGetJSON<string>(`${STORAGE_KEY}_active_world_plane`, 'plano_material');
+    return saved === 'plano_suenos' ? 'plano_suenos' : 'plano_material';
+  });
+
+  useEffect(() => {
+    safeStorage.setItem(`${STORAGE_KEY}_active_world_plane`, JSON.stringify(activeWorldPlane));
+  }, [activeWorldPlane]);
 
   const [historyStack, setHistoryStack] = useState<string[]>(['quest']);
 
@@ -737,6 +752,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       allMissionsCompleted: !!saved.allMissionsCompleted,
     });
   });
+
+  const [activeQuestTome, setActiveQuestTome] = useState<string | null>(null);
 
   const [activeQuestChapter, setActiveQuestChapterState] = useState<number>(() => {
     const saved = safeGetJSON<number | null>(`${STORAGE_KEY}_active_quest_chapter`, 1);
@@ -1775,6 +1792,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const navigateTo = (tab: string, replacePrev = false) => {
     sound.playSFX('click');
+    const missionSubviews = ['combat', 'story', 'party', 'drinking_contest', 'door_breach'];
+    if (tab === 'quest' && !missionSubviews.includes(currentTab)) {
+      setActiveQuestTome(null);
+    }
+    if (tab === currentTab) {
+      return;
+    }
     setHistoryStack((prev) => (replacePrev && prev.length > 1 ? [...prev.slice(0, -1), tab] : [...prev, tab]));
     setCurrentTab(tab);
   };
@@ -1783,6 +1807,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sound.playSFX('click');
     // Salir del selector de héroes cancela la misión pendiente.
     setPendingMissionLaunch(null);
+    if (currentTab === 'quest' && activeQuestTome !== null) {
+      setActiveQuestTome(null);
+      return;
+    }
     if (currentTab === 'forge' || currentTab === 'potions') {
       if (forgeSubcategory) {
         setForgeSubcategory(null);
@@ -1810,6 +1838,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return questProgress.completedMissions.includes(missionId);
   };
 
+  const isDreamPlaneUnlocked =
+    !!questProgress.allMissionsCompleted || questProgress.completedMissions.includes('m21_coliseo_suenos');
+  const isColiseoEventUnlocked = isDreamPlaneUnlocked;
+
   const completeQuestMission = (missionId: string, stars: number) => {
     setQuestProgress((prev) => {
       const completed = prev.completedMissions.includes(missionId)
@@ -1834,6 +1866,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         nextChapter = Math.max(prev.chapter, 4);
       } else if (missionId === 'm16_audiencia_baron') {
         nextChapter = Math.max(prev.chapter, 5);
+      } else if (missionId === 'm21_coliseo_suenos') {
+        nextChapter = Math.max(prev.chapter, 6);
       }
       const updated = createQuestProgressState({
         chapter: prev.allMissionsCompleted ? 99 : nextChapter,
@@ -1881,6 +1915,18 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       'm16_audiencia_baron',
       'm17_despertar_suenos',
       'm18_primera_camara_gorgon',
+      'm19_segunda_camara_aire',
+      'm20_tercera_camara_bulezau',
+      'm21_coliseo_suenos',
+      'm21b_casa_gabriel',
+      'm21c_forzar_puerta',
+      'm21d_verdad_gabriel',
+      'm22_cryovain_final',
+      't2_c1_m1_trincheras_nomuertos',
+      't2_c1_m2_jauria_salas',
+      't2_c1_m3_custodios_anillo',
+      't2_c1_m4_arana_acorazada',
+      't2_c1_m5_carreta_cid',
     ];
     // Seed placeholder missions m11..m100 for all future missions and chapters
     for (let i = 11; i <= 100; i++) {
@@ -2091,10 +2137,16 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         goBack,
         activeSanctuary,
         setActiveSanctuary,
+        activeWorldPlane,
+        setActiveWorldPlane,
+        isDreamPlaneUnlocked,
+        isColiseoEventUnlocked,
         selectedBanner,
         setSelectedBanner,
         questProgress,
         isMissionCompleted,
+        activeQuestTome,
+        setActiveQuestTome,
         activeQuestChapter,
         setActiveQuestChapter,
         completeQuestMission,

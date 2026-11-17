@@ -12,6 +12,7 @@ import { ForgeView } from './components/ForgeView';
 import { PotionShopView } from './components/PotionShopView';
 import { TavernView } from './components/TavernView';
 import { WorldMapView } from './components/WorldMapView';
+import { PlanesView } from './components/PlanesView';
 import { CombatView } from './components/CombatView';
 import { PatrolView } from './components/PatrolView';
 import { InventoryView } from './components/InventoryView';
@@ -28,6 +29,7 @@ import { StoryDialogueView } from './components/StoryDialogueView';
 import { TavernKitchenView } from './components/TavernKitchenView';
 import { PartySelectionView } from './components/PartySelectionView';
 import { DrinkingContestView } from './components/DrinkingContestView';
+import { DoorBreachView } from './components/DoorBreachView';
 import { sound } from './services/soundService';
 
 const useResponsiveGameScale = () => {
@@ -37,7 +39,7 @@ const useResponsiveGameScale = () => {
     const handleResize = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      // 407 x 792 is the exact baseline dimensions of the game canvas from image_860b8583.webp
+      // 407 x 792 is the exact baseline dimensions of the game canvas from image_860b8583.png
       const scaleFit = Math.min(vw / 407, vh / 792);
       setScale(scaleFit);
     };
@@ -110,8 +112,8 @@ const GameContent: React.FC = () => {
           }`}
         />
 
-        {/* Top Wood Header with Plaque, Spoke Wheel, Gold, Crystals & Mail - Hidden on full-screen combat, story, cooking & drinking contest view */}
-        {!['combat', 'story', 'cooking', 'potions', 'drinking_contest'].includes(currentTab) && <GameHeader />}
+        {/* Top Wood Header with Plaque, Spoke Wheel, Gold, Crystals & Mail - Hidden on full-screen combat, story, cooking & minigame views */}
+        {!['combat', 'story', 'cooking', 'potions', 'drinking_contest', 'door_breach'].includes(currentTab) && <GameHeader />}
 
         {/* Central Dynamic View Area */}
         <main className="relative flex-1 w-full overflow-hidden flex flex-col z-10 bg-transparent">
@@ -125,6 +127,7 @@ const GameContent: React.FC = () => {
           {currentTab === 'tavern' && <TavernView />}
           {currentTab === 'cooking' && <TavernKitchenView onClose={() => goBack()} />}
           {currentTab === 'world' && <WorldMapView />}
+          {currentTab === 'planes' && <PlanesView />}
           {currentTab === 'combat' && <CombatView />}
           {currentTab === 'patrol' && <PatrolView />}
           {currentTab === 'inventory' && <InventoryView />}
@@ -132,6 +135,7 @@ const GameContent: React.FC = () => {
           {(currentTab === 'order' || currentTab === 'clan') && <OrderClanView />}
           {currentTab === 'party' && <PartySelectionView onClose={() => goBack()} />}
           {currentTab === 'drinking_contest' && <DrinkingContestView />}
+          {currentTab === 'door_breach' && <DoorBreachView />}
           {currentTab === 'story' && (
             <StoryDialogueView
               onFinish={() => {
@@ -165,13 +169,13 @@ const GameContent: React.FC = () => {
               }}
             />
           )}
-          {!['santuario', 'camp', 'quest', 'heroes', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'cooking', 'world', 'combat', 'patrol', 'inventory', 'auction', 'order', 'clan', 'story', 'party', 'drinking_contest'].includes(currentTab) && (
+          {!['santuario', 'camp', 'quest', 'heroes', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'cooking', 'world', 'planes', 'combat', 'patrol', 'inventory', 'auction', 'order', 'clan', 'story', 'party', 'drinking_contest', 'door_breach'].includes(currentTab) && (
             <QuestView />
           )}
         </main>
 
-        {/* Bottom Wood Footer Bar with 6 Circular Emblems - Hidden on full-screen immersion views (including party & drinking_contest) */}
-        {!['combat', 'forge', 'potions', 'auction', 'order', 'clan', 'story', 'cooking', 'party', 'drinking_contest'].includes(currentTab) && <GameFooter />}
+        {/* Bottom Wood Footer Bar with 6 Circular Emblems - Hidden on full-screen immersion views (including party & minigames) */}
+        {!['combat', 'forge', 'potions', 'auction', 'order', 'clan', 'story', 'cooking', 'party', 'drinking_contest', 'door_breach'].includes(currentTab) && <GameFooter />}
 
         {/* Global Modals */}
         <MailboxModal />

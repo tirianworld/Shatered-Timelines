@@ -331,7 +331,7 @@ const SIGNATURES: Record<
   },
   'ing_hortalizas_huerto__ing_setas_cueva__ing_pollo_calidad': {
     name: 'Guiso Campestre de Pollo con Setas de las Minas',
-    icon: '/assets/items/chicken_dishes/chicken_ing_hortalizas_huerto__ing_setas_cueva__ing_pollo_calidad.webp',
+    icon: '/assets/items/chicken_dishes/chicken_ing_hortalizas_huerto__ing_setas_cueva__ing_pollo_calidad.png',
     rarity: 'SR',
     buffBadge: '+35 PV & +15 PV REGEN',
     buffDescription: 'Olla de barro con caldo concentrado de pollo, hortalizas frescas y setas cavernícolas.',
@@ -408,16 +408,16 @@ function getDishIcon(ings: CookingIngredient[]): string {
   // Cada combinación individual de Cangrejo de Cueva tiene su propio sprite único
   if (ids.has('ing_cangrejo_cueva')) {
     const sorted = ings.map((i) => i.id).sort().join('__');
-    rawIcon = `/assets/items/crab_dishes/crab_${sorted}.webp`;
+    rawIcon = `/assets/items/crab_dishes/crab_${sorted}.png`;
   } else if (ids.has('ing_trucha_arroyo')) {
     const sorted = ings.map((i) => i.id).sort().join('__');
-    rawIcon = `/assets/items/trout_dishes/trout_${sorted}.webp`;
+    rawIcon = `/assets/items/trout_dishes/trout_${sorted}.png`;
   } else if (ids.has('ing_salmon_helado')) {
     const sorted = ings.map((i) => i.id).sort().join('__');
-    rawIcon = `/assets/items/salmon_dishes/salmon_${sorted}.webp`;
+    rawIcon = `/assets/items/salmon_dishes/salmon_${sorted}.png`;
   } else if (ids.has('ing_pollo_calidad')) {
     const sorted = ings.map((i) => i.id).sort().join('__');
-    rawIcon = `/assets/items/chicken_dishes/chicken_${sorted}.webp`;
+    rawIcon = `/assets/items/chicken_dishes/chicken_${sorted}.png`;
   } else if (ids.has('ing_huevos_araknoide')) {
     rawIcon = '/assets/items/food_tortilla_araknoide.webp';
   } else if (ids.has('ing_larvas_araknoide')) {
@@ -441,7 +441,7 @@ function getDishIcon(ings: CookingIngredient[]): string {
     else if (ids.has('ing_queso_cabra')) rawIcon = '/assets/items/food_lasana.webp';
     else if (ids.has('ing_patata_montana')) rawIcon = '/assets/items/food_steak_chips.webp';
     else if (ids.has('ing_especias_dragon')) rawIcon = '/assets/items/kebab.webp';
-    else rawIcon = '/assets/items/plato_de_carne_app.webp';
+    else rawIcon = '/assets/items/plato_de_carne_app.png';
   } else if (ids.has('ing_patata_montana')) {
     if (cats.includes('carnes')) rawIcon = '/assets/items/food_steak_chips.webp';
     else if (cats.includes('pescados')) rawIcon = '/assets/items/food_fish_chips.webp';

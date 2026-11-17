@@ -63,7 +63,15 @@ type DeliveryMode =
   | 'scythe_slash'
   | 'lifesteal_bite'
   | 'static_pulse'
-  | 'mist_breath';
+  | 'mist_breath'
+  | 'air_prison'
+  | 'bulezau_touch'
+  | 'bulezau_fireball'
+  | 'dragon_claw_slam'
+  | 'dragon_double_stomp'
+  | 'dragon_bite_frost'
+  | 'dragon_ice_breath'
+  | 'dragon_frost_mist_breath';
 
 type ShaderKey =
   | 'none'
@@ -76,10 +84,13 @@ type ShaderKey =
   | 'icespear_crimson'
   | 'icespear_roar'
   | 'frost_cryo'
+  | 'cryo_dragon'
+  | 'cryo_mist'
   | 'abyssal_spear'
   | 'abyssal_void'
   | 'volt_slam'
   | 'venom_acid'
+  | 'putrid_rot'
   | 'gold'
   | 'gold_slash'
   | 'goblin'
@@ -89,7 +100,9 @@ type ShaderKey =
   | 'acid'
   | 'void'
   | 'lightning'
-  | 'crimson_ono_tint';
+  | 'crimson_ono_tint'
+  | 'arana_fire'
+  | 'spider_web';
 
 type ParticlePreset =
   | 'sparks'
@@ -101,7 +114,9 @@ type ParticlePreset =
   | 'splinters'
   | 'fire'
   | 'frost'
+  | 'cryo_blizzard'
   | 'acid'
+  | 'putrid_flies'
   | 'void'
   | 'lightning'
   | 'shaman_lightning'
@@ -117,7 +132,7 @@ interface EnemyVfxProfile {
   flipImgX?: boolean;
   onoSrc?: string;
   ultOnoSrc?: string;
-  onoGlowColor?: 'cyan' | 'crimson' | 'gold' | 'purple' | 'crimson_tint';
+  onoGlowColor?: 'cyan' | 'crimson' | 'gold' | 'purple' | 'crimson_tint' | 'sickly';
   impactSrc?: string;
   alwaysDoubleSlash?: boolean;
   alwaysDualOno?: boolean;
@@ -135,10 +150,13 @@ const FILTER_ID_MAP: Record<ShaderKey, string | undefined> = {
   icespear_crimson: 'url(#enemy-vfx-icespear-crimson-shader)',
   icespear_roar: 'url(#enemy-vfx-icespear-roar-shader)',
   frost_cryo: 'url(#enemy-vfx-frost-cryo-shader)',
+  cryo_dragon: 'url(#enemy-vfx-cryo-dragon-shader)',
+  cryo_mist: 'url(#enemy-vfx-cryo-mist-shader)',
   abyssal_spear: 'url(#enemy-vfx-abyssal-spear-shader)',
   abyssal_void: 'url(#enemy-vfx-abyssal-void-shader)',
   volt_slam: 'url(#enemy-vfx-volt-slam-shader)',
   venom_acid: 'url(#enemy-vfx-venom-acid-shader)',
+  putrid_rot: 'url(#enemy-vfx-bulezau-putrid-shader)',
   gold: 'url(#enemy-vfx-gold-shader)',
   gold_slash: 'url(#enemy-vfx-gold-slash-shader)',
   goblin: 'url(#enemy-vfx-goblin-shader)',
@@ -149,6 +167,8 @@ const FILTER_ID_MAP: Record<ShaderKey, string | undefined> = {
   void: 'url(#enemy-vfx-void-shader)',
   lightning: 'url(#enemy-vfx-lightning-shader)',
   crimson_ono_tint: 'url(#enemy-vfx-crimson-ono-tint-shader)',
+  arana_fire: 'url(#enemy-vfx-arana-fire-shader)',
+  spider_web: 'url(#enemy-vfx-spider-web-shader)',
 };
 
 const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
@@ -325,6 +345,21 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
   },
 
+  // === GLADIADOR ONÍRICO (COLISEO DE LOS SUEÑOS) ===
+  gladiador_onirico: {
+    mode: 'sword_slash',
+    shader: 'abyssal_void',
+    particles: 'void',
+    accentColor: '#c084fc',
+    spriteSrc: '/assets/aistudio/image_ddc0d845.webp',
+    flipImgX: true,
+    impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+    onoSrc: '/assets/combat/arlem_vfx_slash_gold.webp',
+    ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+    onoGlowColor: 'purple',
+    energyGlint: true,
+  },
+
   // === CAPATAZ HOBGOBLIN (3 FASES) ===
   hobgoblin_capataz_p1: {
     mode: 'hammer_slam',
@@ -467,6 +502,42 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     onoGlowColor: 'cyan',
     energyGlint: true,
   },
+  // === ELEMENTAL DE AIRE (Capítulo V - Segunda Cámara) ===
+  elemental_aire: {
+    mode: 'sword_slash',
+    shader: 'none',
+    particles: 'icespear_cyan',
+    accentColor: '#38bdf8',
+    spriteSrc: '/assets/combat/elemental_aire_vfx_tajo.webp',
+    flipImgX: false,
+    onoSrc: '/assets/combat/elemental_aire_ono_fshh.webp',
+    alwaysDoubleSlash: true,
+    onoGlowColor: 'cyan',
+    energyGlint: true,
+  },
+  // === BULEZAU (Capítulo V - Tercera Cámara) ===
+  bulezau: {
+    mode: 'bulezau_touch',
+    shader: 'putrid_rot',
+    particles: 'putrid_flies',
+    accentColor: '#a3e635',
+    spriteSrc: '/assets/combat/bulezau_vfx_toque_humo.webp',
+    onoSrc: '/assets/combat/bulezau_ono_bzzz.webp',
+    onoGlowColor: 'sickly',
+    energyGlint: true,
+  },
+  // === CRYOVAIN, EL TIRANO BLANCO (Capítulo VI - Sangre y Hielo) ===
+  cryovain_boss: {
+    mode: 'dragon_claw_slam',
+    shader: 'cryo_dragon',
+    particles: 'cryo_blizzard',
+    accentColor: '#38bdf8',
+    spriteSrc: '/assets/combat/cryovain_vfx_garra_hielo.webp',
+    onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+    onoGlowColor: 'cyan',
+    energyGlint: true,
+  },
   araknoide_azul: {
     mode: 'ice_shard',
     shader: 'frost_cryo',
@@ -567,6 +638,64 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     accentColor: '#38bdf8',
     spriteSrc: '/assets/combat/smurph_vfx_impacto.webp',
     impactSrc: '/assets/combat/smurph_vfx_impacto.webp',
+  },
+  // === TOMO II CAPÍTULO I: BARRACÓN ABANDONADO ===
+  no_muerto: {
+    mode: 'punch_slam',
+    shader: 'crimson',
+    particles: 'dust',
+    accentColor: '#a8a29e',
+    spriteSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+    impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+    onoSrc: '/assets/combat/guardia_ono_crack.webp',
+    onoGlowColor: 'crimson',
+  },
+  soldado_no_muerto: {
+    mode: 'sword_slash',
+    shader: 'crimson',
+    particles: 'sparks',
+    accentColor: '#dc2626',
+    spriteSrc: '/assets/aistudio/image_ddc0d845.webp',
+    flipImgX: true,
+    onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+    onoGlowColor: 'crimson',
+    energyGlint: true,
+  },
+  perro_asalvajado: {
+    mode: 'fang_bite',
+    shader: 'crimson_claw',
+    particles: 'blood',
+    accentColor: '#ef4444',
+    spriteSrc: '/assets/combat/enemy_vfx_fang_bite.webp',
+    impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+    onoSrc: '/assets/combat/guardia_ono_crack.webp',
+    onoGlowColor: 'crimson',
+  },
+  armadura_reanimada: {
+    mode: 'hammer_slam',
+    shader: 'steel',
+    particles: 'sparks',
+    accentColor: '#cbd5e1',
+    spriteSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+    impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+    onoSrc: '/assets/combat/guardia_ono_crack.webp',
+    ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+    alwaysDoubleSlash: true,
+    onoGlowColor: 'cyan',
+    energyGlint: true,
+  },
+  arana_acorazada_boss: {
+    mode: 'dragon_claw_slam',
+    shader: 'icespear_fire',
+    particles: 'fire',
+    accentColor: '#f97316',
+    spriteSrc: '/assets/combat/enemy_vfx_devorador_slash.webp',
+    impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+    onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
   },
 };
 
@@ -934,6 +1063,191 @@ function resolveEnemyProfile(attack: ActiveEnemyAttackVfxState): EnemyVfxProfile
     return ENEMY_VFX_PROFILES.gorgon_metal;
   }
 
+  if (id === 'elemental_aire') {
+    if (
+      isUlt ||
+      skillLower.includes('prisi') ||
+      skillLower.includes('vórtice') ||
+      skillLower.includes('vortice') ||
+      skillLower.includes('inmovil')
+    ) {
+      return {
+        ...ENEMY_VFX_PROFILES.elemental_aire,
+        mode: 'air_prison',
+        spriteSrc: '/assets/combat/elemental_aire_vfx_prision.webp',
+        onoSrc: '/assets/combat/elemental_aire_ono_fshh.webp',
+        alwaysDoubleSlash: false,
+        accentColor: '#22d3ee',
+      };
+    }
+    if (isSpecial || skillLower.includes('cuchilla') || dmgType === 'piercing') {
+      return {
+        ...ENEMY_VFX_PROFILES.elemental_aire,
+        mode: 'spear_thrust',
+        spriteSrc: '/assets/combat/elemental_aire_vfx_cuchilla.webp',
+        onoSrc: '/assets/combat/elemental_aire_ono_fshh.webp',
+        alwaysDoubleSlash: false,
+        accentColor: '#38bdf8',
+      };
+    }
+    return ENEMY_VFX_PROFILES.elemental_aire;
+  }
+
+  if (id === 'bulezau') {
+    if (
+      isUlt ||
+      isSpecial ||
+      skillLower.includes('bola') ||
+      skillLower.includes('fuego') ||
+      skillLower.includes('andanada') ||
+      skillLower.includes('orbe') ||
+      dmgType === 'fire'
+    ) {
+      return {
+        ...ENEMY_VFX_PROFILES.bulezau,
+        mode: 'bulezau_fireball',
+        shader: 'putrid_rot',
+        particles: 'putrid_flies',
+        accentColor: '#a3e635',
+        spriteSrc: '/assets/combat/bulezau_vfx_bola_putrida.webp',
+        impactSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+        onoSrc: '/assets/combat/bulezau_ono_bzzz.webp',
+        onoGlowColor: 'sickly',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.bulezau;
+  }
+
+  if (id === 'cryovain_boss') {
+    if (skillLower.includes('niebla')) {
+      return {
+        ...ENEMY_VFX_PROFILES.cryovain_boss,
+        mode: 'dragon_frost_mist_breath',
+        shader: 'cryo_mist',
+        particles: 'cryo_blizzard',
+        accentColor: '#bae6fd',
+        spriteSrc: '/assets/combat/gorgon_vfx_niebla.webp',
+        onoSrc: '/assets/combat/gorgon_ono_shhhhh.webp',
+        alwaysDualOno: false,
+        onoGlowColor: 'cyan',
+        energyGlint: true,
+      };
+    }
+    if (
+      isUlt ||
+      skillLower.includes('aliento') ||
+      skillLower.includes('concentrado') ||
+      dmgType === 'cold'
+    ) {
+      return {
+        ...ENEMY_VFX_PROFILES.cryovain_boss,
+        mode: 'dragon_ice_breath',
+        shader: 'cryo_dragon',
+        particles: 'cryo_blizzard',
+        accentColor: '#38bdf8',
+        spriteSrc: '/assets/combat/cryovain_vfx_aliento_hielo.webp',
+        onoSrc: '/assets/combat/enemy_ono_shlink.webp',
+        ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+        alwaysDualOno: true,
+        onoGlowColor: 'cyan',
+        energyGlint: true,
+      };
+    }
+    if (skillLower.includes('pisot') || skillLower.includes('doble')) {
+      return {
+        ...ENEMY_VFX_PROFILES.cryovain_boss,
+        mode: 'dragon_double_stomp',
+        shader: 'cryo_dragon',
+        particles: 'cryo_blizzard',
+        accentColor: '#38bdf8',
+        spriteSrc: '/assets/combat/enemy_vfx_ice_web.webp',
+        impactSrc: '/assets/combat/cryovain_vfx_garra_hielo.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        alwaysDualOno: true,
+        onoGlowColor: 'cyan',
+        energyGlint: true,
+      };
+    }
+    if (isSpecial || skillLower.includes('mordisco') || skillLower.includes('desgarr')) {
+      return {
+        ...ENEMY_VFX_PROFILES.cryovain_boss,
+        mode: 'dragon_bite_frost',
+        shader: 'frost_cryo',
+        particles: 'blood',
+        accentColor: '#ef4444',
+        spriteSrc: '/assets/combat/cryovain_vfx_mordisco.webp',
+        impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        alwaysDualOno: true,
+        onoGlowColor: 'crimson',
+        energyGlint: true,
+      };
+    }
+    return {
+      ...ENEMY_VFX_PROFILES.cryovain_boss,
+      mode: 'dragon_claw_slam',
+      shader: 'cryo_dragon',
+      particles: 'cryo_blizzard',
+      accentColor: '#38bdf8',
+      spriteSrc: '/assets/combat/cryovain_vfx_garra_hielo.webp',
+      impactSrc: '/assets/combat/enemy_vfx_ice_web.webp',
+      onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+      ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+      onoGlowColor: 'cyan',
+      energyGlint: true,
+    };
+  }
+
+  if (id === 'arana_acorazada_boss') {
+    if (isUlt || skillLower.includes('aliento')) {
+      return {
+        ...ENEMY_VFX_PROFILES.arana_acorazada_boss,
+        mode: 'dragon_ice_breath',
+        shader: 'arana_fire',
+        particles: 'fire',
+        accentColor: '#f97316',
+        spriteSrc: '/assets/combat/cryovain_vfx_aliento_hielo.webp',
+        onoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        ultOnoSrc: '/assets/combat/enemy_ono_shlink.webp',
+        alwaysDualOno: true,
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    if (isSpecial || skillLower.includes('bola')) {
+      return {
+        ...ENEMY_VFX_PROFILES.arana_acorazada_boss,
+        mode: 'bulezau_fireball',
+        shader: 'icespear_fire',
+        particles: 'fire',
+        accentColor: '#f97316',
+        spriteSrc: '/assets/combat/smurph_vfx_fireball.webp',
+        impactSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        onoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    if (skillLower.includes('telara')) {
+      return {
+        ...ENEMY_VFX_PROFILES.arana_acorazada_boss,
+        mode: 'ice_shard',
+        shader: 'spider_web',
+        particles: 'dust',
+        accentColor: '#f5f5f4',
+        spriteSrc: '/assets/combat/enemy_vfx_azul_web_ball.webp',
+        impactSrc: '/assets/combat/enemy_vfx_espinoso_web.webp',
+        onoSrc: '/assets/combat/roxanne_vfx_tshk.webp',
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.arana_acorazada_boss;
+  }
+
   if (id === 'hobgoblin_capataz') {
     const phase = attack.hobgoblinPhase ?? 1;
     return ENEMY_VFX_PROFILES[`hobgoblin_capataz_p${phase}`] || ENEMY_VFX_PROFILES.hobgoblin_capataz_p1;
@@ -943,6 +1257,42 @@ function resolveEnemyProfile(attack: ActiveEnemyAttackVfxState): EnemyVfxProfile
   if (id === 'guarda_aurea_borracho_pesado') return ENEMY_VFX_PROFILES.guarda_negro_pesado;
   if (id === 'hoggoblin_tunica_borracho_daga') return ENEMY_VFX_PROFILES.hoggoblin_encapuchado_daga;
   if (id === 'hoggoblin_tunica_borracho_ballesta') return ENEMY_VFX_PROFILES.hoggoblin_encapuchado_ballesta;
+
+  if (id === 'gladiador_onirico') {
+    if (isUlt || skillLower.includes('eclipse') || skillLower.includes('veredicto')) {
+      return {
+        ...ENEMY_VFX_PROFILES.gladiador_onirico,
+        mode: 'shield_sword_ult',
+        shader: 'gold_slash',
+        particles: 'void',
+        accentColor: '#d8b4fe',
+        spriteSrc: '/assets/aistudio/image_ddc0d845.webp',
+        flipImgX: true,
+        impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+        onoSrc: '/assets/combat/arlem_vfx_slash_gold.webp',
+        ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        alwaysDoubleSlash: true,
+        alwaysDualOno: true,
+        onoGlowColor: 'purple',
+        energyGlint: true,
+      };
+    }
+    if (isSpecial || skillLower.includes('escudo') || skillLower.includes('media luna') || dmgType === 'bludgeoning') {
+      return {
+        ...ENEMY_VFX_PROFILES.gladiador_onirico,
+        mode: 'shield_bash',
+        shader: 'gold',
+        particles: 'sparks',
+        accentColor: '#fbbf24',
+        spriteSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+        impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.gladiador_onirico;
+  }
 
   if (id && ENEMY_VFX_PROFILES[id]) {
     return ENEMY_VFX_PROFILES[id];
@@ -977,6 +1327,8 @@ interface CanvasParticle {
   shape?: 'circle' | 'spark' | 'diamond';
   gravity?: number;
   homingToEnemy?: boolean;
+  isFly?: boolean;
+  flyPhase?: number;
 }
 
 interface EnemySlashSpec {
@@ -1057,6 +1409,22 @@ const BOLT_VOLLEY: readonly EnemyProjectileSpec[] = [
   { delayMs: 250, startOffsetX: 174, startOffsetY: -12, endBottomPct: 32, widthPx: 134, aspect: 0.2, rotateDeg: -3, durationMs: 270 },
 ];
 
+// Bolas de magia pútrida del Bulezau ("como de fuego" verdoso-amarillento con moscas)
+const PUTRID_FIREBALL_SINGLE: readonly EnemyProjectileSpec[] = [
+  { delayMs: 85, startOffsetX: 160, startOffsetY: -24, endBottomPct: 37, widthPx: 184, aspect: 0.42, rotateDeg: -4, durationMs: 300 },
+];
+
+const PUTRID_FIREBALL_DOUBLE: readonly EnemyProjectileSpec[] = [
+  { delayMs: 75, startOffsetX: 158, startOffsetY: -30, endBottomPct: 42, widthPx: 176, aspect: 0.42, rotateDeg: -7, durationMs: 285 },
+  { delayMs: 205, startOffsetX: 164, startOffsetY: -16, endBottomPct: 33, widthPx: 188, aspect: 0.42, rotateDeg: -2, durationMs: 285 },
+];
+
+const PUTRID_FIREBALL_TRIPLE: readonly EnemyProjectileSpec[] = [
+  { delayMs: 65, startOffsetX: 156, startOffsetY: -32, endBottomPct: 43, widthPx: 170, aspect: 0.42, rotateDeg: -8, durationMs: 275 },
+  { delayMs: 165, startOffsetX: 164, startOffsetY: -20, endBottomPct: 36, widthPx: 184, aspect: 0.42, rotateDeg: -4, durationMs: 275 },
+  { delayMs: 265, startOffsetX: 160, startOffsetY: -10, endBottomPct: 30, widthPx: 178, aspect: 0.42, rotateDeg: 1, durationMs: 275 },
+];
+
 // Slingshot pebble arcs
 const STONE_SINGLE: readonly EnemyProjectileSpec[] = [
   { delayMs: 85, startOffsetX: 184, startOffsetY: -20, endBottomPct: 35, widthPx: 96, aspect: 0.66, rotateDeg: -4, durationMs: 340 },
@@ -1124,10 +1492,12 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
     const fallbackX = f.left !== undefined ? f.left + f.width * 0.27 : f.x - f.width * 0.23;
     const fallbackY = f.top !== undefined ? f.top + f.height * 0.425 : f.headY + f.height * 0.16;
     return {
-      x: Math.min(0.95, Math.max(0.22, f.mouthX ?? fallbackX)),
+      x: Math.min(0.95, Math.max(0.18, f.mouthX ?? fallbackX)),
       y: Math.min(0.9, Math.max(0.12, f.mouthY ?? fallbackY)),
     };
   }, [enemyFrame]);
+  const mouthOriginRef = useRef(mouthOrigin);
+  mouthOriginRef.current = mouthOrigin;
 
   // La punta y la boca se congelan al despegar el ataque para que el efecto no salte en vuelo.
   const [launchTip, setLaunchTip] = useState(weaponTip);
@@ -1188,6 +1558,13 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
     isCleanSlashMode ||
     profile?.mode === 'shaman_lightning' ||
     profile?.mode === 'mist_breath' ||
+    profile?.mode === 'air_prison' ||
+    profile?.mode === 'bulezau_touch' ||
+    profile?.mode === 'dragon_claw_slam' ||
+    profile?.mode === 'dragon_double_stomp' ||
+    profile?.mode === 'dragon_bite_frost' ||
+    profile?.mode === 'dragon_ice_breath' ||
+    profile?.mode === 'dragon_frost_mist_breath' ||
     isDevoradorMode ||
     isSpiderWebPunchMode ||
     isBugbearMansionVfx;
@@ -1204,7 +1581,13 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
           (s) => s.delayMs
         );
       case 'spear_thrust':
-        return (isUlt ? SPEAR_TRIPLE : SPEAR_SINGLE).map((p) => p.delayMs);
+        return (
+          isUlt
+            ? SPEAR_TRIPLE
+            : isSpecial && activeAttack?.enemyConfigId === 'elemental_aire'
+            ? SPEAR_DOUBLE
+            : SPEAR_SINGLE
+        ).map((p) => p.delayMs);
       case 'spear_vanguard_ult':
         return (isUlt ? SPEAR_TRIPLE : SPEAR_DOUBLE).map((p) => p.delayMs);
       case 'oviparo_dual_spears':
@@ -1243,6 +1626,28 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         return [60];
       case 'mist_breath':
         return [110];
+      case 'air_prison':
+        return [90];
+      case 'bulezau_touch':
+        return [105];
+      case 'dragon_claw_slam':
+        return [95];
+      case 'dragon_double_stomp':
+        return [85, 195];
+      case 'dragon_bite_frost':
+        return [135];
+      case 'dragon_ice_breath':
+        return [190];
+      case 'dragon_frost_mist_breath':
+        return [150];
+      case 'bulezau_fireball':
+        return (
+          isUlt
+            ? PUTRID_FIREBALL_TRIPLE
+            : isSpecial
+            ? PUTRID_FIREBALL_DOUBLE
+            : PUTRID_FIREBALL_SINGLE
+        ).map((p) => p.delayMs);
       case 'club_smash':
       case 'hammer_slam':
       case 'punch_slam':
@@ -1277,6 +1682,8 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
     const impactDelay =
       profile.mode === 'lifesteal_bite'
         ? 185
+        : profile.mode === 'dragon_ice_breath'
+        ? 280
         : profile.mode === 'grenade_throw' || profile.mode === 'sling_stone'
         ? isUlt
           ? 360
@@ -1343,7 +1750,9 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
       splinters: ['#d97706', '#fde68a', '#92400e'],
       fire: ['#f97316', '#fde047', '#ef4444'],
       frost: ['#e0f2fe', '#38bdf8', '#bae6fd'],
+      cryo_blizzard: ['#ffffff', '#e0f2fe', '#38bdf8', '#0ea5e9'],
       acid: ['#a3e635', '#bef264', '#84cc16'],
+      putrid_flies: ['#a3e635', '#eab308', '#bef264', '#fde047', '#84cc16'],
       void: ['#c084fc', '#a855f7', '#e9d5ff'],
       lightning: ['#e0f2fe', '#38bdf8', '#22d3ee'],
       shaman_lightning: ['#a7f3d0', '#6ee7b7', '#34d399', '#ecfdf5'],
@@ -1367,6 +1776,7 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         trail: effectiveParticles !== 'acid' && effectiveParticles !== 'dust',
         shape:
           effectiveParticles === 'frost' ||
+          effectiveParticles === 'cryo_blizzard' ||
           effectiveParticles === 'dust' ||
           effectiveParticles === 'icespear_shield' ||
           (effectiveParticles === 'shaman_lightning' && i % 3 === 0)
@@ -1376,6 +1786,31 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
             : 'spark',
         gravity: effectiveParticles === 'acid' || effectiveParticles === 'fire' ? -0.04 : 0.14,
       });
+    }
+
+    // Chorro concentrado de cristales glaciales y estela helada del aliento de Cryovain
+    // (se emite dinámicamente en render() una vez la cabeza está en posición de disparo)
+    let settledBreathMouth: { x: number; y: number } | null = null;
+
+    // Fragmentos de sangre y esquirlas de hielo en el mordisco de Cryovain
+    if (profile.mode === 'dragon_bite_frost') {
+      for (let i = 0; i < 20; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const spd = 2.8 + Math.random() * 4.5;
+        particles.push({
+          x: heroX + (Math.random() - 0.5) * 26,
+          y: heroY + (Math.random() - 0.5) * 28,
+          vx: Math.cos(ang) * spd,
+          vy: Math.sin(ang) * spd - 0.8,
+          size: 2.3 + Math.random() * 2.5,
+          life: -6 - Math.random() * 4,
+          maxLife: 20 + Math.random() * 9,
+          color: i % 2 === 0 ? '#ef4444' : '#7dd3fc',
+          trail: true,
+          shape: i % 2 === 0 ? 'spark' : 'diamond',
+          gravity: 0.16,
+        });
+      }
     }
 
     // Chorro de esporas verdes petrificantes saliendo de la boca del Gorgon hacia el héroe
@@ -1398,6 +1833,48 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
           trail: false,
           shape: 'circle',
           gravity: -0.02,
+        });
+      }
+    }
+
+    // Humo verdoso-amarillento y enjambre de moscas saliendo de la mano del Bulezau
+    if (profile.mode === 'bulezau_touch' || profile.mode === 'bulezau_fireball') {
+      const handX = launchTip.x * width;
+      const handY = launchTip.y * height;
+      const travelX = heroX - handX;
+      const travelY = heroY - handY;
+      const smokeCount = profile.mode === 'bulezau_touch' ? 22 : isUlt ? 20 : 14;
+      for (let i = 0; i < smokeCount; i++) {
+        const steps = 16 + Math.random() * 11;
+        particles.push({
+          x: handX + (Math.random() - 0.5) * 14,
+          y: handY + (Math.random() - 0.5) * 14,
+          vx: travelX / steps + (Math.random() - 0.5) * 1.4,
+          vy: travelY / steps + (Math.random() - 0.5) * 1.8,
+          size: 3.4 + Math.random() * 4.2,
+          life: -4 - i * 0.75,
+          maxLife: Math.round(steps) + 9,
+          color: i % 3 === 0 ? '#fde047' : i % 2 === 0 ? '#a3e635' : '#eab308',
+          trail: false,
+          shape: 'circle',
+          gravity: -0.03,
+        });
+      }
+      const flyCount = profile.mode === 'bulezau_touch' ? 18 : isUlt ? 16 : 11;
+      for (let f = 0; f < flyCount; f++) {
+        const steps = 18 + Math.random() * 12;
+        particles.push({
+          x: (f % 3 === 0 ? heroX : handX) + (Math.random() - 0.5) * 28,
+          y: (f % 3 === 0 ? heroY : handY) + (Math.random() - 0.5) * 28,
+          vx: f % 3 === 0 ? (Math.random() - 0.5) * 2.4 : travelX / steps + (Math.random() - 0.5) * 2.1,
+          vy: f % 3 === 0 ? (Math.random() - 0.5) * 2.2 : travelY / steps + (Math.random() - 0.5) * 2.2,
+          size: 2.2 + Math.random() * 1.1,
+          life: -3 - f * 0.85,
+          maxLife: Math.round(steps) + 12,
+          color: '#11180a',
+          trail: false,
+          isFly: true,
+          flyPhase: Math.random() * Math.PI * 2,
         });
       }
     }
@@ -1435,7 +1912,8 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
 
     let frameId = 0;
     const startTime = performance.now();
-    const totalDurationMs = isUlt ? 900 : 780;
+    const totalDurationMs =
+      profile.mode === 'dragon_ice_breath' ? 1020 : isUlt ? 900 : 780;
 
     const render = (now: number) => {
       const elapsed = now - startTime;
@@ -1456,7 +1934,11 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         profile.mode === 'punch_slam' ||
         profile.mode === 'ceiling_impale' ||
         profile.mode === 'fang_bite' ||
-        profile.mode === 'void_orb';
+        profile.mode === 'void_orb' ||
+        profile.mode === 'dragon_claw_slam' ||
+        profile.mode === 'dragon_double_stomp' ||
+        profile.mode === 'dragon_bite_frost' ||
+        profile.mode === 'dragon_ice_breath';
       const ringCount =
         profile.mode === 'shaman_lightning' ||
         profile.mode === 'scythe_slash' ||
@@ -1612,6 +2094,65 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         }
       }
 
+      // Haz concentrado de hielo y chorro de cristales saliendo 100% desde la boca de Cryovain hasta el héroe
+      if (profile.mode === 'dragon_ice_breath' && elapsed >= 185 && elapsed <= 955) {
+        if (!settledBreathMouth) {
+          settledBreathMouth = {
+            x: mouthOriginRef.current.x * width,
+            y: mouthOriginRef.current.y * height,
+          };
+        }
+        const mx = settledBreathMouth.x;
+        const my = settledBreathMouth.y;
+        const targetHeroX = Math.max(26, width * 0.13);
+        const targetHeroY = height * 0.67;
+        const bp = Math.min(1, Math.max(0, (elapsed - 185) / 770));
+        const beamAlpha = Math.sin(bp * Math.PI);
+
+        if (elapsed <= 680) {
+          const travelX = targetHeroX - mx;
+          const travelY = targetHeroY - my;
+          for (let k = 0; k < 2; k++) {
+            const steps = 10 + Math.random() * 7;
+            particles.push({
+              x: mx + (Math.random() - 0.5) * 8,
+              y: my + (Math.random() - 0.5) * 8,
+              vx: travelX / steps + (Math.random() - 0.5) * 1.2,
+              vy: travelY / steps + (Math.random() - 0.5) * 1.2,
+              size: 2.4 + Math.random() * 2.8,
+              life: 0,
+              maxLife: Math.round(steps) + 6,
+              color: Math.random() < 0.33 ? '#ffffff' : Math.random() < 0.5 ? '#38bdf8' : '#bae6fd',
+              trail: true,
+              shape: 'diamond',
+              gravity: 0.02,
+            });
+          }
+        }
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(mx, my);
+        ctx.lineTo(targetHeroX, targetHeroY);
+        ctx.strokeStyle = `rgba(56, 189, 248, ${beamAlpha * 0.72})`;
+        ctx.lineWidth = 15 * (0.7 + beamAlpha * 0.5);
+        ctx.lineCap = 'round';
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = 22;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(mx, my);
+        ctx.lineTo(targetHeroX, targetHeroY);
+        ctx.strokeStyle = `rgba(240, 249, 255, ${beamAlpha * 0.95})`;
+        ctx.lineWidth = 5.5 * (0.75 + beamAlpha * 0.45);
+        ctx.lineCap = 'round';
+        ctx.shadowColor = '#e0f2fe';
+        ctx.shadowBlur = 12;
+        ctx.stroke();
+        ctx.restore();
+      }
+
       // Clean lightning arc for Medusa / Melenudo
       if (effectiveParticles === 'lightning' && progress > 0.12 && progress < 0.62) {
         ctx.save();
@@ -1655,6 +2196,32 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
 
         const lifeFrac = pt.life / pt.maxLife;
         const pAlpha = Math.sin(lifeFrac * Math.PI);
+
+        if (pt.isFly) {
+          const wobbleX = Math.sin(elapsed * 0.045 + (pt.flyPhase ?? 0)) * 2.2;
+          const wobbleY = Math.cos(elapsed * 0.058 + (pt.flyPhase ?? 0) * 1.7) * 2.2;
+          const fx = pt.x + wobbleX;
+          const fy = pt.y + wobbleY;
+          const wingSpread = 2.4 + Math.sin(elapsed * 0.14 + (pt.flyPhase ?? 0)) * 1.1;
+          ctx.save();
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.globalAlpha = Math.max(0, Math.min(1, pAlpha * 0.95));
+          // Alas zumbantes verdoso-amarillentas
+          ctx.fillStyle = 'rgba(236, 252, 203, 0.84)';
+          ctx.beginPath();
+          ctx.ellipse(fx - 1.4, fy - 2.1, wingSpread, 1.3, -0.5, 0, Math.PI * 2);
+          ctx.ellipse(fx + 1.6, fy - 2.0, wingSpread, 1.3, 0.5, 0, Math.PI * 2);
+          ctx.fill();
+          // Cuerpo negro de la mosca con tenue brillo tóxico
+          ctx.shadowColor = '#a3e635';
+          ctx.shadowBlur = 4;
+          ctx.fillStyle = '#0f1608';
+          ctx.beginPath();
+          ctx.ellipse(fx, fy, pt.size * 1.1, pt.size * 0.72, -0.25, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          continue;
+        }
 
         ctx.save();
         ctx.globalAlpha = Math.max(0, Math.min(1, pAlpha * 0.9));
@@ -1729,6 +2296,8 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
       ? 'url(#enemy-vfx-ono-cyan-shader)'
       : profile.onoGlowColor === 'purple'
       ? 'url(#enemy-vfx-ono-purple-shader)'
+      : profile.onoGlowColor === 'sickly'
+      ? 'url(#enemy-vfx-ono-sickly-shader)'
       : filterUrl;
 
   const GLINT_MASK_STYLE: React.CSSProperties = {
@@ -2060,6 +2629,41 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
               <feMergeNode in="iceShimmer" />
             </feMerge>
           </filter>
+          <filter id="enemy-vfx-cryo-dragon-shader" x="-35%" y="-35%" width="170%" height="170%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.024 0.075" numOctaves="2" seed="42" result="cryoNoise">
+              <animate attributeName="baseFrequency" values="0.02 0.065; 0.052 0.135; 0.02 0.065" dur="0.26s" repeatCount="indefinite" />
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="cryoNoise" scale="2.6" xChannelSelector="R" yChannelSelector="G" result="cryoWarp" />
+            <feDropShadow dx="0" dy="0" stdDeviation="4.0" floodColor="#0ea5e9" floodOpacity="0.98" result="glacierAura" />
+            <feDropShadow dx="0" dy="0" stdDeviation="1.6" floodColor="#f0f9ff" floodOpacity="0.96" result="iceWhiteCore" />
+            <feMerge>
+              <feMergeNode in="glacierAura" />
+              <feMergeNode in="iceWhiteCore" />
+              <feMergeNode in="cryoWarp" />
+            </feMerge>
+          </filter>
+          <filter id="enemy-vfx-cryo-mist-shader" x="-35%" y="-35%" width="170%" height="170%">
+            <feColorMatrix
+              in="SourceGraphic"
+              type="matrix"
+              values="0.25 0.45 0.25 0 0
+                      0.20 0.65 0.35 0 0
+                      0.25 0.85 0.55 0 0.04
+                      0    0    0    1 0"
+              result="glacialMistColor"
+            />
+            <feTurbulence type="fractalNoise" baseFrequency="0.02 0.06" numOctaves="2" seed="27" result="mistNoise">
+              <animate attributeName="baseFrequency" values="0.018 0.05; 0.04 0.10; 0.018 0.05" dur="0.34s" repeatCount="indefinite" />
+            </feTurbulence>
+            <feDisplacementMap in="glacialMistColor" in2="mistNoise" scale="3.2" xChannelSelector="R" yChannelSelector="G" result="mistWarp" />
+            <feDropShadow dx="0" dy="0" stdDeviation="5.0" floodColor="#7dd3fc" floodOpacity="0.95" result="mistGlow" />
+            <feDropShadow dx="0" dy="0" stdDeviation="2.0" floodColor="#f0f9ff" floodOpacity="0.9" result="mistCore" />
+            <feMerge>
+              <feMergeNode in="mistGlow" />
+              <feMergeNode in="mistCore" />
+              <feMergeNode in="mistWarp" />
+            </feMerge>
+          </filter>
           <filter id="enemy-vfx-abyssal-spear-shader" x="-30%" y="-30%" width="160%" height="160%">
             <feColorMatrix
               in="SourceGraphic"
@@ -2121,6 +2725,28 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
               <feMergeNode in="acidWarp" />
             </feMerge>
           </filter>
+          <filter id="enemy-vfx-bulezau-putrid-shader" x="-30%" y="-30%" width="160%" height="160%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.026 0.075" numOctaves="2" seed="31" result="rotNoise">
+              <animate attributeName="baseFrequency" values="0.02 0.065; 0.048 0.125; 0.02 0.065" dur="0.28s" repeatCount="indefinite" />
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="rotNoise" scale="2.5" xChannelSelector="R" yChannelSelector="G" result="rotWarp" />
+            <feDropShadow dx="0" dy="0" stdDeviation="3.2" floodColor="#84cc16" floodOpacity="0.94" result="sicklyGreen" />
+            <feDropShadow dx="0" dy="0" stdDeviation="1.4" floodColor="#fde047" floodOpacity="0.86" result="biliousYellow" />
+            <feMerge>
+              <feMergeNode in="sicklyGreen" />
+              <feMergeNode in="biliousYellow" />
+              <feMergeNode in="rotWarp" />
+            </feMerge>
+          </filter>
+          <filter id="enemy-vfx-ono-sickly-shader" x="-25%" y="-25%" width="150%" height="150%">
+            <feDropShadow dx="0" dy="0" stdDeviation="3.2" floodColor="#84cc16" floodOpacity="0.95" result="sicklyGlow" />
+            <feDropShadow dx="0" dy="0" stdDeviation="1.3" floodColor="#fef08a" floodOpacity="0.92" result="bileRim" />
+            <feMerge>
+              <feMergeNode in="sicklyGlow" />
+              <feMergeNode in="bileRim" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
           <filter id="enemy-vfx-gold-shader" x="-30%" y="-30%" width="160%" height="160%">
             <feDropShadow dx="0" dy="0" stdDeviation="2.4" floodColor="#fbbf24" floodOpacity="0.92" />
           </filter>
@@ -2162,6 +2788,44 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
           </filter>
           <filter id="enemy-vfx-lightning-shader" x="-30%" y="-30%" width="160%" height="160%">
             <feDropShadow dx="0" dy="0" stdDeviation="2.8" floodColor="#22d3ee" floodOpacity="0.95" />
+          </filter>
+          <filter id="enemy-vfx-arana-fire-shader" x="-35%" y="-35%" width="170%" height="170%">
+            <feColorMatrix
+              in="SourceGraphic"
+              type="matrix"
+              values="1.25 0.65 0.25 0 0.14
+                      0.42 0.38 0.08 0 0.02
+                      0.04 0.02 0.02 0 0
+                      0    0    0    1 0"
+              result="flameTint"
+            />
+            <feTurbulence type="turbulence" baseFrequency="0.026 0.08" numOctaves="2" seed="17" result="flameNoise">
+              <animate attributeName="baseFrequency" values="0.022 0.07; 0.052 0.14; 0.022 0.07" dur="0.24s" repeatCount="indefinite" />
+            </feTurbulence>
+            <feDisplacementMap in="flameTint" in2="flameNoise" scale="3.0" xChannelSelector="R" yChannelSelector="G" result="flameWarp" />
+            <feDropShadow dx="0" dy="0" stdDeviation="4.0" floodColor="#f97316" floodOpacity="0.98" result="emberAura" />
+            <feDropShadow dx="0" dy="0" stdDeviation="1.6" floodColor="#fef08a" floodOpacity="0.92" result="solarCore" />
+            <feMerge>
+              <feMergeNode in="emberAura" />
+              <feMergeNode in="solarCore" />
+              <feMergeNode in="flameWarp" />
+            </feMerge>
+          </filter>
+          <filter id="enemy-vfx-spider-web-shader" x="-30%" y="-30%" width="160%" height="160%">
+            <feColorMatrix
+              in="SourceGraphic"
+              type="matrix"
+              values="0.85 0.95 0.95 0 0.12
+                      0.82 0.92 0.92 0 0.12
+                      0.78 0.88 0.88 0 0.10
+                      0    0    0    1 0"
+              result="webSilver"
+            />
+            <feDropShadow dx="0" dy="0" stdDeviation="2.8" floodColor="#f5f5f4" floodOpacity="0.92" result="webGlow" />
+            <feMerge>
+              <feMergeNode in="webGlow" />
+              <feMergeNode in="webSilver" />
+            </feMerge>
           </filter>
         </defs>
       </svg>
@@ -2324,6 +2988,59 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
             56% { transform: scaleX(1.0) scaleY(1.0); opacity: 1; }
             82% { transform: scaleX(1.03) scaleY(1.04); opacity: 0.86; }
             100% { transform: scaleX(1.05) scaleY(1.06); opacity: 0; }
+          }
+
+          @keyframes enemyAirPrisonWrap {
+            0% { transform: scale(0.42) rotate(-14deg); opacity: 0; }
+            24% { transform: scale(1.06) rotate(4deg); opacity: 1; }
+            62% { transform: scale(1.0) rotate(-2deg); opacity: 0.96; }
+            88% { transform: scale(1.03) rotate(2deg); opacity: 0.88; }
+            100% { transform: scale(1.08) rotate(0deg); opacity: 0; }
+          }
+
+          @keyframes enemyBulezauSmokeFromHand {
+            0% { transform: scaleX(0.18) scaleY(0.36); opacity: 0; }
+            20% { transform: scaleX(0.64) scaleY(0.84); opacity: 0.98; }
+            58% { transform: scaleX(1.02) scaleY(1.02); opacity: 1; }
+            84% { transform: scaleX(1.06) scaleY(1.06); opacity: 0.88; }
+            100% { transform: scaleX(1.1) scaleY(1.08); opacity: 0; }
+          }
+
+          @keyframes enemyCryovainClawSlash {
+            0% { transform: translate(42px, -32px) scale(0.45) rotate(8deg); opacity: 0; }
+            24% { transform: translate(-4px, 4px) scale(1.12) rotate(-2deg); opacity: 1; }
+            68% { transform: translate(-12px, 10px) scale(1.04) rotate(-4deg); opacity: 0.95; }
+            100% { transform: translate(-20px, 16px) scale(1.14) rotate(-6deg); opacity: 0; }
+          }
+
+          @keyframes enemyCryovainBiteSnap {
+            0% { transform: scaleX(-1) scale(1.22) scaleY(1.3); opacity: 0; }
+            20% { transform: scaleX(-1) scale(1.08) scaleY(1.16); opacity: 1; }
+            42% { transform: scaleX(-1) scale(1.02) scaleY(0.84); opacity: 1; }
+            64% { transform: scaleX(-1) scale(1.0) scaleY(0.94); opacity: 1; }
+            100% { transform: scaleX(-1) scale(1.05) scaleY(0.88); opacity: 0; }
+          }
+
+          @keyframes enemyCryovainIceBeam {
+            0% { transform: scaleX(0.12) scaleY(0.24); opacity: 0; }
+            16% { transform: scaleX(0.75) scaleY(0.92); opacity: 1; }
+            48% { transform: scaleX(1.04) scaleY(1.08); opacity: 1; }
+            80% { transform: scaleX(1.02) scaleY(0.98); opacity: 0.92; }
+            100% { transform: scaleX(1.06) scaleY(0.4); opacity: 0; }
+          }
+
+          @keyframes enemyCryovainMistSweep {
+            0% { transform: translate(18px, -10px) scaleX(0.22) scaleY(0.28); opacity: 0; }
+            22% { transform: translate(0px, 0px) scaleX(0.95) scaleY(0.94); opacity: 0.98; }
+            68% { transform: translate(-24px, 14px) scaleX(1.22) scaleY(1.18); opacity: 0.94; }
+            100% { transform: translate(-42px, 28px) scaleX(1.36) scaleY(1.28); opacity: 0; }
+          }
+
+          @keyframes enemyCryovainFieldSurge {
+            0% { transform: scale(0.92); opacity: 0; }
+            25% { transform: scale(1.02); opacity: 0.85; }
+            72% { transform: scale(1.06); opacity: 0.78; }
+            100% { transform: scale(1.1); opacity: 0; }
           }
         `}</style>
 
@@ -2556,10 +3273,14 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
           </>
         )}
 
-        {/* LANZAS Y PATAS DE AIRE TRIANGULAR (Lanzas + Araknoide Delgado Ovíparo) */}
+        {/* LANZAS Y PATAS DE AIRE TRIANGULAR (Lanzas + Araknoide Delgado Ovíparo + Cuchillas de Aire) */}
         {isMode('spear_thrust') &&
           renderProjectileWave(
-            isUlt ? SPEAR_TRIPLE : SPEAR_SINGLE,
+            isUlt
+              ? SPEAR_TRIPLE
+              : isSpecial && activeAttack?.enemyConfigId === 'elemental_aire'
+              ? SPEAR_DOUBLE
+              : SPEAR_SINGLE,
             profile.spriteSrc,
             'spear',
             { flipImgX: false }
@@ -2810,6 +3531,335 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
                   )}
                 </div>
               </div>
+            );
+          })}
+
+        {/* PRISIÓN DE TORBELLINO DEL ELEMENTAL DE AIRE (envuelve e inmoviliza al héroe) */}
+        {isMode('air_prison') &&
+          triggeredSteps.map((idx) => (
+            <div
+              key={`air-prison-${vfxKey}-${idx}`}
+              className="absolute left-[4%] bottom-[13%] w-[184px] h-[232px] pointer-events-none z-[24] flex items-center justify-center overflow-visible"
+            >
+              <div className="relative w-full h-full overflow-visible">
+                <img
+                  src={profile.spriteSrc}
+                  alt="Prisión de Vórtice"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-contain animate-[enemyAirPrisonWrap_0.72s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                  style={{ filter: filterUrl }}
+                />
+                {profile.energyGlint && (
+                  <img
+                    src={profile.spriteSrc}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                    style={{
+                      ...GLINT_MASK_STYLE,
+                      animation:
+                        'enemyAirPrisonWrap 0.72s cubic-bezier(0.16,1,0.3,1) forwards, enemyEnergySweep 0.44s ease-out forwards',
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+
+        {/* TOQUE DE PUTREFACCIÓN DEL BULEZAU (humo verdoso-amarillento con moscas saliendo de su mano extendida) */}
+        {isMode('bulezau_touch') &&
+          triggeredSteps.map((idx) => {
+            const handPxX = launchTip.x * arenaBox.w;
+            const handPxY = launchTip.y * arenaBox.h;
+            const heroLeftMargin = 12;
+            const smokeW = Math.max(180, Math.min(280, Math.round(handPxX - heroLeftMargin + 26)));
+            const smokeH = Math.round(smokeW * 0.5);
+            return (
+              <div
+                key={`bulezau-touch-${vfxKey}-${idx}`}
+                className="absolute pointer-events-none z-[23] overflow-visible"
+                style={{
+                  left: `${Math.round(handPxX - smokeW + 24)}px`,
+                  top: `${Math.round(handPxY - smokeH * 0.44)}px`,
+                  width: `${smokeW}px`,
+                  height: `${smokeH}px`,
+                }}
+              >
+                <div
+                  className="relative w-full h-full overflow-visible"
+                  style={{ transformOrigin: 'right center' }}
+                >
+                  <img
+                    src={profile.spriteSrc}
+                    alt="Toque de Putrefacción"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-contain animate-[enemyBulezauSmokeFromHand_0.68s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                    style={{ transformOrigin: 'right center', filter: filterUrl }}
+                  />
+                  {profile.energyGlint && (
+                    <img
+                      src={profile.spriteSrc}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                      className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                      style={{
+                        ...GLINT_MASK_STYLE,
+                        transformOrigin: 'right center',
+                        animation:
+                          'enemyBulezauSmokeFromHand 0.68s cubic-bezier(0.16,1,0.3,1) forwards, enemyEnergySweep 0.48s ease-out forwards',
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            );
+          })}
+
+        {/* BOLAS DE FUEGO PÚTRIDO DEL BULEZAU (magia verde enfermiza y amarillenta con moscas) */}
+        {isMode('bulezau_fireball') &&
+          renderProjectileWave(
+            isUlt
+              ? PUTRID_FIREBALL_TRIPLE
+              : isSpecial
+              ? PUTRID_FIREBALL_DOUBLE
+              : PUTRID_FIREBALL_SINGLE,
+            profile.spriteSrc,
+            'bulezau-fireball',
+            { flipImgX: false }
+          )}
+
+        {/* CRYOVAIN ATAQUE 1: ZARPAZO GLACIAL (triple garra helada sobre el héroe) */}
+        {isMode('dragon_claw_slam') &&
+          triggeredSteps.map((idx) => (
+            <div
+              key={`cryovain-claw-${vfxKey}-${idx}`}
+              className="absolute left-[1.5%] bottom-[11%] w-[252px] h-[252px] pointer-events-none z-[24] flex items-center justify-center overflow-visible"
+            >
+              <div className="relative w-full h-full overflow-visible">
+                <img
+                  src={profile.spriteSrc}
+                  alt="Zarpazo Glacial"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-contain animate-[enemyCryovainClawSlash_0.48s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                  style={{ filter: filterUrl }}
+                />
+                {profile.energyGlint && (
+                  <img
+                    src={profile.spriteSrc}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                    style={{
+                      ...GLINT_MASK_STYLE,
+                      animation:
+                        'enemyCryovainClawSlash 0.48s cubic-bezier(0.16,1,0.3,1) forwards, enemyEnergySweep 0.4s ease-out forwards',
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+
+        {/* CRYOVAIN ATAQUE 1B: PISOTÓN SÍSMICO CON LAS DOS PATAS DELANTERAS */}
+        {isMode('dragon_double_stomp') &&
+          triggeredSteps.map((idx) => (
+            <div
+              key={`cryovain-stomp-${vfxKey}-${idx}`}
+              style={{
+                left: idx === 0 ? '2%' : '7%',
+                bottom: idx === 0 ? '4%' : '6%',
+                transform: idx === 1 ? 'scaleX(-1)' : undefined,
+              }}
+              className="absolute w-[238px] h-[210px] pointer-events-none z-[24] flex items-center justify-center overflow-visible"
+            >
+              <div className="relative w-full h-full overflow-visible">
+                <img
+                  src={idx === 0 ? profile.spriteSrc : profile.impactSrc || profile.spriteSrc}
+                  alt="Pisotón Sísmico Glacial"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-contain animate-[enemyCryovainClawSlash_0.44s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                  style={{ filter: filterUrl }}
+                />
+              </div>
+            </div>
+          ))}
+
+        {/* CRYOVAIN ATAQUE 2: MORDISCO DESGARRADOR (fauces glaciales y sangrientas cerrándose sobre el héroe) */}
+        {isMode('dragon_bite_frost') &&
+          triggeredSteps.map((idx) => (
+            <div
+              key={`cryovain-bite-${vfxKey}-${idx}`}
+              className="absolute left-[1%] bottom-[12%] w-[260px] h-[248px] pointer-events-none z-[24] flex items-center justify-center overflow-visible"
+            >
+              <div className="relative w-full h-full overflow-visible">
+                <img
+                  src={profile.spriteSrc}
+                  alt="Mordisco Desgarrador"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-contain animate-[enemyCryovainBiteSnap_0.54s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                  style={{ filter: filterUrl }}
+                />
+                {profile.energyGlint && (
+                  <img
+                    src={profile.spriteSrc}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                    style={{
+                      ...GLINT_MASK_STYLE,
+                      animation:
+                        'enemyCryovainBiteSnap 0.54s cubic-bezier(0.16,1,0.3,1) forwards, enemyEnergySweep 0.44s ease-out forwards',
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+
+        {/* CRYOVAIN ATAQUE 3: ALIENTO DE HIELO CONCENTRADO (punta del haz 100% dentro de su boca y disipación suave sin cortes sobre el héroe) */}
+        {isMode('dragon_ice_breath') &&
+          triggeredSteps.map((idx) => {
+            const mouthPxX = launchMouth.x * arenaBox.w;
+            const mouthPxY = launchMouth.y * arenaBox.h;
+            const heroTargetX = Math.max(24, Math.round(arenaBox.w * 0.125));
+            const heroTargetY = Math.round(arenaBox.h * 0.67);
+            const dx = heroTargetX - mouthPxX;
+            const dy = heroTargetY - mouthPxY;
+            const dist = Math.max(195, Math.round(Math.hypot(dx, dy) + 32));
+            const angleDeg = (Math.atan2(-dy, -dx) * 180) / Math.PI;
+            const beamH = Math.min(204, Math.round(dist * 0.58));
+            const tipInset = Math.round(dist * 0.05);
+            return (
+              <div
+                key={`cryovain-breath-${vfxKey}-${idx}`}
+                className="absolute pointer-events-none z-[24] overflow-visible"
+                style={{
+                  left: `${Math.round(mouthPxX - dist + tipInset)}px`,
+                  top: `${Math.round(mouthPxY - beamH * 0.5)}px`,
+                  width: `${dist}px`,
+                  height: `${beamH}px`,
+                  transformOrigin: 'right center',
+                  transform: `rotate(${angleDeg.toFixed(2)}deg)`,
+                }}
+              >
+                <div
+                  className="relative w-full h-full overflow-visible animate-[enemyCryovainIceBeam_0.76s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                  style={{
+                    transformOrigin: 'right center',
+                    WebkitMaskImage:
+                      'linear-gradient(to left, black 0%, black 66%, rgba(0,0,0,0.68) 82%, rgba(0,0,0,0.2) 94%, transparent 100%)',
+                    maskImage:
+                      'linear-gradient(to left, black 0%, black 66%, rgba(0,0,0,0.68) 82%, rgba(0,0,0,0.2) 94%, transparent 100%)',
+                  }}
+                >
+                  <div
+                    className="relative w-full h-full overflow-visible"
+                    style={{
+                      WebkitMaskImage:
+                        'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.82) 10%, black 20%, black 80%, rgba(0,0,0,0.82) 90%, transparent 100%)',
+                      maskImage:
+                        'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.82) 10%, black 20%, black 80%, rgba(0,0,0,0.82) 90%, transparent 100%)',
+                    }}
+                  >
+                    <img
+                      src={profile.spriteSrc}
+                      alt="Aliento de Hielo Concentrado"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-fill"
+                      style={{ transform: 'scaleX(-1)', filter: filterUrl }}
+                    />
+                    {profile.energyGlint && (
+                      <img
+                        src={profile.spriteSrc}
+                        alt=""
+                        referrerPolicy="no-referrer"
+                        className="absolute inset-0 w-full h-full object-fill pointer-events-none"
+                        style={{
+                          ...GLINT_MASK_STYLE,
+                          transform: 'scaleX(-1)',
+                          animation: 'enemyEnergySweep 0.56s ease-out forwards',
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
+        {/* ESTALLIDO SOBRE EL HÉROE AL IMPACTAR EL ALIENTO (glacial o ígneo según jefe) */}
+        {isMode('dragon_ice_breath') && triggeredImpact && (
+          <div className="absolute left-[1%] bottom-[13%] w-[196px] h-[196px] pointer-events-none z-[25] flex items-center justify-center overflow-visible">
+            <div
+              className="absolute inset-2 rounded-full animate-[enemySlamBurstPop_0.54s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+              style={{
+                background:
+                  profile.shader === 'arana_fire'
+                    ? 'radial-gradient(circle, rgba(254,243,199,0.92) 0%, rgba(249,115,22,0.68) 42%, transparent 74%)'
+                    : 'radial-gradient(circle, rgba(240,249,255,0.92) 0%, rgba(56,189,248,0.62) 40%, transparent 74%)',
+                mixBlendMode: 'screen',
+              }}
+            />
+            <div
+              className={`absolute inset-5 rounded-full border-4 animate-[enemySlamBurstPop_0.5s_cubic-bezier(0.16,1,0.3,1)_forwards] ${
+                profile.shader === 'arana_fire'
+                  ? 'border-amber-200/90 shadow-[0_0_26px_rgba(249,115,22,0.9)]'
+                  : 'border-cyan-200/90 shadow-[0_0_26px_rgba(56,189,248,0.88)]'
+              }`}
+            />
+          </div>
+        )}
+
+        {/* CRYOVAIN FASE 1/4 PV: ALIENTO DE NIEBLA GÉLIDA QUE CUBRE TODO EL CAMPO */}
+        {isMode('dragon_frost_mist_breath') &&
+          triggeredSteps.map((idx) => {
+            const mouthPxX = launchMouth.x * arenaBox.w;
+            const mouthPxY = launchMouth.y * arenaBox.h;
+            const mistW = Math.max(255, Math.round(mouthPxX + 26));
+            const mistH = Math.round(mistW * 0.64);
+            return (
+              <React.Fragment key={`cryovain-frost-mist-breath-${vfxKey}-${idx}`}>
+                <div
+                  className="absolute pointer-events-none z-[24] overflow-visible"
+                  style={{
+                    left: `${Math.round(mouthPxX - mistW + 14)}px`,
+                    top: `${Math.round(mouthPxY - mistH * 0.46)}px`,
+                    width: `${mistW}px`,
+                    height: `${mistH}px`,
+                  }}
+                >
+                  <div className="relative w-full h-full overflow-visible" style={{ transformOrigin: 'right center' }}>
+                    <img
+                      src={profile.spriteSrc}
+                      alt="Aliento de Niebla Gélida"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-contain animate-[enemyCryovainMistSweep_1.08s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                      style={{ transformOrigin: 'right center', filter: filterUrl }}
+                    />
+                    {profile.energyGlint && (
+                      <img
+                        src={profile.spriteSrc}
+                        alt=""
+                        referrerPolicy="no-referrer"
+                        className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                        style={{
+                          ...GLINT_MASK_STYLE,
+                          transformOrigin: 'right center',
+                          animation:
+                            'enemyCryovainMistSweep 1.08s cubic-bezier(0.16,1,0.3,1) forwards, enemyEnergySweep 0.62s ease-out forwards',
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+                <div
+                  className="absolute inset-0 pointer-events-none z-[23] animate-[enemyCryovainFieldSurge_1.2s_ease-out_forwards]"
+                  style={{
+                    background:
+                      'radial-gradient(ellipse at 50% 62%, rgba(224,242,254,0.52) 0%, rgba(125,211,252,0.34) 48%, rgba(14,165,233,0.16) 82%, transparent 100%)',
+                  }}
+                />
+              </React.Fragment>
             );
           })}
 

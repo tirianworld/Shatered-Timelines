@@ -433,7 +433,7 @@ export const SantuarioView: React.FC = () => {
           title="Herrería de Icespear (Forja y Armas)"
         />
 
-        {/* Order / Clan Lodge Hotspot (Mountain Lodge under Waterfall - image_6578a593.webp) */}
+        {/* Order / Clan Lodge Hotspot (Mountain Lodge under Waterfall - image_6578a593.png) */}
         <button
           onClick={() => {
             sound.playSFX('click');

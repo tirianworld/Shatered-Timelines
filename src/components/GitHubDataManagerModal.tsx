@@ -763,7 +763,7 @@ export const GitHubDataManagerModal: React.FC<Props> = ({ isOpen, onClose }) => 
                     <label className="text-[10px] text-stone-400 block font-bold">Nombre del Archivo</label>
                     <input
                       type="text"
-                      placeholder="ej: nuevo_heroe.webp"
+                      placeholder="ej: nuevo_heroe.png"
                       value={uploadFilename}
                       onChange={(e) => setUploadFilename(e.target.value)}
                       className="w-full bg-[#110401] border border-amber-900 rounded-lg px-2.5 py-1.5 text-white font-mono text-[11px]"

@@ -2705,7 +2705,7 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
       {/* 
         FORGE MILESTONES BUTTON (Hitos de la Forja):
         Positioned at the upper right against the dark brick wall in front of the weapons rack,
-        matching exactly image_dcf27380.webp and using sprite boton_logros_forja.webp!
+        matching exactly image_dcf27380.png and using sprite boton_logros_forja.png!
       */}
       <button
         type="button"
@@ -2731,7 +2731,7 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
 
       {/* 
         TOP FORGE NAVIGATION BAR (Volver, Atributos y Nombre de Sección):
-        Positioned at the upper horizontal wood beam strip (above the furnace scene), exactly matching reference image_3a691b49.webp!
+        Positioned at the upper horizontal wood beam strip (above the furnace scene), exactly matching reference image_3a691b49.png!
       */}
       {/* 
         TOP FORGE ATTRIBUTE FILTER ORBS:
@@ -2964,14 +2964,14 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
 
                         {/* 2. Left Portrait Square - MOVED TO THE RIGHT INSIDE BUTTON & 10% LARGER (h-[53%]) */}
                         <div className="absolute left-[7.5%] top-1/2 -translate-y-1/2 h-[53%] aspect-square rounded-[4px] overflow-hidden flex items-center justify-center shadow-md select-none">
-                          {/* Warm Gold Background Asset (image_a17d132a.webp in original color) */}
+                          {/* Warm Gold Background Asset (image_a17d132a.png in original color) */}
                           <img
                             src="/assets/forge/portrait_bg.webp"
                             alt=""
                             className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none z-0"
                           />
 
-                          {/* Wood Carved Frame (image_ca711c21.webp) - UNDER the sword, level, attribute, and stars */}
+                          {/* Wood Carved Frame (image_ca711c21.png) - UNDER the sword, level, attribute, and stars */}
                           <img
                             src="/assets/forge/portrait_frame.webp"
                             alt=""
@@ -3257,7 +3257,7 @@ export const ForgeView: React.FC<ForgeViewProps> = ({
               </div>
             </div>
 
-            {/* 3 Material Requirements Row with marco items.webp - Dynamically read from inventory */}
+            {/* 3 Material Requirements Row with marco items.png - Dynamically read from inventory */}
             {(() => {
               const ingotHave = getMaterialCount(craftModalItem.ingredients.ingotIcon);
               const hiltHave = getMaterialCount(craftModalItem.ingredients.hiltIcon);

@@ -1,5 +1,136 @@
 @import "tailwindcss";
 
+/* Respiración de los sprites de combate (reposo y ataque), como la de Cryovain o la
+   Araña Acorazada. Anima `transform` (no `scale`/`translate`), que los sprites de héroe
+   usan como propiedades independientes, así que se compone con su escala y posición.
+   `--breath-amp` y `--breath-dur` los pone cada sprite; el retardo negativo los desfasa. */
+@keyframes combatSpriteBreath {
+  0%,
+  100% {
+    transform: scaleY(1) scaleX(1);
+  }
+  50% {
+    transform: scaleY(calc(1 - var(--breath-amp, 0.014))) scaleX(calc(1 + var(--breath-amp, 0.014)));
+  }
+}
+
+.combat-sprite-breath {
+  transform-origin: bottom center;
+  animation: combatSpriteBreath var(--breath-dur, 3.4s) ease-in-out
+    calc(var(--breath-dur, 3.4s) * -0.37) infinite;
+}
+
+/* ===== Ambiente de los escenarios de combate (nieve, lluvia, niebla, polvo, viento, brasas) ===== */
+.stage-fx__p {
+  position: absolute;
+  display: block;
+  border-radius: 9999px;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.stage-fx--snow .stage-fx__p {
+  background: #f4faff;
+  box-shadow: 0 0 4px rgba(224, 242, 254, 0.85);
+  animation-name: stageFxSnowfall;
+  animation-timing-function: linear;
+}
+@keyframes stageFxSnowfall {
+  from {
+    transform: translate3d(0, -14vh, 0);
+  }
+  to {
+    transform: translate3d(var(--fx-drift, 20px), 112vh, 0);
+  }
+}
+
+.stage-fx--rain .stage-fx__p {
+  background: linear-gradient(to bottom, rgba(214, 236, 255, 0) 0%, rgba(214, 236, 255, 0.9) 100%);
+  animation-name: stageFxRainfall;
+  animation-timing-function: linear;
+}
+@keyframes stageFxRainfall {
+  from {
+    transform: translate3d(0, -18vh, 0) rotate(6deg);
+  }
+  to {
+    transform: translate3d(calc(var(--fx-drift, 20px) * 0.25), 114vh, 0) rotate(6deg);
+  }
+}
+
+.stage-fx--fog .stage-fx__p {
+  border-radius: 50%;
+  filter: blur(26px);
+  background: radial-gradient(circle, rgba(226, 240, 255, 0.6) 0%, rgba(226, 240, 255, 0) 72%);
+  animation-name: stageFxFog;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+}
+@keyframes stageFxFog {
+  from {
+    transform: translate3d(-5%, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(7%, -4%, 0) scale(1.14);
+  }
+}
+
+.stage-fx--dust .stage-fx__p {
+  background: #ffe7bd;
+  box-shadow: 0 0 6px rgba(255, 214, 150, 0.55);
+  animation-name: stageFxDust;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+}
+@keyframes stageFxDust {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(var(--fx-drift, 20px), -13vh, 0);
+  }
+}
+
+.stage-fx--wind .stage-fx__p {
+  background: linear-gradient(
+    90deg,
+    rgba(240, 249, 255, 0) 0%,
+    rgba(240, 249, 255, 0.75) 55%,
+    rgba(240, 249, 255, 0) 100%
+  );
+  animation-name: stageFxWind;
+  animation-timing-function: linear;
+}
+@keyframes stageFxWind {
+  from {
+    transform: translate3d(-22vw, 0, 0);
+  }
+  to {
+    transform: translate3d(122vw, var(--fx-drift, 20px), 0);
+  }
+}
+
+.stage-fx--embers .stage-fx__p {
+  background: #ffb15c;
+  box-shadow: 0 0 8px rgba(255, 138, 56, 0.85);
+  animation-name: stageFxEmbers;
+  animation-timing-function: ease-in;
+}
+@keyframes stageFxEmbers {
+  from {
+    transform: translate3d(0, 8vh, 0) scale(0.5);
+  }
+  to {
+    transform: translate3d(var(--fx-drift, 20px), -95vh, 0) scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-fx__p {
+    animation: none !important;
+  }
+}
+
 @layer utilities {
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {

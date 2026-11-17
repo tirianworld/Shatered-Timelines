@@ -216,7 +216,7 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
   {
     id: 'barled',
     name: 'Barled',
-    title: 'Pícaro de la Frontera',
+    title: 'Bardo de la Frontera',
     rarity: 'SR',
     attribute: 'Arcano',
     portrait: '/assets/portraits/barled.webp',
@@ -227,7 +227,7 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     attack: 300,
     defense: 185,
     cc: 1325,
-    bio: 'Aventurero carismático y veloz espadachín, siempre listo con una sonrisa burlona y un golpe certero.',
+    bio: 'Bardo de la Frontera: afina el laúd con la misma sonrisa burlona con la que desenvaina, y sus canciones levantan a un ejército moribundo.',
   },
   {
     id: 'kairon',
@@ -328,7 +328,7 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     bio: 'Virtuosa barda kitsune que combina el encanto hipnótico de su lira dorada con magia rosada y la velocidad de su rapier.',
   },
   {
-    id: 'arlem',
+    id: 'arlem_diaz',
     name: 'Arlem Díaz',
     title: 'Monje de los Cien Golpes',
     rarity: 'SR',
@@ -346,7 +346,7 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
   {
     id: 'raxxar',
     name: 'Raxxar',
-    title: 'Boticario de Icespear',
+    title: 'Gladiador Esclavo',
     rarity: 'SR',
     attribute: 'Natural',
     portrait: '/assets/portraits/raxxar.webp',
@@ -357,7 +357,7 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     attack: 290,
     defense: 175,
     cc: 1405,
-    bio: 'Boticario de Icespear: mezcla venenos y remedios con la misma calma con la que sirve una copa. Sus viales han salvado más vidas de las que admite.',
+    bio: 'Gladiador esclavo que sobrevivió a la arena sellando un pacto con un filo del Páramo: cambió las cadenas por acero propio y ahora pelea por su cuenta. Conserva de sus años de cautiverio el pulso firme para mezclar venenos.',
   },
 ];
 

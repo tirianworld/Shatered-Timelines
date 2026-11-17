@@ -205,6 +205,29 @@ const SKIN_SLOT_LEFT = ['11%', '29.5%', '48%', '66.5%'];
 
 const fmt = (n: number) => n.toLocaleString('es-ES', { maximumFractionDigits: 1 });
 
+const useResponsiveGameScale = () => {
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const scaleFit = Math.min(vw / 407, vh / 792);
+      setScale(scaleFit);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, []);
+
+  return scale;
+};
+
 const starCountFor = (rarity?: string) => (rarity === 'SSR' || rarity === 'UR' ? 5 : rarity === 'SR' ? 4 : 3);
 
 const StatTile: React.FC<{ icon: string; value: string; label: string }> = ({ icon, value, label }) => (
@@ -229,6 +252,7 @@ interface HeroPageViewProps {
 }
 
 export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) => {
+  const scale = useResponsiveGameScale();
   const {
     heroes,
     gold,
@@ -571,40 +595,40 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         </div>
 
         <div className="absolute left-[3%] top-[33%] w-[52%]">
-          <p className="font-serif text-[20px] font-black text-[#40200a]">Despertar:</p>
+          <p className="font-serif text-[15px] font-black leading-tight text-[#40200a]">Despertar:</p>
           <div className="mt-[2px] flex items-center gap-[2px]">
             {Array.from({ length: 5 }).map((_, i) => (
               <img
                 key={i}
                 src={`${A}/estrella_mejora.webp`}
                 alt=""
-                className={`w-[28px] h-[28px] object-contain ${i < stars ? '' : 'opacity-25 grayscale'}`}
+                className={`w-[22px] h-[22px] object-contain ${i < stars ? '' : 'opacity-25 grayscale'}`}
               />
             ))}
           </div>
         </div>
 
         <div className="absolute left-[3%] top-[54%] w-[46%]">
-          <p className="font-serif text-[20px] font-black text-[#40200a]">Atributo:</p>
+          <p className="font-serif text-[15px] font-black leading-tight text-[#40200a]">Atributo:</p>
           <div className="mt-[2px] flex items-center gap-[5px]">
             <img
               src={ATTRIBUTE_ORB[hero.attribute] ?? ATTRIBUTE_ORB.Natural}
               alt=""
-              className="w-[34px] h-[34px] object-contain"
+              className="w-[26px] h-[26px] object-contain"
             />
-            <span className="text-[20px] font-black text-[#3b1c06]">{hero.attribute}</span>
+            <span className="text-[15px] font-black leading-tight text-[#3b1c06]">{hero.attribute}</span>
           </div>
         </div>
 
         <div className="absolute left-[3%] top-[76%] w-[52%]">
-          <p className="font-serif text-[20px] font-black text-[#40200a]">Raza:</p>
+          <p className="font-serif text-[15px] font-black leading-tight text-[#40200a]">Raza:</p>
           <div className="mt-[2px] flex items-center gap-[5px]">
             <img
               src={(HERO_RACE[hero.id] ?? DEFAULT_RACE).icon}
               alt=""
-              className="w-[34px] h-[34px] object-contain"
+              className="w-[26px] h-[26px] object-contain"
             />
-            <span className="text-[20px] font-black text-[#3b1c06]">{(HERO_RACE[hero.id] ?? DEFAULT_RACE).label}</span>
+            <span className="text-[15px] font-black leading-tight text-[#3b1c06]">{(HERO_RACE[hero.id] ?? DEFAULT_RACE).label}</span>
           </div>
         </div>
 
@@ -1136,7 +1160,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
         </div>
 
         {/* Estrellas actuales */}
-        <div className="absolute left-[5%] top-[25.2%] flex w-[62%] items-center gap-[7px]">
+        <div className="absolute left-[5%] top-[25.2%] flex w-[70%] items-center gap-[5px]">
           <span className="flex items-center gap-[3px] rounded-[4px] border border-[#8a4a10]/80 bg-gradient-to-b from-[#3a1c0a] to-[#251006] px-[6px] py-[2px] text-[10.5px] font-black uppercase leading-none tracking-[0.1em] text-[#ffd98a] shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
             <img src={`${A}/estrella_mejora.webp`} alt="" className="h-[10px] w-[10px] object-contain" />
             Despertar
@@ -1779,8 +1803,16 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
   );
 
   return createPortal(
-    <div className="fixed inset-0 z-[90] flex flex-col overflow-hidden bg-[#1c0803] select-none animate-fade-in">
-      <div className="relative w-full max-w-[560px] h-full mx-auto flex flex-col overflow-hidden bg-[#1c0803]">
+    <div className="fixed inset-0 z-[90] w-full h-full bg-[#0a0402] flex items-center justify-center p-0 select-none overflow-hidden animate-fade-in">
+      <div
+        style={{
+          width: 407,
+          height: 792,
+          transform: `scale(${scale})`,
+          transformOrigin: 'center center',
+        }}
+        className="relative flex flex-col bg-[#1c0803] shadow-2xl overflow-hidden shrink-0 select-none"
+      >
         {/* Barra superior del juego */}
         <GameHeader onBack={onClose} />
 
