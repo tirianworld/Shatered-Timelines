@@ -62,7 +62,8 @@ type DeliveryMode =
   | 'lightning_bolt'
   | 'scythe_slash'
   | 'lifesteal_bite'
-  | 'static_pulse';
+  | 'static_pulse'
+  | 'mist_breath';
 
 type ShaderKey =
   | 'none'
@@ -427,6 +428,44 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     accentColor: '#fbbf24',
     spriteSrc: '/assets/combat/enemy_vfx_flecha_simple.webp',
     onoSrc: '/assets/combat/enemy_ono_twang.webp',
+  },
+  // === BUGBEAR CRIADO (Recibidor Mansión Ferton) ===
+  bugbear_criado: {
+    mode: 'punch_slam',
+    shader: 'gold',
+    particles: 'sparks',
+    accentColor: '#fbbf24',
+    spriteSrc: '/assets/combat/bugbear_vfx_bandeja.webp',
+    onoSrc: '/assets/combat/bugbear_ono_bonk.webp',
+    ultOnoSrc: '/assets/combat/bugbear_ono_swiing.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
+  // === DURNIK (Guardaespaldas de Ferton - Escaleras) ===
+  durnik_guardaespaldas: {
+    mode: 'hammer_slam',
+    shader: 'none',
+    particles: 'sparks',
+    accentColor: '#fbbf24',
+    spriteSrc: '/assets/combat/durnik_vfx_martillo.webp',
+    impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+    onoSrc: '/assets/combat/durnik_ono_krak.webp',
+    ultOnoSrc: '/assets/combat/durnik_ono_bamm.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
+  // === GORGON DE HIERRO (Capítulo V - Primera Cámara) ===
+  gorgon_metal: {
+    mode: 'spear_thrust',
+    shader: 'none',
+    particles: 'sparks',
+    accentColor: '#10b981',
+    spriteSrc: '/assets/combat/gorgon_vfx_lanza.webp',
+    onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    ultOnoSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+    alwaysDualOno: true,
+    onoGlowColor: 'cyan',
+    energyGlint: true,
   },
   araknoide_azul: {
     mode: 'ice_shard',
@@ -811,10 +850,100 @@ function resolveEnemyProfile(attack: ActiveEnemyAttackVfxState): EnemyVfxProfile
     return ENEMY_VFX_PROFILES.devorador_quitinoso_p2;
   }
 
+  if (id === 'bugbear_criado') {
+    if (
+      !isUlt &&
+      (isSpecial ||
+        skillLower.includes('lanz') ||
+        skillLower.includes('vajilla') ||
+        skillLower.includes('objeto'))
+    ) {
+      return {
+        ...ENEMY_VFX_PROFILES.bugbear_criado,
+        mode: 'grenade_throw',
+        shader: 'gold',
+        particles: 'sparks',
+        accentColor: '#38bdf8',
+        spriteSrc: '/assets/combat/bugbear_vfx_objetos.webp',
+        onoSrc: '/assets/combat/bugbear_ono_swiing.webp',
+        ultOnoSrc: undefined,
+        onoGlowColor: 'cyan',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.bugbear_criado;
+  }
+
+  if (id === 'durnik_guardaespaldas') {
+    if (isUlt || skillLower.includes('juicio') || skillLower.includes('aplastamiento')) {
+      return {
+        ...ENEMY_VFX_PROFILES.durnik_guardaespaldas,
+        mode: 'mace_judgment_ult',
+        shader: 'gold',
+        particles: 'sparks',
+        accentColor: '#f59e0b',
+        spriteSrc: '/assets/combat/durnik_vfx_martillo.webp',
+        secondarySpriteSrc: '/assets/combat/guardia_vfx_rugido_onda.webp',
+        onoSrc: '/assets/combat/durnik_ono_bamm.webp',
+        ultOnoSrc: '/assets/combat/durnik_ono_krak.webp',
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    if (isSpecial || dmgType === 'thunder' || skillLower.includes('bramido') || skillLower.includes('choque')) {
+      return {
+        ...ENEMY_VFX_PROFILES.durnik_guardaespaldas,
+        mode: 'warcry_roar',
+        shader: 'gold',
+        particles: 'dust',
+        accentColor: '#fbbf24',
+        spriteSrc: '/assets/combat/guardia_vfx_rugido_onda.webp',
+        impactSrc: '/assets/combat/durnik_vfx_martillo.webp',
+        onoSrc: '/assets/combat/durnik_ono_bamm.webp',
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.durnik_guardaespaldas;
+  }
+
+  if (id === 'gorgon_metal') {
+    if (
+      !isUlt &&
+      (skillLower.includes('aliento') ||
+        skillLower.includes('niebla') ||
+        skillLower.includes('petrific') ||
+        dmgType === 'poison' ||
+        isSpecial)
+    ) {
+      return {
+        ...ENEMY_VFX_PROFILES.gorgon_metal,
+        mode: 'mist_breath',
+        shader: 'none',
+        particles: 'acid',
+        accentColor: '#34d399',
+        spriteSrc: '/assets/combat/gorgon_vfx_niebla.webp',
+        impactSrc: '/assets/combat/gorgon_vfx_niebla.webp',
+        onoSrc: '/assets/combat/gorgon_ono_shhhhh.webp',
+        ultOnoSrc: undefined,
+        alwaysDualOno: false,
+        onoGlowColor: 'cyan',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.gorgon_metal;
+  }
+
   if (id === 'hobgoblin_capataz') {
     const phase = attack.hobgoblinPhase ?? 1;
     return ENEMY_VFX_PROFILES[`hobgoblin_capataz_p${phase}`] || ENEMY_VFX_PROFILES.hobgoblin_capataz_p1;
   }
+  if (id === 'guarda_aurea_borracho_espada') return ENEMY_VFX_PROFILES.guarda_negro_espada;
+  if (id === 'guarda_aurea_borracho_alabarda') return ENEMY_VFX_PROFILES.guarda_negro_alabarda;
+  if (id === 'guarda_aurea_borracho_pesado') return ENEMY_VFX_PROFILES.guarda_negro_pesado;
+  if (id === 'hoggoblin_tunica_borracho_daga') return ENEMY_VFX_PROFILES.hoggoblin_encapuchado_daga;
+  if (id === 'hoggoblin_tunica_borracho_ballesta') return ENEMY_VFX_PROFILES.hoggoblin_encapuchado_ballesta;
+
   if (id && ENEMY_VFX_PROFILES[id]) {
     return ENEMY_VFX_PROFILES[id];
   }
@@ -978,8 +1107,11 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
    */
   const weaponTip = useMemo(() => {
     const f = enemyFrame ?? DEFAULT_ENEMY_FRAME;
-    const x = f.x - f.width * 0.5 + f.width * (f.tipFx ?? 0);
-    const topY = f.headY - f.height * 0.15;
+    const x =
+      f.left !== undefined
+        ? f.left + f.width * (f.tipFx ?? 0)
+        : f.x - f.width * 0.5 + f.width * (f.tipFx ?? 0);
+    const topY = f.top !== undefined ? f.top : f.headY - f.height * 0.15;
     const y = f.tipFy !== undefined ? topY + f.height * f.tipFy : f.headY + (f.y - f.headY) * 0.55;
     return {
       x: Math.min(0.96, Math.max(0.02, x)),
@@ -987,16 +1119,30 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
     };
   }, [enemyFrame]);
 
-  // La punta se congela al empezar el ataque: si la medición fina del sprite llega un instante
-  // después, el proyectil ya en vuelo no da un salto. Mientras no haya despegado, se actualiza.
+  const mouthOrigin = useMemo(() => {
+    const f = enemyFrame ?? DEFAULT_ENEMY_FRAME;
+    const fallbackX = f.left !== undefined ? f.left + f.width * 0.27 : f.x - f.width * 0.23;
+    const fallbackY = f.top !== undefined ? f.top + f.height * 0.425 : f.headY + f.height * 0.16;
+    return {
+      x: Math.min(0.95, Math.max(0.22, f.mouthX ?? fallbackX)),
+      y: Math.min(0.9, Math.max(0.12, f.mouthY ?? fallbackY)),
+    };
+  }, [enemyFrame]);
+
+  // La punta y la boca se congelan al despegar el ataque para que el efecto no salte en vuelo.
   const [launchTip, setLaunchTip] = useState(weaponTip);
+  const [launchMouth, setLaunchMouth] = useState(mouthOrigin);
   useEffect(() => {
     setLaunchTip(weaponTip);
+    setLaunchMouth(mouthOrigin);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeAttack?.vfxKey]);
   useEffect(() => {
-    if (triggeredSteps.length === 0) setLaunchTip(weaponTip);
-  }, [weaponTip, triggeredSteps.length]);
+    if (triggeredSteps.length === 0) {
+      setLaunchTip(weaponTip);
+      setLaunchMouth(mouthOrigin);
+    }
+  }, [weaponTip, mouthOrigin, triggeredSteps.length]);
 
   // Tamaño real del área de combate: hace falta para pasar de porcentajes a píxeles al calcular
   // la recta entre la punta del arma y el héroe.
@@ -1034,12 +1180,17 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
     profile?.mode === 'scythe_slash' || profile?.mode === 'lifesteal_bite';
   const isSpiderWebPunchMode =
     profile?.spriteSrc === '/assets/combat/enemy_vfx_espinoso_web.webp';
+  const isBugbearMansionVfx =
+    profile?.spriteSrc === '/assets/combat/bugbear_vfx_bandeja.webp' ||
+    profile?.spriteSrc === '/assets/combat/bugbear_vfx_objetos.webp';
   const omitGenericImpact =
     isPureSimpleMode ||
     isCleanSlashMode ||
     profile?.mode === 'shaman_lightning' ||
+    profile?.mode === 'mist_breath' ||
     isDevoradorMode ||
-    isSpiderWebPunchMode;
+    isSpiderWebPunchMode ||
+    isBugbearMansionVfx;
 
   const getStepDelays = (): number[] => {
     if (!profile) return [];
@@ -1090,6 +1241,8 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         return isUlt ? [85, 205] : [95];
       case 'shaman_lightning':
         return [60];
+      case 'mist_breath':
+        return [110];
       case 'club_smash':
       case 'hammer_slam':
       case 'punch_slam':
@@ -1223,6 +1376,30 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
             : 'spark',
         gravity: effectiveParticles === 'acid' || effectiveParticles === 'fire' ? -0.04 : 0.14,
       });
+    }
+
+    // Chorro de esporas verdes petrificantes saliendo de la boca del Gorgon hacia el héroe
+    if (profile.mode === 'mist_breath') {
+      const startMouthX = mouthOrigin.x * width;
+      const startMouthY = mouthOrigin.y * height;
+      const travelX = heroX - startMouthX;
+      const travelY = heroY - startMouthY;
+      for (let i = 0; i < 18; i++) {
+        const steps = 16 + Math.random() * 10;
+        particles.push({
+          x: startMouthX + (Math.random() - 0.5) * 8,
+          y: startMouthY + (Math.random() - 0.5) * 8,
+          vx: travelX / steps + (Math.random() - 0.5) * 1.1,
+          vy: travelY / steps + (Math.random() - 0.5) * 1.6,
+          size: 2.2 + Math.random() * 2.5,
+          life: -5 - i * 0.9,
+          maxLife: Math.round(steps) + 6,
+          color: i % 3 === 0 ? '#a7f3d0' : i % 2 === 0 ? '#34d399' : '#10b981',
+          trail: false,
+          shape: 'circle',
+          gravity: -0.02,
+        });
+      }
     }
 
     // Crimson lifesteal motes returning from Hero -> Devorador P2
@@ -2140,6 +2317,14 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
             72% { transform: scale(1.25); opacity: 0.45; }
             100% { transform: scale(1.55); opacity: 0; }
           }
+
+          @keyframes enemyMistBreathFromMouth {
+            0% { transform: scaleX(0.14) scaleY(0.28); opacity: 0; }
+            18% { transform: scaleX(0.55) scaleY(0.72); opacity: 0.98; }
+            56% { transform: scaleX(1.0) scaleY(1.0); opacity: 1; }
+            82% { transform: scaleX(1.03) scaleY(1.04); opacity: 0.86; }
+            100% { transform: scaleX(1.05) scaleY(1.06); opacity: 0; }
+          }
         `}</style>
 
         <canvas
@@ -2578,6 +2763,55 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
               />
             </div>
           ))}
+
+        {/* ALIENTO DE NIEBLA PETRIFICANTE DEL GORGON (Nace en su boca y envuelve al héroe sin cortarse) */}
+        {isMode('mist_breath') &&
+          triggeredSteps.map((idx) => {
+            const mouthPxX = launchMouth.x * arenaBox.w;
+            const mouthPxY = launchMouth.y * arenaBox.h;
+            const heroLeftMargin = 14;
+            const mistW = Math.max(176, Math.min(285, Math.round(mouthPxX - heroLeftMargin)));
+            const mistH = Math.round(mistW * 0.592);
+            return (
+              <div
+                key={`mist-breath-${vfxKey}-${idx}`}
+                className="absolute pointer-events-none z-[22] overflow-visible"
+                style={{
+                  left: `${Math.round(mouthPxX - mistW + 10)}px`,
+                  top: `${Math.round(mouthPxY - mistH * 0.5)}px`,
+                  width: `${mistW}px`,
+                  height: `${mistH}px`,
+                }}
+              >
+                <div
+                  className="relative w-full h-full overflow-visible"
+                  style={{ transformOrigin: 'right center' }}
+                >
+                  <img
+                    src={profile.spriteSrc}
+                    alt="Niebla Petrificante"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-contain animate-[enemyMistBreathFromMouth_0.66s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                    style={{ transformOrigin: 'right center', filter: filterUrl }}
+                  />
+                  {profile.energyGlint && (
+                    <img
+                      src={profile.spriteSrc}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                      className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                      style={{
+                        ...GLINT_MASK_STYLE,
+                        transformOrigin: 'right center',
+                        animation:
+                          'enemyMistBreathFromMouth 0.66s cubic-bezier(0.16,1,0.3,1) forwards, enemyEnergySweep 0.48s ease-out forwards',
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            );
+          })}
 
         {/* IMPACTO LIMPIO SOBRE EL HÉROE (omitido en lanzas, espadas limpias, ballestas, flechas, garrote y rayo del chamán) */}
         {triggeredImpact && !omitGenericImpact && (

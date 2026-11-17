@@ -31,14 +31,14 @@ export const MailboxModal: React.FC = () => {
     >
       {/* Grand Parchment Modal Container matching user screenshot */}
       <div className="relative w-full max-w-[420px] sm:max-w-[440px] h-[78vh] sm:h-[650px] max-h-[88vh] flex flex-col">
-        {/* Authentic Smooth Background Parchment Asset (fondo_mensajes.png) */}
+        {/* Authentic Smooth Background Parchment Asset (fondo_mensajes.webp) */}
         <img
           src="/assets/backgrounds/fondo_mensajes.webp"
           alt="Pergamino de Notificaciones"
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.9)]"
         />
 
-        {/* Authentic Red Wax Seal Close Button (sello_cerrar.png) on Top-Left */}
+        {/* Authentic Red Wax Seal Close Button (sello_cerrar.webp) on Top-Left */}
         <button
           type="button"
           onClick={() => {
@@ -109,7 +109,7 @@ export const MailboxModal: React.FC = () => {
                     mail.claimed ? 'opacity-90' : 'hover:scale-[1.01]'
                   }`}
                 >
-                  {/* Paper Background Asset (HISTORIA NIVEL BOTON.png) requested by user */}
+                  {/* Paper Background Asset (HISTORIA NIVEL BOTON.webp) requested by user */}
                   <img
                     src="/assets/items/historia_nivel_boton.webp"
                     alt=""

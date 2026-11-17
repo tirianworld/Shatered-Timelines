@@ -32,7 +32,7 @@ export interface CanonicalHeroItem {
 const LOCKED_TINT = 'sepia saturate-[0.45] brightness-[0.78] contrast-[0.95]';
 
 export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
-  // --- ROW 1 (5 heroes - Matching image_582628df.png) ---
+  // --- ROW 1 (5 heroes - Matching image_582628df.webp) ---
   {
     id: 'edacorn',
     name: 'Edacorn',
@@ -130,7 +130,7 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     bio: 'Brutal caudillo orco revestido de hierro oxidado y amuletos de cráneos, señor absoluto de la batalla.',
   },
 
-  // --- ROW 2 (5 heroes - Matching image_582628df.png) ---
+  // --- ROW 2 (5 heroes - Matching image_582628df.webp) ---
   {
     id: 'giovani',
     name: 'Giovani Vázquez',
@@ -212,7 +212,7 @@ export const CANONICAL_HEROES_LIST: CanonicalHeroItem[] = [
     bio: 'Tiefling Cazador de Sangre (Blood Hunter) y piromante. Empuña una espada de fuego verde; causa 10% de daño adicional contra enemigos sangrantes.',
   },
 
-  // --- ROW 3 (5 heroes - Matching image_582628df.png) ---
+  // --- ROW 3 (5 heroes - Matching image_582628df.webp) ---
   {
     id: 'barled',
     name: 'Barled',
@@ -445,7 +445,7 @@ export const HeroesView: React.FC = () => {
 
   return (
     <div className="relative w-full h-full flex flex-col justify-start bg-transparent p-1.5 sm:p-2 space-y-1 select-none overflow-hidden">
-      {/* 1. TOP WOODEN SORT/FILTER BAR (Authentic recurso_24_4x.png Wooden Board) */}
+      {/* 1. TOP WOODEN SORT/FILTER BAR (Authentic recurso_24_4x.webp Wooden Board) */}
       <div className="relative w-full h-[72px] sm:h-[80px] overflow-hidden rounded-xl flex items-center justify-between px-2 sm:px-3 shrink-0 shadow-xl border-2 border-[#541e0b] bg-[#3a180b]">
         {/* Carved Wood Plaque Asset (wide wood board) */}
         <img
@@ -613,7 +613,7 @@ export const HeroesView: React.FC = () => {
         </div>
       )}
 
-      {/* 4. MAIN HERO PARCHMENT CONTAINER ENCLOSED BY MARCO_6770fadb.png FRAME */}
+      {/* 4. MAIN HERO PARCHMENT CONTAINER ENCLOSED BY MARCO_6770fadb.webp FRAME */}
       <div className="relative flex-1 w-full rounded-[22px] sm:rounded-[26px] overflow-hidden flex flex-col min-h-0 bg-[#deb77c] shadow-2xl mb-20 sm:mb-22">
         {/* Authentic Parchment Texture Background Asset */}
         <img
@@ -622,7 +622,7 @@ export const HeroesView: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none opacity-95"
         />
 
-        {/* Authentic Inner Double-Line Looped Border Asset (fondo_basec.png) */}
+        {/* Authentic Inner Double-Line Looped Border Asset (fondo_basec.webp) */}
         <img
           src="/assets/backgrounds/fondo_basec.webp"
           alt=""
@@ -636,7 +636,7 @@ export const HeroesView: React.FC = () => {
           className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none z-20 drop-shadow-xl"
         />
 
-        {/* Scrollable Hero Cards Area - Padded so cards sit comfortably inside MARCO_6770fadb.png */}
+        {/* Scrollable Hero Cards Area - Padded so cards sit comfortably inside MARCO_6770fadb.webp */}
         <div className="relative z-10 w-full h-full pt-4 px-4 pb-3 overflow-y-auto no-scrollbar flex flex-col justify-start">
           {/* 5-Column Grid */}
           <div className="grid grid-cols-5 gap-1 sm:gap-1.5">
@@ -730,7 +730,7 @@ export const HeroesView: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. HERO PROFILE MODAL (Using fondo_personajes_1.png) */}
+      {/* 4. HERO PROFILE MODAL (Using fondo_personajes_1.webp) */}
       {selectedHero && (
         <div
           onClick={(e) => {
@@ -739,7 +739,7 @@ export const HeroesView: React.FC = () => {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-3 select-none animate-fade-in"
         >
           <div className="relative w-full max-w-[380px] h-[82vh] max-h-[680px] flex flex-col">
-            {/* Authentic Hero Sheet Background Asset (fondo_personajes_1.png) */}
+            {/* Authentic Hero Sheet Background Asset (fondo_personajes_1.webp) */}
             <img
               src="/assets/backgrounds/fondo_personajes_1.webp"
               alt=""

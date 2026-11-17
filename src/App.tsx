@@ -27,6 +27,7 @@ import { OrderClanView } from './components/OrderClanView';
 import { StoryDialogueView } from './components/StoryDialogueView';
 import { TavernKitchenView } from './components/TavernKitchenView';
 import { PartySelectionView } from './components/PartySelectionView';
+import { DrinkingContestView } from './components/DrinkingContestView';
 import { sound } from './services/soundService';
 
 const useResponsiveGameScale = () => {
@@ -36,7 +37,7 @@ const useResponsiveGameScale = () => {
     const handleResize = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      // 407 x 792 is the exact baseline dimensions of the game canvas from image_860b8583.png
+      // 407 x 792 is the exact baseline dimensions of the game canvas from image_860b8583.webp
       const scaleFit = Math.min(vw / 407, vh / 792);
       setScale(scaleFit);
     };
@@ -109,8 +110,8 @@ const GameContent: React.FC = () => {
           }`}
         />
 
-        {/* Top Wood Header with Plaque, Spoke Wheel, Gold, Crystals & Mail - Hidden on full-screen combat, story & cooking view */}
-        {!['combat', 'story', 'cooking', 'potions'].includes(currentTab) && <GameHeader />}
+        {/* Top Wood Header with Plaque, Spoke Wheel, Gold, Crystals & Mail - Hidden on full-screen combat, story, cooking & drinking contest view */}
+        {!['combat', 'story', 'cooking', 'potions', 'drinking_contest'].includes(currentTab) && <GameHeader />}
 
         {/* Central Dynamic View Area */}
         <main className="relative flex-1 w-full overflow-hidden flex flex-col z-10 bg-transparent">
@@ -130,6 +131,7 @@ const GameContent: React.FC = () => {
           {currentTab === 'auction' && <AuctionHouseModal isOpen={true} onClose={() => goBack()} />}
           {(currentTab === 'order' || currentTab === 'clan') && <OrderClanView />}
           {currentTab === 'party' && <PartySelectionView onClose={() => goBack()} />}
+          {currentTab === 'drinking_contest' && <DrinkingContestView />}
           {currentTab === 'story' && (
             <StoryDialogueView
               onFinish={() => {
@@ -163,13 +165,13 @@ const GameContent: React.FC = () => {
               }}
             />
           )}
-          {!['santuario', 'camp', 'quest', 'heroes', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'cooking', 'world', 'combat', 'patrol', 'inventory', 'auction', 'order', 'clan', 'story', 'party'].includes(currentTab) && (
+          {!['santuario', 'camp', 'quest', 'heroes', 'draw', 'gacha', 'shop', 'forge', 'potions', 'tavern', 'cooking', 'world', 'combat', 'patrol', 'inventory', 'auction', 'order', 'clan', 'story', 'party', 'drinking_contest'].includes(currentTab) && (
             <QuestView />
           )}
         </main>
 
-        {/* Bottom Wood Footer Bar with 6 Circular Emblems - Hidden on full-screen immersion views (including party) */}
-        {!['combat', 'forge', 'potions', 'auction', 'order', 'clan', 'story', 'cooking', 'party'].includes(currentTab) && <GameFooter />}
+        {/* Bottom Wood Footer Bar with 6 Circular Emblems - Hidden on full-screen immersion views (including party & drinking_contest) */}
+        {!['combat', 'forge', 'potions', 'auction', 'order', 'clan', 'story', 'cooking', 'party', 'drinking_contest'].includes(currentTab) && <GameFooter />}
 
         {/* Global Modals */}
         <MailboxModal />

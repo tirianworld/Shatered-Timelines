@@ -24,6 +24,7 @@ export const QuestView: React.FC = () => {
     activeQuestChapter,
     setActiveQuestChapter,
     setPendingMissionLaunch,
+    setSelectedCombatMissionId,
     navigateTo,
     addGold,
     addCrystals,
@@ -43,7 +44,13 @@ export const QuestView: React.FC = () => {
 
   const isChapter4Unlocked =
     questProgress.allMissionsCompleted ||
+    questProgress.completedMissions.includes('m10e_taberna_duergar') ||
     questProgress.chapter >= 4;
+
+  const isChapter5Unlocked =
+    questProgress.allMissionsCompleted ||
+    questProgress.completedMissions.includes('m16_audiencia_baron') ||
+    questProgress.chapter >= 5;
 
 
   // Chapter 1 missions - Exclusively Icespear story & boss (no cave missions)
@@ -248,39 +255,129 @@ export const QuestView: React.FC = () => {
       stageId: 'stage_mansion_baron',
       isStory: true,
     },
+    {
+      id: 'm10e_taberna_duergar',
+      title: 'El Concurso de Ultrak',
+      iconType: 'boss',
+      difficulty: 'Normal',
+      description:
+        '¡Minijuego de Habilidad! Caldo de Dragón acude a la taberna duergar del Mercado Negro para trazar un plan contra Ferton. Ultrak inicia un concurso de bebida cuyo premio es Alcohol en Gas: elige 1 héroe (cuanta más Suerte tenga, más fácil será) y supera las ruedas durante 20 segundos.',
+      portrait: '/assets/portraits/ultrak_duergar_icono.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_taberna_duergar',
+      isStory: true,
+    },
   ];
 
-  // Chapter 4 missions - The icy peaks of Pico Icespear (future / upcoming missions)
+  // Chapter 4 missions - Mansión Ferton
   const chapter4Missions: QuestMission[] = [
     {
-      id: 'm11_pico_ascenso',
-      title: 'El Ascenso a las Cumbres',
-      iconType: 'swords',
-      difficulty: 'Dificil',
+      id: 'm11_llegada_mansion_ferton',
+      title: 'La Mansión de Ferton',
+      iconType: 'boss',
+      difficulty: 'Normal',
       description:
-        'Las ventiscas azotan las laderas escarpadas del Pico Icespear. Criaturas elementales de hielo custodian las sendas prohibidas.',
-      portrait: '/assets/portraits/capitan_gabriel_clean.webp',
-      portraitClass: 'scale-[1.12] translate-y-0.5 object-center',
-      stageId: 'stage_pico_ascenso',
+        '¡Cinemática de Apertura del Capítulo IV! Caldo de Dragón llega a la mansión de Ferton y la ve repleta de guardias hoggoblin y de la Guardia Áurea. ¡Arlem idea la ilusión de un elemental de fuego para distraerlos y poder entrar!',
+      portrait: '/assets/portraits/elemental_fuego_icono.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_llegada_mansion_ferton',
       isStory: true,
     },
     {
-      id: 'm12_nido_cryovain',
-      title: 'El Cubil de Cryovain',
+      id: 'm12_recibidor_mansion_ferton',
+      title: 'El Recibidor de la Mansión',
       iconType: 'boss',
-      difficulty: 'Pesadilla',
+      difficulty: 'Dificil',
       description:
-        'En la cima del Pico Icespear, la colosal bestia alada Cryovain acecha sobre su tesoro congelado. La batalla decisiva.',
-      portrait: '/assets/combat/devorador_quitinoso_clean.webp',
-      portraitClass: 'scale-[1.5] origin-top translate-y-[2px]',
-      stageId: 'stage_cryovain_boss',
-      isStory: false,
+        'Al acercarse a la puerta pensando que todos salieron tras el elemental, unos bugbears con traje negro de criados y detalles dorados aguardan en el recibidor armados con bandejas de plata y vajilla arrojadiza.',
+      portrait: '/assets/portraits/bugbear_criado_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_recibidor_mansion_ferton',
+      isStory: true,
+    },
+    {
+      id: 'm13_escaleras_durnik',
+      title: 'Las Escaleras: Durnik',
+      iconType: 'boss',
+      difficulty: 'Extremo',
+      description:
+        'Al subir las escaleras hacia la planta intermedia, el grupo se topa con Durnik, el guardaespaldas enano de Ferton. ¡Derrótalo en un combate de jefe y déjalo noqueado y atado!',
+      portrait: '/assets/portraits/durnik_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_escaleras_durnik',
+      isStory: true,
+    },
+    {
+      id: 'm14_planta_intermedia_ferton',
+      title: 'La Planta Intermedia: Alcohol en Gas',
+      iconType: 'boss',
+      difficulty: 'Dificil',
+      description:
+        'La ilusión del elemental se acaba y la Guardia Áurea y los hoggoblins en túnicas de Ferton irrumpen en tromba en la planta intermedia. Caldo de Dragón se tapa con telas y destapa el alcohol en gas: ¡barre 4 oleadas de enemigos completamente borrachos y debilitados!',
+      portrait: '/assets/items/alcohol_en_gas.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_planta_intermedia_ferton',
+      isStory: true,
+    },
+    {
+      id: 'm15_despacho_ferton',
+      title: 'El Fin de Ferton: Cenizas',
+      iconType: 'boss',
+      difficulty: 'Extremo',
+      description:
+        '¡Cinemática Final del Capítulo IV! Un hoggoblin moribundo desata a Durnik, pero Pepe Loux le clava su propio martillo en el ojo. En el despacho, Ferton suplica hecho un ovillo hasta que la bola de fuego de Magordito incendia el alcohol en gas y reduce la mansión a cenizas.',
+      portrait: '/assets/portraits/ferton_icono.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_despacho_ferton',
+      isStory: true,
+    },
+    {
+      id: 'm16_audiencia_baron',
+      title: 'Invitados del Barón',
+      iconType: 'boss',
+      difficulty: 'Normal',
+      description:
+        '¡Cinemática Final del Capítulo IV! Caldo de Dragón se reúne con Alistar Vandimere. El Barón los felicita sorprendido por haber quemado la mansión y erradicado el legado y seguidores de Ferton, y les concede total libertad por todo el Mercado Negro como sus invitados.',
+      portrait: '/assets/portraits/el_baron_icono.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_audiencia_baron',
+      isStory: true,
+    },
+  ];
+
+  // Chapter 5 missions - El Reino de los Sueños
+  const chapter5Missions: QuestMission[] = [
+    {
+      id: 'm17_despertar_suenos',
+      title: 'El Despertar en el Mercado Negro',
+      iconType: 'boss',
+      difficulty: 'Normal',
+      description:
+        '¡Cinemática de Apertura del Capítulo V! Caldo de Dragón despierta en la taberna del Mercado Negro y descubre que Chispo Deez ha desaparecido. Warthion los lleva ante el Barón, quien revela el despertar de la antigua mazmorra y un portal oculto tras los pozos de pelea.',
+      portrait: '/assets/portraits/chispo_deez_icono.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_despertar_suenos',
+      isStory: true,
+    },
+    {
+      id: 'm18_primera_camara_gorgon',
+      title: 'La Puerta Rosada y la Primera Cámara',
+      iconType: 'boss',
+      difficulty: 'Dificil',
+      description:
+        '¡Primera Cámara de la Mazmorra! Al llegar ante el portón tras los pozos de pelea, la piedra brilla con un fulgor rosado y se abre ante Caldo de Dragón. Dentro aguarda un colosal Gorgon, un toro de metal capaz de embestir con cornadas perforantes y exhalar aliento de niebla petrificante.',
+      portrait: '/assets/portraits/gorgon_thumb.webp',
+      portraitClass: 'scale-[1.12] object-center',
+      stageId: 'stage_primera_camara_gorgon',
+      isStory: true,
     },
   ];
 
   // Active missions list based on selected chapter
   const missions =
-    activeQuestChapter === 4 && isChapter4Unlocked
+    activeQuestChapter === 5 && isChapter5Unlocked
+      ? chapter5Missions
+      : activeQuestChapter === 4 && isChapter4Unlocked
       ? chapter4Missions
       : activeQuestChapter === 3 && isChapter3Unlocked
       ? chapter3Missions
@@ -288,7 +385,9 @@ export const QuestView: React.FC = () => {
       ? chapter2Missions
       : chapter1Missions;
   const currentChapter =
-    activeQuestChapter === 4 && isChapter4Unlocked
+    activeQuestChapter === 5 && isChapter5Unlocked
+      ? 5
+      : activeQuestChapter === 4 && isChapter4Unlocked
       ? 4
       : activeQuestChapter === 3 && isChapter3Unlocked
       ? 3
@@ -306,9 +405,87 @@ export const QuestView: React.FC = () => {
   const [chestClaimedCh3, setChestClaimedCh3] = useState<boolean>(() => {
     return safeStorage.getItem('cdd_quest_chest_ch3_claimed') === 'true';
   });
+  const [chestClaimedCh4, setChestClaimedCh4] = useState<boolean>(() => {
+    return safeStorage.getItem('cdd_quest_chest_ch4_claimed') === 'true';
+  });
+  const [chestClaimedCh5, setChestClaimedCh5] = useState<boolean>(() => {
+    return safeStorage.getItem('cdd_quest_chest_ch5_claimed') === 'true';
+  });
   const [showChestModal, setShowChestModal] = useState(false);
   const [autoRepeatMission, setAutoRepeatMission] = useState<QuestMission | null>(null);
 
+  // Horizontal press-and-drag chapter tabs bar
+  const chapterTabsRef = useRef<HTMLDivElement>(null);
+  const isChapterTabsDragging = useRef(false);
+  const didDragChapterTabs = useRef(false);
+  const chapterTabsStartX = useRef(0);
+  const chapterTabsStartScroll = useRef(0);
+  const [canScrollChaptersLeft, setCanScrollChaptersLeft] = useState(false);
+  const [canScrollChaptersRight, setCanScrollChaptersRight] = useState(true);
+
+  const updateChapterTabsScrollState = () => {
+    const el = chapterTabsRef.current;
+    if (!el) return;
+    setCanScrollChaptersLeft(el.scrollLeft > 4);
+    setCanScrollChaptersRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
+
+  useEffect(() => {
+    updateChapterTabsScrollState();
+    const handleResize = () => updateChapterTabsScrollState();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const el = chapterTabsRef.current;
+    if (!el) return;
+    if (currentChapter === 5) {
+      el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
+    } else if (currentChapter === 1) {
+      el.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+    const timer = window.setTimeout(updateChapterTabsScrollState, 320);
+    return () => window.clearTimeout(timer);
+  }, [currentChapter]);
+
+  useEffect(() => {
+    const handleWindowPointerMove = (e: PointerEvent) => {
+      if (!isChapterTabsDragging.current || !chapterTabsRef.current) return;
+      const deltaX = e.clientX - chapterTabsStartX.current;
+      if (Math.abs(deltaX) > 5) {
+        didDragChapterTabs.current = true;
+      }
+      chapterTabsRef.current.scrollLeft = chapterTabsStartScroll.current - deltaX;
+      updateChapterTabsScrollState();
+    };
+
+    const handleWindowPointerUp = () => {
+      if (!isChapterTabsDragging.current) return;
+      isChapterTabsDragging.current = false;
+      window.setTimeout(() => {
+        didDragChapterTabs.current = false;
+      }, 40);
+    };
+
+    window.addEventListener('pointermove', handleWindowPointerMove);
+    window.addEventListener('pointerup', handleWindowPointerUp);
+    window.addEventListener('pointercancel', handleWindowPointerUp);
+    return () => {
+      window.removeEventListener('pointermove', handleWindowPointerMove);
+      window.removeEventListener('pointerup', handleWindowPointerUp);
+      window.removeEventListener('pointercancel', handleWindowPointerUp);
+    };
+  }, []);
+
+  const handleChapterTabsPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'touch') return;
+    if (e.button !== 0) return;
+    isChapterTabsDragging.current = true;
+    didDragChapterTabs.current = false;
+    chapterTabsStartX.current = e.clientX;
+    chapterTabsStartScroll.current = chapterTabsRef.current?.scrollLeft || 0;
+  };
 
   // Content scroll & drag interaction (no visible scrollbar, drag to scroll)
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -341,7 +518,8 @@ export const QuestView: React.FC = () => {
   ).length;
 
   const totalCount = missions.length;
-  const isChapterFullyCompleted = questProgress.allMissionsCompleted || completedCount >= totalCount;
+  const isChapterFullyCompleted =
+    totalCount > 0 && (questProgress.allMissionsCompleted || completedCount >= totalCount);
 
   const getDifficultyColor = (diff: QuestMission['difficulty']) => {
     switch (diff) {
@@ -363,6 +541,12 @@ export const QuestView: React.FC = () => {
   const handleLaunchMission = (mission: QuestMission, forceStory = false) => {
     sound.playSFX('click');
 
+    if (mission.id === 'm10e_taberna_duergar') {
+      setSelectedCombatMissionId('m10e_taberna_duergar');
+      navigateTo('story');
+      return;
+    }
+
     const playsStory =
       (mission.id === 'm1_tirano' ||
         mission.id === 'm2_robo' ||
@@ -375,6 +559,14 @@ export const QuestView: React.FC = () => {
         mission.id === 'm10b_encuentro_chispo' ||
         mission.id === 'm10c_callejon_hoggoblins' ||
         mission.id === 'm10d_mansion_baron' ||
+        mission.id === 'm11_llegada_mansion_ferton' ||
+        mission.id === 'm12_recibidor_mansion_ferton' ||
+        mission.id === 'm13_escaleras_durnik' ||
+        mission.id === 'm14_planta_intermedia_ferton' ||
+        mission.id === 'm15_despacho_ferton' ||
+        mission.id === 'm16_audiencia_baron' ||
+        mission.id === 'm17_despertar_suenos' ||
+        mission.id === 'm18_primera_camara_gorgon' ||
         mission.isStory) &&
       (!questProgress.completedMissions.includes(mission.id) || forceStory || mission.isStory);
 
@@ -382,6 +574,10 @@ export const QuestView: React.FC = () => {
     let missionId = mission.id;
     if (playsStory && forceStory && questProgress.completedMissions.includes(mission.id)) {
       const epilogues: Record<string, string> = {
+        m18_primera_camara_gorgon: 'm18_primera_camara_gorgon_epilogo',
+        m14_planta_intermedia_ferton: 'm14_planta_intermedia_ferton_epilogo',
+        m13_escaleras_durnik: 'm13_escaleras_durnik_epilogo',
+        m12_recibidor_mansion_ferton: 'm12_recibidor_mansion_ferton_epilogo',
         m10c_callejon_hoggoblins: 'm10c_callejon_hoggoblins_epilogo',
         m10_hobgoblin_boss: 'm10_hobgoblin_boss_epilogo',
         m9_emboscada_ferton: 'm9_emboscada_ferton_epilogo',
@@ -426,7 +622,7 @@ export const QuestView: React.FC = () => {
         setChestClaimedCh2(true);
         safeStorage.setItem('cdd_quest_chest_ch2_claimed', 'true');
       }
-    } else {
+    } else if (currentChapter === 3) {
       if (!chestClaimedCh3 && isChapterFullyCompleted) {
         addGold(35000);
         addCrystals(1200);
@@ -443,18 +639,55 @@ export const QuestView: React.FC = () => {
         setChestClaimedCh3(true);
         safeStorage.setItem('cdd_quest_chest_ch3_claimed', 'true');
       }
+    } else if (currentChapter === 4) {
+      if (!chestClaimedCh4 && isChapterFullyCompleted) {
+        addGold(45000);
+        addCrystals(1500);
+        addShelfItem({
+          id: 'recompensa_mansion_ferton_lacre',
+          name: 'Lacre Dorado de la Mansión de Ferton',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/elemental_fuego_icono.webp',
+          rarity: 'UR',
+          priceGold: 15000,
+          description: 'Sello aurífero arrebatado del vestíbulo principal de la Mansión de Ferton tras la distracción del elemental ilusorio.',
+        });
+        setChestClaimedCh4(true);
+        safeStorage.setItem('cdd_quest_chest_ch4_claimed', 'true');
+      }
+    } else if (currentChapter === 5) {
+      if (!chestClaimedCh5 && isChapterFullyCompleted) {
+        addGold(60000);
+        addCrystals(2000);
+        setChestClaimedCh5(true);
+        safeStorage.setItem('cdd_quest_chest_ch5_claimed', 'true');
+      }
     }
     setShowChestModal(true);
   };
 
   const handleSelectChapter = (chapterNum: number) => {
+    if (didDragChapterTabs.current) return;
     // Capítulos bloqueados: pulsar no hace nada (ni sonido ni aviso).
     if (chapterNum === 2 && !isChapter2Unlocked) return;
     if (chapterNum === 3 && !isChapter3Unlocked) return;
     if (chapterNum === 4 && !isChapter4Unlocked) return;
+    if (chapterNum === 5 && !isChapter5Unlocked) return;
     sound.playSFX('click');
     setActiveQuestChapter(chapterNum);
   };
+
+  // Franja vertical que ocupa el tablón de madera en cada fondo, medida en % del ancho de la
+  // imagen (así es como escala con object-cover). Sirve para centrar en él la tira de capítulos.
+  const CHAPTER_TABS_BAND: Record<number, { top: string; height: string }> = {
+    1: { top: '1.3%', height: '16.8%' },
+    2: { top: '1.3%', height: '16.8%' },
+    3: { top: '0.9%', height: '16.0%' },
+    4: { top: '1.3%', height: '16.8%' },
+    5: { top: '1.3%', height: '16.8%' },
+  };
+  const chapterTabsBand = CHAPTER_TABS_BAND[currentChapter] ?? CHAPTER_TABS_BAND[1];
 
   return (
     <div className="relative w-full h-full flex flex-col justify-start bg-transparent select-none overflow-hidden">
@@ -462,11 +695,14 @@ export const QuestView: React.FC = () => {
           - Chapter 1: fondo_icespear_1.webp
           - Chapter 2: image_5518948d.webp (User-provided ornate mine background with tracks and lantern)
           - Chapter 3: image_0fed218e.webp (User-provided ornate Mercado Negro board with auction house and fortress)
-          - Chapter 4: fondo_pico_Icespear_0b79dc85.webp */}
+          - Chapter 4: tablon_mansion_ferton_ch4.webp (Ferton's Mansion board with framed mansion window)
+          - Chapter 5: tablon_reino_suenos_ch5.webp (El Reino de los Sueños narrow-window board) */}
       <img
         src={
-          currentChapter === 4
-            ? '/assets/aistudio/fondo_pico_Icespear_0b79dc85.webp'
+          currentChapter === 5
+            ? '/assets/backgrounds/tablon_reino_suenos_ch5.webp'
+            : currentChapter === 4
+            ? '/assets/backgrounds/tablon_mansion_ferton_ch4.webp'
             : currentChapter === 3
             ? '/assets/aistudio/image_0fed218e.webp'
             : currentChapter === 2
@@ -474,206 +710,321 @@ export const QuestView: React.FC = () => {
             : '/assets/backgrounds/fondo_icespear_1.webp'
         }
         alt={
-          currentChapter === 4
-            ? 'Tablón de Misiones del Pico Icespear'
+          currentChapter === 5
+            ? 'Tablón de Misiones de El Reino de los Sueños'
+            : currentChapter === 4
+            ? 'Tablón de Misiones de la Mansión Ferton'
             : currentChapter === 3
             ? 'Tablón de Misiones del Mercado Negro'
             : currentChapter === 2
             ? 'Las Minas de Glimmerstone'
             : 'Fondo Icespear'
         }
+        referrerPolicy="no-referrer"
         className="absolute inset-0 w-full h-full object-cover object-top pointer-events-none select-none z-0"
       />
 
 
-      {/* 2. TOP CHAPTER TABS (Positioned on the top wooden plank) */}
-      <div className="relative z-20 w-full px-[4.5%] pt-[1.5%] pb-[1%] shrink-0">
-        <div className="grid grid-cols-4 gap-1.5 h-10 sm:h-11 items-center">
-          {/* TAB 1: CAPITULO I ICESPEAR */}
-          <button
-            type="button"
-            onClick={() => handleSelectChapter(1)}
-            className={`relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-transform ${
-              currentChapter === 1
-                ? 'filter brightness-110 drop-shadow-[0_2px_6px_rgba(251,191,36,0.6)]'
-                : 'opacity-85 hover:opacity-100'
-            }`}
+      {/* 2. TOP CHAPTER TABS (Horizontal press-and-drag slider on the top wooden plank) */}
+      <div className="relative z-20 w-full px-[4.5%] shrink-0">
+        {/* El tablon de madera del fondo ocupa del 0,6 % al 17,4 % del ancho de la imagen:
+            con object-cover el alto del tablon es un porcentaje del ancho, así que la tira de
+            capítulos se centra en ese eje Y con padding-top porcentual y flex. */}
+        <div className="w-full" style={{ paddingTop: chapterTabsBand.top }}>
+          <div className="relative w-full" style={{ paddingTop: chapterTabsBand.height }}>
+            <div className="absolute inset-0 flex items-center">
+              <div className="relative w-full">
+          <div
+            ref={chapterTabsRef}
+            onPointerDown={handleChapterTabsPointerDown}
+            onScroll={updateChapterTabsScrollState}
+            onWheel={(e) => {
+              if (!chapterTabsRef.current) return;
+              if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                chapterTabsRef.current.scrollLeft += e.deltaY;
+                updateChapterTabsScrollState();
+              }
+            }}
+            className="flex items-center gap-1.5 h-10 sm:h-11 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing select-none touch-pan-x"
+            title="Pulsa y arrastra para deslizar entre capítulos"
           >
-            <img
-              src="/assets/items/boton_historia.webp"
-              alt="Capitulo I"
-              className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
-            />
-            <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-amber-100 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-              CAPITULO I
-            </span>
-            <span className="relative z-10 text-[7.5px] sm:text-[8.5px] font-bold uppercase text-amber-300 leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-              ICESPEAR
-            </span>
-          </button>
-
-          {/* TAB 2: CAPITULO II LAS MINAS */}
-          {isChapter2Unlocked ? (
+            {/* TAB 1: CAPITULO I ICESPEAR */}
             <button
               type="button"
-              onClick={() => handleSelectChapter(2)}
-              className={`relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-transform ${
-                currentChapter === 2
-                  ? 'filter brightness-115 drop-shadow-[0_2px_8px_rgba(56,189,248,0.7)]'
-                  : 'opacity-85 hover:opacity-100'
+              onClick={() => handleSelectChapter(1)}
+              className={`relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-all ${
+                currentChapter === 1
+                  ? 'brightness-110 scale-[1.03] drop-shadow-[0_0_10px_rgba(96,165,250,0.95)]'
+                  : 'brightness-95 hover:brightness-110 drop-shadow-[0_0_6px_rgba(96,165,250,0.5)]'
               }`}
             >
               <img
                 src="/assets/items/boton_historia.webp"
-                alt="Capitulo II"
-                className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
-              />
-              <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-amber-100 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-                CAPITULO II
-              </span>
-              <span className="relative z-10 text-[7.5px] sm:text-[8.5px] font-bold uppercase text-yellow-300 leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-                LAS MINAS
-              </span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => handleSelectChapter(2)}
-              className="relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
-            >
-              <img
-                src="/assets/items/boton_historia.webp"
-                alt="Capitulo II Bloqueado"
-                className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
-              />
-              <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-                CAPITULO II
-              </span>
-              <span className="relative z-10 text-[7px] sm:text-[8px] font-bold uppercase text-stone-400 leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-                LAS MINAS
-              </span>
-              {/* Hanging Padlock */}
-              <img
-                src="/assets/items/CANDADO.webp"
-                alt="Bloqueado"
-                className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
-              />
-            </button>
-          )}
-
-          {/* TAB 3: CAPITULO III EL MERCADO NEGRO */}
-          {isChapter3Unlocked ? (
-            <button
-              type="button"
-              onClick={() => handleSelectChapter(3)}
-              className={`relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-transform ${
-                currentChapter === 3
-                  ? 'filter brightness-115 drop-shadow-[0_2px_8px_rgba(234,179,8,0.7)]'
-                  : 'opacity-85 hover:opacity-100'
-              }`}
-            >
-              <img
-                src="/assets/items/boton_historia.webp"
-                alt="Capitulo III"
-                className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
-              />
-              <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-amber-100 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-                CAPITULO III
-              </span>
-              <span className="relative z-10 text-[6.5px] sm:text-[7.5px] font-bold uppercase text-yellow-300 leading-tight tracking-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-                MERCADO NEGRO
-              </span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => handleSelectChapter(3)}
-              className="relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
-              title="Capítulo III: El Mercado Negro (Bloqueado)"
-            >
-              <img
-                src="/assets/items/boton_historia.webp"
-                alt="Capitulo III Bloqueado"
-                className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
-              />
-              <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-                CAPITULO III
-              </span>
-              <span className="relative z-10 text-[6.5px] sm:text-[7.5px] font-bold uppercase text-stone-400 leading-tight tracking-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-                MERCADO NEGRO
-              </span>
-              {/* Hanging Padlock */}
-              <img
-                src="/assets/items/CANDADO.webp"
-                alt="Bloqueado"
-                className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
-              />
-            </button>
-          )}
-
-
-          {/* TAB 4: CAPITULO IV PICO ICESPEAR */}
-          {isChapter4Unlocked ? (
-            <button
-              type="button"
-              onClick={() => handleSelectChapter(4)}
-              className={`relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-all ${
-                currentChapter === 4
-                  ? 'brightness-110 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] scale-[1.03]'
-                  : 'filter brightness-90 hover:brightness-105'
-              }`}
-              title="Capítulo IV: Pico Icespear"
-            >
-              <img
-                src={
-                  currentChapter === 4
-                    ? '/assets/items/BOTON SELECCIONADO HISTORIA.png'
-                    : '/assets/items/boton_historia.webp'
-                }
-                alt="Capitulo IV"
+                alt="Capitulo I"
+                draggable={false}
                 className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
               />
               <span
                 className={`relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
-                  currentChapter === 4 ? 'text-amber-100 font-black' : 'text-[#d6c2a5]'
+                  currentChapter === 1 ? 'text-sky-100' : 'text-[#d6c2a5]'
                 }`}
               >
-                CAPITULO IV
+                CAPITULO I
               </span>
               <span
-                className={`relative z-10 text-[6.5px] sm:text-[7.5px] font-bold uppercase leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
-                  currentChapter === 4 ? 'text-amber-300' : 'text-stone-300'
+                className={`relative z-10 text-[7.5px] sm:text-[8.5px] font-bold uppercase leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                  currentChapter === 1 ? 'text-sky-200' : 'text-stone-300'
                 }`}
               >
-                PICO ICESPEAR
+                ICESPEAR
               </span>
             </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => handleSelectChapter(4)}
-              className="relative h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
-              title="Capítulo IV: Pico Icespear (Bloqueado)"
-            >
-              <img
-                src="/assets/items/boton_historia.webp"
-                alt="Capitulo IV Bloqueado"
-                className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
-              />
-              <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-                CAPITULO IV
-              </span>
-              <span className="relative z-10 text-[6.5px] sm:text-[7.5px] font-bold uppercase text-stone-400 leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
-                PICO ICESPEAR
-              </span>
-              {/* Hanging Padlock */}
-              <img
-                src="/assets/items/CANDADO.webp"
-                alt="Bloqueado"
-                className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
-              />
-            </button>
-          )}
+
+            {/* TAB 2: CAPITULO II LAS MINAS */}
+            {isChapter2Unlocked ? (
+              <button
+                type="button"
+                onClick={() => handleSelectChapter(2)}
+                className={`relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-all ${
+                  currentChapter === 2
+                    ? 'brightness-110 scale-[1.03] drop-shadow-[0_0_10px_rgba(45,212,191,0.95)]'
+                    : 'brightness-95 hover:brightness-110 drop-shadow-[0_0_6px_rgba(45,212,191,0.5)]'
+                }`}
+              >
+                <img
+                  src="/assets/items/boton_historia.webp"
+                  alt="Capitulo II"
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                />
+                <span
+                  className={`relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                    currentChapter === 2 ? 'text-teal-100' : 'text-[#d6c2a5]'
+                  }`}
+                >
+                  CAPITULO II
+                </span>
+                <span
+                  className={`relative z-10 text-[7.5px] sm:text-[8.5px] font-bold uppercase leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                    currentChapter === 2 ? 'text-teal-200' : 'text-stone-300'
+                  }`}
+                >
+                  LAS MINAS
+                </span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleSelectChapter(2)}
+                className="relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
+              >
+                <img
+                  src="/assets/items/boton_historia.webp"
+                  alt="Capitulo II Bloqueado"
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                />
+                <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                  CAPITULO II
+                </span>
+                <span className="relative z-10 text-[7px] sm:text-[8px] font-bold uppercase text-stone-400 leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                  LAS MINAS
+                </span>
+                <img
+                  src="/assets/items/CANDADO.webp"
+                  alt="Bloqueado"
+                  draggable={false}
+                  className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
+                />
+              </button>
+            )}
+
+            {/* TAB 3: CAPITULO III EL MERCADO NEGRO */}
+            {isChapter3Unlocked ? (
+              <button
+                type="button"
+                onClick={() => handleSelectChapter(3)}
+                className={`relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-all ${
+                  currentChapter === 3
+                    ? 'brightness-110 scale-[1.03] drop-shadow-[0_0_10px_rgba(168,85,247,0.95)]'
+                    : 'brightness-95 hover:brightness-110 drop-shadow-[0_0_6px_rgba(168,85,247,0.5)]'
+                }`}
+              >
+                <img
+                  src="/assets/items/boton_historia.webp"
+                  alt="Capitulo III"
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                />
+                <span
+                  className={`relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                    currentChapter === 3 ? 'text-purple-100' : 'text-[#d6c2a5]'
+                  }`}
+                >
+                  CAPITULO III
+                </span>
+                <span
+                  className={`relative z-10 text-[6.5px] sm:text-[7.5px] font-bold uppercase leading-tight tracking-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                    currentChapter === 3 ? 'text-purple-200' : 'text-stone-300'
+                  }`}
+                >
+                  MERCADO NEGRO
+                </span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleSelectChapter(3)}
+                className="relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
+                title="Capítulo III: El Mercado Negro (Bloqueado)"
+              >
+                <img
+                  src="/assets/items/boton_historia.webp"
+                  alt="Capitulo III Bloqueado"
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                />
+                <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                  CAPITULO III
+                </span>
+                <span className="relative z-10 text-[6.5px] sm:text-[7.5px] font-bold uppercase text-stone-400 leading-tight tracking-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                  MERCADO NEGRO
+                </span>
+                <img
+                  src="/assets/items/CANDADO.webp"
+                  alt="Bloqueado"
+                  draggable={false}
+                  className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
+                />
+              </button>
+            )}
+
+            {/* TAB 4: CAPITULO IV MANSIÓN FERTON */}
+            {isChapter4Unlocked ? (
+              <button
+                type="button"
+                onClick={() => handleSelectChapter(4)}
+                className={`relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-all ${
+                  currentChapter === 4
+                    ? 'brightness-110 scale-[1.03] drop-shadow-[0_0_10px_rgba(245,158,11,0.95)]'
+                    : 'brightness-95 hover:brightness-110 drop-shadow-[0_0_6px_rgba(245,158,11,0.5)]'
+                }`}
+                title="Capítulo IV: Mansión Ferton"
+              >
+                <img
+                  src="/assets/items/boton_historia.webp"
+                  alt="Capitulo IV"
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                />
+                <span
+                  className={`relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                    currentChapter === 4 ? 'text-amber-100 font-black' : 'text-[#d6c2a5]'
+                  }`}
+                >
+                  CAPITULO IV
+                </span>
+                <span
+                  className={`relative z-10 text-[6px] sm:text-[7px] font-bold uppercase leading-tight tracking-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                    currentChapter === 4 ? 'text-amber-200' : 'text-stone-300'
+                  }`}
+                >
+                  MANSIÓN FERTON
+                </span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleSelectChapter(4)}
+                className="relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
+                title="Capítulo IV: Mansión Ferton (Bloqueado)"
+              >
+                <img
+                  src="/assets/items/boton_historia.webp"
+                  alt="Capitulo IV Bloqueado"
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                />
+                <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                  CAPITULO IV
+                </span>
+                <span className="relative z-10 text-[6px] sm:text-[7px] font-bold uppercase text-stone-400 leading-tight tracking-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                  MANSIÓN FERTON
+                </span>
+                <img
+                  src="/assets/items/CANDADO.webp"
+                  alt="Bloqueado"
+                  draggable={false}
+                  className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
+                />
+              </button>
+            )}
+
+            {/* TAB 5: CAPITULO V EL REINO DE LOS SUEÑOS */}
+            {isChapter5Unlocked ? (
+              <button
+                type="button"
+                onClick={() => handleSelectChapter(5)}
+                className={`relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-all px-1 ${
+                  currentChapter === 5
+                    ? 'brightness-110 scale-[1.03] drop-shadow-[0_0_10px_rgba(236,72,153,0.95)]'
+                    : 'brightness-95 hover:brightness-110 drop-shadow-[0_0_6px_rgba(236,72,153,0.5)]'
+                }`}
+                title="Capítulo V: El Reino de los Sueños"
+              >
+                <img
+                  src="/assets/items/boton_historia.webp"
+                  alt="Capitulo V"
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                />
+                <span
+                  className={`relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                    currentChapter === 5 ? 'text-pink-100 font-black' : 'text-[#d6c2a5]'
+                  }`}
+                >
+                  CAPITULO V
+                </span>
+                <span
+                  className={`relative z-10 text-[5.5px] sm:text-[6.5px] font-bold uppercase leading-tight tracking-tight text-center truncate max-w-full drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                    currentChapter === 5 ? 'text-pink-200' : 'text-stone-300'
+                  }`}
+                >
+                  REINO DE LOS SUEÑOS
+                </span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleSelectChapter(5)}
+                className="relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all px-1"
+                title="Capítulo V: El Reino de los Sueños (Bloqueado)"
+              >
+                <img
+                  src="/assets/items/boton_historia.webp"
+                  alt="Capitulo V Bloqueado"
+                  draggable={false}
+                  className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
+                />
+                <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                  CAPITULO V
+                </span>
+                <span className="relative z-10 text-[5.5px] sm:text-[6.5px] font-bold uppercase text-stone-400 leading-tight tracking-tight text-center truncate max-w-full drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                  REINO DE LOS SUEÑOS
+                </span>
+                <img
+                  src="/assets/items/CANDADO.webp"
+                  alt="Bloqueado"
+                  draggable={false}
+                  className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
+                />
+              </button>
+            )}
+          </div>
+
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -687,8 +1038,10 @@ export const QuestView: React.FC = () => {
           <div className="flex-1 space-y-1">
             <div className="flex items-center justify-between text-[10px] sm:text-[10.5px] font-black text-[#d6c2a5] tracking-wide uppercase">
               <span>
-                {currentChapter === 4
-                  ? 'PROGRESO CAPÍTULO IV • PICO ICESPEAR'
+                {currentChapter === 5
+                  ? 'PROGRESO CAPÍTULO V • EL REINO DE LOS SUEÑOS'
+                  : currentChapter === 4
+                  ? 'PROGRESO CAPÍTULO IV • MANSIÓN FERTON'
                   : currentChapter === 3
                   ? 'PROGRESO CAPÍTULO III • MERCADO NEGRO'
                   : currentChapter === 2
@@ -704,15 +1057,17 @@ export const QuestView: React.FC = () => {
             <div className="relative w-full h-4 sm:h-4.5 rounded-full bg-[#0c0401] border border-[#521c08] p-0.5 overflow-hidden shadow-inner">
               <div
                 className={`h-full rounded-full ${
-                  currentChapter === 4
-                    ? 'bg-gradient-to-r from-[#38bdf8] via-[#818cf8] to-[#c084fc] shadow-[0_0_10px_rgba(56,189,248,0.8)]'
+                  currentChapter === 5
+                    ? 'bg-gradient-to-r from-[#4f46e5] via-[#9333ea] to-[#ec4899] shadow-[0_0_10px_rgba(168,85,247,0.85)]'
+                    : currentChapter === 4
+                    ? 'bg-gradient-to-r from-[#f59e0b] via-[#ea580c] to-[#b91c1c] shadow-[0_0_10px_rgba(245,158,11,0.8)]'
                     : currentChapter === 3
                     ? 'bg-gradient-to-r from-[#9333ea] via-[#c026d3] to-[#f59e0b] shadow-[0_0_10px_rgba(192,38,211,0.8)]'
                     : currentChapter === 2
                     ? 'bg-gradient-to-r from-[#0284c7] via-[#06b6d4] to-[#f59e0b] shadow-[0_0_10px_rgba(6,182,212,0.8)]'
                     : 'bg-gradient-to-r from-[#dc2626] via-[#ea580c] to-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.8)]'
                 } transition-all duration-500`}
-                style={{ width: `${Math.min(100, (completedCount / totalCount) * 100)}%` }}
+                style={{ width: `${totalCount > 0 ? Math.min(100, (completedCount / totalCount) * 100) : 0}%` }}
               />
             </div>
           </div>
@@ -725,8 +1080,10 @@ export const QuestView: React.FC = () => {
               isChapterFullyCompleted ? 'ring-2 ring-amber-400/80 animate-pulse' : ''
             }`}
             title={
-              currentChapter === 4
-                ? 'Cofre de Cumbres de Pico Icespear'
+              currentChapter === 5
+                ? 'Cofre del Reino de los Sueños'
+                : currentChapter === 4
+                ? 'Cofre de la Mansión Ferton'
                 : currentChapter === 3
                 ? 'Cofre del Mercado Negro de Ferton'
                 : currentChapter === 2
@@ -735,15 +1092,7 @@ export const QuestView: React.FC = () => {
             }
           >
             <img
-              src={
-                currentChapter === 4
-                  ? '/assets/items/cofre_sellado_mansion.webp'
-                  : currentChapter === 3
-                  ? '/assets/items/cofre_sellado_mansion.webp'
-                  : currentChapter === 2
-                  ? '/assets/items/cofre_sellado_mansion.webp'
-                  : '/assets/items/cofre_de_tintes_app.webp'
-              }
+              src="/assets/items/cofre_cerrado.webp"
               alt="Cofre"
               className="w-8.5 h-8.5 sm:w-9 sm:h-9 object-contain drop-shadow-[0_0_8px_rgba(168,85,247,0.9)]"
             />
@@ -762,7 +1111,7 @@ export const QuestView: React.FC = () => {
         >
           {missions.map((mission, idx) => {
             const isCompleted = isMissionCompleted(mission.id);
-            // In chapter 2/3/4, first mission is automatically unlocked once Chapter is opened
+            // In chapter 2/3/4/5, first mission is automatically unlocked once Chapter is opened
             const isUnlocked =
               questProgress.allMissionsCompleted ||
               idx === 0 ||
@@ -773,15 +1122,59 @@ export const QuestView: React.FC = () => {
             const isFertonMission = mission.id === 'm9_emboscada_ferton';
             const isCallejonHoggoblinsMission = mission.id === 'm10c_callejon_hoggoblins';
             const isBaronMansionMission = mission.id === 'm10d_mansion_baron';
+            const isTabernaDuergarMission = mission.id === 'm10e_taberna_duergar';
+            const isMansionFertonLlegadaMission = mission.id === 'm11_llegada_mansion_ferton';
+            const isRecibidorMansionMission = mission.id === 'm12_recibidor_mansion_ferton';
+            const isDurnikEscalerasMission = mission.id === 'm13_escaleras_durnik';
+            const isPlantaIntermediaMansionMission = mission.id === 'm14_planta_intermedia_ferton';
+            const isDespachoFertonMission = mission.id === 'm15_despacho_ferton';
+            const isAudienciaBaronMission = mission.id === 'm16_audiencia_baron';
+            const isDespertarSuenosMission = mission.id === 'm17_despertar_suenos';
+            const isGorgonMazmorraMission = mission.id === 'm18_primera_camara_gorgon';
             const isStoryMission =
-              (mission.isStory && !isFertonMission && !isCallejonHoggoblinsMission) ||
-              mission.id === 'm1_tirano' ||
-              mission.id === 'm5_minas_historia';
+              ((mission.isStory &&
+                !isFertonMission &&
+                !isCallejonHoggoblinsMission &&
+                !isTabernaDuergarMission &&
+                !isRecibidorMansionMission &&
+                !isDurnikEscalerasMission &&
+                !isPlantaIntermediaMansionMission &&
+                !isGorgonMazmorraMission) ||
+                mission.id === 'm1_tirano' ||
+                mission.id === 'm5_minas_historia');
+            const earnedMissionStars = isCompleted
+              ? Math.max(0, Math.min(3, questProgress.stars?.[mission.id] ?? 3))
+              : 0;
             const isRoboMission = mission.id === 'm2_robo';
             const isBosqueMission = mission.id === 'm3_bosque';
             const isPuertasMission = mission.id === 'm4_puertas_selladas';
             const isLaberintoMission = mission.id === 'm6_puerta_laberinto';
             const isAldeaEpilogueMission = mission.id === 'm7_epilogo_aldea';
+
+            // Una sola etiqueta por misión: Combate / Jefe / Historia / Minijuego.
+            const isBossMission =
+              mission.id === 'm1_tirano' ||
+              mission.id === 'm4_puertas_selladas' ||
+              mission.id === 'm10_hobgoblin_boss' ||
+              mission.id === 'm13_escaleras_durnik' ||
+              mission.id === 'm18_primera_camara_gorgon';
+            // Misiones que son escena narrativa (cinemática) y no un combate.
+            const isCinematicMission =
+              isLaberintoMission ||
+              isBaronMansionMission ||
+              isMansionFertonLlegadaMission ||
+              isDespachoFertonMission ||
+              isAudienciaBaronMission ||
+              isDespertarSuenosMission ||
+              isAldeaEpilogueMission ||
+              mission.id === 'm10b_encuentro_chispo';
+            const missionTypeLabel: 'Combate' | 'Jefe' | 'Historia' | 'Minijuego' = isTabernaDuergarMission
+              ? 'Minijuego'
+              : isBossMission
+              ? 'Jefe'
+              : isCinematicMission
+              ? 'Historia'
+              : 'Combate';
 
             if (isCompleted || isUnlocked) {
               return (
@@ -805,45 +1198,23 @@ export const QuestView: React.FC = () => {
                     />
                   </div>
                   <div className="relative z-10 flex-1 min-w-0 pl-3 pr-2 flex flex-col justify-center space-y-0.5 sm:space-y-1">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <h4 className="font-serif font-black text-xs sm:text-[13px] text-[#3d1908] truncate drop-shadow-[0_1px_0_rgba(255,255,255,0.4)]">
+                    <div className="flex flex-col items-start gap-1">
+                      <h4 className="max-w-full font-serif font-black text-xs sm:text-[13px] text-[#3d1908] truncate drop-shadow-[0_1px_0_rgba(255,255,255,0.4)]">
                         {mission.title}
                       </h4>
-                      {isFertonMission && (
-                        <span className="px-1.5 py-0.2 rounded-full bg-red-950/95 text-amber-300 border border-amber-500/50 font-sans font-black text-[7px] uppercase tracking-wide animate-pulse">
-                          3 OLEADAS DE ÉLITE
-                        </span>
-                      )}
-                      {isPuertasMission && (
-                        <span className="px-1.5 py-0.2 rounded-full bg-rose-700/90 text-rose-100 font-sans font-black text-[7px] uppercase tracking-wide animate-pulse">
-                          JEFE • 2 FASES
-                        </span>
-                      )}
-                      {(isLaberintoMission || isBaronMansionMission) && (
-                        <span className="px-1.5 py-0.2 rounded-full bg-purple-700/90 text-purple-100 font-sans font-black text-[7px] uppercase tracking-wide animate-pulse">
-                          CINEMÁTICA
-                        </span>
-                      )}
-                      {isAldeaEpilogueMission && (
-                        <span className="px-1.5 py-0.2 rounded-full bg-indigo-700/90 text-indigo-100 font-sans font-black text-[7px] uppercase tracking-wide animate-pulse">
-                          EPÍLOGO FINAL
-                        </span>
-                      )}
-                      {isStoryMission && (
-                        <span className="px-1.5 py-0.2 rounded-full bg-amber-600/90 text-amber-100 font-sans font-black text-[7px] uppercase tracking-wide">
-                          HISTORIA
-                        </span>
-                      )}
-                      {isRoboMission && (
-                        <span className="px-1.5 py-0.2 rounded-full bg-orange-700/90 text-orange-100 font-sans font-black text-[7px] uppercase tracking-wide">
-                          4 OLEADAS
-                        </span>
-                      )}
-                      {isBosqueMission && (
-                        <span className="px-1.5 py-0.2 rounded-full bg-lime-700/90 text-lime-100 font-sans font-black text-[7px] uppercase tracking-wide">
-                          2 OLEADAS
-                        </span>
-                      )}
+                      <span
+                        className={`px-1.5 py-0.2 rounded-full font-sans font-black text-[7px] uppercase tracking-wide ${
+                          missionTypeLabel === 'Jefe'
+                            ? 'bg-red-900/95 text-amber-200 border border-amber-400/60'
+                            : missionTypeLabel === 'Historia'
+                            ? 'bg-purple-700/90 text-purple-100'
+                            : missionTypeLabel === 'Minijuego'
+                            ? 'bg-emerald-800/95 text-emerald-100'
+                            : 'bg-amber-700/90 text-amber-100'
+                        }`}
+                      >
+                        {missionTypeLabel}
+                      </span>
                     </div>
                     <p className="text-[9.5px] sm:text-[10px] text-[#4d240e] leading-snug font-medium line-clamp-2">
                       {mission.description}
@@ -866,39 +1237,24 @@ export const QuestView: React.FC = () => {
                         handleLaunchMission(mission, false);
                       }}
                       className="w-[86px] sm:w-[92px] py-1.5 px-2 rounded-lg border border-[#fed7aa]/50 bg-gradient-to-b from-[#f97316] via-[#ea580c] to-[#c2410c] shadow-[0_2px_8px_rgba(234,88,12,0.6)] hover:brightness-110 active:scale-95 transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5"
-                      title="Entrar a combate"
+                      title={isTabernaDuergarMission ? 'Entrar al concurso' : 'Entrar a combate'}
                     >
                       <div className="flex items-center gap-0.5">
-                        <img
-                          src={
-                            isCompleted
-                              ? '/assets/items/estrella_mejora.webp'
-                              : '/assets/items/estrella_bronce.webp'
-                          }
-                          alt=""
-                          className="w-3 h-3 sm:w-3.5 sm:h-3.5 object-contain drop-shadow"
-                        />
-                        <img
-                          src={
-                            isCompleted
-                              ? '/assets/items/estrella_mejora.webp'
-                              : '/assets/items/estrella_bronce.webp'
-                          }
-                          alt=""
-                          className="w-3 h-3 sm:w-3.5 sm:h-3.5 object-contain drop-shadow"
-                        />
-                        <img
-                          src={
-                            isCompleted
-                              ? '/assets/items/estrella_mejora.webp'
-                              : '/assets/items/estrella_bronce.webp'
-                          }
-                          alt=""
-                          className="w-3 h-3 sm:w-3.5 sm:h-3.5 object-contain drop-shadow"
-                        />
+                        {[1, 2, 3].map((starIdx) => (
+                          <img
+                            key={starIdx}
+                            src={
+                              earnedMissionStars >= starIdx
+                                ? '/assets/items/estrella_mejora.webp'
+                                : '/assets/items/estrella_bronce.webp'
+                            }
+                            alt=""
+                            className="w-3 h-3 sm:w-3.5 sm:h-3.5 object-contain drop-shadow"
+                          />
+                        ))}
                       </div>
                       <span className="text-[10px] sm:text-[10.5px] font-black uppercase tracking-wider text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)] leading-tight">
-                        {isStoryMission ? 'HISTORIA' : 'COMBATE'}
+                        {isTabernaDuergarMission ? 'CONCURSO' : isStoryMission ? 'HISTORIA' : 'COMBATE'}
                       </span>
                     </button>
 
@@ -916,9 +1272,27 @@ export const QuestView: React.FC = () => {
                         mission.id === 'm10_hobgoblin_boss' ||
                         mission.id === 'm10b_encuentro_chispo' ||
                         mission.id === 'm10c_callejon_hoggoblins' ||
-                        mission.id === 'm10d_mansion_baron';
+                        mission.id === 'm10d_mansion_baron' ||
+                        mission.id === 'm10e_taberna_duergar' ||
+                        mission.id === 'm11_llegada_mansion_ferton' ||
+                        mission.id === 'm12_recibidor_mansion_ferton' ||
+                        mission.id === 'm13_escaleras_durnik' ||
+                        mission.id === 'm14_planta_intermedia_ferton' ||
+                        mission.id === 'm15_despacho_ferton' ||
+                        mission.id === 'm16_audiencia_baron' ||
+                        mission.id === 'm17_despertar_suenos' ||
+                        mission.id === 'm18_primera_camara_gorgon';
 
-                      if (hasStoryBtn && isCompleted && mission.id === 'm10d_mansion_baron') {
+                      if (
+                        hasStoryBtn &&
+                        isCompleted &&
+                        (mission.id === 'm10d_mansion_baron' ||
+                          mission.id === 'm10e_taberna_duergar' ||
+                          mission.id === 'm11_llegada_mansion_ferton' ||
+                          mission.id === 'm15_despacho_ferton' ||
+                          mission.id === 'm16_audiencia_baron' ||
+                          mission.id === 'm17_despertar_suenos')
+                      ) {
                         return (
                           <button
                             type="button"
@@ -1071,18 +1445,18 @@ export const QuestView: React.FC = () => {
 
             <div className="flex justify-center pt-2">
               <img
-                src={
-                  currentChapter === 2
-                    ? '/assets/items/cofre_sellado_mansion.webp'
-                    : '/assets/items/cofre_de_tintes_app.webp'
-                }
+                src="/assets/items/cofre_abierto.webp"
                 alt="Cofre de Recompensas"
                 className="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(168,85,247,0.9)]"
               />
             </div>
 
             <h3 className="font-serif font-black text-base uppercase text-amber-300 drop-shadow">
-              {currentChapter === 3
+              {currentChapter === 5
+                ? '¡Cofre del Reino de los Sueños!'
+                : currentChapter === 4
+                ? '¡Cofre de la Mansión Ferton!'
+                : currentChapter === 3
                 ? '¡Cofre del Campamento Orco en el Bosque!'
                 : currentChapter === 2
                 ? '¡Cofre de Las Minas de Glimmerstone!'
@@ -1090,29 +1464,53 @@ export const QuestView: React.FC = () => {
             </h3>
 
             <p className="text-xs text-stone-300">
-              {isChapterFullyCompleted
+              {currentChapter === 5 && totalCount === 0
+                ? 'Las misiones del Capítulo V: El Reino de los Sueños estarán disponibles próximamente. ¡Completa el capítulo cuando lleguen para abrir este cofre!'
+                : isChapterFullyCompleted
                 ? `¡Has completado con éxito todas las misiones del Capítulo ${
-                    currentChapter === 3 ? 'III' : currentChapter === 2 ? 'II' : 'I'
+                    currentChapter === 5
+                      ? 'V'
+                      : currentChapter === 4
+                      ? 'IV'
+                      : currentChapter === 3
+                      ? 'III'
+                      : currentChapter === 2
+                      ? 'II'
+                      : 'I'
                   }! Recompensas entregadas a tu bastión:`
                 : `Avanza y supera las misiones del Capítulo ${
-                    currentChapter === 3 ? 'III' : currentChapter === 2 ? 'II' : 'I'
+                    currentChapter === 5
+                      ? 'V'
+                      : currentChapter === 4
+                      ? 'IV'
+                      : currentChapter === 3
+                      ? 'III'
+                      : currentChapter === 2
+                      ? 'II'
+                      : 'I'
                   } para reclamar el botín completo (${completedCount}/${totalCount}).`}
             </p>
 
             {isChapterFullyCompleted ? (
               <div className="flex items-center justify-center gap-4 py-2 bg-[#140602] rounded-lg border border-amber-900/60">
                 <div className="flex items-center gap-1.5 text-xs font-black text-amber-400 font-mono">
-                  <span>+{currentChapter === 3 ? '35,000' : currentChapter === 2 ? '25,000' : '15,000'}</span>
-                  <span className="text-[10px] text-amber-200">ORO</span>
+                  <span>
+                    +{currentChapter === 5 ? '60,000' : currentChapter === 4 ? '45,000' : currentChapter === 3 ? '35,000' : currentChapter === 2 ? '25,000' : '15,000'}
+                  </span>
+                  <img src="/assets/items/moneda_de_moonhaven.webp" alt="Oro" className="w-3.5 h-3.5 object-contain" />
                 </div>
                 <div className="flex items-center gap-1.5 text-xs font-black text-sky-400 font-mono">
-                  <span>+{currentChapter === 3 ? '1,200' : currentChapter === 2 ? '800' : '500'}</span>
-                  <span className="text-[10px] text-sky-200">GEMAS</span>
+                  <span>+{currentChapter === 5 ? '2,000' : currentChapter === 4 ? '1,500' : currentChapter === 3 ? '1,200' : currentChapter === 2 ? '800' : '500'}</span>
+                  <img src="/assets/items/gema_del_recuerdo.webp" alt="Gemas" className="w-3.5 h-3.5 object-contain" />
                 </div>
               </div>
             ) : (
               <div className="py-2 px-3 rounded-lg bg-black/50 border border-stone-800 text-[11px] text-amber-200/90 font-mono">
-                {currentChapter === 3
+                {currentChapter === 5
+                  ? 'Recompensa final: +60,000 Oro y +2,000 Gemas'
+                  : currentChapter === 4
+                  ? 'Recompensa final: +45,000 Oro, +1,500 Gemas y Lacre Dorado'
+                  : currentChapter === 3
                   ? 'Recompensa final: +35,000 Oro, +1,200 Gemas y Estandarte Orco'
                   : currentChapter === 2
                   ? 'Recompensa final: +25,000 Oro, +800 Gemas y Veta de Plata'

@@ -1705,7 +1705,7 @@ export const SKILL_DEFINITIONS: Record<string, SkillDefinition> = {
         image: '/assets/skills/barled_inspiracion_tier_1.webp',
         damage: 0,
         title: 'Inspiración Bárdica I',
-        description: '🎶 [OUD ÁRABE]: Barled rasguea su Oud y sube de tier 1 carta de la mano al seleccionarla (+1 Rango).',
+        description: '������ [OUD ÁRABE]: Barled rasguea su Oud y sube de tier 1 carta de la mano al seleccionarla (+1 Rango).',
         gachaEffectBadge: '🎶 Inspiración • 1 Carta sube +1 Rango',
         gachaEffectsApplied: [],
         dndDamageType: 'force',
@@ -2153,6 +2153,8 @@ interface FloatingText {
 interface MergeAnimation {
   targetSlot: number;
   newTier: 2 | 3;
+  /// 'attract': las dos cartas todavía están en la mano y se atraen. 'pop': ya fusionadas, rebotan.
+  phase: 'attract' | 'pop';
 }
 
 export type CombatVfxType =
@@ -2248,7 +2250,15 @@ export type CombatEnemyId =
   | 'guarda_negro_pesado'
   | 'hobgoblin_capataz'
   | 'hoggoblin_encapuchado_daga'
-  | 'hoggoblin_encapuchado_ballesta';
+  | 'hoggoblin_encapuchado_ballesta'
+  | 'bugbear_criado'
+  | 'durnik_guardaespaldas'
+  | 'guarda_aurea_borracho_espada'
+  | 'guarda_aurea_borracho_alabarda'
+  | 'guarda_aurea_borracho_pesado'
+  | 'hoggoblin_tunica_borracho_daga'
+  | 'hoggoblin_tunica_borracho_ballesta'
+  | 'gorgon_metal';
 
 export interface EnemyConfig {
   id: CombatEnemyId;
@@ -4170,7 +4180,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           name: 'Collar de Colmillos de Gorrak',
           rarity: 'SSR',
           count: 1,
-          icon: '/assets/items/cinto_cuero_capitan.png',
+          icon: '/assets/items/cinto_cuero_capitan.webp',
           description: 'Aparato tribal de dientes de bestias y huesos que portaba el jefe caníbal.',
         },
       },
@@ -4665,6 +4675,470 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
         },
       },
     },
+    bugbear_criado: {
+      id: 'bugbear_criado',
+      missionId: 'm12_recibidor_mansion_ferton',
+      name: 'Bugbear Criado',
+      title: 'Servidumbre de Ferton • Traje Negro y Oro',
+      chamberName: 'Recibidor de la Mansión Ferton',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/bugbear_criado_idle.webp',
+      attackSpriteUrl: '/assets/combat/bugbear_criado_attack.webp',
+      hurtSpriteUrl: '/assets/combat/bugbear_criado_hurt.webp',
+      thumbUrl: '/assets/portraits/bugbear_criado_thumb.webp',
+      maxHp: 145,
+      width: 152,
+      height: 198,
+      scaleClass: 'w-[152px] h-[198px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Bandejazo de Plata',
+        desc: 'Descarga un golpe cuerpo a cuerpo contundente con su enorme bandeja de plata maciza.',
+        damage: [17, 24],
+        vfx: 'earth_titan',
+        sfx: 'punch',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Aturdido por Bandejazo',
+        },
+      },
+      specialSkill: {
+        name: 'Lanzamiento de Vajilla',
+        desc: 'Arroja teteras, copas y cubiertos de plata desde su bandeja de servicio a gran velocidad.',
+        damage: [20, 27],
+        vfx: 'earth_titan',
+        sfx: 'slash',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 1,
+          title: 'Corte de Porcelana y Plata',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Servicio Completo de Plata!',
+        desc: 'Combina un bandejazo demoledor cuerpo a cuerpo con una lluvia giratoria de vajilla de lujo.',
+        damage: 40,
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'stun',
+          duration: 1,
+          stacks: 1,
+          title: 'Conmoción de Banquete',
+        },
+      },
+      rewards: {
+        gold: 3800,
+        crystals: 145,
+        item: {
+          id: 'bandeja_plata_ferton',
+          name: 'Bandeja de Plata de Ferton',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/bugbear_criado_thumb.webp',
+          description: 'Bandeja de plata grabada con filigranas doradas usada por los criados bugbear de la mansión.',
+        },
+      },
+    },
+    durnik_guardaespaldas: {
+      id: 'durnik_guardaespaldas',
+      missionId: 'm13_escaleras_durnik',
+      name: 'Durnik',
+      title: 'Guardaespaldas de Ferton • Enano de Élite',
+      chamberName: 'Escaleras de la Mansión Ferton',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/durnik_idle.webp',
+      attackSpriteUrl: '/assets/combat/durnik_attack.webp',
+      hurtSpriteUrl: '/assets/combat/durnik_hurt.webp',
+      thumbUrl: '/assets/portraits/durnik_thumb.webp',
+      maxHp: 420,
+      width: 174,
+      height: 218,
+      scaleClass: 'w-[174px] h-[218px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Martillazo de Escolta',
+        desc: 'Descarga un golpe brutal con su pesado martillo enano de acero y oro.',
+        damage: [20, 28],
+        vfx: 'earth_titan',
+        sfx: 'slash',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Blindaje Abollado',
+        },
+      },
+      specialSkill: {
+        name: 'Bramido Sísmico de Hierro',
+        desc: 'Hace temblar los peldaños con un grito de guerra intimidante y una sacudida metálica.',
+        damage: [24, 32],
+        vfx: 'earth_titan',
+        sfx: 'powerup',
+        dndDamageType: 'thunder',
+        condition: {
+          type: 'frightened',
+          duration: 2,
+          stacks: 1,
+          title: 'Presión del Guardaespaldas',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Juicio del Martillo de Ferton!',
+        desc: 'Salta por las escaleras descargando todo el peso de su armadura y su martillo dorado.',
+        damage: 46,
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'stun',
+          duration: 1,
+          stacks: 1,
+          title: 'Conmoción de Acero',
+        },
+      },
+      rewards: {
+        gold: 40000,
+        crystals: 1400,
+        item: {
+          id: 'martillo_enano_durnik',
+          name: 'Martillo de Guerra de Durnik',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/durnik_thumb.webp',
+          description: 'Pesado martillo enano de acero negro y oro requisado tras noquear y atar a Durnik en las escaleras de Ferton.',
+        },
+      },
+    },
+    gorgon_metal: {
+      id: 'gorgon_metal',
+      missionId: 'm18_primera_camara_gorgon',
+      name: 'Gorgon de Hierro',
+      title: 'Guardián Metálico • Primera Cámara de la Mazmorra',
+      chamberName: 'Primera Cámara de la Mazmorra',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/gorgon_idle.webp',
+      attackSpriteUrl: '/assets/combat/gorgon_attack_cornada.webp',
+      hurtSpriteUrl: '/assets/combat/gorgon_hurt.webp',
+      thumbUrl: '/assets/portraits/gorgon_thumb.webp',
+      maxHp: 540,
+      width: 248,
+      height: 200,
+      scaleClass: 'w-[248px] h-[200px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Cornada de Hierro',
+        desc: 'Embiste con sus descomunales cuernos metálicos atravesando la guardia con impacto de lanza.',
+        damage: [24, 34],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 1,
+          title: 'Hemorragia de Asta Metálica',
+        },
+      },
+      specialSkill: {
+        name: 'Aliento de Niebla Petrificante',
+        desc: 'Exhala una densa nube verde tóxica por sus fauces de acero que entumece y petrifica a sus presas.',
+        damage: [22, 30],
+        vfx: 'void_miasma',
+        sfx: 'necrotic',
+        dndDamageType: 'poison',
+        condition: {
+          type: 'stun',
+          duration: 1,
+          stacks: 1,
+          title: 'Entumecimiento Petrificante',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Estampida de Lanza Ferroverde!',
+        desc: 'Carga a toda potencia envuelto en energía rúnica atravesando el aire como una lanza de hierro imparable.',
+        damage: 52,
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Armadura Perforada',
+        },
+      },
+      rewards: {
+        gold: 85000,
+        crystals: 3200,
+        item: {
+          id: 'cuerno_hierro_gorgon',
+          name: 'Cuerno de Hierro del Gorgon',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/gorgon_thumb.webp',
+          description: 'Cuerno metálico forjado con placas rúnicas arrancado al Gorgon guardián de la Primera Cámara tras la puerta rosada.',
+        },
+      },
+    },
+    guarda_aurea_borracho_espada: {
+      id: 'guarda_aurea_borracho_espada',
+      missionId: 'm14_planta_intermedia_ferton',
+      name: 'Guardia Áureo Mareado',
+      title: 'Guardia Áurea • Intoxicado por Alcohol en Gas',
+      chamberName: 'Planta Intermedia de la Mansión Ferton',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/guarda_negro_espada_clean.webp',
+      thumbUrl: '/assets/portraits/guarda_negro_espada_thumb.webp',
+      maxHp: 52,
+      width: 142,
+      height: 195,
+      scaleClass: 'w-[142px] h-[195px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Estocada Tambaleante',
+        desc: 'Blande su espada larga sin equilibrio tras inhalar el alcohol en gas.',
+        damage: [8, 12],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+      },
+      specialSkill: {
+        name: 'Tajo Desenfocado con Hipo',
+        desc: 'Intenta cortar al frente mientras ve doble por los vapores etílicos.',
+        damage: [9, 13],
+        vfx: 'crimson_claw',
+        sfx: 'attack',
+        dndDamageType: 'slashing',
+      },
+      ultimateSkill: {
+        name: 'Embestida Torpe de Ébano',
+        desc: 'Se lanza hacia delante tropezando con su propia capa dorada.',
+        damage: 16,
+        dndDamageType: 'slashing',
+      },
+      rewards: {
+        gold: 1800,
+        crystals: 65,
+        item: {
+          id: 'petaca_ebano_borracha',
+          name: 'Insignia Mareada de la Guardia Áurea',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/guarda_negro_espada_thumb.webp',
+          description: 'Emblema de la Guardia Áurea impregnado de alcohol en gas tras caer en la planta intermedia.',
+        },
+      },
+    },
+    guarda_aurea_borracho_alabarda: {
+      id: 'guarda_aurea_borracho_alabarda',
+      missionId: 'm14_planta_intermedia_ferton',
+      name: 'Alabardero Áureo Ebrio',
+      title: 'Guardia Áurea • Intoxicado por Alcohol en Gas',
+      chamberName: 'Planta Intermedia de la Mansión Ferton',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/guarda_negro_alabarda_clean.webp',
+      thumbUrl: '/assets/portraits/guarda_negro_alabarda_thumb.webp',
+      maxHp: 58,
+      width: 142,
+      height: 195,
+      scaleClass: 'w-[142px] h-[195px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Alabardazo Errático',
+        desc: 'Da un golpe lento con el asta dorada perdiendo el centro de gravedad.',
+        damage: [8, 13],
+        vfx: 'crimson_claw',
+        sfx: 'attack',
+        dndDamageType: 'slashing',
+      },
+      specialSkill: {
+        name: 'Barrido Con Mareo',
+        desc: 'Gira su alabarda tambaleándose por el alcohol evaporado.',
+        damage: [10, 14],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'bludgeoning',
+      },
+      ultimateSkill: {
+        name: 'Pica Vacilante de Ferton',
+        desc: 'Lanza una estocada aparatosa que apenas conserva fuerza.',
+        damage: 18,
+        dndDamageType: 'piercing',
+      },
+      rewards: {
+        gold: 2000,
+        crystals: 75,
+        item: {
+          id: 'asta_dorada_empanada',
+          name: 'Borla Dorada Empapada en Alcohol',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/guarda_negro_alabarda_thumb.webp',
+          description: 'Adorno de alabarda de la Guardia Áurea capturado en la nube etílica.',
+        },
+      },
+    },
+    guarda_aurea_borracho_pesado: {
+      id: 'guarda_aurea_borracho_pesado',
+      missionId: 'm14_planta_intermedia_ferton',
+      name: 'Acorazado Áureo Embriagado',
+      title: 'Guardia Áurea • Intoxicado y Debilitado',
+      chamberName: 'Planta Intermedia de la Mansión Ferton',
+      chamberNumber: 3,
+      spriteUrl: '/assets/combat/guarda_negro_pesado_clean.webp',
+      thumbUrl: '/assets/portraits/guarda_negro_pesado_thumb.webp',
+      maxHp: 74,
+      width: 154,
+      height: 210,
+      scaleClass: 'w-[154px] h-[210px]',
+      isBoss: false,
+      isSemiboss: true,
+      normalSkill: {
+        name: 'Mazazo Tambaleante',
+        desc: 'Descarga su maza pesada sin puntería bajo los efectos del gas alcohólico.',
+        damage: [10, 15],
+        vfx: 'earth_titan',
+        sfx: 'punch',
+        dndDamageType: 'bludgeoning',
+      },
+      specialSkill: {
+        name: 'Bramido Pastoso de Ébano',
+        desc: 'Su yelmo resuena con un grito arrastrado mientras intenta mantener el equilibrio.',
+        damage: [11, 16],
+        vfx: 'earth_titan',
+        sfx: 'critical',
+        dndDamageType: 'thunder',
+      },
+      ultimateSkill: {
+        name: 'Planchazo Acorazado',
+        desc: 'Intenta aplastar al rival, pero el mareo amortigua el impacto.',
+        damage: 20,
+        dndDamageType: 'bludgeoning',
+      },
+      rewards: {
+        gold: 3500,
+        crystals: 120,
+        item: {
+          id: 'yelmo_ebano_borracho',
+          name: 'Yelmo de Ébano del León Mareado',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/guarda_negro_pesado_thumb.webp',
+          description: 'Pesado yelmo de comandante áureo rendido por el alcohol en gas de Ultrak.',
+        },
+      },
+    },
+    hoggoblin_tunica_borracho_daga: {
+      id: 'hoggoblin_tunica_borracho_daga',
+      missionId: 'm14_planta_intermedia_ferton',
+      name: 'Hoggoblin en Túnica Ebrio',
+      title: 'Sicario de Ferton • Intoxicado por Gas',
+      chamberName: 'Planta Intermedia de la Mansión Ferton',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/hoggoblin_daga_clean.webp',
+      attackSpriteUrl: '/assets/combat/hoggoblin_daga_attack.webp',
+      hurtSpriteUrl: '/assets/combat/hoggoblin_daga_hurt.webp',
+      thumbUrl: '/assets/portraits/hoggoblin_daga_thumb.webp',
+      maxHp: 44,
+      width: 146,
+      height: 196,
+      scaleClass: 'w-[146px] h-[196px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Cuchillada con Hipo',
+        desc: 'Lanza un corte torpe con sus dagas curvas mientras la cabeza le da vueltas.',
+        damage: [7, 11],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+      },
+      specialSkill: {
+        name: 'Giro Descontrolado de Túnica',
+        desc: 'Da una pirueta mareada enredándose con su propia túnica negra y dorada.',
+        damage: [8, 12],
+        vfx: 'shadow_needle',
+        sfx: 'hit',
+        dndDamageType: 'piercing',
+      },
+      ultimateSkill: {
+        name: 'Finta de Doble Visión',
+        desc: 'Ataca al aire antes de acertar de refilón con una de sus dagas.',
+        damage: 14,
+        dndDamageType: 'slashing',
+      },
+      rewards: {
+        gold: 1600,
+        crystals: 60,
+        item: {
+          id: 'tunica_ferton_etilica',
+          name: 'Túnica de Ferton Impregnada en Alcohol',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/hoggoblin_daga_thumb.webp',
+          description: 'Túnica negra con bordes dorados empapada de vapor etílico tras la redada.',
+        },
+      },
+    },
+    hoggoblin_tunica_borracho_ballesta: {
+      id: 'hoggoblin_tunica_borracho_ballesta',
+      missionId: 'm14_planta_intermedia_ferton',
+      name: 'Ballestero Hoggoblin Ebrio',
+      title: 'Tirador de Ferton • Intoxicado por Gas',
+      chamberName: 'Planta Intermedia de la Mansión Ferton',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/hoggoblin_ballesta_clean.webp',
+      attackSpriteUrl: '/assets/combat/hoggoblin_ballesta_attack.webp',
+      hurtSpriteUrl: '/assets/combat/hoggoblin_ballesta_hurt.webp',
+      thumbUrl: '/assets/portraits/hoggoblin_ballesta_thumb.webp',
+      maxHp: 42,
+      width: 146,
+      height: 196,
+      scaleClass: 'w-[146px] h-[196px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Virote Desviado',
+        desc: 'Dispara viendo dos siluetas a la vez con la ballesta temblando.',
+        damage: [7, 11],
+        vfx: 'shadow_needle',
+        sfx: 'laser2',
+        dndDamageType: 'piercing',
+      },
+      specialSkill: {
+        name: 'Disparo de Borrachera',
+        desc: 'Aprieta el gatillo sin apuntar mientras tose por el alcohol en gas.',
+        damage: [8, 12],
+        vfx: 'shadow_needle',
+        sfx: 'laser',
+        dndDamageType: 'piercing',
+      },
+      ultimateSkill: {
+        name: 'Salva Torcida de Tres Saetas',
+        desc: 'Dispara tres virotes en ángulo chueco por culpa del mareo.',
+        damage: 15,
+        dndDamageType: 'piercing',
+      },
+      rewards: {
+        gold: 1700,
+        crystals: 65,
+        item: {
+          id: 'virote_torcido_ferton',
+          name: 'Ballesta Ligera de Sicario Mareado',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/hoggoblin_ballesta_thumb.webp',
+          description: 'Ballesta negra con incrustaciones doradas caída de las manos de un tirador borracho.',
+        },
+      },
+    },
   };
 
 export const HOBGOBLIN_SKILLS_BY_PHASE = {
@@ -4829,6 +5303,26 @@ export const calculateHobgoblinDamage = (
   }
 };
 
+export const PLANTA_INTERMEDIA_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Oleada 1: Vanguardia Aturdida por el Gas', isBoss: false, enemyConfigIds: ['guarda_aurea_borracho_espada', 'hoggoblin_tunica_borracho_daga', 'hoggoblin_tunica_borracho_ballesta'], missionId: 'm14_planta_intermedia_ferton' },
+  { floor: 2, name: 'Oleada 2: Tromba Mixta Mareada', isBoss: false, enemyConfigIds: ['guarda_aurea_borracho_alabarda', 'hoggoblin_tunica_borracho_daga', 'guarda_aurea_borracho_espada', 'hoggoblin_tunica_borracho_ballesta'], missionId: 'm14_planta_intermedia_ferton' },
+  { floor: 3, name: 'Oleada 3: Refuerzos Tambaleantes', isBoss: false, enemyConfigIds: ['guarda_aurea_borracho_pesado', 'hoggoblin_tunica_borracho_ballesta', 'guarda_aurea_borracho_alabarda'], missionId: 'm14_planta_intermedia_ferton' },
+  { floor: 4, name: 'Oleada 4: Retaguardia Completamente Ebria', isBoss: true, enemyConfigIds: ['guarda_aurea_borracho_pesado', 'guarda_aurea_borracho_alabarda', 'hoggoblin_tunica_borracho_daga', 'hoggoblin_tunica_borracho_ballesta'], missionId: 'm14_planta_intermedia_ferton' },
+];
+
+export const GORGON_MAZMORRA_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Jefe: Gorgon de Hierro en la Primera Cámara', isBoss: true, enemyConfigIds: ['gorgon_metal'], missionId: 'm18_primera_camara_gorgon' },
+];
+
+export const DURNIK_ESCALERAS_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Jefe: Durnik, el Guardaespaldas de Ferton', isBoss: true, enemyConfigIds: ['durnik_guardaespaldas'], missionId: 'm13_escaleras_durnik' },
+];
+
+export const RECIBIDOR_FERTON_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Ronda 1: Criados del Recibidor', isBoss: false, enemyConfigIds: ['bugbear_criado', 'bugbear_criado'], missionId: 'm12_recibidor_mansion_ferton' },
+  { floor: 2, name: 'Ronda 2: Mayordomos de Reserva', isBoss: true, enemyConfigIds: ['bugbear_criado', 'bugbear_criado', 'bugbear_criado'], missionId: 'm12_recibidor_mansion_ferton' },
+];
+
 export const CALLEJON_HOGGOBLIN_CHAMBERS: BaseChamber[] = [
   { floor: 1, name: 'Ronda 1: Sicarios Encapuchados de Ferton', isBoss: false, enemyConfigIds: ['hoggoblin_encapuchado_daga', 'hoggoblin_encapuchado_ballesta'], missionId: 'm10c_callejon_hoggoblins' },
   { floor: 2, name: 'Ronda 2: Refuerzos Negros y Dorados', isBoss: true, enemyConfigIds: ['hoggoblin_encapuchado_daga', 'hoggoblin_encapuchado_ballesta', 'hoggoblin_encapuchado_daga', 'hoggoblin_encapuchado_ballesta'], missionId: 'm10c_callejon_hoggoblins' },
@@ -4971,7 +5465,14 @@ export interface AccumulatedLoot {
 
 export const createChamberEnemies = (floor: number, missionId?: string | null): ChamberEnemyState[] => {
   let configIds: CombatEnemyId[] = [];
-  if (missionId === 'm10_hobgoblin_boss') {
+  if (missionId === 'm18_primera_camara_gorgon') {
+    configIds = ['gorgon_metal'];
+  } else if (missionId === 'm14_planta_intermedia_ferton') {
+    const chamber = PLANTA_INTERMEDIA_CHAMBERS[floor - 1] || PLANTA_INTERMEDIA_CHAMBERS[0];
+    configIds = chamber.enemyConfigIds;
+  } else if (missionId === 'm13_escaleras_durnik') {
+    configIds = ['durnik_guardaespaldas'];
+  } else if (missionId === 'm10_hobgoblin_boss') {
     configIds = ['hobgoblin_capataz'];
   } else if (missionId === 'm5_cuevas_zancudo') {
     // Boss fight: El Zancudo Espectral in the entrance to the colony heart
@@ -4997,6 +5498,13 @@ export const createChamberEnemies = (floor: number, missionId?: string | null): 
       chosen.push(pool[Math.floor(Math.random() * pool.length)]);
     }
     configIds = chosen;
+  } else if (missionId === 'm12_recibidor_mansion_ferton') {
+    if (floor <= 2) {
+      const chamber = RECIBIDOR_FERTON_CHAMBERS[floor - 1] || RECIBIDOR_FERTON_CHAMBERS[0];
+      configIds = chamber.enemyConfigIds;
+    } else {
+      configIds = ['bugbear_criado', 'bugbear_criado'];
+    }
   } else if (missionId === 'm10c_callejon_hoggoblins') {
     if (floor <= 2) {
       const chamber = CALLEJON_HOGGOBLIN_CHAMBERS[floor - 1] || CALLEJON_HOGGOBLIN_CHAMBERS[0];
@@ -5040,6 +5548,7 @@ export const createChamberEnemies = (floor: number, missionId?: string | null): 
   }
 
   const hpScale = floor <= 10 ? 1 : 1 + (floor - 10) * 0.08;
+  const isAlcoholGasMission = missionId === 'm14_planta_intermedia_ferton';
 
   return configIds.map((cfgId, idx) => {
     const cfg = DUNGEON_ENEMIES[cfgId] || DUNGEON_ENEMIES['araknoide_rojo'];
@@ -5049,6 +5558,26 @@ export const createChamberEnemies = (floor: number, missionId?: string | null): 
         ? ` ${String.fromCharCode(65 + idx)}`
         : '';
 
+    let initialConditions: ActiveGachaEffect[] = [];
+    if (isAlcoholGasMission) {
+      const debuff1 = stackGachaEffect(
+        initialConditions,
+        'atk_down',
+        6,
+        3,
+        3,
+        'Alcohol en Gas'
+      ).updatedEffects;
+      initialConditions = stackGachaEffect(
+        debuff1,
+        'confused',
+        6,
+        1,
+        2,
+        'Embriaguez por Gas'
+      ).updatedEffects;
+    }
+
     return {
       uid: `${cfgId}_f${floor}_s${idx}_${Date.now()}_${Math.random()}`,
       configId: cfgId,
@@ -5057,7 +5586,7 @@ export const createChamberEnemies = (floor: number, missionId?: string | null): 
       hp: scaledMaxHp,
       maxHp: scaledMaxHp,
       ultimateOrbs: cfgId === 'semiboss_melenudo' ? 2 : 0,
-      conditions: [],
+      conditions: initialConditions,
       isAshDissolving: false,
       isHitShaking: false,
       hitKey: 0,
@@ -5093,6 +5622,35 @@ export const DndImpactShaderOverlay: React.FC<{
 
 export const DndSpriteMaskShader = DndImpactShaderOverlay;
 
+/** Capítulo de la historia al que pertenece cada misión de combate (para el poder enemigo). */
+const ENEMY_CHAPTER_BY_MISSION: Record<string, number> = {
+  m1_tirano: 1,
+  m2_robo: 1,
+  m3_bosque: 1,
+  m4_puertas_selladas: 1,
+  m5_minas_historia: 2,
+  m3_cuevas_rojo: 2,
+  m4_cuevas_azul: 2,
+  m5_cuevas_zancudo: 2,
+  m6_puerta_laberinto: 2,
+  m7_epilogo_aldea: 2,
+  m8_intro_capitulo3: 3,
+  m9_emboscada_ferton: 3,
+  m10_hobgoblin_boss: 3,
+  m10b_encuentro_chispo: 3,
+  m10c_callejon_hoggoblins: 3,
+  m10d_mansion_baron: 3,
+  m10e_taberna_duergar: 3,
+  m11_llegada_mansion_ferton: 4,
+  m12_recibidor_mansion_ferton: 4,
+  m13_escaleras_durnik: 4,
+  m14_planta_intermedia_ferton: 4,
+  m15_despacho_ferton: 4,
+  m16_audiencia_baron: 4,
+  m17_despertar_suenos: 5,
+  m18_primera_camara_gorgon: 5,
+};
+
 export const CombatView: React.FC = () => {
   const {
     navigateTo,
@@ -5105,12 +5663,18 @@ export const CombatView: React.FC = () => {
     questProgress,
     completeQuestMission,
     setActiveQuestChapter,
+    activeQuestChapter,
     team,
+    heroes,
   } = useGame();
 
   // Determine starting floor based on selected mission
   const getInitialFloor = (): number => {
     if (
+      selectedCombatMissionId === 'm18_primera_camara_gorgon' ||
+      selectedCombatMissionId === 'm14_planta_intermedia_ferton' ||
+      selectedCombatMissionId === 'm13_escaleras_durnik' ||
+      selectedCombatMissionId === 'm12_recibidor_mansion_ferton' ||
       selectedCombatMissionId === 'm10_hobgoblin_boss' ||
       selectedCombatMissionId === 'm10c_callejon_hoggoblins' ||
       selectedCombatMissionId === 'm9_emboscada_ferton' ||
@@ -5309,12 +5873,52 @@ export const CombatView: React.FC = () => {
   const devoradorTransitionTimersRef = useRef<number[]>([]);
   const [isZancudoRoaring, setIsZancudoRoaring] = useState<boolean>(false);
   const zancudoRoarTimersRef = useRef<number[]>([]);
+  const [gorgonAttackPose, setGorgonAttackPose] = useState<'cornada' | 'aliento'>('cornada');
 
-  // Hero Stats (Magordito) - 100 HP
-  const MAX_HERO_HP = 100;
+  // Vida compartida del grupo: la barra es una sola para todos, pero su máximo sale de sumar
+  // el 75 % de la vida máxima de cada héroe del equipo (h1×0.75 + h2×0.75 + h3×0.75 + h4×0.75).
+  const MAX_HERO_HP = useMemo(() => {
+    const assignedIds = Array.from(new Set(team.filter((id): id is string => Boolean(id)))).slice(0, 4);
+    const total = assignedIds.reduce((sum, heroId) => {
+      const hero = heroes.find((h) => h.id === heroId);
+      return sum + (hero?.stats?.maxHp ?? 0);
+    }, 0);
+    // Sin equipo asignado se mantiene la base de siempre para no dejar la partida con 1 HP.
+    if (total <= 0) return 100;
+    return Math.max(1, Math.round(total * 0.75));
+  }, [team, heroes]);
   const [heroHp, setHeroHp] = useState<number>(MAX_HERO_HP);
   const heroHpRef = useRef<number>(MAX_HERO_HP);
-  const [heroMaxHp] = useState<number>(MAX_HERO_HP);
+  const heroMaxHp = MAX_HERO_HP;
+
+  // Estrellas de la misión (se calculan al terminarla):
+  //   1 ★  terminar sin morir ninguna vez.
+  //   2 ★  matarlos a todos en menos de 5 minutos.
+  //   3 ★  las dos cosas a la vez.
+  // Morir = caer en combate; si te levantas y reinicias la sala, la muerte queda contada.
+  const MISSION_STAR_FAST_MS = 5 * 60 * 1000;
+  const runStartedAtRef = useRef<number>(Date.now());
+  const runDeathsRef = useRef<number>(0);
+  const computeMissionStars = (): number => {
+    const isFast = Date.now() - runStartedAtRef.current <= MISSION_STAR_FAST_MS;
+    const isDeathless = runDeathsRef.current === 0;
+    if (isFast && isDeathless) return 3;
+    if (isFast) return 2;
+    if (isDeathless) return 1;
+    return 0;
+  };
+  // Curación, regeneración y escudos sí van en porcentaje de la vida compartida: las cifras
+  // están escritas para un pool de 100 PV.
+  const HP_DAMAGE_SCALE = MAX_HERO_HP / 100;
+  // El DAÑO enemigo NO depende de la vida de tus héroes (estilo gacha): crece con el capítulo de
+  // la historia y con la profundidad de la sala. Si subes de nivel y tu barra crece, los mismos
+  // golpes pasan a ocupar cada vez menos porcentaje: sobrenivelado casi no te hacen nada.
+  const ENEMY_STAGE_CHAPTER =
+    ENEMY_CHAPTER_BY_MISSION[selectedCombatMissionId ?? ''] ?? (activeQuestChapter || 1);
+  const ENEMY_DAMAGE_SCALE =
+    38 *
+    Math.pow(1.45, Math.max(0, ENEMY_STAGE_CHAPTER - 1)) *
+    Math.pow(1.04, Math.max(0, currentFloor - 1));
 
   // Turn Counter
   const [turnCounter, setTurnCounter] = useState<number>(1);
@@ -5444,6 +6048,38 @@ export const CombatView: React.FC = () => {
       '/assets/combat/semiboss_zancudo_attack.webp',
       '/assets/combat/semiboss_zancudo_roar.webp',
       '/assets/combat/semiboss_zancudo_hurt.webp',
+      // Bugbears Criados del Recibidor de Ferton & VFX
+      '/assets/backgrounds/recibidor_mansion_ferton.webp',
+      '/assets/combat/bugbear_criado_idle.webp',
+      '/assets/combat/bugbear_criado_attack.webp',
+      '/assets/combat/bugbear_criado_hurt.webp',
+      '/assets/combat/bugbear_vfx_bandeja.webp',
+      '/assets/combat/bugbear_vfx_objetos.webp',
+      '/assets/combat/bugbear_ono_bonk.webp',
+      '/assets/combat/bugbear_ono_swiing.webp',
+      '/assets/portraits/bugbear_criado_thumb.webp',
+      // Durnik Guardaespaldas de Ferton (Escaleras) & VFX
+      '/assets/backgrounds/escaleras_mansion_ferton.webp',
+      '/assets/combat/durnik_idle.webp',
+      '/assets/combat/durnik_attack.webp',
+      '/assets/combat/durnik_hurt.webp',
+      '/assets/combat/durnik_atado.webp',
+      '/assets/combat/durnik_vfx_martillo.webp',
+      '/assets/combat/durnik_ono_krak.webp',
+      '/assets/combat/durnik_ono_bamm.webp',
+      '/assets/portraits/durnik_thumb.webp',
+      // Gorgon de Hierro (Capítulo V - Primera Cámara) & VFX
+      '/assets/backgrounds/puerta_mazmorra_rosa.webp',
+      '/assets/backgrounds/primera_camara_gorgon.webp',
+      '/assets/combat/gorgon_idle.webp',
+      '/assets/combat/gorgon_attack_cornada.webp',
+      '/assets/combat/gorgon_attack_aliento.webp',
+      '/assets/combat/gorgon_hurt.webp',
+      '/assets/combat/gorgon_vfx_lanza.webp',
+      '/assets/combat/gorgon_vfx_niebla.webp',
+      '/assets/combat/gorgon_ono_shhhhh.webp',
+      '/assets/combat/edacorn_vfx_slash.webp',
+      '/assets/portraits/gorgon_thumb.webp',
     ];
     sprites.forEach((src) => {
       const img = new Image();
@@ -6064,6 +6700,7 @@ export const CombatView: React.FC = () => {
     const footY = toY(rect.top + anchor.b * rect.height);
     const headX = toX(rect.left + anchor.hx * rect.width);
     const headY = toY(rect.top + anchor.hy * rect.height);
+    const imgSrc = img?.getAttribute('src') ?? '';
     const base: EnemyVfxFrame = {
       x: toX(rect.left + anchor.c * rect.width),
       y: (footY + headY) / 2,
@@ -6071,10 +6708,18 @@ export const CombatView: React.FC = () => {
       headY,
       height: rect.height / hostRect.height,
       width: rect.width / hostRect.width,
+      left: toX(rect.left),
+      top: toY(rect.top),
+      ...(imgSrc.includes('gorgon')
+        ? {
+            mouthX: toX(rect.left + 0.27 * rect.width),
+            mouthY: toY(rect.top + 0.425 * rect.height),
+          }
+        : {}),
     };
     if (!withWeaponTip) return base;
     // Punta del arma medida sobre el alfa del sprite (aún puede estar cargándose).
-    const tip = getSpriteWeaponTip(img?.getAttribute('src') ?? '');
+    const tip = getSpriteWeaponTip(imgSrc);
     return tip ? { ...base, tipFx: tip.fx, tipFy: tip.fy } : base;
   };
 
@@ -6139,6 +6784,11 @@ export const CombatView: React.FC = () => {
       return enemy.hurtSpriteUrl || enemy.spriteUrl;
     }
     if (enemy.animation === 'strike' || enemyAnimation === 'strike') {
+      if (enemy.configId === 'gorgon_metal') {
+        return gorgonAttackPose === 'aliento'
+          ? '/assets/combat/gorgon_attack_aliento.webp'
+          : '/assets/combat/gorgon_attack_cornada.webp';
+      }
       return enemy.attackSpriteUrl || enemy.spriteUrl;
     }
     return enemy.spriteUrl;
@@ -6165,6 +6815,7 @@ export const CombatView: React.FC = () => {
     zancudoRoarTimersRef.current.forEach((id) => window.clearTimeout(id));
     zancudoRoarTimersRef.current = [];
     setIsZancudoRoaring(false);
+    setGorgonAttackPose('cornada');
 
     const initFloor = getInitialFloor();
     setCurrentFloor(initFloor);
@@ -6566,25 +7217,62 @@ export const CombatView: React.FC = () => {
   // durante el turno enemigo) y no gasta turno: es una consecuencia pasiva de tenerlas juntas.
   // La cadena entera (tres o cuatro cartas iguales) se resuelve en una sola fusión.
   const autoMergeTimerRef = useRef<number | null>(null);
+  /// Fusión automática en tres tiempos: la pareja se ve al salir, las dos cartas se atraen y solo
+  /// entonces se funden con un rebote cartoon.
+  const AUTO_MERGE_DELAY_MS = 180;
+  const MERGE_ATTRACT_MS = 380;
+  const MERGE_POP_MS = 560;
   useEffect(() => {
     // No se fusiona a mitad de un arrastre: los índices cambiarían bajo el dedo del jugador.
     if (dragIndex !== null) return;
-    const currentHand = handRef.current;
-    const pairIdx = findAutoMergePair(currentHand);
-    if (pairIdx === -1) return;
+    if (findAutoMergePair(handRef.current) === -1) return;
 
-    const resolved = resolveAutoMerges(currentHand);
-    if (resolved.hand.length === currentHand.length) return;
+    let popTimer = 0;
+    const attractTimer = window.setTimeout(() => {
+      // Se vuelve a leer la mano al disparar: para entonces puede haber cambiado.
+      const currentHand = handRef.current;
+      const pairIdx = findAutoMergePair(currentHand);
+      if (pairIdx === -1) return;
+      const resolved = resolveAutoMerges(currentHand);
+      if (resolved.hand.length === currentHand.length) return;
 
-    sound.playSFX('celestial');
-    setMergeAnim({
-      targetSlot: pairIdx,
-      newTier: (resolved.hand[pairIdx]?.tier ?? Math.min(3, currentHand[pairIdx].tier + 1)) as 2 | 3,
-    });
-    if (autoMergeTimerRef.current) window.clearTimeout(autoMergeTimerRef.current);
-    autoMergeTimerRef.current = window.setTimeout(() => setMergeAnim(null), 750);
+      // Fase 1: la pareja sigue en la mano, solo se atraen y se deforman.
+      setMergeAnim({
+        targetSlot: pairIdx,
+        newTier: (resolved.hand[pairIdx]?.tier ?? Math.min(3, currentHand[pairIdx].tier + 1)) as 2 | 3,
+        phase: 'attract',
+      });
 
-    setHand(resolved.hand);
+      popTimer = window.setTimeout(() => {
+        const latest = handRef.current;
+        const idx = findAutoMergePair(latest);
+        if (idx === -1) {
+          setMergeAnim(null);
+          return;
+        }
+        const merged = resolveAutoMerges(latest);
+        if (merged.hand.length === latest.length) {
+          setMergeAnim(null);
+          return;
+        }
+
+        // Fase 2: la carta de la derecha se mete dentro de la izquierda y la resultante rebota.
+        sound.playSFX('celestial');
+        setMergeAnim({
+          targetSlot: idx,
+          newTier: (merged.hand[idx]?.tier ?? Math.min(3, latest[idx].tier + 1)) as 2 | 3,
+          phase: 'pop',
+        });
+        setHand(merged.hand);
+        if (autoMergeTimerRef.current) window.clearTimeout(autoMergeTimerRef.current);
+        autoMergeTimerRef.current = window.setTimeout(() => setMergeAnim(null), MERGE_POP_MS);
+      }, MERGE_ATTRACT_MS);
+    }, AUTO_MERGE_DELAY_MS);
+
+    return () => {
+      window.clearTimeout(attractTimer);
+      window.clearTimeout(popTimer);
+    };
   }, [hand, dragIndex]);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
@@ -6911,11 +7599,12 @@ export const CombatView: React.FC = () => {
         return { stolenByBoss: true, bossName: 'Caudillo Gorrak' };
       }
 
-      // 1. Immediate Heal (Ramen, Potions, etc.)
+      // 1. Immediate Heal (Ramen, Potions, etc.) — escalado a la vida compartida
       if (def.immediateHeal) {
-        heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + def.immediateHeal);
+        const healed = Math.round(def.immediateHeal * HP_DAMAGE_SCALE);
+        heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healed);
         setHeroHp(heroHpRef.current);
-        spawnFloating(`+${def.immediateHeal}`, false, true);
+        spawnFloating(`+${healed}`, false, true);
       }
 
       // 2. Immediate Ultimate Gauge (Panes de Ajo: +2 Orbes Definitivos)
@@ -6924,9 +7613,9 @@ export const CombatView: React.FC = () => {
 
       }
 
-      // 3. Protective Shield (Pizza)
+      // 3. Protective Shield (Pizza) — escalado a la vida compartida
       if (def.shieldHp) {
-        setFoodShieldHp(def.shieldHp);
+        setFoodShieldHp(Math.round(def.shieldHp * HP_DAMAGE_SCALE));
 
       }
 
@@ -6984,7 +7673,7 @@ export const CombatView: React.FC = () => {
       });
       setTimeout(() => setDndProcBanner(null), 3200);
     },
-    [heroMaxHp, spawnFloating, addUltimateOrb, queueStatusNotification]
+    [heroMaxHp, HP_DAMAGE_SCALE, spawnFloating, addUltimateOrb, queueStatusNotification]
   );
 
   // Helper to draw random tier 1 skill strictly based on active combat hero (Edacorn, Pepe Loux, Arlem, Magordito)
@@ -7089,6 +7778,8 @@ export const CombatView: React.FC = () => {
     setHeroHp(MAX_HERO_HP);
     setHeroConditions([]);
     setUltimateOrbs(0);
+    // Nueva expedición: el cronómetro de las estrellas vuelve a cero (las muertes siguen contadas).
+    runStartedAtRef.current = Date.now();
     startChamber(1);
   };
 
@@ -7300,7 +7991,7 @@ export const CombatView: React.FC = () => {
         // Poison DoT on Hero
         const poison = prev.find((c) => c.type === 'poison' || c.type === 'poisoned');
         if (poison) {
-          const pDmg = 5 * poison.stacks;
+          const pDmg = Math.round(5 * poison.stacks * ENEMY_DAMAGE_SCALE);
           heroHpRef.current = Math.max(0, heroHpRef.current - pDmg);
           const currentHp = heroHpRef.current;
           setHeroHp(currentHp);
@@ -7322,6 +8013,7 @@ export const CombatView: React.FC = () => {
             setTimeout(() => {
               setIsHeroAshDissolving(false);
               setHeroAnimation('idle');
+              runDeathsRef.current += 1;
               setBattleState('defeat');
               sound.playSFX('defeat');
             }, 2200);
@@ -7363,7 +8055,7 @@ export const CombatView: React.FC = () => {
 
       // Turn-start HP Regeneration (Ramen Humeante, etc.)
       if (activeFoodBuff?.regenPerTurn && heroHpRef.current > 0 && heroHpRef.current < heroMaxHp) {
-        const healAmt = activeFoodBuff.regenPerTurn;
+        const healAmt = Math.max(1, Math.round(activeFoodBuff.regenPerTurn * HP_DAMAGE_SCALE));
         heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healAmt);
         setHeroHp(heroHpRef.current);
         spawnFloating(`+${healAmt}`, false, true);
@@ -7512,7 +8204,7 @@ export const CombatView: React.FC = () => {
       sound.playSFX('victory');
       launchConfetti();
 
-      completeQuestMission('m4_puertas_selladas', 3);
+      completeQuestMission('m4_puertas_selladas', computeMissionStars());
       setActiveQuestChapter(2);
       addGold(8000);
       addCrystals(300);
@@ -7584,7 +8276,7 @@ export const CombatView: React.FC = () => {
       sound.playSFX('victory');
       launchConfetti();
 
-      completeQuestMission('m5_cuevas_zancudo', 3);
+      completeQuestMission('m5_cuevas_zancudo', computeMissionStars());
       addGold(10000);
       addCrystals(350);
       if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
@@ -7632,7 +8324,7 @@ export const CombatView: React.FC = () => {
       sound.playSFX('victory');
       launchConfetti();
 
-      completeQuestMission('m4_cuevas_azul', 3);
+      completeQuestMission('m4_cuevas_azul', computeMissionStars());
       addGold(8000);
       addCrystals(250);
       if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
@@ -7680,7 +8372,7 @@ export const CombatView: React.FC = () => {
       sound.playSFX('victory');
       launchConfetti();
 
-      completeQuestMission('m3_cuevas_rojo', 3);
+      completeQuestMission('m3_cuevas_rojo', computeMissionStars());
       addGold(7000);
       addCrystals(250);
       if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
@@ -7888,7 +8580,7 @@ export const CombatView: React.FC = () => {
       sound.playSFX('victory');
       launchConfetti();
 
-      completeQuestMission('m10_hobgoblin_boss', 3);
+      completeQuestMission('m10_hobgoblin_boss', computeMissionStars());
       addGold(25000);
       addCrystals(600);
       const trabucoItem = {
@@ -7945,6 +8637,266 @@ export const CombatView: React.FC = () => {
       return;
     }
 
+    // Specialized Victory Handling for Gorgon Bossfight (m18_primera_camara_gorgon)
+    if (selectedCombatMissionId === 'm18_primera_camara_gorgon') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      completeQuestMission('m18_primera_camara_gorgon', computeMissionStars());
+      addGold(85000);
+      addCrystals(3200);
+      addShelfItem({
+        id: `cuerno_hierro_gorgon_${Date.now()}`,
+        name: 'Cuerno de Hierro del Gorgon',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/portraits/gorgon_thumb.webp',
+        rarity: 'UR',
+        priceGold: 110000,
+        description: 'Cuerno metálico forjado con placas rúnicas arrancado al Gorgon guardián de la Primera Cámara tras la puerta rosada.',
+      });
+
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          description: it.description,
+        })
+      );
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+      setWaveClearBanner({
+        floor: 1,
+        gold: 85000,
+        crystals: 3200,
+        nextFloor: 1,
+      });
+
+      setSelectedCombatMissionId('m18_primera_camara_gorgon_epilogo');
+      setTimeout(() => {
+        navigateTo('story');
+      }, 1500);
+      return;
+    }
+
+    // Specialized Victory Handling for Durnik Bossfight (m13_escaleras_durnik)
+    if (selectedCombatMissionId === 'm13_escaleras_durnik') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      completeQuestMission('m13_escaleras_durnik', computeMissionStars());
+      addGold(40000);
+      addCrystals(1400);
+      addShelfItem({
+        id: `martillo_enano_durnik_${Date.now()}`,
+        name: 'Martillo de Guerra de Durnik',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/portraits/durnik_thumb.webp',
+        rarity: 'UR',
+        priceGold: 65000,
+        description: 'Pesado martillo enano de acero negro y oro requisado tras noquear y atar a Durnik en las escaleras de Ferton.',
+      });
+
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          description: it.description,
+        })
+      );
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+      setWaveClearBanner({
+        floor: 1,
+        gold: 40000,
+        crystals: 1400,
+        nextFloor: 1,
+      });
+
+      setSelectedCombatMissionId('m13_escaleras_durnik_epilogo');
+      setTimeout(() => {
+        navigateTo('story');
+      }, 1500);
+      return;
+    }
+
+    // Specialized Wave Progression for Planta Intermedia: Alcohol en Gas (m14_planta_intermedia_ferton - 4 Oleadas)
+    if (selectedCombatMissionId === 'm14_planta_intermedia_ferton') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      const waveGold = 7000 + currentFloor * 2500;
+      const waveCrystals = 260 + currentFloor * 95;
+
+      const firstEnemyCfg =
+        DUNGEON_ENEMIES[activeEnemiesRef.current[0]?.configId] || DUNGEON_ENEMIES['guarda_aurea_borracho_espada'];
+      const itemDrop = {
+        id: `${firstEnemyCfg.rewards.item.id}_w${currentFloor}`,
+        name: firstEnemyCfg.rewards.item.name,
+        count: 1,
+        icon: firstEnemyCfg.rewards.item.icon,
+        rarity: firstEnemyCfg.rewards.item.rarity,
+        description: firstEnemyCfg.rewards.item.description,
+      };
+
+      setAccumulatedLoot((prev) => ({
+        gold: prev.gold + waveGold,
+        crystals: prev.crystals + waveCrystals,
+        items: [...prev.items, itemDrop],
+      }));
+
+      if (currentFloor >= 4) {
+        completeQuestMission('m14_planta_intermedia_ferton', computeMissionStars());
+        addGold(35000);
+        addCrystals(1200);
+        addShelfItem({
+          id: `destilado_etilico_planta_intermedia_${Date.now()}`,
+          name: 'Destilado Etílico de la Mansión',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/items/alcohol_en_gas.webp',
+          rarity: 'UR',
+          priceGold: 80000,
+          description: 'Trofeo de la planta intermedia tras tumbar a 4 oleadas borrachas de Guardia Áurea y hoggoblins con el alcohol en gas de Ultrak.',
+        });
+
+        if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+        if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+        accumulatedLoot.items.forEach((it) =>
+          addShelfItem({
+            id: `${it.id}_${Date.now()}`,
+            name: it.name,
+            category: 'materials',
+            rarity: it.rarity as any,
+            count: it.count,
+            icon: it.icon,
+            description: it.description,
+          })
+        );
+        setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+        setWaveClearBanner({
+          floor: 4,
+          gold: 35000,
+          crystals: 1200,
+          nextFloor: 4,
+        });
+
+        setSelectedCombatMissionId('m14_planta_intermedia_ferton_epilogo');
+        setTimeout(() => {
+          navigateTo('story');
+        }, 1500);
+        return;
+      }
+
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold: waveGold,
+        crystals: waveCrystals,
+        nextFloor: currentFloor + 1,
+      });
+
+      setTimeout(() => {
+        startChamber(currentFloor + 1);
+      }, 1800);
+      return;
+    }
+
+    // Specialized Wave Progression for El Recibidor de la Mansión (m12_recibidor_mansion_ferton - 2 Rondas)
+    if (selectedCombatMissionId === 'm12_recibidor_mansion_ferton') {
+      sound.playSFX('victory');
+      launchConfetti();
+
+      const waveGold = 6000 + currentFloor * 2000;
+      const waveCrystals = 220 + currentFloor * 90;
+
+      const firstEnemyCfg =
+        DUNGEON_ENEMIES[activeEnemiesRef.current[0]?.configId] || DUNGEON_ENEMIES['bugbear_criado'];
+      const itemDrop = {
+        id: `${firstEnemyCfg.rewards.item.id}_w${currentFloor}`,
+        name: firstEnemyCfg.rewards.item.name,
+        count: 1,
+        icon: firstEnemyCfg.rewards.item.icon,
+        rarity: firstEnemyCfg.rewards.item.rarity,
+        description: firstEnemyCfg.rewards.item.description,
+      };
+
+      setAccumulatedLoot((prev) => ({
+        gold: prev.gold + waveGold,
+        crystals: prev.crystals + waveCrystals,
+        items: [...prev.items, itemDrop],
+      }));
+
+      if (currentFloor >= 2) {
+        completeQuestMission('m12_recibidor_mansion_ferton', computeMissionStars());
+        addGold(25000);
+        addCrystals(800);
+        addShelfItem({
+          id: 'librea_criado_negra_oro_recibidor',
+          name: 'Librea Negra y Dorada de la Servidumbre',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/bugbear_criado_thumb.webp',
+          rarity: 'UR',
+          priceGold: 42000,
+          description: 'Uniforme negro con detalles dorados requisado en el recibidor de la Mansión Ferton.',
+        });
+
+        if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+        if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+        accumulatedLoot.items.forEach((it) =>
+          addShelfItem({
+            id: `${it.id}_${Date.now()}`,
+            name: it.name,
+            category: 'materials',
+            rarity: it.rarity as any,
+            count: it.count,
+            icon: it.icon,
+            description: it.description,
+          })
+        );
+        setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+        setWaveClearBanner({
+          floor: 2,
+          gold: 25000,
+          crystals: 800,
+          nextFloor: 2,
+        });
+
+        setSelectedCombatMissionId('m12_recibidor_mansion_ferton_epilogo');
+        setTimeout(() => {
+          navigateTo('story');
+        }, 1500);
+        return;
+      }
+
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold: waveGold,
+        crystals: waveCrystals,
+        nextFloor: currentFloor + 1,
+      });
+
+      setTimeout(() => {
+        startChamber(currentFloor + 1);
+      }, 1800);
+      return;
+    }
+
     // Specialized Wave Progression for Saludos en el Callejón (m10c_callejon_hoggoblins - 2 Rondas)
     if (selectedCombatMissionId === 'm10c_callejon_hoggoblins') {
       sound.playSFX('victory');
@@ -7971,7 +8923,7 @@ export const CombatView: React.FC = () => {
       }));
 
       if (currentFloor >= 2) {
-        completeQuestMission('m10c_callejon_hoggoblins', 3);
+        completeQuestMission('m10c_callejon_hoggoblins', computeMissionStars());
         addGold(20000);
         addCrystals(600);
         addShelfItem({
@@ -8054,7 +9006,7 @@ export const CombatView: React.FC = () => {
 
       // Check if all 3 waves of Ferton's elite guard are completed
       if (currentFloor >= 3) {
-        completeQuestMission('m9_emboscada_ferton', 3);
+        completeQuestMission('m9_emboscada_ferton', computeMissionStars());
         addGold(15000);
         addCrystals(500);
         const cofreItem = {
@@ -8139,7 +9091,7 @@ export const CombatView: React.FC = () => {
 
       // Check if all 4 waves of the guard mission are completed
       if (currentFloor >= 4) {
-        completeQuestMission('m2_robo', 3);
+        completeQuestMission('m2_robo', computeMissionStars());
         addGold(5000);
         addCrystals(200);
         const cofreItem = {
@@ -8223,7 +9175,7 @@ export const CombatView: React.FC = () => {
 
       // Check if both 2 waves of goblins are completed
       if (currentFloor >= 2) {
-        completeQuestMission('m3_bosque', 3);
+        completeQuestMission('m3_bosque', computeMissionStars());
         addGold(4000);
         addCrystals(150);
         const mapaItem = {
@@ -8307,7 +9259,7 @@ export const CombatView: React.FC = () => {
 
     // When completing any mission from the Quests menu (m1_tirano, chapter 2 mines, etc.):
     if (selectedCombatMissionId) {
-      completeQuestMission(selectedCombatMissionId, 3);
+      completeQuestMission(selectedCombatMissionId, computeMissionStars());
       addGold(roomGold);
       addCrystals(roomCrystals);
       addShelfItem({
@@ -8353,7 +9305,7 @@ export const CombatView: React.FC = () => {
     if (currentFloor <= 10) {
       const baseChamber = BASE_CHAMBERS[currentFloor - 1];
       if (baseChamber?.missionId) {
-        completeQuestMission(baseChamber.missionId, 3);
+        completeQuestMission(baseChamber.missionId, computeMissionStars());
       }
     }
 
@@ -8749,6 +9701,45 @@ export const CombatView: React.FC = () => {
         themeColor = '#fbbf24';
         attackSfx = isUlt ? 'laser' : 'laser2';
         break;
+      case 'bugbear_criado':
+        vfxType = 'earth_titan';
+        themeColor = '#fbbf24';
+        attackSfx = isUlt ? 'critical' : turnCounter % 2 === 0 ? 'slash' : 'punch';
+        break;
+      case 'durnik_guardaespaldas':
+        vfxType = 'earth_titan';
+        themeColor = '#fbbf24';
+        attackSfx = isUlt ? 'critical' : turnCounter % 2 === 1 ? 'powerup' : 'slash';
+        break;
+      case 'gorgon_metal': {
+        const isMistBreath = !isUlt && turnCounter % 2 === 0;
+        setGorgonAttackPose(isMistBreath ? 'aliento' : 'cornada');
+        vfxType = isMistBreath ? 'void_miasma' : 'crimson_claw';
+        themeColor = isMistBreath ? '#34d399' : '#cbd5e1';
+        attackSfx = isUlt ? 'critical' : isMistBreath ? 'necrotic' : 'slash';
+        break;
+      }
+      case 'guarda_aurea_borracho_espada':
+      case 'guarda_aurea_borracho_alabarda':
+        vfxType = 'crimson_claw';
+        themeColor = '#a3e635';
+        attackSfx = isUlt ? 'critical' : 'slash';
+        break;
+      case 'guarda_aurea_borracho_pesado':
+        vfxType = 'earth_titan';
+        themeColor = '#a3e635';
+        attackSfx = isUlt ? 'critical' : 'punch';
+        break;
+      case 'hoggoblin_tunica_borracho_daga':
+        vfxType = 'crimson_claw';
+        themeColor = '#fbbf24';
+        attackSfx = isUlt ? 'critical' : 'slash';
+        break;
+      case 'hoggoblin_tunica_borracho_ballesta':
+        vfxType = 'shadow_needle';
+        themeColor = '#fbbf24';
+        attackSfx = isUlt ? 'laser' : 'laser2';
+        break;
       case 'hobgoblin_capataz':
         if (currentHobPhase === 1) {
           vfxType = 'earth_titan';
@@ -8873,6 +9864,15 @@ export const CombatView: React.FC = () => {
         dmg = Math.round((minD + Math.floor(Math.random() * (maxD - minD + 1))) * dmgMult);
       } else if ('damage' in skill && typeof skill.damage === 'number') {
         dmg = Math.round(skill.damage * dmgMult);
+      }
+
+      // Poder de la sala (capítulo + profundidad), independiente de la vida del grupo.
+      dmg = Math.round(dmg * ENEMY_DAMAGE_SCALE);
+
+      const enemyAtkDown = actingEnemy.conditions.find((c) => c.type === 'atk_down' || c.type === 'frightened');
+      if (enemyAtkDown) {
+        const atkDownFactor = enemyAtkDown.stacks >= 3 ? 0.65 : enemyAtkDown.stacks === 2 ? 0.72 : 0.8;
+        dmg = Math.max(1, Math.round(dmg * atkDownFactor));
       }
 
       const heroDefBuff = heroConditions.find((c) => c.type === 'def_buff');
@@ -9186,6 +10186,7 @@ export const CombatView: React.FC = () => {
         setTimeout(() => {
           setIsHeroAshDissolving(false);
           setHeroAnimation('idle');
+          runDeathsRef.current += 1;
           setBattleState('defeat');
           sound.playSFX('defeat');
         }, 2200);
@@ -9537,7 +10538,7 @@ export const CombatView: React.FC = () => {
     } else if (card.skillId === 'arlem_curacion') {
       // Arlem Solo Curación: restauración pura de PV
       sound.playSFX('powerup');
-      const healAmount = card.tier === 3 ? 180 : card.tier === 2 ? 90 : 45;
+      const healAmount = Math.round((card.tier === 3 ? 180 : card.tier === 2 ? 90 : 45) * HP_DAMAGE_SCALE);
       heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healAmount);
       setHeroHp(heroHpRef.current);
       spawnFloating(`+${healAmount}`, false, true, card.tier, false, undefined, 'radiant', '💚 SANACIÓN PURA', '#10b981');
@@ -9568,7 +10569,7 @@ export const CombatView: React.FC = () => {
     } else if (card.skillId === 'pepe_escudo') {
       // Pepe Escudo: saca un escudo y se vuelve muy resistente un turno
       sound.playSFX('skill');
-      const shieldAmount = card.tier === 3 ? 180 : card.tier === 2 ? 100 : 50;
+      const shieldAmount = Math.round((card.tier === 3 ? 180 : card.tier === 2 ? 100 : 50) * HP_DAMAGE_SCALE);
       setFoodShieldHp((prev) => prev + shieldAmount);
       setHeroConditions((prev) =>
         stackGachaEffect(prev, 'def_buff', 1, card.tier, 3, 'Baluarte de Pepe').updatedEffects
@@ -9584,8 +10585,8 @@ export const CombatView: React.FC = () => {
     } else if (card.skillId === 'chispo_luz_divina') {
       // Chispo Luz Divina: Baña de luz divina a Chispo y sus aliados (+DEF, +ATK, sanación y barrera sagrada)
       sound.playSFX('powerup');
-      const shieldAmount = card.tier === 3 ? 140 : card.tier === 2 ? 70 : 0;
-      const healAmount = card.tier === 3 ? 90 : card.tier === 2 ? 45 : 20;
+      const shieldAmount = Math.round((card.tier === 3 ? 140 : card.tier === 2 ? 70 : 0) * HP_DAMAGE_SCALE);
+      const healAmount = Math.round((card.tier === 3 ? 90 : card.tier === 2 ? 45 : 20) * HP_DAMAGE_SCALE);
       if (shieldAmount > 0) setFoodShieldHp((prev) => prev + shieldAmount);
       if (healAmount > 0) {
         heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healAmount);
@@ -9648,8 +10649,8 @@ export const CombatView: React.FC = () => {
     } else if (card.skillId === 'chispo_alas') {
       // Chispo Égida Alada (Legacy fallback)
       sound.playSFX('powerup');
-      const shieldAmount = card.tier === 3 ? 120 : card.tier === 2 ? 60 : 0;
-      const healAmount = card.tier === 3 ? 50 : card.tier === 2 ? 25 : 0;
+      const shieldAmount = Math.round((card.tier === 3 ? 120 : card.tier === 2 ? 60 : 0) * HP_DAMAGE_SCALE);
+      const healAmount = Math.round((card.tier === 3 ? 50 : card.tier === 2 ? 25 : 0) * HP_DAMAGE_SCALE);
       if (shieldAmount > 0) setFoodShieldHp((prev) => prev + shieldAmount);
       if (healAmount > 0) {
         heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healAmount);
@@ -9693,9 +10694,10 @@ export const CombatView: React.FC = () => {
 
       }
       if (card.tier >= 2) {
-        heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + 20);
+        const escamoteoHeal = Math.round(20 * HP_DAMAGE_SCALE);
+        heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + escamoteoHeal);
         setHeroHp(heroHpRef.current);
-        spawnFloating('+20', false, true, card.tier, false, undefined, 'radiant', 'ESCAMOTEO', '#10b981');
+        spawnFloating(`+${escamoteoHeal}`, false, true, card.tier, false, undefined, 'radiant', 'ESCAMOTEO', '#10b981');
       }
       setHeroConditions((prev) => {
         let updated = stackGachaEffect(prev, 'atk_buff', 2, card.tier, 3, 'Treta del Bribón').updatedEffects;
@@ -9714,7 +10716,7 @@ export const CombatView: React.FC = () => {
     } else if (card.skillId === 'giovani_tomo') {
       // Giovani Cántico del Tomo: drena salud
       sound.playSFX('powerup');
-      const drainAmount = card.tier === 3 ? 50 : card.tier === 2 ? 25 : 0;
+      const drainAmount = Math.round((card.tier === 3 ? 50 : card.tier === 2 ? 25 : 0) * HP_DAMAGE_SCALE);
       if (drainAmount > 0) {
         heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + drainAmount);
         setHeroHp(heroHpRef.current);
@@ -10128,7 +11130,8 @@ export const CombatView: React.FC = () => {
       if (activeFoodBuff?.lifestealRate && finalCalculatedDamage > 0) {
         foodLifesteal = Math.max(3, Math.round(finalCalculatedDamage * activeFoodBuff.lifestealRate));
       }
-      const totalHeal = (tierInfo.heal || 0) + (dndEval.lifestealHealed || 0) + foodLifesteal;
+      // El heal base de la habilidad está escrito para 100 PV; el lifesteal ya sale del daño real.
+      const totalHeal = Math.round((tierInfo.heal || 0) * HP_DAMAGE_SCALE) + (dndEval.lifestealHealed || 0) + foodLifesteal;
       if (totalHeal > 0) {
         setTimeout(() => {
           heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + totalHeal);
@@ -10466,6 +11469,7 @@ export const CombatView: React.FC = () => {
       setMergeAnim({
         targetSlot: targetSlotAfterSplice,
         newTier,
+        phase: 'pop',
       });
 
       setHand((prev) => {
@@ -10675,12 +11679,13 @@ export const CombatView: React.FC = () => {
     window.addEventListener('touchcancel', handleRelease);
   };
 
-  // Potion usage in battle
+  // Potion usage in battle (la poción cura 35 sobre 100 PV: se escala igual que el daño)
   const handleUsePotion = () => {
     sound.playSFX('coin');
-    heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + 35);
+    const potionHeal = Math.round(35 * HP_DAMAGE_SCALE);
+    heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + potionHeal);
     setHeroHp(heroHpRef.current);
-    spawnFloating('+35', false, true);
+    spawnFloating(`+${potionHeal}`, false, true);
     setShowInventoryModal(false);
   };
 
@@ -10911,20 +11916,28 @@ export const CombatView: React.FC = () => {
         /* 4. Cartoon Combination Squash & Stretch Impact Burst (Vibrant, high-contrast, no whiteout) */
         @keyframes cartoonCombineImpact {
           0% {
-            transform: scale(1.16, 0.84) translateY(4px);
-            filter: drop-shadow(0 0 16px #f59e0b) brightness(1.2);
+            transform: scale(1.1, 0.9) translateY(2px);
+            filter: drop-shadow(0 0 10px #f59e0b) brightness(1.1);
           }
-          30% {
-            transform: scale(0.92, 1.15) translateY(-8px);
-            filter: drop-shadow(0 0 24px #fbbf24) brightness(1.3);
+          25% {
+            transform: scale(0.95, 1.06) translateY(-6px);
+            filter: drop-shadow(0 0 16px #fbbf24) brightness(1.18);
           }
-          60% {
-            transform: scale(1.06, 0.96) translateY(2px);
-            filter: drop-shadow(0 0 14px #f59e0b) brightness(1.15);
+          45% {
+            transform: scale(1.05, 0.97) translateY(1px);
+            filter: drop-shadow(0 0 13px #fbbf24) brightness(1.12);
           }
-          85% {
-            transform: scale(0.98, 1.02) translateY(-1px);
-            filter: drop-shadow(0 0 8px #f59e0b) brightness(1.05);
+          62% {
+            transform: scale(0.98, 1.02) translateY(-2px);
+            filter: drop-shadow(0 0 10px #f59e0b) brightness(1.08);
+          }
+          78% {
+            transform: scale(1.02, 0.99) translateY(1px);
+            filter: drop-shadow(0 0 7px #f59e0b) brightness(1.05);
+          }
+          90% {
+            transform: scale(0.995, 1.005) translateY(0);
+            filter: drop-shadow(0 0 4px #f59e0b) brightness(1.02);
           }
           100% {
             transform: scale(1, 1) translateY(0);
@@ -10932,7 +11945,30 @@ export const CombatView: React.FC = () => {
           }
         }
         .anim-combine-burst {
-          animation: cartoonCombineImpact 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) forwards !important;
+          animation: cartoonCombineImpact 0.55s cubic-bezier(0.4, 1.06, 0.45, 1) forwards !important;
+        }
+
+        /* 4b. Auto-fusión: las dos cartas se deforman con un tirón elástico y se funden */
+        @keyframes mergeAttractLeft {
+          0%   { transform: translateX(0) scale(1, 1) rotate(0deg); }
+          25%  { transform: translateX(1px) scale(1.02, 0.98) rotate(-0.6deg); }
+          55%  { transform: translateX(7px) scale(1.08, 0.92) rotate(1.5deg); }
+          80%  { transform: translateX(3px) scale(0.97, 1.03) rotate(-0.8deg); }
+          100% { transform: translateX(5px) scale(1.1, 0.92) rotate(1deg); }
+        }
+        @keyframes mergeAttractRight {
+          0%   { transform: translateX(0) scale(1, 1) rotate(0deg); }
+          20%  { transform: translateX(-8px) scale(0.94, 1.06) rotate(-2.5deg); opacity: 1; }
+          50%  { transform: translateX(calc(-45% - 4px)) scale(1.04, 0.96) rotate(-5deg); opacity: 1; }
+          75%  { transform: translateX(calc(-88% - 8px)) scale(0.9, 1.04) rotate(-7deg); opacity: 0.95; }
+          92%  { transform: translateX(calc(-100% - 9px)) scale(1.04, 0.88) rotate(-8deg); opacity: 0.6; }
+          100% { transform: translateX(calc(-100% - 9px)) scale(0.82, 0.7) rotate(-8deg); opacity: 0; }
+        }
+        .anim-merge-pull-left {
+          animation: mergeAttractLeft 0.34s cubic-bezier(0.42, 1.08, 0.45, 1) forwards !important;
+        }
+        .anim-merge-pull-right {
+          animation: mergeAttractRight 0.34s cubic-bezier(0.4, 0.1, 0.35, 1) forwards !important;
         }
 
         @keyframes lightSweep {
@@ -11703,7 +12739,15 @@ export const CombatView: React.FC = () => {
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <img
             src={
-              selectedCombatMissionId === 'm10c_callejon_hoggoblins'
+              selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
+                ? '/assets/backgrounds/primera_camara_gorgon.webp'
+                : selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm14_planta_intermedia_ferton_epilogo'
+                ? '/assets/backgrounds/planta_intermedia_mansion_ferton.webp'
+                : selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm13_escaleras_durnik_epilogo'
+                ? '/assets/backgrounds/escaleras_mansion_ferton.webp'
+                : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
+                ? '/assets/backgrounds/recibidor_mansion_ferton.webp'
+                : selectedCombatMissionId === 'm10c_callejon_hoggoblins'
                 ? '/assets/backgrounds/callejon_trasero_taberna.webp'
                 : selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm9_emboscada_ferton'
                 ? '/assets/backgrounds/camino_bosque_carromatos.webp'
@@ -11726,7 +12770,15 @@ export const CombatView: React.FC = () => {
                 : '/assets/aistudio/image_4daa80e0.webp'
             }
             alt={
-              selectedCombatMissionId === 'm10_hobgoblin_boss'
+              selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
+                ? 'Primera Cámara de la Mazmorra con el Gorgon de Hierro'
+                : selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm14_planta_intermedia_ferton_epilogo'
+                ? 'Planta Intermedia de la Mansión Ferton con Alcohol en Gas'
+                : selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm13_escaleras_durnik_epilogo'
+                ? 'Escaleras hacia la Planta Intermedia de la Mansión Ferton'
+                : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
+                ? 'Recibidor de la Mansión Ferton'
+                : selectedCombatMissionId === 'm10_hobgoblin_boss'
                 ? 'Confrontación con el Capataz Hoggoblin de Ferton'
                 : selectedCombatMissionId === 'm9_emboscada_ferton'
                 ? 'Paso Nevado con Carromatos y Guardia Áurea'
@@ -11748,8 +12800,15 @@ export const CombatView: React.FC = () => {
                 ? 'Mansión y Callejón de Icespear'
                 : 'Cueva de Icespear'
             }
+            referrerPolicy="no-referrer"
             className="w-full h-full object-cover object-center filter brightness-[0.98]"
           />
+          {selectedCombatMissionId === 'm14_planta_intermedia_ferton' && (
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 pointer-events-none bg-gradient-to-t from-lime-400/20 via-amber-200/10 to-emerald-400/15 animate-pulse"
+            />
+          )}
         </div>
 
 
@@ -12491,7 +13550,19 @@ export const CombatView: React.FC = () => {
           <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/65 backdrop-blur-xs pointer-events-none animate-in fade-in zoom-in-95 duration-200">
             <div className="px-6 py-4 rounded-2xl bg-gradient-to-r from-amber-950 via-yellow-900 to-amber-950 border-2 border-yellow-400 shadow-[0_0_40px_rgba(245,158,11,0.9)] text-center animate-bounce">
               <div className="text-[11px] uppercase tracking-widest text-amber-300 font-black mb-1">
-                {selectedCombatMissionId === 'm10c_callejon_hoggoblins'
+                {selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
+                  ? '¡GORGON DE HIERRO ABATIDO!'
+                  : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
+                  ? waveClearBanner.floor >= 4
+                    ? '¡4 OLEADAS BORRACHAS BARRIDAS!'
+                    : `¡OLEADA ${waveClearBanner.floor} DE 4 SUPERADA!`
+                  : selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm13_escaleras_durnik_epilogo'
+                  ? '¡DURNIK EL GUARDAESPALDAS DERROTADO!'
+                  : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
+                  ? waveClearBanner.floor >= 2
+                    ? '¡BUGBEARS CRIADOS NOQUEADOS!'
+                    : `¡RONDA ${waveClearBanner.floor} DE 2 SUPERADA!`
+                  : selectedCombatMissionId === 'm10c_callejon_hoggoblins'
                   ? waveClearBanner.floor >= 2
                     ? '¡HOGGOBLINS ENCAPUCHADOS DERROTADOS!'
                     : `¡RONDA ${waveClearBanner.floor} DE 2 SUPERADA!`
@@ -12506,7 +13577,19 @@ export const CombatView: React.FC = () => {
                   : `¡VICTORIA EN SALA ${waveClearBanner.floor}!`}
               </div>
               <div className="text-xl font-black text-white flex items-center gap-2 justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
-                {selectedCombatMissionId === 'm10c_callejon_hoggoblins'
+                {selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
+                  ? '¡PRIMERA CÁMARA DESPEJADA!'
+                  : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
+                  ? waveClearBanner.floor >= 4
+                    ? '¡PLANTA INTERMEDIA DESPEJADA!'
+                    : '¡TROMBA EBRIA DERROTADA!'
+                  : selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm13_escaleras_durnik_epilogo'
+                  ? '¡JEFE NOQUEADO!'
+                  : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
+                  ? waveClearBanner.floor >= 2
+                    ? '¡RECIBIDOR DESPEJADO!'
+                    : '¡PRIMER ASALTO GANADO!'
+                  : selectedCombatMissionId === 'm10c_callejon_hoggoblins'
                   ? waveClearBanner.floor >= 2
                     ? '¡CALLEJÓN DESPEJADO!'
                     : '¡PRIMER ASALTO GANADO!'
@@ -12521,7 +13604,19 @@ export const CombatView: React.FC = () => {
                   : '¡SALA SUPERADA!'}
               </div>
               <div className="text-xs text-yellow-200 mt-2 font-mono font-bold">
-                {selectedCombatMissionId === 'm10c_callejon_hoggoblins'
+                {selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo'
+                  ? 'El toro de metal se desploma entre chispas y niebla disipada...'
+                  : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
+                  ? waveClearBanner.floor >= 4
+                    ? 'Quitándoos las telas tras dejar fuera de combate a toda la tromba ebria...'
+                    : `Siguiente: Oleada ${waveClearBanner.nextFloor} de 4 (${PLANTA_INTERMEDIA_CHAMBERS[waveClearBanner.nextFloor - 1]?.name?.split(': ')[1] || 'Tromba Borracha'})...`
+                  : selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm13_escaleras_durnik_epilogo'
+                  ? 'Atando a Durnik tras dejarlo inconsciente en el rellano...'
+                  : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
+                  ? waveClearBanner.floor >= 2
+                    ? 'Inspeccionando el recibidor tras noquearlos...'
+                    : `Siguiente: Ronda ${waveClearBanner.nextFloor} de 2 (${RECIBIDOR_FERTON_CHAMBERS[waveClearBanner.nextFloor - 1]?.name?.split(': ')[1] || 'Mayordomos de Reserva'})...`
+                  : selectedCombatMissionId === 'm10c_callejon_hoggoblins'
                   ? waveClearBanner.floor >= 2
                     ? 'Volviendo a la taberna para el epílogo...'
                     : `Siguiente: Ronda ${waveClearBanner.nextFloor} de 2 (${CALLEJON_HOGGOBLIN_CHAMBERS[waveClearBanner.nextFloor - 1]?.name?.split(': ')[1] || 'Refuerzos'})...`
@@ -12972,7 +14067,7 @@ export const CombatView: React.FC = () => {
               </div>
             </div>
 
-            {/* Authentic Green Health Frame (barra de vida 1.png) */}
+            {/* Authentic Green Health Frame (barra de vida 1.webp) */}
             <img
               src="/assets/aistudio/image_7a62ba8b.webp"
               alt="Hero Health Frame"
@@ -13004,6 +14099,8 @@ export const CombatView: React.FC = () => {
             const isHovered = hoverIndex === idx && dragIndex !== idx;
             const isBeingDragged = dragIndex === idx;
             const isMergeTarget = mergeAnim?.targetSlot === idx;
+            // Carta de la derecha que la atracción arrastra hasta el hueco de la izquierda.
+            const isMergeSource = mergeAnim?.phase === 'attract' && mergeAnim.targetSlot + 1 === idx;
 
             // Check if this slot can merge with the currently dragged card
             const canMergeWithDragged =
@@ -13015,7 +14112,7 @@ export const CombatView: React.FC = () => {
 
             // Idle animation class applied when cards are resting in hand
             const idleClass =
-              dragIndex === null && !isMergeTarget
+              dragIndex === null && !isMergeTarget && !isMergeSource
                 ? `anim-idle-${idx % 4}`
                 : '';
 
@@ -13030,6 +14127,10 @@ export const CombatView: React.FC = () => {
                 className={`relative w-[80px] sm:w-[86px] aspect-[3/4.4] shrink-0 rounded-lg overflow-visible flex flex-col items-center justify-center cursor-grab active:cursor-grabbing select-none touch-none card-slot-spring ${idleClass} ${
                   isBeingDragged
                     ? 'opacity-30 scale-95'
+                    : isMergeSource
+                    ? 'anim-merge-pull-right z-50'
+                    : isMergeTarget && mergeAnim?.phase === 'attract'
+                    ? 'anim-merge-pull-left z-40'
                     : isMergeTarget
                     ? 'anim-combine-burst z-40'
                     : isHovered && canMergeWithDragged
@@ -13244,7 +14345,15 @@ export const CombatView: React.FC = () => {
         <div className="absolute inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="relative w-full max-w-[340px] bg-[#1a0604] border-2 border-red-700 rounded-2xl p-5 shadow-[0_0_30px_rgba(220,38,38,0.6)] flex flex-col items-center text-center animate-in fade-in zoom-in-95">
             <h3 className="text-xl font-serif font-black text-red-400 tracking-wider mb-1">
-              {selectedCombatMissionId === 'm10_hobgoblin_boss'
+              {selectedCombatMissionId === 'm18_primera_camara_gorgon'
+                ? 'COMBATE CONTRA EL GORGON FALLIDO'
+                : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
+                ? 'PLANTA INTERMEDIA FALLIDA'
+                : selectedCombatMissionId === 'm13_escaleras_durnik'
+                ? 'COMBATE CONTRA DURNIK FALLIDO'
+                : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
+                ? 'ASALTO AL RECIBIDOR FALLIDO'
+                : selectedCombatMissionId === 'm10_hobgoblin_boss'
                 ? 'DUELO CONTRA EL CAPATAZ FALLIDO'
                 : selectedCombatMissionId === 'm9_emboscada_ferton'
                 ? 'EMBOSCADA DE FERTON FALLIDA'
@@ -13255,7 +14364,15 @@ export const CombatView: React.FC = () => {
                 : 'EXPEDICIÓN FINALIZADA'}
             </h3>
             <p className="text-xs text-stone-300 mb-1">
-              {selectedCombatMissionId === 'm10_hobgoblin_boss' ? (
+              {selectedCombatMissionId === 'm18_primera_camara_gorgon' ? (
+                <>Has caído ante el Gorgon de Hierro en la Primera Cámara de la mazmorra.</>
+              ) : selectedCombatMissionId === 'm14_planta_intermedia_ferton' ? (
+                <>Has caído en la planta intermedia durante la <b className="text-amber-300">Oleada {currentFloor} de 4</b>.</>
+              ) : selectedCombatMissionId === 'm13_escaleras_durnik' ? (
+                <>Has caído ante Durnik, el guardaespaldas enano de Ferton, en las escaleras.</>
+              ) : selectedCombatMissionId === 'm12_recibidor_mansion_ferton' ? (
+                <>Has caído ante los bugbears criados en la <b className="text-amber-300">Ronda {currentFloor} de 2</b>.</>
+              ) : selectedCombatMissionId === 'm10_hobgoblin_boss' ? (
                 <>Has caído ante el Capataz Hoggoblin de Ferton.</>
               ) : selectedCombatMissionId === 'm9_emboscada_ferton' ? (
                 <>Has caído ante la Guardia Áurea en la <b className="text-amber-300">Oleada {currentFloor} de 3</b>.</>
@@ -13267,7 +14384,7 @@ export const CombatView: React.FC = () => {
                 <>Has caído en combate en la <b className="text-amber-300">Sala {currentFloor}</b>.</>
               )}
             </p>
-            {selectedCombatMissionId !== 'm2_robo' && selectedCombatMissionId !== 'm3_bosque' && selectedCombatMissionId !== 'm9_emboscada_ferton' && selectedCombatMissionId !== 'm10_hobgoblin_boss' && (
+            {selectedCombatMissionId !== 'm18_primera_camara_gorgon' && selectedCombatMissionId !== 'm14_planta_intermedia_ferton' && selectedCombatMissionId !== 'm13_escaleras_durnik' && selectedCombatMissionId !== 'm12_recibidor_mansion_ferton' && selectedCombatMissionId !== 'm2_robo' && selectedCombatMissionId !== 'm3_bosque' && selectedCombatMissionId !== 'm9_emboscada_ferton' && selectedCombatMissionId !== 'm10_hobgoblin_boss' && (
               <div className="text-[10px] text-stone-400 font-mono mb-3">
                 Récord alcanzado: <b className="text-amber-400 font-bold">Sala {bestFloor}</b>
               </div>
@@ -13276,7 +14393,15 @@ export const CombatView: React.FC = () => {
             {/* Accumulated Loot to bank */}
             <div className="w-full bg-black/60 border border-red-950 rounded-xl p-3 mb-4 flex flex-col gap-1.5 text-left">
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 text-center">
-                {selectedCombatMissionId === 'm10_hobgoblin_boss'
+                {selectedCombatMissionId === 'm18_primera_camara_gorgon'
+                  ? 'Botín de la Primera Cámara'
+                  : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
+                  ? 'Botín de la Planta Intermedia'
+                  : selectedCombatMissionId === 'm13_escaleras_durnik'
+                  ? 'Botín de las Escaleras'
+                  : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
+                  ? 'Botín del Recibidor'
+                  : selectedCombatMissionId === 'm10_hobgoblin_boss'
                   ? 'Botín del Capataz'
                   : selectedCombatMissionId === 'm9_emboscada_ferton'
                   ? 'Botín Rescatado del Convoy'
@@ -13308,14 +14433,22 @@ export const CombatView: React.FC = () => {
                 onClick={handleRetreatAndClaim}
                 className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-lg"
               >
-                {selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' || selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm10c_callejon_hoggoblins' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
+                {selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm12_recibidor_mansion_ferton' || selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' || selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm10c_callejon_hoggoblins' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
               </button>
 
               <button
                 onClick={handleRestartBattle}
                 className="w-full py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs rounded-xl cursor-pointer"
               >
-                {selectedCombatMissionId === 'm10_hobgoblin_boss'
+                {selectedCombatMissionId === 'm18_primera_camara_gorgon'
+                  ? 'Reintentar Jefe: Gorgon de Hierro'
+                  : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
+                  ? 'Reintentar Planta Intermedia (Oleada 1)'
+                  : selectedCombatMissionId === 'm13_escaleras_durnik'
+                  ? 'Reintentar Jefe: Durnik'
+                  : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
+                  ? 'Reintentar Recibidor (Ronda 1)'
+                  : selectedCombatMissionId === 'm10_hobgoblin_boss'
                   ? 'Reintentar Duelo contra el Hoggoblin'
                   : selectedCombatMissionId === 'm9_emboscada_ferton'
                   ? 'Reintentar Combate de Ferton (Oleada 1)'

@@ -548,7 +548,7 @@ export const ShopView: React.FC = () => {
     };
   }, [rotationSeed]);
 
-  // The 3 Canonical Rows of 4 items each for the 'ORO' view (matching image_abcac5c6.png)
+  // The 3 Canonical Rows of 4 items each for the 'ORO' view (matching image_abcac5c6.webp)
   const canonicalRows: ShopItem[][] = useMemo(() => {
     return [
       // Row 1: The 4 Classic Gems (Rubí, Amatista, Diamante, Esmeralda)
@@ -1048,7 +1048,7 @@ export const ShopView: React.FC = () => {
                         </div>
                       )}
 
-                      {/* Item Frame (BOTON TIENDA.png) */}
+                      {/* Item Frame (BOTON TIENDA.webp) */}
                       <img
                         src="/assets/items/BOTON TIENDA.webp"
                         alt="Marco"
@@ -1071,7 +1071,7 @@ export const ShopView: React.FC = () => {
                         />
                       </div>
 
-                      {/* Bottom: Price Button (BOTON BOTON TIENDA.png) */}
+                      {/* Bottom: Price Button (BOTON BOTON TIENDA.webp) */}
                       <button
                         type="button"
                         onClick={() => handleBuyItem(item)}

@@ -35,6 +35,20 @@ import {
   STORY_CAPITULO3_MANSION_BARON_DIALOGUE,
   STORY_CAPITULO3_M10C_DIALOGUE,
   STORY_CAPITULO3_M10C_EPILOGUE_DIALOGUE,
+  STORY_CAPITULO3_M10E_DIALOGUE,
+  STORY_CAPITULO3_M10E_EPILOGUE_DIALOGUE,
+  STORY_CAPITULO4_M11_DIALOGUE,
+  STORY_CAPITULO4_M12_DIALOGUE,
+  STORY_CAPITULO4_M12_EPILOGUE_DIALOGUE,
+  STORY_CAPITULO4_M13_DIALOGUE,
+  STORY_CAPITULO4_M13_EPILOGUE_DIALOGUE,
+  STORY_CAPITULO4_M14_DIALOGUE,
+  STORY_CAPITULO4_M14_EPILOGUE_DIALOGUE,
+  STORY_CAPITULO4_M15_DIALOGUE,
+  STORY_CAPITULO4_M16_DIALOGUE,
+  STORY_CAPITULO5_M17_DIALOGUE,
+  STORY_CAPITULO5_M18_DIALOGUE,
+  STORY_CAPITULO5_M18_EPILOGUE_DIALOGUE,
   CHARACTER_PROFILES,
   DialogueLine,
   EmotionType,
@@ -146,6 +160,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     navigateTo,
     selectedCombatMissionId,
     setSelectedCombatMissionId,
+    setPendingMissionLaunch,
     completeQuestMission,
     addGold,
     addCrystals,
@@ -154,6 +169,42 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     isMissionCompleted,
   } = useGame();
 
+  const isGorgonMazmorraMission =
+    selectedCombatMissionId === 'm18_primera_camara_gorgon' ||
+    selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo';
+  const isGorgonMazmorraEpilogue =
+    selectedCombatMissionId === 'm18_primera_camara_gorgon_epilogo';
+  const isDespertarSuenosMission =
+    selectedCombatMissionId === 'm17_despertar_suenos' ||
+    selectedCombatMissionId === 'm17_despertar_suenos_epilogo';
+  const isAudienciaBaronMission =
+    selectedCombatMissionId === 'm16_audiencia_baron' ||
+    selectedCombatMissionId === 'm16_audiencia_baron_epilogo';
+  const isDespachoFertonMission =
+    selectedCombatMissionId === 'm15_despacho_ferton' ||
+    selectedCombatMissionId === 'm15_despacho_ferton_epilogo';
+  const isPlantaIntermediaMansionMission =
+    selectedCombatMissionId === 'm14_planta_intermedia_ferton' ||
+    selectedCombatMissionId === 'm14_planta_intermedia_ferton_epilogo';
+  const isPlantaIntermediaMansionEpilogue =
+    selectedCombatMissionId === 'm14_planta_intermedia_ferton_epilogo';
+  const isDurnikEscalerasMission =
+    selectedCombatMissionId === 'm13_escaleras_durnik' ||
+    selectedCombatMissionId === 'm13_escaleras_durnik_epilogo';
+  const isDurnikEscalerasEpilogue =
+    selectedCombatMissionId === 'm13_escaleras_durnik_epilogo';
+  const isRecibidorMansionMission =
+    selectedCombatMissionId === 'm12_recibidor_mansion_ferton' ||
+    selectedCombatMissionId === 'm12_recibidor_mansion_ferton_epilogo';
+  const isRecibidorMansionEpilogue =
+    selectedCombatMissionId === 'm12_recibidor_mansion_ferton_epilogo';
+  const isMansionFertonLlegadaMission =
+    selectedCombatMissionId === 'm11_llegada_mansion_ferton' ||
+    selectedCombatMissionId === 'm11_llegada_mansion_ferton_epilogo';
+  const isTabernaDuergarEpilogue =
+    selectedCombatMissionId === 'm10e_taberna_duergar_epilogo';
+  const isTabernaDuergarMission =
+    selectedCombatMissionId === 'm10e_taberna_duergar';
   const isBaronMansionMission =
     selectedCombatMissionId === 'm10d_mansion_baron' ||
     selectedCombatMissionId === 'm10d_mansion_baron_epilogo';
@@ -239,6 +290,34 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     ? GORYN_FORGE_DIALOGUE
     : isKitchenIntro
     ? PACO_FOGON_DIALOGUE
+    : isGorgonMazmorraEpilogue
+    ? STORY_CAPITULO5_M18_EPILOGUE_DIALOGUE
+    : isGorgonMazmorraMission
+    ? STORY_CAPITULO5_M18_DIALOGUE
+    : isDespertarSuenosMission
+    ? STORY_CAPITULO5_M17_DIALOGUE
+    : isAudienciaBaronMission
+    ? STORY_CAPITULO4_M16_DIALOGUE
+    : isDespachoFertonMission
+    ? STORY_CAPITULO4_M15_DIALOGUE
+    : isPlantaIntermediaMansionEpilogue
+    ? STORY_CAPITULO4_M14_EPILOGUE_DIALOGUE
+    : isPlantaIntermediaMansionMission
+    ? STORY_CAPITULO4_M14_DIALOGUE
+    : isDurnikEscalerasEpilogue
+    ? STORY_CAPITULO4_M13_EPILOGUE_DIALOGUE
+    : isDurnikEscalerasMission
+    ? STORY_CAPITULO4_M13_DIALOGUE
+    : isRecibidorMansionEpilogue
+    ? STORY_CAPITULO4_M12_EPILOGUE_DIALOGUE
+    : isRecibidorMansionMission
+    ? STORY_CAPITULO4_M12_DIALOGUE
+    : isMansionFertonLlegadaMission
+    ? STORY_CAPITULO4_M11_DIALOGUE
+    : isTabernaDuergarEpilogue
+    ? STORY_CAPITULO3_M10E_EPILOGUE_DIALOGUE
+    : isTabernaDuergarMission
+    ? STORY_CAPITULO3_M10E_DIALOGUE
     : isBaronMansionMission
     ? STORY_CAPITULO3_MANSION_BARON_DIALOGUE
     : isCallejonHoggoblinsEpilogue
@@ -312,7 +391,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
   const [isSkipConfirmOpen, setIsSkipConfirmOpen] = useState<boolean>(false);
   const [isStoryCompleted, setIsStoryCompleted] = useState<boolean>(false);
   const [battleTransitionAlert, setBattleTransitionAlert] = useState<boolean>(false);
-  const [screenFlash, setScreenFlash] = useState<'red' | 'cyan' | 'gold' | 'purple' | null>(null);
+  const [screenFlash, setScreenFlash] = useState<'red' | 'cyan' | 'gold' | 'purple' | 'pink' | null>(null);
   const [isScreenShaking, setIsScreenShaking] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(() => sound.getIsMuted());
 
@@ -498,10 +577,18 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     if (currentLineIndex < dialogueLines.length - 1) {
       setCurrentLineIndex((prev) => prev + 1);
     } else {
-      if (isBaronMansionMission || isAldeaEpilogue || isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue || isFertonEpilogue || isChispoEncuentroMission || isCallejonHoggoblinsEpilogue) {
+      if (isTabernaDuergarEpilogue) {
         handleCompleteStory();
-      } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isRoboMission || isBosqueMission || isPuertasMission || isEmboscadaMission || isAsaltoOrcoMission || isFuriaCarmesiMission || (isFertonMission && !isFertonEpilogue) || (isCallejonHoggoblinsMission && !isCallejonHoggoblinsEpilogue)) {
-        setScreenFlash(isCallejonHoggoblinsMission ? 'red' : isFertonMission ? 'gold' : isTitanMission ? 'gold' : isZancudoMission ? 'purple' : isCavernaAzulMission ? 'cyan' : isFuriaCarmesiMission ? 'cyan' : 'red');
+      } else if (isTabernaDuergarMission) {
+        setScreenFlash('gold');
+        setBattleTransitionAlert(true);
+        setTimeout(() => {
+          handleStartDrinkingContest();
+        }, 1050);
+      } else if (isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isMansionFertonLlegadaMission || isBaronMansionMission || isAldeaEpilogue || isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue || isFertonEpilogue || isChispoEncuentroMission || isCallejonHoggoblinsEpilogue || isRecibidorMansionEpilogue || isDurnikEscalerasEpilogue || isPlantaIntermediaMansionEpilogue) {
+        handleCompleteStory();
+      } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isRoboMission || isBosqueMission || isPuertasMission || isEmboscadaMission || isAsaltoOrcoMission || isFuriaCarmesiMission || (isFertonMission && !isFertonEpilogue) || (isCallejonHoggoblinsMission && !isCallejonHoggoblinsEpilogue) || (isRecibidorMansionMission && !isRecibidorMansionEpilogue) || (isDurnikEscalerasMission && !isDurnikEscalerasEpilogue) || (isPlantaIntermediaMansionMission && !isPlantaIntermediaMansionEpilogue) || (isGorgonMazmorraMission && !isGorgonMazmorraEpilogue)) {
+        setScreenFlash(isGorgonMazmorraMission ? 'pink' : isPlantaIntermediaMansionMission || isDurnikEscalerasMission || isRecibidorMansionMission ? 'gold' : isCallejonHoggoblinsMission ? 'red' : isFertonMission ? 'gold' : isTitanMission ? 'gold' : isZancudoMission ? 'purple' : isCavernaAzulMission ? 'cyan' : isFuriaCarmesiMission ? 'cyan' : 'red');
         setBattleTransitionAlert(true);
         setTimeout(() => {
           handleStartCombatAfterStory();
@@ -520,7 +607,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         handleCompleteStory();
       }
     }
-  }, [isTyping, currentLine.text, currentLineIndex, dialogueLines.length, isAldeaEpilogue, isLaberintoMission, isTitanMission, isTitanEpilogue, isZancudoMission, isZancudoEpilogue, isRoboMission, isRoboEpilogue, isBosqueMission, isBosqueEpilogue, isPuertasMission, isPuertasEpilogue, isEmboscadaMission, isEmboscadaEpilogue, isAsaltoOrcoMission, isAsaltoOrcoEpilogue, isMinasHistoriaMission, isFuriaCarmesiMission, isFuriaCarmesiEpilogue, isCavernaAzulMission, isCavernaAzulEpilogue, isFertonMission, isFertonEpilogue, isHobgoblinBossMission, isHobgoblinBossEpilogue, isChispoEncuentroMission, isCallejonHoggoblinsMission, isCallejonHoggoblinsEpilogue]);
+  }, [isTyping, currentLine.text, currentLineIndex, dialogueLines.length, isGorgonMazmorraMission, isGorgonMazmorraEpilogue, isDespertarSuenosMission, isAudienciaBaronMission, isDespachoFertonMission, isPlantaIntermediaMansionMission, isPlantaIntermediaMansionEpilogue, isDurnikEscalerasMission, isDurnikEscalerasEpilogue, isRecibidorMansionMission, isRecibidorMansionEpilogue, isMansionFertonLlegadaMission, isTabernaDuergarEpilogue, isTabernaDuergarMission, isBaronMansionMission, isAldeaEpilogue, isLaberintoMission, isTitanMission, isTitanEpilogue, isZancudoMission, isZancudoEpilogue, isRoboMission, isRoboEpilogue, isBosqueMission, isBosqueEpilogue, isPuertasMission, isPuertasEpilogue, isEmboscadaMission, isEmboscadaEpilogue, isAsaltoOrcoMission, isAsaltoOrcoEpilogue, isMinasHistoriaMission, isFuriaCarmesiMission, isFuriaCarmesiEpilogue, isCavernaAzulMission, isCavernaAzulEpilogue, isFertonMission, isFertonEpilogue, isHobgoblinBossMission, isHobgoblinBossEpilogue, isChispoEncuentroMission, isCallejonHoggoblinsMission, isCallejonHoggoblinsEpilogue]);
 
   const handleCompleteStory = () => {
     // Las bienvenidas del fogón y de la forja no son misiones: nunca deben
@@ -545,6 +632,171 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     launchConfetti();
     setIsStoryCompleted(true);
     setIsAutoPlay(false);
+
+    if (isTabernaDuergarEpilogue) {
+      // Las estrellas y recompensas (Alcohol en Gas, oro, gemas) ya se otorgaron al ganar el concurso.
+      return;
+    }
+
+    if (isGorgonMazmorraEpilogue) {
+      const alreadyCleared = isMissionCompleted('m18_primera_camara_gorgon');
+      completeQuestMission('m18_primera_camara_gorgon', 3);
+      if (!alreadyCleared) {
+        addGold(145000);
+        addCrystals(6000);
+        addShelfItem({
+          id: `placafierro_gorgon_epilogo_${Date.now()}`,
+          name: 'Placa Ferroverde de la Primera Cámara',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/gorgon_thumb.webp',
+          rarity: 'UR',
+          priceGold: 175000,
+          description: 'Trofeo metálico recuperado tras derrotar al Gorgon de Hierro guardián detrás de la puerta rosada de la mazmorra.',
+        });
+      }
+      return;
+    }
+
+    if (isDespertarSuenosMission) {
+      const alreadyCleared = isMissionCompleted('m17_despertar_suenos');
+      completeQuestMission('m17_despertar_suenos', 3);
+      if (!alreadyCleared) {
+        addGold(130000);
+        addCrystals(5500);
+        addShelfItem({
+          id: `eco_runico_portal_suenos_${Date.now()}`,
+          name: 'Sello Rúnico de los Pozos de Pelea',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/chispo_deez_icono.webp',
+          rarity: 'UR',
+          priceGold: 160000,
+          description: 'Resonancia arcana de la antigua mazmorra del Mercado Negro que señala el rastro de Chispo Deez rumbo al Reino de los Sueños.',
+        });
+      }
+      return;
+    }
+
+    if (isAudienciaBaronMission) {
+      const alreadyCleared = isMissionCompleted('m16_audiencia_baron');
+      completeQuestMission('m16_audiencia_baron', 3);
+      if (!alreadyCleared) {
+        addGold(120000);
+        addCrystals(5000);
+        addShelfItem({
+          id: `invitacion_baron_mercado_negro_${Date.now()}`,
+          name: 'Pase de Invitado de Honor del Barón',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/el_baron_icono.webp',
+          rarity: 'UR',
+          priceGold: 150000,
+          description: 'Salvoconducto dorado otorgado por Alistar Vandimere tras erradicar a Ferton y su mansión. Concede libertad total para circular por cualquier rincón del Mercado Negro.',
+        });
+      }
+      return;
+    }
+
+    if (isDespachoFertonMission) {
+      const alreadyCleared = isMissionCompleted('m15_despacho_ferton');
+      completeQuestMission('m15_despacho_ferton', 3);
+      if (!alreadyCleared) {
+        addGold(100000);
+        addCrystals(4000);
+        addShelfItem({
+          id: `cenizas_sello_ferton_${Date.now()}`,
+          name: 'Cenizas y Sello Calcinado de Ferton',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/ferton_icono.webp',
+          rarity: 'UR',
+          priceGold: 100000,
+          description: 'Sello aurífero ennegrecido recogido entre las cenizas de la Mansión de Ferton tras la explosión del alcohol en gas.',
+        });
+      }
+      return;
+    }
+
+    if (isPlantaIntermediaMansionEpilogue) {
+      const alreadyCleared = isMissionCompleted('m14_planta_intermedia_ferton');
+      completeQuestMission('m14_planta_intermedia_ferton', 3);
+      if (!alreadyCleared) {
+        addGold(70000);
+        addCrystals(2800);
+        addShelfItem({
+          id: `botella_alcohol_gas_ferton_${Date.now()}`,
+          name: 'Destilado Etílico de la Mansión',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/items/alcohol_en_gas.webp',
+          rarity: 'UR',
+          priceGold: 80000,
+          description: 'Trofeo de la planta intermedia tras tumbar a 4 oleadas borrachas de Guardia Áurea y hoggoblins con el alcohol en gas de Ultrak.',
+        });
+      }
+      return;
+    }
+
+    if (isDurnikEscalerasEpilogue) {
+      const alreadyCleared = isMissionCompleted('m13_escaleras_durnik');
+      completeQuestMission('m13_escaleras_durnik', 3);
+      if (!alreadyCleared) {
+        addGold(60000);
+        addCrystals(2500);
+        addShelfItem({
+          id: `soga_y_martillo_durnik_${Date.now()}`,
+          name: 'Martillo y Soga de Durnik',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/durnik_thumb.webp',
+          rarity: 'UR',
+          priceGold: 70000,
+          description: 'Trofeo de las escaleras de Ferton tras dejar a su guardaespaldas enano noqueado y bien atado.',
+        });
+      }
+      return;
+    }
+
+    if (isRecibidorMansionEpilogue) {
+      const alreadyCleared = isMissionCompleted('m12_recibidor_mansion_ferton');
+      completeQuestMission('m12_recibidor_mansion_ferton', 3);
+      if (!alreadyCleared) {
+        addGold(55000);
+        addCrystals(2200);
+        addShelfItem({
+          id: `bandeja_plata_ferton_${Date.now()}`,
+          name: 'Bandeja de Plata y Librea de Ferton',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/bugbear_criado_thumb.webp',
+          rarity: 'UR',
+          priceGold: 60000,
+          description: 'Bandeja de plata maciza y emblema de la servidumbre bugbear noqueada en el recibidor de la Mansión Ferton.',
+        });
+      }
+      return;
+    }
+
+    if (isMansionFertonLlegadaMission) {
+      const alreadyCleared = isMissionCompleted('m11_llegada_mansion_ferton');
+      completeQuestMission('m11_llegada_mansion_ferton', 3);
+      if (!alreadyCleared) {
+        addGold(50000);
+        addCrystals(2000);
+        addShelfItem({
+          id: `tizon_ilusorio_elemental_${Date.now()}`,
+          name: 'Ascua Ilusoria del Elemental de Fuego',
+          category: 'materials',
+          count: 1,
+          icon: '/assets/portraits/elemental_fuego_icono.webp',
+          rarity: 'UR',
+          priceGold: 55000,
+          description: 'Rescoldo arcano cristalizado tras la magistral ilusión con la que Arlem Díaz atrajo a los hoggoblins y a la Guardia Áurea fuera de la Mansión de Ferton.',
+        });
+      }
+      return;
+    }
 
     if (isBaronMansionMission) {
       const alreadyCleared = isMissionCompleted('m10d_mansion_baron');
@@ -927,6 +1179,58 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       finishOrderHqIntro();
       return;
     }
+    if (isGorgonMazmorraEpilogue) {
+      handleCompleteStory();
+      return;
+    }
+    if (isGorgonMazmorraMission) {
+      handleStartCombatAfterStory();
+      return;
+    }
+    if (isDespertarSuenosMission) {
+      handleCompleteStory();
+      return;
+    }
+    if (isAudienciaBaronMission) {
+      handleCompleteStory();
+      return;
+    }
+    if (isDespachoFertonMission) {
+      handleCompleteStory();
+      return;
+    }
+    if (isPlantaIntermediaMansionEpilogue) {
+      handleCompleteStory();
+      return;
+    }
+    if (isPlantaIntermediaMansionMission) {
+      handleStartCombatAfterStory();
+      return;
+    }
+    if (isDurnikEscalerasEpilogue) {
+      handleCompleteStory();
+      return;
+    }
+    if (isDurnikEscalerasMission) {
+      handleStartCombatAfterStory();
+      return;
+    }
+    if (isRecibidorMansionEpilogue) {
+      handleCompleteStory();
+      return;
+    }
+    if (isRecibidorMansionMission) {
+      handleStartCombatAfterStory();
+      return;
+    }
+    if (isMansionFertonLlegadaMission || isTabernaDuergarEpilogue) {
+      handleCompleteStory();
+      return;
+    }
+    if (isTabernaDuergarMission) {
+      handleStartDrinkingContest();
+      return;
+    }
     if (isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isMinasHistoriaMission || isEmboscadaEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isAsaltoOrcoEpilogue) {
       handleCompleteStory();
     } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isEmboscadaMission || isRoboMission || isBosqueMission || isPuertasMission || isFuriaCarmesiMission) {
@@ -952,6 +1256,15 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     setIsBacklogOpen(true);
   };
 
+  const handleStartDrinkingContest = () => {
+    setSelectedCombatMissionId('m10e_taberna_duergar');
+    setPendingMissionLaunch({
+      missionId: 'm10e_taberna_duergar',
+      destination: 'drinking_contest',
+    });
+    navigateTo('party', true);
+  };
+
   const handleStartCombatAfterStory = () => {
     if (isTitanMission) {
       setSelectedCombatMissionId('m6_cuevas_titan');
@@ -971,6 +1284,14 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       setSelectedCombatMissionId('m4_puertas_selladas');
     } else if (isBosqueMission) {
       setSelectedCombatMissionId('m3_bosque');
+    } else if (isGorgonMazmorraMission) {
+      setSelectedCombatMissionId('m18_primera_camara_gorgon');
+    } else if (isPlantaIntermediaMansionMission) {
+      setSelectedCombatMissionId('m14_planta_intermedia_ferton');
+    } else if (isDurnikEscalerasMission) {
+      setSelectedCombatMissionId('m13_escaleras_durnik');
+    } else if (isRecibidorMansionMission) {
+      setSelectedCombatMissionId('m12_recibidor_mansion_ferton');
     } else if (isCallejonHoggoblinsMission) {
       setSelectedCombatMissionId('m10c_callejon_hoggoblins');
     } else if (isHobgoblinBossMission) {
@@ -1086,6 +1407,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               ? 'bg-cyan-400/50'
               : screenFlash === 'purple'
               ? 'bg-purple-600/70 shadow-[inset_0_0_90px_rgba(168,85,247,0.9)]'
+              : screenFlash === 'pink'
+              ? 'bg-pink-400/45 shadow-[inset_0_0_110px_rgba(244,114,182,0.85)]'
               : 'bg-amber-300/60'
           }`}
         />
@@ -1269,7 +1592,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
             className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none drop-shadow-[0_-4px_20px_rgba(0,0,0,0.98)]"
           />
 
-          {/* SPEAKER RIBBON (Top-Left Golden Scroll on panel_dialogo_idl.png) */}
+          {/* SPEAKER RIBBON (Top-Left Golden Scroll on panel_dialogo_idl.webp) */}
           <div
             className="absolute left-[3.2%] top-[3%] w-[36%] h-[20%] flex flex-col justify-center items-center text-center px-1 pointer-events-none select-none z-10"
           >
@@ -1394,7 +1717,35 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
             className="relative w-full max-w-xs p-4 bg-[#210c04] border-3 border-[#78350f] rounded-2xl text-center space-y-3 shadow-2xl"
           >
             <h4 className="font-serif font-black text-sm uppercase text-amber-300">
-              {isKitchenMonstersIntro
+              {isGorgonMazmorraEpilogue
+                ? '¿Saltar Epílogo de la Primera Cámara?'
+                : isGorgonMazmorraMission
+                ? '¿Saltar Escena e Iniciar Bossfight?'
+                : isDespertarSuenosMission
+                ? '¿Saltar Apertura de El Reino de los Sueños?'
+                : isAudienciaBaronMission
+                ? '¿Saltar Audiencia con el Barón?'
+                : isDespachoFertonMission
+                ? '¿Saltar Cinemática de la Mansión?'
+                : isPlantaIntermediaMansionEpilogue
+                ? '¿Saltar Epílogo de la Planta Intermedia?'
+                : isPlantaIntermediaMansionMission
+                ? '¿Saltar Escena del Alcohol en Gas?'
+                : isDurnikEscalerasEpilogue
+                ? '¿Saltar Epílogo de Durnik?'
+                : isDurnikEscalerasMission
+                ? '¿Saltar Escena e Iniciar Bossfight?'
+                : isRecibidorMansionEpilogue
+                ? '¿Saltar Epílogo del Recibidor?'
+                : isRecibidorMansionMission
+                ? '¿Saltar Escena e Iniciar Combate?'
+                : isMansionFertonLlegadaMission
+                ? '¿Saltar Llegada a la Mansión?'
+                : isTabernaDuergarEpilogue
+                ? '¿Saltar Epílogo de Victoria?'
+                : isTabernaDuergarMission
+                ? '¿Saltar Diálogo e Ir al Concurso?'
+                : isKitchenMonstersIntro
                 ? '¿Saltar la charla de Paco?'
                 : isKitchenIntro
                 ? '¿Saltar la bienvenida de Paco?'
@@ -1409,7 +1760,35 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 : '¿Saltar Prólogo de Historia?'}
             </h4>
             <p className="text-[11px] text-stone-300 leading-relaxed">
-              {isKitchenMonstersIntro
+              {isGorgonMazmorraEpilogue
+                ? 'Saltarás la caída del Gorgon de Hierro en la Primera Cámara y pasarás al resumen de recompensas.'
+                : isGorgonMazmorraMission
+                ? 'Saltarás la apertura rosada de la puerta y el encuentro con el Gorgon de Hierro para comenzar directamente su bossfight.'
+                : isDespertarSuenosMission
+                ? 'Saltarás el despertar en la taberna tras desaparecer Chispo Deez y la revelación del Barón sobre el portal de los pozos de pelea.'
+                : isAudienciaBaronMission
+                ? 'Saltarás la reunión de Caldo de Dragón con el Barón tras el incendio de la mansión y pasarás al resumen final del Capítulo IV.'
+                : isDespachoFertonMission
+                ? 'Saltarás el desenlace contra Durnik y Ferton en su despacho, la bola de fuego sobre el alcohol en gas y el incendio de la mansión.'
+                : isPlantaIntermediaMansionEpilogue
+                ? 'Saltarás el final de la planta intermedia, cuando Caldo de Dragón se quita las telas tras barrer las 4 oleadas borrachas.'
+                : isPlantaIntermediaMansionMission
+                ? 'Saltarás el final de la ilusión y el momento en que os tapáis con telas para liberar el alcohol en gas, e iniciarás las 4 oleadas borrachas.'
+                : isDurnikEscalerasEpilogue
+                ? 'Saltarás la escena en la que dejáis a Durnik noqueado y atado en el rellano y pasarás al resumen antes de entrar en la planta intermedia.'
+                : isDurnikEscalerasMission
+                ? 'Saltarás el encuentro en las escaleras de Ferton y comenzarás directamente la bossfight contra Durnik.'
+                : isRecibidorMansionEpilogue
+                ? 'Saltarás el hallazgo de las marcas de esclavitud en los bugbears noqueados y pasarás directamente al resumen para subir a la planta intermedia.'
+                : isRecibidorMansionMission
+                ? 'Saltarás la sorpresa en el recibidor de Ferton y comenzarás de inmediato el combate contra los bugbears criados de traje negro y oro.'
+                : isMansionFertonLlegadaMission
+                ? 'Saltarás la llegada ante la mansión de Ferton y la distracción del elemental de fuego ilusorio.'
+                : isTabernaDuergarEpilogue
+                ? 'Saltarás la celebración del grupo tras ganar el concurso de Ultrak y pasarás directamente al resumen rumbo a la Mansión de Ferton.'
+                : isTabernaDuergarMission
+                ? 'Saltarás la escena en la taberna duergar de Ultrak e iniciarás directamente la cuenta atrás del concurso de bebida.'
+                : isKitchenMonstersIntro
                 ? 'Pasarás directamente a la rueda de Monstruos, con los componentes exóticos que se pueden cocinar.'
                 : isKitchenIntro
                 ? 'Pasarás directamente al tutorial de cocina: Paco te dejará los ingredientes del asado del día y te señalará cuál tocar.'
@@ -1436,14 +1815,14 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 onClick={handleSkipStory}
                 className="flex-1 py-1.5 rounded-lg bg-gradient-to-r from-red-600 to-amber-600 text-white text-[10px] font-black uppercase tracking-wider cursor-pointer shadow hover:brightness-110"
               >
-                {isKitchenMonstersIntro ? 'Ver Monstruos' : isKitchenIntro ? 'Al Tutorial' : isForgeIntro ? 'Al Yunque' : isBoticaIntro ? 'Al Alambique' : isRoboMission ? '¡A las Armas!' : 'Saltar'}
+                {isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isPlantaIntermediaMansionEpilogue || isDurnikEscalerasEpilogue || isRecibidorMansionEpilogue || isMansionFertonLlegadaMission || isTabernaDuergarEpilogue ? 'Finalizar' : isGorgonMazmorraMission || isPlantaIntermediaMansionMission || isDurnikEscalerasMission || isRecibidorMansionMission ? '¡Al Combate!' : isTabernaDuergarMission ? '¡Elegir Héroe!' : isKitchenMonstersIntro ? 'Ver Monstruos' : isKitchenIntro ? 'Al Tutorial' : isForgeIntro ? 'Al Yunque' : isBoticaIntro ? 'Al Alambique' : isRoboMission ? '¡A las Armas!' : 'Saltar'}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* BATTLE TRANSITION ALERT OVERLAY (IMMEDIATE CUTSCENE TO COMBAT TRANSITION) */}
+      {/* BATTLE TRANSITION ALERT OVERLAY (IMMEDIATE CUTSCENE TO COMBAT / MINIGAME TRANSITION) */}
       {battleTransitionAlert && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 select-none animate-in fade-in zoom-in-95">
           <div className="relative w-full max-w-xs p-5 bg-gradient-to-b from-red-950 via-[#1f0704] to-black border-2 border-red-500 rounded-2xl text-center space-y-2.5 shadow-[0_0_35px_rgba(239,68,68,0.8)]">
@@ -1451,7 +1830,17 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               <Swords className="w-6 h-6 text-red-400" />
             </div>
             <span className="text-[10px] font-black uppercase tracking-widest text-red-400 block animate-pulse">
-              {isCallejonHoggoblinsMission
+              {isGorgonMazmorraMission
+                ? '¡LA PUERTA ROSADA SE ABRE! ¡JEFE DE CÁMARA!'
+                : isPlantaIntermediaMansionMission
+                ? '¡SE ACABÓ LA ILUSIÓN! ¡ALCOHOL EN GAS!'
+                : isDurnikEscalerasMission
+                ? '¡COMBATE DE JEFE EN LAS ESCALERAS!'
+                : isRecibidorMansionMission
+                ? '¡EMBOSCADA EN EL RECIBIDOR!'
+                : isTabernaDuergarMission
+                ? '¡CONCURSO EN LA BARRA DE ULTRAK!'
+                : isCallejonHoggoblinsMission
                 ? '¡EMBOSCADA TRAS LA TABERNA!'
                 : isTitanMission
                 ? '¡DESPERTAR DEL TITÁN MELENUDO!'
@@ -1466,7 +1855,17 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 : '¡ALARMA EN EL CALLEJÓN!'}
             </span>
             <h3 className="font-serif font-black text-base uppercase text-amber-200">
-              {isCallejonHoggoblinsMission
+              {isGorgonMazmorraMission
+                ? '¡El Gorgon de Hierro!'
+                : isPlantaIntermediaMansionMission
+                ? '¡4 Oleadas de Guardias y Hoggoblins Borrachos!'
+                : isDurnikEscalerasMission
+                ? '¡Durnik, el Guardaespaldas de Ferton!'
+                : isRecibidorMansionMission
+                ? '¡Bugbears Criados de Ferton!'
+                : isTabernaDuergarMission
+                ? '¡Elige 1 Campeón para Beber!'
+                : isCallejonHoggoblinsMission
                 ? '¡Hoggoblins Encapuchados!'
                 : isTitanMission
                 ? '¡El Titán Melenudo!'
@@ -1481,7 +1880,17 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 : '¡Rodeados por la Guardia!'}
             </h3>
             <p className="text-[11px] text-stone-200 leading-snug">
-              {isCallejonHoggoblinsMission
+              {isGorgonMazmorraMission
+                ? 'En la Primera Cámara os aguarda un colosal toro de metal. ¡Cuidado con sus devastadoras cornadas perforantes y su aliento de niebla petrificante!'
+                : isPlantaIntermediaMansionMission
+                ? 'Caldo de Dragón se tapa con telas y suelta el alcohol en gas. ¡Barre 4 oleadas de entre 3 y 4 guardias áureos y hoggoblins tambaleantes y debilitados!'
+                : isDurnikEscalerasMission
+                ? '¡El guardaespaldas enano de Ferton bloquea el rellano con armadura pesada y su enorme martillo de guerra! ¡Noquéalo para atarlo!'
+                : isRecibidorMansionMission
+                ? '¡Criados bugbear con traje negro y detalles dorados os esperan dentro del recibidor! ¡Esquiva sus bandejas de plata y vajilla en 2 rondas!'
+                : isTabernaDuergarMission
+                ? 'Solo puede participar 1 héroe (cuanta más Suerte tenga, más fácil será). Supera 10, 12 o 18 aciertos en 20s para ganar el Alcohol en Gas.'
+                : isCallejonHoggoblinsMission
                 ? '¡Sicarios de Ferton con túnicas negras y doradas bloquean la puerta trasera de la taberna! ¡Sobrevive a 2 rondas contra dagas y ballestas!'
                 : isTitanMission
                 ? '¡El estornudo de Lord Vaelas ha despertado al titán! Todos sus ataques son eléctricos (25% aturdimiento) y tiene 80% de resistencia al daño definitivo.'
@@ -1516,7 +1925,25 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
             {/* Mission Clear Banner */}
             <div>
               <span className="px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/60 text-[9px] font-black uppercase tracking-widest text-amber-300 inline-block mb-1">
-                {isBaronMansionMission
+                {isGorgonMazmorraEpilogue
+                  ? 'EPÍLOGO: PRIMERA CÁMARA DE LA MAZMORRA'
+                  : isDespertarSuenosMission
+                  ? 'HISTORIA: CAPÍTULO V • EL REINO DE LOS SUEÑOS'
+                  : isAudienciaBaronMission
+                  ? '¡CAPÍTULO IV COMPLETADO • CAPÍTULO V DESBLOQUEADO!'
+                  : isDespachoFertonMission
+                  ? 'HISTORIA: CAPÍTULO IV • MANSIÓN EN CENIZAS'
+                  : isPlantaIntermediaMansionEpilogue
+                  ? 'EPÍLOGO: PLANTA INTERMEDIA DESPEJADA'
+                  : isDurnikEscalerasEpilogue
+                  ? 'EPÍLOGO: ESCALERAS DE LA MANSIÓN'
+                  : isRecibidorMansionEpilogue
+                  ? 'EPÍLOGO: EL RECIBIDOR DE LA MANSIÓN'
+                  : isMansionFertonLlegadaMission
+                  ? 'HISTORIA: CAPÍTULO IV • MANSIÓN FERTON'
+                  : isTabernaDuergarEpilogue
+                  ? 'EPÍLOGO: EL CONCURSO DE ULTRAK'
+                  : isBaronMansionMission
                   ? 'HISTORIA: CAPÍTULO III • EL REY DE NEGRO'
                   : isCapitulo3IntroMission
                   ? 'HISTORIA: CAPÍTULO III • EL CAMPAMENTO ORCO'
@@ -1551,7 +1978,25 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   : 'PRÓLOGO DE HISTORIA SUPERADO'}
               </span>
               <h3 className="font-serif font-black text-lg sm:text-xl uppercase text-amber-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                {isBaronMansionMission
+                {isGorgonMazmorraEpilogue
+                  ? '¡GORGON DE HIERRO DERROTADO!'
+                  : isDespertarSuenosMission
+                  ? '¡HACIA LOS POZOS DE PELEA!'
+                  : isAudienciaBaronMission
+                  ? '¡LIBERTAD TOTAL EN EL MERCADO NEGRO!'
+                  : isDespachoFertonMission
+                  ? '¡EL FIN DE FERTON Y SU MANSIÓN!'
+                  : isPlantaIntermediaMansionEpilogue
+                  ? '¡4 OLEADAS BORRACHAS BARRIDAS CON ÉXITO!'
+                  : isDurnikEscalerasEpilogue
+                  ? '¡DURNIK NOQUEADO Y ATADO EN LAS ESCALERAS!'
+                  : isRecibidorMansionEpilogue
+                  ? '¡SERVIDUMBRE NOQUEADA EN EL RECIBIDOR!'
+                  : isMansionFertonLlegadaMission
+                  ? '¡DISTRACCIÓN EN LA MANSIÓN DE FERTON!'
+                  : isTabernaDuergarEpilogue
+                  ? '¡ALCOHOL EN GAS CONSEGUIDO!'
+                  : isBaronMansionMission
                   ? '¡PACTO SELLADO CON ALISTAR VANDIMERE!'
                   : isCapitulo3IntroMission
                   ? '¡LA GRAN FARSA DEL BARDO ILUSIONISTA!'
@@ -1586,7 +2031,25 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   : '¡Contrato de Cryovain Aceptado!'}
               </h3>
               <p className="text-[11px] text-stone-300 leading-snug mt-1">
-                {isBaronMansionMission
+                {isGorgonMazmorraEpilogue
+                  ? 'Tras abrirse la puerta con un resplandor rosado, Caldo de Dragón se enfrentó al Gorgon de Hierro en la Primera Cámara. Esquivando sus brutales cornadas metálicas y su espesa niebla petrificante, lograron tumbar al toro de acero y despejar el paso hacia las profundidades.'
+                  : isDespertarSuenosMission
+                  ? 'Caldo de Dragón despertó en la taberna del Mercado Negro descubriendo que Chispo Deez había desaparecido. Warthion los condujo ante el Barón, quien reveló que las antiguas runas de la mazmorra subterránea se han activado y que Chispo estaría en el Reino de los Sueños. Para rescatarlo, el grupo acepta completar la mazmorra que resguarda el portal oculto tras los pozos de pelea.'
+                  : isAudienciaBaronMission
+                  ? 'Alistar Vandimere felicitó a Caldo de Dragón tras enterarse de que quemaron la mansión de Ferton, erradicaron su legado y acabaron con todos sus seguidores, concediéndoles libertad total por todo el Mercado Negro. Al marcharse el grupo, el misterioso encapuchado apareció ante el Barón para confirmar que todo marcha según lo previsto... y dio inicio la Fase I.'
+                  : isDespachoFertonMission
+                  ? 'Pepe Loux acabó al instante con Durnik clavándole su propio martillo en el ojo. En el despacho, mientras Ferton suplicaba hecho un ovillo, Magordito lanzó una bola de fuego que prendió el alcohol en gas: Caldo de Dragón escapó a duras penas y la mansión quedó reducida a cenizas.'
+                  : isPlantaIntermediaMansionEpilogue
+                  ? 'Cuando se disipó la ilusión del elemental y los guardias y hoggoblins irrumpieron en tromba, Caldo de Dragón se protegió con telas y descorchó el alcohol en gas. Todos los invasores acabaron borrachos, tambaleándose y rendidos en la planta intermedia.'
+                  : isDurnikEscalerasEpilogue
+                  ? 'Caldo de Dragón derrotó a Durnik, el guardaespaldas enano de Ferton, en el rellano de las escaleras. Tras dejarlo noqueado y fuertemente atado con cuerda, la puerta hacia la planta intermedia queda abierta.'
+                  : isRecibidorMansionEpilogue
+                  ? 'Caldo de Dragón dejó noqueados a los bugbears criados del recibidor tras esquivar sus bandejas de plata y vajilla. Al descubrir que llevaban marcas de esclavitud grabadas, el grupo decide subir ya a la planta intermedia para liberar el Alcohol en Gas.'
+                  : isMansionFertonLlegadaMission
+                  ? 'Caldo de Dragón llegó ante la mansión de Ferton y la vio atestada de guardias hoggoblin y de la Guardia Áurea. Con una ilusión arcana de Elemental de Fuego, Arlem Díaz sembró el pánico y los alejó del portón, abriendo el camino al interior.'
+                  : isTabernaDuergarEpilogue
+                  ? 'Ultrak ha proclamado campeón a Caldo de Dragón y les ha entregado el codiciado frasco de Alcohol en Gas. Tras celebrar la hazaña en la taberna duergar, el grupo pone rumbo decidido hacia la mansión de Ferton para emborrachar a sus guardias.'
+                  : isBaronMansionMission
                   ? 'Warthion guió a Caldo de Dragón desde su mesa de la taberna por la puerta secreta hasta la antigua mazmorra del Mercado Negro. En su mansión, Alistar Vandimere —el Rey de Negro y Rey del Mercado Negro— os ha encomendado exterminar a Ferton con la máxima brutalidad para enviar una advertencia ejemplar.'
                   : isCapitulo3IntroMission
                   ? '¡Arlem Díaz ha embaucado a los orcos de élite haciéndose pasar por uno de ellos con magia de ilusión! Convencidos de que las minas están calientes y vacías de enanos, los orcos han trasladado todo su campamento al interior mientras esperan a Gromock, dejando libre el paso hacia el Mercado Negro.'
@@ -1632,7 +2095,25 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 {/* Reward 1: Oro */}
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <span className="font-mono text-xs font-black text-amber-400">
-                    {isBaronMansionMission
+                    {isGorgonMazmorraEpilogue
+                      ? '+145,000'
+                      : isDespertarSuenosMission
+                      ? '+130,000'
+                      : isAudienciaBaronMission
+                      ? '+120,000'
+                      : isDespachoFertonMission
+                      ? '+100,000'
+                      : isPlantaIntermediaMansionEpilogue
+                      ? '+70,000'
+                      : isDurnikEscalerasEpilogue
+                      ? '+60,000'
+                      : isRecibidorMansionEpilogue
+                      ? '+55,000'
+                      : isMansionFertonLlegadaMission
+                      ? '+50,000'
+                      : isTabernaDuergarEpilogue
+                      ? 'GANADO'
+                      : isBaronMansionMission
                       ? '+75,000'
                       : isCapitulo3IntroMission
                       ? '+25,000'
@@ -1671,7 +2152,25 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 {/* Reward 2: Gemas */}
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <span className="font-mono text-xs font-black text-sky-400">
-                    {isBaronMansionMission
+                    {isGorgonMazmorraEpilogue
+                      ? '+6,000'
+                      : isDespertarSuenosMission
+                      ? '+5,500'
+                      : isAudienciaBaronMission
+                      ? '+5,000'
+                      : isDespachoFertonMission
+                      ? '+4,000'
+                      : isPlantaIntermediaMansionEpilogue
+                      ? '+2,800'
+                      : isDurnikEscalerasEpilogue
+                      ? '+2,500'
+                      : isRecibidorMansionEpilogue
+                      ? '+2,200'
+                      : isMansionFertonLlegadaMission
+                      ? '+2,000'
+                      : isTabernaDuergarEpilogue
+                      ? 'GANADO'
+                      : isBaronMansionMission
                       ? '+3,000'
                       : isCapitulo3IntroMission
                       ? '+1,000'
@@ -1711,7 +2210,25 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <img
                     src={
-                      isBaronMansionMission
+                      isGorgonMazmorraEpilogue
+                        ? '/assets/portraits/gorgon_thumb.webp'
+                        : isDespertarSuenosMission
+                        ? '/assets/portraits/chispo_deez_icono.webp'
+                        : isAudienciaBaronMission
+                        ? '/assets/portraits/el_baron_icono.webp'
+                        : isDespachoFertonMission
+                        ? '/assets/portraits/ferton_icono.webp'
+                        : isPlantaIntermediaMansionEpilogue
+                        ? '/assets/items/alcohol_en_gas.webp'
+                        : isDurnikEscalerasEpilogue
+                        ? '/assets/portraits/durnik_thumb.webp'
+                        : isRecibidorMansionEpilogue
+                        ? '/assets/portraits/bugbear_criado_thumb.webp'
+                        : isMansionFertonLlegadaMission
+                        ? '/assets/portraits/elemental_fuego_icono.webp'
+                        : isTabernaDuergarEpilogue
+                        ? '/assets/items/alcohol_en_gas.webp'
+                        : isBaronMansionMission
                         ? '/assets/items/insignia_mercado_negro_app.webp'
                         : isCapitulo3IntroMission
                         ? '/assets/portraits/arlem_orco_thumb.webp'
@@ -1740,10 +2257,29 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                         : '/assets/items/escamas_de_cryovain.webp'
                     }
                     alt="Recompensa"
+                    referrerPolicy="no-referrer"
                     className="w-5 h-5 object-contain"
                   />
                   <span className="text-[8px] font-bold uppercase text-amber-300 mt-0.5 truncate max-w-[80px]">
-                    {isBaronMansionMission
+                    {isGorgonMazmorraEpilogue
+                      ? 'PLACA GORGON UR'
+                      : isDespertarSuenosMission
+                      ? 'SELLO RÚNICO UR'
+                      : isAudienciaBaronMission
+                      ? 'PASE BARÓN UR'
+                      : isDespachoFertonMission
+                      ? 'CENIZAS UR'
+                      : isPlantaIntermediaMansionEpilogue
+                      ? 'GAS ETÍLICO UR'
+                      : isDurnikEscalerasEpilogue
+                      ? 'MARTILLO UR'
+                      : isRecibidorMansionEpilogue
+                      ? 'BANDEJA UR'
+                      : isMansionFertonLlegadaMission
+                      ? 'ILUSIÓN UR'
+                      : isTabernaDuergarEpilogue
+                      ? 'ALCOHOL EN GAS'
+                      : isBaronMansionMission
                       ? 'SELLO NEGRO'
                       : isCapitulo3IntroMission
                       ? 'EFIGIE UR'
@@ -1783,7 +2319,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
             {/* Action Buttons */}
             <div className="space-y-2 pt-1">
-              {!isBaronMansionMission && !isCallejonHoggoblinsEpilogue && !isChispoEncuentroMission && !isFertonEpilogue && !isCapitulo3IntroMission && !isAldeaEpilogue && !isLaberintoMission && !isRoboEpilogue && !isBosqueEpilogue && !isPuertasEpilogue && !isEmboscadaEpilogue && !isAsaltoOrcoEpilogue && !isFuriaCarmesiEpilogue && !isCavernaAzulEpilogue && !isZancudoEpilogue && (
+              {!isGorgonMazmorraEpilogue && !isDespertarSuenosMission && !isAudienciaBaronMission && !isDespachoFertonMission && !isPlantaIntermediaMansionEpilogue && !isDurnikEscalerasEpilogue && !isRecibidorMansionEpilogue && !isMansionFertonLlegadaMission && !isTabernaDuergarEpilogue && !isBaronMansionMission && !isCallejonHoggoblinsEpilogue && !isChispoEncuentroMission && !isFertonEpilogue && !isCapitulo3IntroMission && !isAldeaEpilogue && !isLaberintoMission && !isRoboEpilogue && !isBosqueEpilogue && !isPuertasEpilogue && !isEmboscadaEpilogue && !isAsaltoOrcoEpilogue && !isFuriaCarmesiEpilogue && !isCavernaAzulEpilogue && !isZancudoEpilogue && (
                 <button
                   type="button"
                   onClick={handleStartCombatAfterStory}
@@ -1791,7 +2327,15 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 >
                   <Swords className="w-4 h-4" />
                   <span>
-                    {isCallejonHoggoblinsMission
+                    {isGorgonMazmorraMission
+                      ? '¡Enfrentar al Gorgon de Hierro!'
+                      : isPlantaIntermediaMansionMission
+                      ? '¡Barrer las 4 Oleadas Borrachas! (3-4 Enemigos)'
+                      : isDurnikEscalerasMission
+                      ? '¡Enfrentar a Durnik, Guardaespaldas de Ferton!'
+                      : isRecibidorMansionMission
+                      ? '¡Enfrentar a los Bugbears Criados! (2 Rondas)'
+                      : isCallejonHoggoblinsMission
                       ? '¡Enfrentar a los Hoggoblins Encapuchados! (2 Rondas)'
                       : isFertonMission
                       ? '¡Enfrentar a la Guardia Áurea! (3 Oleadas)'
@@ -1831,8 +2375,14 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  if (isBaronMansionMission) {
+                  if (isGorgonMazmorraMission || isDespertarSuenosMission) {
+                    setActiveQuestChapter(5);
+                    handleReturnToQuests();
+                  } else if (isAudienciaBaronMission || isDespachoFertonMission || isPlantaIntermediaMansionMission || isDurnikEscalerasMission || isRecibidorMansionMission || isMansionFertonLlegadaMission || isTabernaDuergarEpilogue) {
                     setActiveQuestChapter(4);
+                    handleReturnToQuests();
+                  } else if (isBaronMansionMission) {
+                    setActiveQuestChapter(3);
                     handleReturnToQuests();
                   } else if (isCallejonHoggoblinsMission || isChispoEncuentroMission || isCapitulo3IntroMission || isFertonMission || isHobgoblinBossMission) {
                     setActiveQuestChapter(3);
@@ -1850,13 +2400,29 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   }
                 }}
                 className={`w-full py-2.5 bg-gradient-to-r ${
-                  isBaronMansionMission || isCapitulo3IntroMission || isAldeaEpilogue || isLaberintoMission || isFuriaCarmesiEpilogue || isPuertasEpilogue
+                  isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isPlantaIntermediaMansionEpilogue || isDurnikEscalerasEpilogue || isRecibidorMansionEpilogue || isMansionFertonLlegadaMission || isTabernaDuergarEpilogue || isBaronMansionMission || isCapitulo3IntroMission || isAldeaEpilogue || isLaberintoMission || isFuriaCarmesiEpilogue || isPuertasEpilogue
                     ? 'from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.7)] ring-2 ring-yellow-400/60'
                     : 'from-amber-700 via-amber-600 to-yellow-600 text-stone-950 font-black shadow-md'
                 } hover:brightness-110 rounded-xl text-xs uppercase tracking-wider cursor-pointer transition-all active:scale-95`}
               >
-                {isBaronMansionMission
-                  ? '¡Capítulo III Completado! Ir al Capítulo IV'
+                {isGorgonMazmorraEpilogue
+                  ? '¡Primera Cámara Despejada! Volver a Misiones'
+                  : isDespertarSuenosMission
+                  ? '¡Rumbo a los Pozos de Pelea! Volver a Misiones'
+                  : isAudienciaBaronMission
+                  ? '¡Capítulo IV Finalizado! Volver a Misiones'
+                  : isDespachoFertonMission
+                  ? '¡Reunirse con el Barón! Volver a Misiones'
+                  : isPlantaIntermediaMansionEpilogue
+                  ? '¡Planta Intermedia Despejada! Volver a Misiones'
+                  : isDurnikEscalerasEpilogue || isRecibidorMansionEpilogue
+                  ? '¡Subir a la Planta Intermedia! Volver a Misiones'
+                  : isMansionFertonLlegadaMission
+                  ? '¡Adentro de la Mansión! Volver a Misiones'
+                  : isTabernaDuergarEpilogue
+                  ? '¡Rumbo a la Mansión de Ferton! Volver a Misiones'
+                  : isBaronMansionMission
+                  ? '¡Trato Sellado! Volver a Misiones'
                   : isCallejonHoggoblinsEpilogue
                   ? '¡Callejón Despejado! Volver a Misiones'
                   : isChispoEncuentroMission

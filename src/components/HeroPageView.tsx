@@ -632,7 +632,7 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
 
       {/* HABILIDAD PASIVA */}
       <img
-        src={isArlem ? `${A}/pasiva_arlem.webp` : `/assets/portraits/${hero.id}_icono.png`}
+        src={isArlem ? `${A}/pasiva_arlem.webp` : `/assets/portraits/${hero.id}_icono.webp`}
         alt="Habilidad pasiva"
         className="absolute left-[12%] top-[69.4%] w-[13%] object-contain drop-shadow"
       />
@@ -1807,10 +1807,8 @@ export const HeroPageView: React.FC<HeroPageViewProps> = ({ heroId, onClose }) =
 
         {/* Página */}
         <div className="relative flex-1 min-h-0 flex items-center justify-center overflow-hidden bg-[#1c0803]">
-          <div
-            className="relative h-full max-w-full"
-            style={{ aspectRatio: `${page.width} / ${Math.round(page.height * (1 - page.cropTop))}` }}
-          >
+          {/* La página ocupa todo el hueco disponible: sin franjas marrones laterales. */}
+          <div className="relative w-full h-full">
             <div
               className="absolute left-0 w-full"
               style={{

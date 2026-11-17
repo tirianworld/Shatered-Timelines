@@ -219,7 +219,7 @@ export const ForgeMilestonesModal: React.FC<ForgeMilestonesModalProps> = ({
     >
       {/* 
         POPUP CONTAINER:
-        Strictly preserves the native 4197/5588 aspect ratio of POPUP .png so it is NEVER distorted!
+        Strictly preserves the native 4197/5588 aspect ratio of POPUP .webp so it is NEVER distorted!
       */}
       <div
         className="relative w-full max-w-[410px] sm:max-w-[450px] aspect-[4197/5588] max-h-[92vh] flex flex-col select-none animate-fade-in"

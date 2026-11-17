@@ -3,6 +3,7 @@ import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
 import { Check, X } from 'lucide-react';
 import { CANONICAL_HEROES_LIST, CanonicalHeroItem } from './HeroesView';
+import { getHeroLuck, getDrinkingDifficultyFromLuck } from '../utils/heroLuck';
 
 const STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v4';
 const LEGACY_STORAGE_PARTIES_KEY = 'cdd_gacha_v2_party_presets_v3';
@@ -21,11 +22,34 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
     pendingMissionLaunch,
     setPendingMissionLaunch,
     setSelectedCombatMissionId,
+    soloMissionHeroId,
+    setSoloMissionHeroId,
     navigateTo,
   } = useGame();
 
+  const isSingleHeroMission = pendingMissionLaunch?.missionId === 'm10e_taberna_duergar';
+
   // Los equipos solo admiten héroes desbloqueados.
   const ownedHeroIds = useMemo(() => new Set(ownedHeroes.map((h) => h.id)), [ownedHeroes]);
+  const ownedHeroById = useMemo(
+    () => new Map(ownedHeroes.map((h) => [h.id, h])),
+    [ownedHeroes]
+  );
+
+  const [selectedSoloHeroId, setSelectedSoloHeroId] = useState<string | null>(() => {
+    if (soloMissionHeroId && ownedHeroes.some((h) => h.id === soloMissionHeroId)) {
+      return soloMissionHeroId;
+    }
+    const sorted = [...ownedHeroes].sort((a, b) => getHeroLuck(b) - getHeroLuck(a));
+    return sorted[0]?.id ?? null;
+  });
+
+  useEffect(() => {
+    if (!isSingleHeroMission) return;
+    if (selectedSoloHeroId && ownedHeroIds.has(selectedSoloHeroId)) return;
+    const sorted = [...ownedHeroes].sort((a, b) => getHeroLuck(b) - getHeroLuck(a));
+    setSelectedSoloHeroId(sorted[0]?.id ?? null);
+  }, [isSingleHeroMission, selectedSoloHeroId, ownedHeroIds, ownedHeroes]);
 
   // 5 Party Presets (each with 4 slots)
   const [parties, setParties] = useState<(string | null)[][]>(() => {
@@ -158,18 +182,32 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
     }
   };
 
-  // Confirma el equipo y arranca la misión que quedó pendiente al elegirla.
+  // Confirma el equipo (o campeón único) y arranca la misión que quedó pendiente al elegirla.
   const handleConfirmMission = () => {
     if (!pendingMissionLaunch) return;
     sound.playSFX('click');
     const { missionId, destination } = pendingMissionLaunch;
+    if (isSingleHeroMission) {
+      if (!selectedSoloHeroId) return;
+      setSoloMissionHeroId(selectedSoloHeroId);
+    }
     setSelectedCombatMissionId(missionId);
     setPendingMissionLaunch(null);
     // Sustituye el selector en el historial: "Volver" desde la misión regresa a la lista.
     navigateTo(destination, true);
   };
 
-  const hasHeroInParty = currentSlots.some((id) => id !== null);
+  const selectedSoloCanonical = useMemo(
+    () => CANONICAL_HEROES_LIST.find((h) => h.id === selectedSoloHeroId) ?? null,
+    [selectedSoloHeroId]
+  );
+  const selectedSoloHeroObj = selectedSoloHeroId ? ownedHeroById.get(selectedSoloHeroId) ?? null : null;
+  const selectedSoloLuck = getHeroLuck(selectedSoloHeroObj);
+  const selectedSoloDifficulty = getDrinkingDifficultyFromLuck(selectedSoloLuck);
+
+  const hasHeroInParty = isSingleHeroMission
+    ? selectedSoloHeroId !== null
+    : currentSlots.some((id) => id !== null);
 
   return (
     <div className="relative w-full h-full flex flex-col select-none overflow-hidden bg-[#1c0803]">
@@ -180,95 +218,183 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
         className="absolute inset-0 w-full h-full object-fill pointer-events-none z-0"
       />
 
-      {/* 1. TOP PARTY PRESETS BAR (1) (2) (3) (4) (5) */}
-      <div className="relative z-10 w-full bg-[#0a0302] border-b-2 border-[#2b0d04] py-1.5 px-4 flex items-center justify-center gap-3 sm:gap-4 shrink-0 shadow-md">
-        {[0, 1, 2, 3, 4].map((idx) => {
-          const isCurrent = activePreset === idx;
-          return (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => handleSelectPreset(idx)}
-              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-95 ${
-                isCurrent
-                  ? 'bg-[#3d1607] border-2 border-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.7)] ring-1 ring-amber-300 text-amber-100 font-black text-sm sm:text-base font-serif scale-105'
-                  : 'bg-[#180703] border-2 border-[#6d2a0e] text-stone-300 hover:text-white hover:border-amber-600 font-bold text-sm sm:text-base font-serif opacity-85 hover:opacity-100'
-              }`}
-              title={`Equipo ${idx + 1}`}
-            >
-              <span className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">{idx + 1}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* 2. TOP SECTION: 2x2 LARGE PARTY SLOTS IN CARVED WOOD CONTAINER */}
-      <div className="relative z-10 mx-3 mt-2 mb-1 shrink-0">
-        <div className="w-full rounded-[22px] border-[3.5px] border-[#7a320f] bg-[#220c04]/95 p-2 shadow-[inset_0_0_16px_rgba(0,0,0,0.85),0_8px_20px_rgba(0,0,0,0.7)]">
-          <div className="grid grid-cols-2 gap-2 w-full">
-            {[0, 1, 2, 3].map((slotIdx) => {
-              const heroId = currentSlots[slotIdx];
-              const hero = CANONICAL_HEROES_LIST.find((h) => h.id === heroId);
-              const isSelected = selectedSlotIndex === slotIdx;
-
-              return (
-                <div
-                  key={slotIdx}
-                  onClick={() => handleSlotClick(slotIdx)}
-                  className={`relative aspect-[1/1.22] rounded-xl overflow-hidden border-2 transition-all duration-150 cursor-pointer ${
-                    isSelected
-                      ? 'border-[#f59e0b] ring-2 ring-amber-400 shadow-[0_0_14px_rgba(245,158,11,0.75)] scale-[1.01]'
-                      : 'border-[#54210a] hover:border-[#823b12]'
-                  } ${hero ? 'bg-[#180905]' : 'bg-[#120502]'}`}
-                >
-                  {hero ? (
-                    <>
-                      {/* Character Portrait cleanly filling the slot */}
-                      <img
-                        src={hero.portrait}
-                        alt={hero.name}
-                        className="w-full h-full object-cover object-top select-none pointer-events-none"
-                      />
-
-                      {/* Remove Button on Top Right */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveHero(slotIdx);
-                        }}
-                        className="absolute top-1.5 right-1.5 z-30 w-5.5 h-5.5 rounded-full bg-black/80 border border-amber-400/90 text-amber-200 hover:bg-red-900 hover:border-red-400 hover:text-white flex items-center justify-center text-[10px] font-black shadow transition-transform active:scale-95 cursor-pointer"
-                        title="Quitar del equipo"
-                      >
-                        <X className="w-3 h-3 stroke-[3]" />
-                      </button>
-
-                      {/* Subtle Hero Nameplate at Bottom */}
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pt-3 pb-1 px-1 text-center pointer-events-none">
-                        <span className="text-[10px] font-black text-amber-200 font-serif tracking-wide drop-shadow truncate block">
-                          {hero.name}
-                        </span>
-                      </div>
-                    </>
-                  ) : (
-                    /* Empty Dark Slot */
-                    <div className="w-full h-full flex flex-col items-center justify-center">
-                      <div className="w-7 h-7 rounded-full border border-amber-900/30 flex items-center justify-center text-stone-700/60 font-serif font-black text-xs select-none">
-                        {slotIdx + 1}
-                      </div>
-                      {isSelected && (
-                        <span className="text-[9px] font-bold text-amber-400 mt-1 animate-pulse tracking-wide">
-                          Elige héroe
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+      {/* 1. TOP PARTY PRESETS BAR OR SOLO CHAMPION HEADER */}
+      {isSingleHeroMission ? (
+        <div className="relative z-10 w-full bg-[#0a0302] border-b-2 border-[#2b0d04] py-2 px-4 flex items-center justify-between gap-2 shrink-0 shadow-md">
+          <div className="min-w-0">
+            <p className="text-xs font-serif font-black text-amber-200 tracking-wide truncate">
+              Concurso de Ultrak · Elige 1 Héroe
+            </p>
+            <p className="text-[10px] text-stone-300 truncate">
+              Cuanta más Suerte tenga, más grande y pausada será la zona verde
+            </p>
+          </div>
+          <div className="flex items-center gap-1 shrink-0 bg-[#241006] border border-amber-700/60 rounded-lg px-2 py-1">
+            <img
+              src="/assets/heropage/stat_suerte.webp"
+              alt=""
+              className="w-3.5 h-3.5 object-contain"
+            />
+            <span className="text-[10px] font-black text-amber-300 font-mono tabular-nums">
+              {selectedSoloLuck}
+            </span>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="relative z-10 w-full bg-[#0a0302] border-b-2 border-[#2b0d04] py-1.5 px-4 flex items-center justify-center gap-3 sm:gap-4 shrink-0 shadow-md">
+          {[0, 1, 2, 3, 4].map((idx) => {
+            const isCurrent = activePreset === idx;
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => handleSelectPreset(idx)}
+                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-95 ${
+                  isCurrent
+                    ? 'bg-[#3d1607] border-2 border-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.7)] ring-1 ring-amber-300 text-amber-100 font-black text-sm sm:text-base font-serif scale-105'
+                    : 'bg-[#180703] border-2 border-[#6d2a0e] text-stone-300 hover:text-white hover:border-amber-600 font-bold text-sm sm:text-base font-serif opacity-85 hover:opacity-100'
+                }`}
+                title={`Equipo ${idx + 1}`}
+              >
+                <span className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">{idx + 1}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* 2. TOP SECTION: SOLO CHAMPION SLOT OR 2x2 PARTY SLOTS */}
+      {isSingleHeroMission ? (
+        <div className="relative z-10 mx-3 mt-2 mb-1.5 shrink-0">
+          <div className="w-full rounded-[22px] border-[3.5px] border-[#7a320f] bg-[#220c04]/95 p-3 shadow-[inset_0_0_16px_rgba(0,0,0,0.85),0_8px_20px_rgba(0,0,0,0.7)]">
+            {selectedSoloCanonical ? (
+              <div className="flex items-center gap-3">
+                <div className="relative w-24 h-28 rounded-xl overflow-hidden border-2 border-[#f59e0b] bg-[#180905] shrink-0 shadow-[0_0_14px_rgba(245,158,11,0.45)]">
+                  <img
+                    src={selectedSoloCanonical.portrait}
+                    alt={selectedSoloCanonical.name}
+                    className="w-full h-full object-cover object-top select-none pointer-events-none"
+                  />
+                </div>
+                <div className="flex-1 min-w-0 space-y-1.5">
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 block">
+                      Representante Único
+                    </span>
+                    <h3 className="font-serif font-black text-base text-amber-100 truncate">
+                      {selectedSoloCanonical.name}
+                    </h3>
+                    <p className="text-[11px] text-stone-300 truncate">
+                      {selectedSoloCanonical.title}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-1.5 pt-0.5">
+                    <div className="rounded-lg bg-[#140602] border border-[#5a240c] px-2 py-1.5 flex items-center gap-1.5">
+                      <img
+                        src="/assets/heropage/stat_suerte.webp"
+                        alt=""
+                        className="w-4 h-4 object-contain shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <span className="block text-[9px] text-stone-400 uppercase font-bold leading-none">
+                          Suerte
+                        </span>
+                        <span className="font-mono text-xs font-black text-amber-300 tabular-nums">
+                          {selectedSoloLuck}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="rounded-lg bg-[#140602] border border-[#5a240c] px-2 py-1.5">
+                      <span className="block text-[9px] text-stone-400 uppercase font-bold leading-none">
+                        Zona Verde
+                      </span>
+                      <span className="font-mono text-xs font-black text-emerald-300 tabular-nums">
+                        {selectedSoloDifficulty.zoneDegrees}°
+                      </span>
+                    </div>
+                  </div>
+
+                  <p className="text-[10.5px] font-bold text-emerald-300 truncate">
+                    {selectedSoloDifficulty.luckTierLabel} · Aguja {selectedSoloDifficulty.speedDegPerSec}°/s
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="h-28 flex items-center justify-center text-xs font-bold text-amber-300">
+                Elige 1 héroe abajo para competir ante Ultrak
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="relative z-10 mx-3 mt-2 mb-1 shrink-0">
+          <div className="w-full rounded-[22px] border-[3.5px] border-[#7a320f] bg-[#220c04]/95 p-2 shadow-[inset_0_0_16px_rgba(0,0,0,0.85),0_8px_20px_rgba(0,0,0,0.7)]">
+            <div className="grid grid-cols-2 gap-2 w-full">
+              {[0, 1, 2, 3].map((slotIdx) => {
+                const heroId = currentSlots[slotIdx];
+                const hero = CANONICAL_HEROES_LIST.find((h) => h.id === heroId);
+                const isSelected = selectedSlotIndex === slotIdx;
+
+                return (
+                  <div
+                    key={slotIdx}
+                    onClick={() => handleSlotClick(slotIdx)}
+                    className={`relative aspect-[1/1.22] rounded-xl overflow-hidden border-2 transition-all duration-150 cursor-pointer ${
+                      isSelected
+                        ? 'border-[#f59e0b] ring-2 ring-amber-400 shadow-[0_0_14px_rgba(245,158,11,0.75)] scale-[1.01]'
+                        : 'border-[#54210a] hover:border-[#823b12]'
+                    } ${hero ? 'bg-[#180905]' : 'bg-[#120502]'}`}
+                  >
+                    {hero ? (
+                      <>
+                        {/* Character Portrait cleanly filling the slot */}
+                        <img
+                          src={hero.portrait}
+                          alt={hero.name}
+                          className="w-full h-full object-cover object-top select-none pointer-events-none"
+                        />
+
+                        {/* Remove Button on Top Right */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveHero(slotIdx);
+                          }}
+                          className="absolute top-1.5 right-1.5 z-30 w-5.5 h-5.5 rounded-full bg-black/80 border border-amber-400/90 text-amber-200 hover:bg-red-900 hover:border-red-400 hover:text-white flex items-center justify-center text-[10px] font-black shadow transition-transform active:scale-95 cursor-pointer"
+                          title="Quitar del equipo"
+                        >
+                          <X className="w-3 h-3 stroke-[3]" />
+                        </button>
+
+                        {/* Subtle Hero Nameplate at Bottom */}
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pt-3 pb-1 px-1 text-center pointer-events-none">
+                          <span className="text-[10px] font-black text-amber-200 font-serif tracking-wide drop-shadow truncate block">
+                            {hero.name}
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      /* Empty Dark Slot */
+                      <div className="w-full h-full flex flex-col items-center justify-center">
+                        <div className="w-7 h-7 rounded-full border border-amber-900/30 flex items-center justify-center text-stone-700/60 font-serif font-black text-xs select-none">
+                          {slotIdx + 1}
+                        </div>
+                        {isSelected && (
+                          <span className="text-[9px] font-bold text-amber-400 mt-1 animate-pulse tracking-wide">
+                            Elige héroe
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 3. BOTTOM SECTION: 5-COLUMN HERO CARDS GRID IN CARVED WOOD CONTAINER */}
       <div className="relative z-10 flex-1 min-h-0 mx-3 mb-2 flex flex-col">
@@ -277,16 +403,31 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
           <div className="flex-1 w-full overflow-y-auto no-scrollbar pt-0.5">
             <div className="grid grid-cols-5 gap-1 sm:gap-1.5 pb-2">
               {CANONICAL_HEROES_LIST.filter((h) => ownedHeroIds.has(h.id)).map((hero) => {
-                const inTeam = currentSlots.includes(hero.id);
+                const inTeam = isSingleHeroMission
+                  ? selectedSoloHeroId === hero.id
+                  : currentSlots.includes(hero.id);
+                const heroObj = ownedHeroById.get(hero.id);
+                const heroLuckValue = getHeroLuck(heroObj);
 
                 return (
                   <div
                     key={hero.id}
-                    onClick={() => handleHeroGridClick(hero)}
+                    onClick={() => {
+                      if (isSingleHeroMission) {
+                        sound.playSFX('coin');
+                        setSelectedSoloHeroId(hero.id);
+                      } else {
+                        handleHeroGridClick(hero);
+                      }
+                    }}
                     className={`relative aspect-square cursor-pointer transition-transform duration-100 active:scale-95 hover:scale-105 select-none ${
                       inTeam ? 'ring-2 ring-emerald-400 rounded-lg scale-[0.98]' : ''
                     }`}
-                    title={`${hero.name} (${hero.rarity} - ${hero.attribute})`}
+                    title={
+                      isSingleHeroMission
+                        ? `${hero.name} · Suerte ${heroLuckValue}`
+                        : `${hero.name} (${hero.rarity} - ${hero.attribute})`
+                    }
                   >
                     {/* Hero Portrait contained neatly inside the frame */}
                     <div className="absolute inset-[2.5px] rounded-[4px] overflow-hidden bg-[#18110c] flex items-center justify-center">
@@ -310,6 +451,20 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
                       alt={hero.attribute}
                       className="absolute top-0 right-0 w-[30%] h-[30%] object-contain z-20 pointer-events-none drop-shadow"
                     />
+
+                    {/* Luck Badge in Solo Drinking Contest Mode */}
+                    {isSingleHeroMission && (
+                      <div className="absolute inset-x-0.5 bottom-0.5 z-20 rounded bg-black/85 border border-amber-700/60 px-1 py-0.5 flex items-center justify-center gap-0.5 pointer-events-none">
+                        <img
+                          src="/assets/heropage/stat_suerte.webp"
+                          alt=""
+                          className="w-2.5 h-2.5 object-contain shrink-0"
+                        />
+                        <span className="font-mono text-[9px] font-black text-amber-200 leading-none tabular-nums">
+                          {heroLuckValue}
+                        </span>
+                      </div>
+                    )}
 
                     {/* In-Team Indicator Checkmark Badge */}
                     {inTeam && (
@@ -338,7 +493,13 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
                 : 'bg-[#2b0d04] border-[#6d2a0e] text-stone-500 cursor-not-allowed'
             }`}
           >
-            {hasHeroInParty ? 'Comenzar misión' : 'Elige al menos un héroe'}
+            {hasHeroInParty
+              ? isSingleHeroMission
+                ? 'Comenzar concurso'
+                : 'Comenzar misión'
+              : isSingleHeroMission
+              ? 'Elige un héroe'
+              : 'Elige al menos un héroe'}
           </button>
         </div>
       )}

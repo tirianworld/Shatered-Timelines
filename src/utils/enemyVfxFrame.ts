@@ -11,9 +11,15 @@ export interface EnemyVfxFrame {
   /** Alto y ancho del sprite respecto al área de combate. */
   height: number;
   width: number;
+  /** Esquina superior izquierda real del sprite respecto al área de combate. */
+  left?: number;
+  top?: number;
   /** Punta del arma dentro del sprite (0..1), medida sobre su canal alfa. */
   tipFx?: number;
   tipFy?: number;
+  /** Posición exacta de la boca (p. ej. aliento del Gorgon) respecto al área de combate. */
+  mouthX?: number;
+  mouthY?: number;
 }
 
 // Valores de referencia: el enemigo "estándar" (un guardia de Icespear) para el que estaban

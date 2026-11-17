@@ -47,7 +47,7 @@ export interface ShelfItem {
 
 export type PendingMissionLaunch = {
   missionId: string;
-  destination: 'story' | 'combat';
+  destination: 'story' | 'combat' | 'drinking_contest';
 };
 
 interface GameContextType {
@@ -106,6 +106,9 @@ interface GameContextType {
   // Misión elegida que espera a que el jugador confirme su equipo en el selector de héroes.
   pendingMissionLaunch: PendingMissionLaunch | null;
   setPendingMissionLaunch: (launch: PendingMissionLaunch | null) => void;
+  // Héroe único elegido para misiones individuales (ej. concurso de bebida).
+  soloMissionHeroId: string | null;
+  setSoloMissionHeroId: (id: string | null) => void;
   // Mailbox & Options
   isMailboxOpen: boolean;
   setIsMailboxOpen: (open: boolean) => void;
@@ -179,6 +182,11 @@ interface GameContextType {
 }
 
 const STORAGE_KEY = 'cdd_gacha_2_save_v1';
+
+/** Tope de oro, gemas y cristales del recuerdo. */
+export const MAX_CURRENCY = 999_999_999;
+const clampCurrency = (value: number) =>
+  Math.min(MAX_CURRENCY, Math.max(0, Math.round(Number.isFinite(value) ? value : 0)));
 
 const DEFAULT_MAIL: MailItem[] = [
   {
@@ -296,17 +304,17 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Load safely from storage or fallback defaults
   const [gold, setGold] = useState<number>(() => {
     const val = safeGetJSON<number>(`${STORAGE_KEY}_gold`, 999951543);
-    return typeof val === 'number' && !isNaN(val) ? val : 999951543;
+    return clampCurrency(typeof val === 'number' && !isNaN(val) ? val : 999951543);
   });
 
   const [summonCrystals, setSummonCrystals] = useState<number>(() => {
     const val = safeGetJSON<number>(`${STORAGE_KEY}_crystals`, 99999999);
-    return typeof val === 'number' && !isNaN(val) ? val : 99999999;
+    return clampCurrency(typeof val === 'number' && !isNaN(val) ? val : 99999999);
   });
 
   const [astralShards, setAstralShards] = useState<number>(() => {
     const val = safeGetJSON<number>(`${STORAGE_KEY}_shards`, 99999999);
-    return typeof val === 'number' && !isNaN(val) ? val : 99999999;
+    return clampCurrency(typeof val === 'number' && !isNaN(val) ? val : 99999999);
   });
 
   const [heroes, setHeroes] = useState<Hero[]>(() => {
@@ -742,6 +750,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [selectedCombatMissionId, setSelectedCombatMissionId] = useState<string | null>('m2_robo');
   const [pendingMissionLaunch, setPendingMissionLaunch] = useState<PendingMissionLaunch | null>(null);
+  const [soloMissionHeroId, setSoloMissionHeroId] = useState<string | null>(null);
 
   const [isMailboxOpen, setIsMailboxOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
@@ -855,7 +864,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const claimIdleEarnings = () => {
     if (idleEarningsAvailable <= 0) return 0;
     const claimed = idleEarningsAvailable;
-    setGold((prev) => prev + claimed);
+    setGold((prev) => clampCurrency(prev + claimed));
     setLastIdleTimestamp(Date.now());
     setIdleEarningsAvailable(0);
     sound.playSFX('coin');
@@ -864,7 +873,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addGold = (amt: number) => {
     setGold((prev) => {
-      const next = Math.max(0, prev + amt);
+      const next = clampCurrency(prev + amt);
       if (next >= 25000) playGames.unlockAchievement('ach_wealthy');
       if (next >= 75000) playGames.unlockAchievement('ach_tycoon');
       return next;
@@ -872,13 +881,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const addCrystals = (amt: number) => {
-    setSummonCrystals((prev) => Math.max(0, prev + amt));
-    setAstralShards((prev) => Math.max(0, prev + amt));
+    setSummonCrystals((prev) => clampCurrency(prev + amt));
+    setAstralShards((prev) => clampCurrency(prev + amt));
   };
 
   const addAstralShards = (amt: number) => {
-    setAstralShards((prev) => Math.max(0, prev + amt));
-    setSummonCrystals((prev) => Math.max(0, prev + amt));
+    setAstralShards((prev) => clampCurrency(prev + amt));
+    setSummonCrystals((prev) => clampCurrency(prev + amt));
   };
 
   const setTeamSlot = (slotIndex: number, heroId: string | null) => {
@@ -1003,7 +1012,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     if (bonusCoins > 0) {
-      setAstralShards((prev) => prev + bonusCoins);
+      setAstralShards((prev) => clampCurrency(prev + bonusCoins));
     }
 
     // Google Play Games Achievements
@@ -1097,9 +1106,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!patrol) return false;
 
     // Award rewards
-    setGold((prev) => prev + patrol.rewards.gold);
-    setSummonCrystals((prev) => prev + patrol.rewards.crystals);
-    setAstralShards((prev) => prev + patrol.rewards.crystals);
+    setGold((prev) => clampCurrency(prev + patrol.rewards.gold));
+    setSummonCrystals((prev) => clampCurrency(prev + patrol.rewards.crystals));
+    setAstralShards((prev) => clampCurrency(prev + patrol.rewards.crystals));
 
     // Free heroes
     setHeroes((prev) =>
@@ -1314,11 +1323,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sound.playSFX('coin');
 
     if (item.id === 'shop_crystals_single') {
-      setSummonCrystals((prev) => prev + 100);
-      setAstralShards((prev) => prev + 100);
+      setSummonCrystals((prev) => clampCurrency(prev + 100));
+      setAstralShards((prev) => clampCurrency(prev + 100));
     } else if (item.id === 'shop_crystals_bundle') {
-      setSummonCrystals((prev) => prev + 900);
-      setAstralShards((prev) => prev + 900);
+      setSummonCrystals((prev) => clampCurrency(prev + 900));
+      setAstralShards((prev) => clampCurrency(prev + 900));
     } else if (item.id === 'shop_potions_pack') {
       setInventory((prev) =>
         prev.map((i) => (i.id === 'xp_potion_3' ? { ...i, count: i.count + 5 } : i))
@@ -1747,9 +1756,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const restoreGameState = (data: any): boolean => {
     try {
       if (!data || typeof data !== 'object') return false;
-      if (typeof data.gold === 'number') setGold(data.gold);
-      if (typeof data.summonCrystals === 'number') setSummonCrystals(data.summonCrystals);
-      if (typeof data.astralShards === 'number') setAstralShards(data.astralShards);
+      if (typeof data.gold === 'number') setGold(clampCurrency(data.gold));
+      if (typeof data.summonCrystals === 'number') setSummonCrystals(clampCurrency(data.summonCrystals));
+      if (typeof data.astralShards === 'number') setAstralShards(clampCurrency(data.astralShards));
       if (typeof data.playerName === 'string') setPlayerName(data.playerName);
       if (Array.isArray(data.heroes)) setHeroes(data.heroes);
       if (Array.isArray(data.team)) setTeam(data.team);
@@ -1816,12 +1825,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else if (missionId === 'm7_epilogo_aldea') {
         nextChapter = Math.max(prev.chapter, 3);
       } else if (
+        missionId === 'm10e_taberna_duergar' ||
         missionId === 'm10d_mansion_baron' ||
         missionId === 'm10c_callejon_hoggoblins' ||
         missionId === 'm10b_encuentro_chispo' ||
         missionId === 'm10_hobgoblin_boss'
       ) {
         nextChapter = Math.max(prev.chapter, 4);
+      } else if (missionId === 'm16_audiencia_baron') {
+        nextChapter = Math.max(prev.chapter, 5);
       }
       const updated = createQuestProgressState({
         chapter: prev.allMissionsCompleted ? 99 : nextChapter,
@@ -1860,6 +1872,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       'm10b_encuentro_chispo',
       'm10c_callejon_hoggoblins',
       'm10d_mansion_baron',
+      'm10e_taberna_duergar',
+      'm11_llegada_mansion_ferton',
+      'm12_recibidor_mansion_ferton',
+      'm13_escaleras_durnik',
+      'm14_planta_intermedia_ferton',
+      'm15_despacho_ferton',
+      'm16_audiencia_baron',
+      'm17_despertar_suenos',
+      'm18_primera_camara_gorgon',
     ];
     // Seed placeholder missions m11..m100 for all future missions and chapters
     for (let i = 11; i <= 100; i++) {
@@ -2082,6 +2103,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSelectedCombatMissionId,
         pendingMissionLaunch,
         setPendingMissionLaunch,
+        soloMissionHeroId,
+        setSoloMissionHeroId,
         isMailboxOpen,
         setIsMailboxOpen,
         isOptionsOpen,
