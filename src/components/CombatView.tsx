@@ -6085,6 +6085,10 @@ export interface ChamberEnemyState {
   isBoss?: boolean;
   isSemiboss?: boolean;
   hobgoblinPhase?: 1 | 2 | 3;
+  stolenSkillId?: string;
+  stolenSkillTier?: 1 | 2 | 3;
+  stolenSkillHeroId?: string;
+  stolenSkillTurnsRemaining?: number;
 }
 
 export interface AccumulatedLoot {
@@ -8098,6 +8102,7 @@ export const CombatView: React.FC = () => {
 
   const [slashEffect, setSlashEffect] = useState<'none' | 'lightning' | 'shockwave' | 'drain'>('none');
   const [activeVfx, setActiveVfx] = useState<CombatVfxState>({ type: 'none', tier: 1 });
+  const [isBanditCopyingSkill, setIsBanditCopyingSkill] = useState(false);
 
   const [enemyVfxFrame, setEnemyVfxFrame] = useState<EnemyVfxFrame>(DEFAULT_ENEMY_FRAME);
 
@@ -8105,9 +8110,9 @@ export const CombatView: React.FC = () => {
   // sprite, los efectos apuntan a su cuerpo y a su cabeza reales.
   useEffect(() => {
     if (!heroCastSkill && activeVfx.type === 'none' && !isUltimateCinematicActive) return;
-    setEnemyVfxFrame(measureEnemyVfxFrame());
+    setEnemyVfxFrame(isBanditCopyingSkill ? measureHeroVfxFrame() : measureEnemyVfxFrame());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [heroCastSkill, activeVfx.type, targetEnemy?.uid]);
+  }, [heroCastSkill, activeVfx.type, targetEnemy?.uid, isBanditCopyingSkill]);
 
   /**
    * Shader rosa de Roxanne: se dibuja encima de su sprite al usar Velada Encantadora o
@@ -8158,6 +8163,32 @@ export const CombatView: React.FC = () => {
       })
     );
   };
+  // Durante la imitación del Capitán de los Riscos, los VFX originales del héroe
+  // se anclan sobre el propio sprite del héroe en vez de sobre el enemigo.
+  const measureHeroVfxFrame = (): EnemyVfxFrame => {
+    const heroImg = heroSpriteImgRef.current;
+    const enemyWrapper = document.querySelector('[data-enemy-sprite]') as HTMLElement | null;
+    const host = enemyWrapper?.parentElement as HTMLElement | null;
+    if (!heroImg || !host) return DEFAULT_ENEMY_FRAME;
+    const hostRect = host.getBoundingClientRect();
+    const rect = heroImg.getBoundingClientRect();
+    if (!hostRect.width || !hostRect.height) return DEFAULT_ENEMY_FRAME;
+    const toX = (px: number) => (px - hostRect.left) / hostRect.width;
+    const toY = (py: number) => (py - hostRect.top) / hostRect.height;
+    const headX = toX(rect.left + rect.width * 0.5);
+    const headY = toY(rect.top + rect.height * 0.16);
+    return {
+      x: toX(rect.left + rect.width * 0.5),
+      y: toY(rect.top + rect.height * 0.58),
+      headX,
+      headY,
+      height: rect.height / hostRect.height,
+      width: rect.width / hostRect.width,
+      left: toX(rect.left),
+      top: toY(rect.top),
+    };
+  };
+
   const [heroConditions, setHeroConditions] = useState<ActiveGachaEffect[]>([]);
   // Escarcha de Cryovain: progreso independiente por héroe, incluso al cambiar de personaje.
   const [frostStacksByHero, setFrostStacksByHero] = useState<Record<string, number>>({});
@@ -11357,6 +11388,109 @@ export const CombatView: React.FC = () => {
       return;
     }
 
+    // El Capitán de los Riscos reproduce temporalmente una habilidad ofensiva robada.
+    // El VFX original se dibuja sobre el héroe y los efectos de la carta se invierten.
+    if (
+      actingEnemy.configId === 'bandido_lider' &&
+      actingEnemy.stolenSkillId &&
+      (actingEnemy.stolenSkillTurnsRemaining ?? 0) > 0
+    ) {
+      const copiedSkill = SKILL_DEFINITIONS[actingEnemy.stolenSkillId];
+      const copiedTier = (actingEnemy.stolenSkillTier || 1) as 1 | 2 | 3;
+      const copiedInfo = copiedSkill?.tiers?.[copiedTier] as
+        | { damage?: number; title?: string; dndDamageType?: DndDamageType; gachaEffectsApplied?: GachaSkillEffectApplication[] }
+        | undefined;
+      if (copiedSkill && copiedInfo && typeof copiedInfo.damage === 'number' && copiedInfo.damage > 0) {
+        setHeroCastSkill(actingEnemy.stolenSkillId);
+        setActiveVfx({
+          type: actingEnemy.stolenSkillId as CombatVfxType,
+          tier: copiedTier,
+        });
+        setIsBanditCopyingSkill(true);
+        setHeroAnimation('idle');
+        sound.playSFX(copiedSkill.sfx || 'skill');
+        setScreenFlash('red');
+        setTimeout(() => setScreenFlash(null), 220);
+        const copiedDndType = copiedInfo.dndDamageType || copiedSkill.dndDamageType || 'slashing';
+        let copiedDamage = Math.max(1, Math.round(copiedInfo.damage * ENEMY_DAMAGE_SCALE));
+        const copiedHeroDef = heroConditions.find((c) => c.type === 'def_buff');
+        if (copiedHeroDef) copiedDamage = Math.max(1, Math.round(copiedDamage * 0.7));
+        if (heroConditions.some((c) => c.type === 'def_break')) copiedDamage = Math.round(copiedDamage * 1.4);
+        if (activeFoodBuff?.defMultiplier) copiedDamage = Math.max(1, Math.round(copiedDamage * activeFoodBuff.defMultiplier));
+        if (foodShieldHp > 0) {
+          if (foodShieldHp >= copiedDamage) {
+            setFoodShieldHp((prev) => Math.max(0, prev - copiedDamage));
+            copiedDamage = 0;
+          } else {
+            copiedDamage -= foodShieldHp;
+            setFoodShieldHp(0);
+          }
+        }
+        heroHpRef.current = Math.max(0, heroHpRef.current - copiedDamage);
+        setHeroHp(heroHpRef.current);
+        setTimeout(() => {
+          setHeroAnimation('hit');
+          triggerHeroHitReaction(copiedDndType);
+          sound.playSFX('hurt');
+          setScreenShake('medium');
+          spawnFloating(
+            `-${copiedDamage}`,
+            false,
+            false,
+            copiedTier,
+            copiedTier === 3,
+            undefined,
+            copiedDndType,
+            `🪞 ${copiedInfo.title || copiedSkill.name}`,
+            '#c084fc'
+          );
+          (copiedInfo.gachaEffectsApplied || []).forEach((effect) => {
+            if (effect.target === 'enemy') {
+              setHeroConditions((prev) =>
+                stackGachaEffect(prev, effect.type, effect.duration, effect.stacks, copiedTier, copiedInfo.title || 'Habilidad robada').updatedEffects
+              );
+              setHeroStatusTrigger((prev) => prev + 1);
+            }
+          });
+        }, 260);
+      }
+      const turnsLeft = Math.max(0, (actingEnemy.stolenSkillTurnsRemaining ?? 1) - 1);
+      const updatedBandit = (e: ChamberEnemyState): ChamberEnemyState =>
+        e.uid !== actingEnemy.uid
+          ? e
+          : {
+              ...e,
+              stolenSkillTurnsRemaining: turnsLeft,
+              ...(turnsLeft === 0
+                ? { stolenSkillId: undefined, stolenSkillTier: undefined, stolenSkillHeroId: undefined }
+                : {}),
+              ultimateOrbs: Math.min(5, e.ultimateOrbs + 1),
+              animation: 'idle',
+            };
+      activeEnemiesRef.current = activeEnemiesRef.current.map(updatedBandit);
+      setActiveEnemies((prev) => prev.map(updatedBandit));
+      setTimeout(() => {
+        setActiveVfx({ type: 'none', tier: 1 });
+        setHeroCastSkill(null);
+        setIsBanditCopyingSkill(false);
+        setHeroAnimation('idle');
+        setScreenShake('none');
+        if (heroHpRef.current <= 0) {
+          setIsHeroAshDissolving(true);
+          setHeroAnimation('dead');
+          setTimeout(() => {
+            setIsHeroAshDissolving(false);
+            runDeathsRef.current += 1;
+            setBattleState('defeat');
+            sound.playSFX('defeat');
+          }, 1200);
+          return;
+        }
+        finalizeEnemyPhase();
+      }, 1050);
+      return;
+    }
+
     // Enemy Attack or Ultimate
     const enemyCfg = DUNGEON_ENEMIES[actingEnemy.configId] || DUNGEON_ENEMIES['araknoide_rojo'];
     const isMelenudo = actingEnemy.configId === 'semiboss_melenudo';
@@ -12504,6 +12638,45 @@ export const CombatView: React.FC = () => {
           }
           return Math.max(0, prevOrbs - actualStolen);
         });
+      }
+
+      // Saqueo de habilidad: en su especial roba una carta ofensiva de la mano;
+      // con la definitiva la retiene durante dos turnos en lugar de uno.
+      if (
+        actingEnemy.configId === 'bandido_lider' &&
+        !actingEnemy.stolenSkillId &&
+        (!isUlt && turnCounter % 2 === 0 || isUlt)
+      ) {
+        const stealableCards = handRef.current.filter((candidate) => {
+          if (candidate.skillId === 'cataclismo_astral') return false;
+          const def = SKILL_DEFINITIONS[candidate.skillId];
+          const info = def?.tiers?.[candidate.tier] as { damage?: number } | undefined;
+          return Boolean(def && info && typeof info.damage === 'number' && info.damage > 0);
+        });
+        if (stealableCards.length > 0) {
+          const stolenCard = stealableCards[Math.floor(Math.random() * stealableCards.length)];
+          const duration = isUlt ? 2 : 1;
+          const applySkillTheft = (e: ChamberEnemyState): ChamberEnemyState =>
+            e.uid === actingEnemy.uid
+              ? {
+                  ...e,
+                  stolenSkillId: stolenCard.skillId,
+                  stolenSkillTier: stolenCard.tier,
+                  stolenSkillHeroId: activeCombatHeroIdRef.current,
+                  stolenSkillTurnsRemaining: duration,
+                }
+              : e;
+          activeEnemiesRef.current = activeEnemiesRef.current.map(applySkillTheft);
+          setActiveEnemies((prev) => prev.map(applySkillTheft));
+          sound.playSFX('drain');
+          queueStatusNotification({
+            icon: '🪞',
+            title: '¡Habilidad Robada!',
+            detail: `El Capitán ha copiado ${SKILL_DEFINITIONS[stolenCard.skillId]?.name || 'una habilidad'} de ${getHeroName()}. La reproducirá contra el héroe durante ${duration} turno${duration > 1 ? 's' : ''}.`,
+            target: 'enemy',
+            isBuff: true,
+          });
+        }
       }
 
       // Titán Melenudo Special Mechanics:
