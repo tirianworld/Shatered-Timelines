@@ -1086,6 +1086,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
             hp: Math.round(h.stats.maxHp * statMult),
             attack: Math.round(h.stats.attack * statMult),
             defense: Math.round(h.stats.defense * statMult),
+            critRate: h.stats.critRate * statMult,
           },
         };
       })
@@ -1393,6 +1394,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
               attack: Math.round(h.stats.attack * Math.pow(1.08, newLvl - h.level)),
               maxHp: Math.round(h.stats.maxHp * Math.pow(1.08, newLvl - h.level)),
               hp: Math.round(h.stats.maxHp * Math.pow(1.08, newLvl - h.level)),
+              critRate: h.stats.critRate * Math.pow(1.08, newLvl - h.level),
             },
           };
         })
