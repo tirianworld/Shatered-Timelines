@@ -3994,7 +3994,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       },
       specialSkill: {
         name: 'Saqueo Intimidador',
-        desc: 'Aullido feroz y asalto que intimida al héroe y le roba 1 orbe de definitiva',
+        desc: 'Aullido feroz que intimida al héroe, le roba 1 orbe de definitiva y copia una habilidad ofensiva para reproducirla contra él en el siguiente turno.',
         damage: [12, 16],
         vfx: 'earth_titan',
         sfx: 'skill',
@@ -4008,7 +4008,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       },
       ultimateSkill: {
         name: 'Furia del Cabecilla',
-        desc: 'Tajo destructor que conmociona al objetivo y saquea hasta 2 orbes de definitiva',
+        desc: 'Tajo destructor que aturde al objetivo, roba hasta 2 orbes de definitiva y mantiene una habilidad copiada para reproducirla contra el héroe durante 2 turnos.',
         damage: 30,
         sfx: 'critical',
         dndDamageType: 'slashing',
@@ -12587,7 +12587,7 @@ export const CombatView: React.FC = () => {
         });
       }
 
-      // Bandido Líder y Caudillo Gorrak: Robo de orbes de definitiva del jugador
+      // Capitán de los Riscos: robo de orbes de definitiva del jugador
       if (actingEnemy.configId === 'bandido_lider') {
         const stealCount = isUlt ? 2 : 1;
         setUltimateOrbs((prevOrbs) => {
