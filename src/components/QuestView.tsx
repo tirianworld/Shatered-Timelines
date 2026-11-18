@@ -1904,7 +1904,7 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
             ]);
             const replayMissions = missions.filter((mission) => replayableIds.has(mission.id));
             const tierDone = (tier: 2 | 3) => replayMissions.length > 0 && replayMissions.every((mission) =>
-              isMissionCompleted(tier === 2 ? `${mission.id}__normal` : `${mission.id}__hard`)
+              questProgress.completedMissions.includes(tier === 2 ? `${mission.id}__normal` : `${mission.id}__hard`)
             );
             const showNormal = isChapterFullyCompleted && replayMissions.length > 0;
             const showHard = showNormal && tierDone(2);
@@ -1918,7 +1918,7 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
                 </div>
                 {replayMissions.map((mission) => {
                   const progressId = tier === 2 ? `${mission.id}__normal` : `${mission.id}__hard`;
-                  const done = isMissionCompleted(progressId);
+                  const done = questProgress.completedMissions.includes(progressId);
                   return (
                     <button key={progressId} type="button" onClick={() => handleLaunchMission(mission, false, tier)}
                       className="w-full rounded-lg border border-stone-700/80 bg-black/50 p-2 flex items-center gap-2 text-left hover:bg-black/70 active:scale-[0.99]">
