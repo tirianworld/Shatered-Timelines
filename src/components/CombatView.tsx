@@ -8525,7 +8525,7 @@ export const CombatView: React.FC = () => {
     const cfg = DUNGEON_ENEMIES[chosenType] || DUNGEON_ENEMIES['araknoide_rojo'];
 
     const newIdx = activeEnemiesRef.current.length;
-    const scaledHp = Math.round(cfg.maxHp * 0.85);
+    const scaledHp = Math.round(cfg.maxHp * 0.85 * (selectedCombatDifficulty === 3 ? 2 : selectedCombatDifficulty === 2 ? 1.5 : 1));
 
     const newMinion: ChamberEnemyState = {
       uid: `zancudo_summon_${chosenType}_${Date.now()}_${Math.random()}`,
@@ -12968,7 +12968,7 @@ export const CombatView: React.FC = () => {
           let anyAliveAfterUlt = false;
           const updatedEnemies = activeEnemiesRef.current.map((e) => {
             const isTarget = e.uid === target?.uid;
-            let dmg = Math.round(getActiveHeroAttack() * (isTarget ? 3.0 : 1.4));
+            let dmg = Math.round(getActiveHeroAttack() * (isTarget ? 3.0 : 1.4) * (selectedCombatDifficulty === 3 ? 1 / 1.4 : selectedCombatDifficulty === 2 ? 1 / 1.2 : 1));
 
             // Jefe de las puertas selladas: Las ultis le hacen un 50% de daño
             const isPuertasBoss =
@@ -13169,7 +13169,7 @@ export const CombatView: React.FC = () => {
       });
     } else if (card.skillId === 'contraataque') {
       const counterPercent = card.tier === 3 ? 190 : card.tier === 2 ? 130 : 80;
-      const counterDmg = Math.round(getActiveHeroAttack() * counterPercent / 100);
+      const counterDmg = Math.round(getActiveHeroAttack() * counterPercent / 100 * (selectedCombatDifficulty === 3 ? 1 / 1.4 : selectedCombatDifficulty === 2 ? 1 / 1.2 : 1));
       setEdacornCounter({ active: true, damage: counterDmg });
 
       queueStatusNotification({
@@ -13485,7 +13485,7 @@ export const CombatView: React.FC = () => {
       sound.playSFX('powerup');
       setIsSmurphAirborne(true);
       const landingPercent = card.tier === 3 ? 280 : card.tier === 2 ? 210 : 140;
-      const landingDmg = Math.round(getActiveHeroAttack() * landingPercent / 100);
+      const landingDmg = Math.round(getActiveHeroAttack() * landingPercent / 100 * (selectedCombatDifficulty === 3 ? 1 / 1.4 : selectedCombatDifficulty === 2 ? 1 / 1.2 : 1));
       setPendingLandingData({
         damage: landingDmg,
         tier: card.tier,
