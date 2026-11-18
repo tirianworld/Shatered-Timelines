@@ -48,6 +48,7 @@ export interface ShelfItem {
 export type PendingMissionLaunch = {
   missionId: string;
   destination: 'story' | 'combat' | 'drinking_contest' | 'door_breach';
+  difficultyTier?: 1 | 2 | 3;
 };
 
 interface GameContextType {
@@ -109,6 +110,8 @@ interface GameContextType {
   completeAllMissions: () => void;
   selectedCombatMissionId: string | null;
   setSelectedCombatMissionId: (id: string | null) => void;
+  selectedCombatDifficulty: 1 | 2 | 3;
+  setSelectedCombatDifficulty: (tier: 1 | 2 | 3) => void;
   // Misión elegida que espera a que el jugador confirme su equipo en el selector de héroes.
   pendingMissionLaunch: PendingMissionLaunch | null;
   setPendingMissionLaunch: (launch: PendingMissionLaunch | null) => void;
@@ -766,6 +769,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const [selectedCombatMissionId, setSelectedCombatMissionId] = useState<string | null>('m2_robo');
+  const [selectedCombatDifficulty, setSelectedCombatDifficulty] = useState<1 | 2 | 3>(1);
   const [pendingMissionLaunch, setPendingMissionLaunch] = useState<PendingMissionLaunch | null>(null);
   const [soloMissionHeroId, setSoloMissionHeroId] = useState<string | null>(null);
 
@@ -1843,13 +1847,18 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const isColiseoEventUnlocked = isDreamPlaneUnlocked;
 
   const completeQuestMission = (missionId: string, stars: number) => {
+    const progressMissionId = selectedCombatDifficulty === 2
+      ? `${missionId}__normal`
+      : selectedCombatDifficulty === 3
+      ? `${missionId}__hard`
+      : missionId;
     setQuestProgress((prev) => {
-      const completed = prev.completedMissions.includes(missionId)
+      const completed = prev.completedMissions.includes(progressMissionId)
         ? prev.completedMissions
-        : [...prev.completedMissions, missionId];
+        : [...prev.completedMissions, progressMissionId];
       const newStars = {
         ...prev.stars,
-        [missionId]: Math.max(prev.stars[missionId] || 0, stars),
+        [progressMissionId]: Math.max(prev.stars[progressMissionId] || 0, stars),
       };
       let nextChapter = prev.chapter;
       if (missionId === 'm4_puertas_selladas') {
@@ -2153,6 +2162,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         completeAllMissions,
         selectedCombatMissionId,
         setSelectedCombatMissionId,
+        selectedCombatDifficulty,
+        setSelectedCombatDifficulty,
         pendingMissionLaunch,
         setPendingMissionLaunch,
         soloMissionHeroId,
