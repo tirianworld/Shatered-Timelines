@@ -727,8 +727,14 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
     }
   };
 
-  const handleLaunchMission = (mission: QuestMission, forceStory = false) => {
+  const handleLaunchMission = (mission: QuestMission, forceStory = false, difficultyTier: 1 | 2 | 3 = 1) => {
     sound.playSFX('click');
+
+    if (difficultyTier > 1) {
+      setPendingMissionLaunch({ missionId: mission.id, destination: 'combat', difficultyTier });
+      navigateTo('party');
+      return;
+    }
 
     if (mission.id === 'm10e_taberna_duergar') {
       setSelectedCombatMissionId('m10e_taberna_duergar');
@@ -1885,6 +1891,50 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
               </div>
             );
           })}
+
+          {/* REJUGABILIDAD DE CAPÍTULO: dificultad Normal y Difícil */}
+          {(() => {
+            const replayableIds = new Set([
+              'm2_robo', 'm3_bosque', 'm4_puertas_selladas', 'm3_cuevas_rojo',
+              'm4_cuevas_azul', 'm5_cuevas_zancudo', 'm9_emboscada_ferton',
+              'm10_hobgoblin_boss', 'm10c_callejon_hoggoblins',
+              'm12_recibidor_mansion_ferton', 'm13_escaleras_durnik',
+              'm14_planta_intermedia_ferton', 'm18_primera_camara_gorgon',
+              'm19_segunda_camara_aire', 'm20_tercera_camara_bulezau',
+            ]);
+            const replayMissions = missions.filter((mission) => replayableIds.has(mission.id));
+            const tierDone = (tier: 2 | 3) => replayMissions.length > 0 && replayMissions.every((mission) =>
+              isMissionCompleted(tier === 2 ? `${mission.id}__normal` : `${mission.id}__hard`)
+            );
+            const showNormal = isChapterFullyCompleted && replayMissions.length > 0;
+            const showHard = showNormal && tierDone(2);
+            const renderTier = (tier: 2 | 3) => (
+              <section key={tier} className={`mt-3 rounded-xl border ${tier === 2 ? 'border-sky-700/70 bg-sky-950/20' : 'border-purple-700/70 bg-purple-950/20'} p-2.5 flex flex-col gap-2`}>
+                <div className="flex items-center justify-between px-1">
+                  <h3 className={`font-serif font-black text-sm uppercase tracking-wider ${tier === 2 ? 'text-sky-300' : 'text-purple-300'}`}>
+                    {tier === 2 ? 'Nueva dificultad · Normal' : 'Nueva dificultad · Difícil'}
+                  </h3>
+                  <span className="text-[9px] font-mono text-stone-400">{tier === 2 ? '150% PV · 125% ATQ · 120% DEF' : '200% PV · 150% ATQ · 140% DEF'}</span>
+                </div>
+                {replayMissions.map((mission) => {
+                  const progressId = tier === 2 ? `${mission.id}__normal` : `${mission.id}__hard`;
+                  const done = isMissionCompleted(progressId);
+                  return (
+                    <button key={progressId} type="button" onClick={() => handleLaunchMission(mission, false, tier)}
+                      className="w-full rounded-lg border border-stone-700/80 bg-black/50 p-2 flex items-center gap-2 text-left hover:bg-black/70 active:scale-[0.99]">
+                      <img src={mission.portrait} alt="" className="w-11 h-11 rounded-md object-contain bg-black/40" />
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-[11px] font-black text-stone-100 truncate">{mission.title}</span>
+                        <span className="block text-[9px] text-stone-400">{done ? 'Completada · Repetir misión' : 'Pendiente · Entrar al combate'}</span>
+                      </span>
+                      <span className={`text-[9px] font-black uppercase ${done ? 'text-emerald-400' : tier === 2 ? 'text-sky-300' : 'text-purple-300'}`}>{done ? '✓' : 'JUGAR'}</span>
+                    </button>
+                  );
+                })}
+              </section>
+            );
+            return <>{showNormal && renderTier(2)}{showHard && renderTier(3)}</>;
+          })()}
         </div>
       </div>
 
