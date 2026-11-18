@@ -13170,7 +13170,7 @@ export const CombatView: React.FC = () => {
         isBuff: true,
       });
     } else if (card.skillId === 'contraataque') {
-      const counterDmg = card.tier === 3 ? 55 : card.tier === 2 ? 36 : 22;
+      const counterDmg = Math.round((card.tier === 3 ? 55 : card.tier === 2 ? 36 : 22) * getActiveHeroAttackMultiplier());
       setEdacornCounter({ active: true, damage: counterDmg });
 
       queueStatusNotification({
@@ -13485,7 +13485,7 @@ export const CombatView: React.FC = () => {
       // Smurph Draco: Vuelo Dracónico y Aterrizaje Heroico
       sound.playSFX('powerup');
       setIsSmurphAirborne(true);
-      const landingDmg = card.tier === 3 ? 125 : card.tier === 2 ? 74 : 38;
+      const landingDmg = Math.round((card.tier === 3 ? 125 : card.tier === 2 ? 74 : 38) * getActiveHeroAttackMultiplier());
       setPendingLandingData({
         damage: landingDmg,
         tier: card.tier,
