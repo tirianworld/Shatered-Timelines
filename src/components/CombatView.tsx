@@ -8159,6 +8159,10 @@ export const CombatView: React.FC = () => {
     );
   };
   const [heroConditions, setHeroConditions] = useState<ActiveGachaEffect[]>([]);
+  // Escarcha de Cryovain: progreso independiente por héroe, incluso al cambiar de personaje.
+  const [frostStacksByHero, setFrostStacksByHero] = useState<Record<string, number>>({});
+  const activeHeroFrostStacks = frostStacksByHero[activeCombatHeroId] ?? 0;
+  const isCurrentHeroFrostFrozen = activeHeroFrostStacks >= 3;
   const heroConditionsRef = useRef<ActiveGachaEffect[]>([]);
   heroConditionsRef.current = heroConditions;
 
@@ -9182,12 +9186,12 @@ export const CombatView: React.FC = () => {
             c.type === 'stun' ||
             c.type === 'stunned'
         );
-        if (hardCC) {
+        if (hardCC || activeHeroFrostStacks >= 3) {
           willSkipPlayerTurn = true;
           skipReason =
-            hardCC.type === 'frozen'
+            activeHeroFrostStacks >= 3 || hardCC?.type === 'frozen'
               ? 'Congelación'
-              : hardCC.type === 'stun' || hardCC.type === 'stunned'
+              : hardCC?.type === 'stun' || hardCC?.type === 'stunned'
               ? 'Aturdimiento'
               : 'Parálisis';
         }
@@ -9242,6 +9246,9 @@ export const CombatView: React.FC = () => {
           setTimeout(() => setHeroTwitching(false), 900);
           sound.playSFX('necrotic');
 
+          if (skipReason === 'Congelación' && activeHeroFrostStacks >= 3) {
+            setFrostStacksByHero((prev) => ({ ...prev, [activeCombatHeroId]: 0 }));
+          }
           queueStatusNotification({
             icon: skipReason === 'Congelación' ? '❄️' : '⚡',
             title: `¡Turno Omitido (${skipReason})!`,
@@ -12286,6 +12293,15 @@ export const CombatView: React.FC = () => {
         heroConditions.some((c) => c.type === 'chilled' || c.type === 'chill' || c.type === 'frozen')
       ) {
         dmg = Math.round(dmg * 1.25);
+      }
+
+      // Cryovain acumula escarcha sobre el héroe que recibe el impacto. A 3 cargas queda
+      // congelado y pierde su siguiente turno; la carga se conserva al cambiar de héroe.
+      if (actingEnemy.configId === 'cryovain_boss' && enemyDndType === 'cold' && dmg > 0) {
+        setFrostStacksByHero((prev) => ({
+          ...prev,
+          [activeCombatHeroId]: Math.min(3, (prev[activeCombatHeroId] ?? 0) + 1),
+        }));
       }
 
       // Food Protective Barrier / Shield
@@ -15892,6 +15908,31 @@ export const CombatView: React.FC = () => {
                 <span className="text-[7.5px] text-cyan-200/90 font-mono drop-shadow bg-black/75 px-1 rounded mt-0.5">
                   Inmune a ataques este turno
                 </span>
+              </div>
+            )}
+
+            {/* Escarcha persistente individual: crece con cada impacto de Cryovain. */}
+            {activeHeroFrostStacks > 0 && (
+              <div
+                aria-hidden="true"
+                className={`absolute inset-[-3%] pointer-events-none z-[18] rounded-[42%] ${isCurrentHeroFrostFrozen ? 'combat-frost-frozen' : 'combat-frost-building'}`}
+                style={{
+                  opacity: activeHeroFrostStacks / 3,
+                  background: isCurrentHeroFrostFrozen
+                    ? 'linear-gradient(135deg, rgba(224,242,254,0.58), rgba(56,189,248,0.28) 45%, rgba(186,230,253,0.52))'
+                    : 'radial-gradient(ellipse at bottom, rgba(125,211,252,0.34), transparent 68%)',
+                  boxShadow: isCurrentHeroFrostFrozen
+                    ? 'inset 0 0 34px rgba(186,230,253,0.9), 0 0 24px rgba(56,189,248,0.7)'
+                    : 'inset 0 -8px 22px rgba(56,189,248,0.55)',
+                  backdropFilter: isCurrentHeroFrostFrozen ? 'saturate(0.55) brightness(1.22)' : 'none',
+                }}
+              >
+                {isCurrentHeroFrostFrozen && <span className="absolute inset-0 rounded-[42%] border-[3px] border-sky-100/70 animate-pulse" />}
+              </div>
+            )}
+            {activeHeroFrostStacks > 0 && (
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-30 pointer-events-none whitespace-nowrap rounded-full border border-sky-300/70 bg-slate-950/90 px-2 py-0.5 text-[9px] font-black tracking-wider text-sky-100 shadow-[0_0_14px_rgba(56,189,248,0.65)]">
+                ❄️ {isCurrentHeroFrostFrozen ? 'CONGELADO' : `ESCARCHA ${activeHeroFrostStacks}/3`}
               </div>
             )}
 
