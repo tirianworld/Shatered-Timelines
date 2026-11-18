@@ -361,12 +361,14 @@ export const OptionsModal: React.FC = () => {
                 let maxHp = hero.stats.maxHp;
                 let attack = hero.stats.attack;
                 let defense = hero.stats.defense;
+                let critRate = hero.stats.critRate;
                 let xpToNextLevel = hero.xpToNextLevel;
 
                 for (let level = 0; level < levelsToGain; level += 1) {
                   maxHp = Math.round(maxHp * 1.08);
                   attack = Math.round(attack * 1.08);
                   defense = Math.round(defense * 1.08);
+                  critRate *= 1.08;
                   xpToNextLevel = Math.round(xpToNextLevel * 1.25);
                 }
 
@@ -381,6 +383,7 @@ export const OptionsModal: React.FC = () => {
                     maxHp,
                     attack,
                     defense,
+                    critRate,
                   },
                 };
               }));
