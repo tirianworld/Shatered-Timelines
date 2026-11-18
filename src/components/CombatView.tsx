@@ -5448,6 +5448,10 @@ export interface ChamberEnemyState {
   isBoss?: boolean;
   isSemiboss?: boolean;
   hobgoblinPhase?: 1 | 2 | 3;
+  /** Núcleo de la Gorgona: exposición durante el turno del jugador. */
+  gorgonCoreExposedTurns?: number;
+  /** Se vuelve permanente al acertar físicamente durante la exposición. */
+  gorgonCoreBroken?: boolean;
 }
 
 export interface AccumulatedLoot {
@@ -5604,6 +5608,8 @@ export const createChamberEnemies = (floor: number, missionId?: string | null): 
       isBoss: cfg.isBoss,
       isSemiboss: cfg.isSemiboss,
       hobgoblinPhase: cfgId === 'hobgoblin_capataz' ? (1 as const) : undefined,
+      gorgonCoreExposedTurns: 0,
+      gorgonCoreBroken: false,
     };
   });
 };
@@ -7961,6 +7967,7 @@ export const CombatView: React.FC = () => {
           thumbUrl: hobThumbUrl,
           title: hobTitle,
           conditions: remainingEffects,
+          gorgonCoreExposedTurns: e.configId === 'gorgon_metal' ? Math.max(0, (e.gorgonCoreExposedTurns ?? 0) - 1) : e.gorgonCoreExposedTurns,
           isAshDissolving:
             updatedHp <= 0 && !(e.configId === 'devorador_quitinoso' && e.hasPhaseTwo),
         };
@@ -9714,6 +9721,22 @@ export const CombatView: React.FC = () => {
       case 'gorgon_metal': {
         const isMistBreath = !isUlt && turnCounter % 2 === 0;
         setGorgonAttackPose(isMistBreath ? 'aliento' : 'cornada');
+        if (isMistBreath && !actingEnemy.gorgonCoreBroken) {
+          // Se fija en 2 porque finalizeEnemyPhase consume el turno enemigo;
+          // al terminar quedará en 1 para la siguiente acción del jugador.
+          const exposed = activeEnemiesRef.current.map((e) =>
+            e.uid === actingEnemy.uid ? { ...e, gorgonCoreExposedTurns: 2 } : e
+          );
+          activeEnemiesRef.current = exposed;
+          setActiveEnemies(exposed);
+          queueStatusNotification({
+            icon: '💚',
+            title: '¡Núcleo Ferroverde expuesto!',
+            detail: 'La Gorgona abre su coraza al exhalar la niebla. Tienes un turno para golpear el núcleo con daño físico; la magia no le afecta.',
+            target: 'enemy',
+            isBuff: false,
+          });
+        }
         vfxType = isMistBreath ? 'void_miasma' : 'crimson_claw';
         themeColor = isMistBreath ? '#34d399' : '#cbd5e1';
         attackSfx = isUlt ? 'critical' : isMistBreath ? 'necrotic' : 'slash';
@@ -11079,6 +11102,27 @@ export const CombatView: React.FC = () => {
       );
 
       let finalCalculatedDamage = dndEval.finalDamage;
+      const isGorgon = target.configId === 'gorgon_metal';
+      const gorgonCoreExposed = isGorgon && (target.gorgonCoreExposedTurns ?? 0) > 0 && !target.gorgonCoreBroken;
+      const physicalDamageTypes: DndDamageType[] = ['bludgeoning', 'piercing', 'slashing'];
+      const isPhysicalStrike = skillDef.type === 'attack' && physicalDamageTypes.includes(tierInfo.dndDamageType ?? skillDef.dndDamageType);
+      let breaksGorgonCore = false;
+      if (isGorgon && !target.gorgonCoreBroken) {
+        if (gorgonCoreExposed) {
+          if (!isPhysicalStrike) {
+            finalCalculatedDamage = 0;
+            setDndProcBanner({ text: '💚 NÚCLEO FERROVERDE: INMUNE A LA MAGIA', color: '#34d399', icon: '💚' });
+            setTimeout(() => setDndProcBanner(null), 2200);
+          } else {
+            breaksGorgonCore = true;
+            finalCalculatedDamage = Math.round(finalCalculatedDamage * 1.5);
+            setDndProcBanner({ text: '💥 ¡NÚCLEO FERROVERDE FRACTURADO!', color: '#34d399', icon: '💥' });
+            setTimeout(() => setDndProcBanner(null), 2600);
+          }
+        } else {
+          finalCalculatedDamage = Math.max(1, Math.round(finalCalculatedDamage * 0.5));
+        }
+      }
       const isCriticalHit = isCrit || dndEval.isCrit;
 
       // Crit Damage Boost (Quesarito / Doritos)
@@ -11104,7 +11148,7 @@ export const CombatView: React.FC = () => {
 
       triggerEnemyHitReaction(skillDef.dndDamageType);
       spawnFloating(
-        finalCalculatedDamage.toString(),
+        finalCalculatedDamage === 0 ? 'INMUNE' : finalCalculatedDamage.toString(),
         true,
         false,
         card.tier,
@@ -11265,6 +11309,8 @@ export const CombatView: React.FC = () => {
           ? {
               ...e,
               hp: targetNextHp,
+              gorgonCoreBroken: e.gorgonCoreBroken || breaksGorgonCore,
+              gorgonCoreExposedTurns: gorgonCoreExposed ? 0 : e.gorgonCoreExposedTurns,
               hobgoblinPhase: targetHobPhase,
               spriteUrl: targetSpriteUrl,
               attackSpriteUrl: targetAttackSpriteUrl,
@@ -11297,6 +11343,8 @@ export const CombatView: React.FC = () => {
             return {
               ...e,
               hp: targetNextHp,
+              gorgonCoreBroken: e.gorgonCoreBroken || breaksGorgonCore,
+              gorgonCoreExposedTurns: gorgonCoreExposed ? 0 : e.gorgonCoreExposedTurns,
               hobgoblinPhase: targetHobPhase,
               spriteUrl: targetSpriteUrl,
               attackSpriteUrl: targetAttackSpriteUrl,
