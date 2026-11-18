@@ -7866,7 +7866,7 @@ export const CombatView: React.FC = () => {
       aranaTimersRef.current.forEach((id) => window.clearTimeout(id));
       aranaTimersRef.current = [];
     };
-  }, [selectedCombatMissionId, selectedCombatDifficulty, createInitialHandForHero, resetCryovainCombatState, resetAranaCombatState]);
+  }, [selectedCombatMissionId, selectedCombatDifficulty, partyAttackHpScale, createInitialHandForHero, resetCryovainCombatState, resetAranaCombatState]);
 
   // Intro cinematográfica del jefe Cryovain: zoom centrado sobre el dragón y retorno a la arena
   useEffect(() => {
@@ -8624,7 +8624,7 @@ export const CombatView: React.FC = () => {
       setIsZancudoRoaring(false);
     }, 530);
     zancudoRoarTimersRef.current.push(roarStartId, roarEndId);
-  }, [sound]);
+  }, [sound, selectedCombatMissionId, selectedCombatDifficulty, partyAttackHpScale]);
 
   // Grant the Ultimate Move Card into player's hand when 5 orbs are reached
   const checkGrantUltimateCard = useCallback(() => {
