@@ -6104,7 +6104,42 @@ export interface AccumulatedLoot {
   }[];
 }
 
-export const createChamberEnemies = (floor: number, missionId?: string | null, difficultyTier: 1 | 2 | 3 = 1): ChamberEnemyState[] => {
+const getBalancedEnemyMaxHp = (
+  cfg: EnemyConfig,
+  missionId: string | null | undefined,
+  floorMultiplier: number,
+  difficultyTier: 1 | 2 | 3,
+  partyAttackScale: number,
+  extraMultiplier = 1
+): number => {
+  // El daño de las habilidades ahora parte del ATQ real del héroe.
+  // Estos factores convierten los antiguos PV (pensados para daño fijo) a la nueva escala.
+  const roleMultiplier = cfg.isSemiboss
+    ? 8
+    : cfg.isBoss
+      ? cfg.maxHp <= 180
+        ? 14
+        : cfg.maxHp <= 320
+          ? 10
+          : 5.5
+      : missionId?.startsWith('t2_')
+        ? 4.5
+        : 15;
+  const difficultyMultiplier = difficultyTier === 3 ? 2 : difficultyTier === 2 ? 1.5 : 1;
+  return Math.max(
+    1,
+    Math.round(
+      cfg.maxHp *
+        floorMultiplier *
+        roleMultiplier *
+        partyAttackScale *
+        difficultyMultiplier *
+        extraMultiplier
+    )
+  );
+};
+
+export const createChamberEnemies = (floor: number, missionId?: string | null, difficultyTier: 1 | 2 | 3 = 1, partyAttackScale = 1): ChamberEnemyState[] => {
   let configIds: CombatEnemyId[] = [];
   if (missionId === 'evento_coliseo_suenos') {
     const chamber = COLISEO_SUENOS_CHAMBERS[floor - 1] || COLISEO_SUENOS_CHAMBERS[0];
@@ -6219,11 +6254,9 @@ export const createChamberEnemies = (floor: number, missionId?: string | null, d
       ? 1
       : 1 + (floor - 10) * 0.08;
   const isAlcoholGasMission = missionId === 'm14_planta_intermedia_ferton';
-  const difficultyHpMultiplier = difficultyTier === 3 ? 2 : difficultyTier === 2 ? 1.5 : 1;
-
   return configIds.map((cfgId, idx) => {
     const cfg = DUNGEON_ENEMIES[cfgId] || DUNGEON_ENEMIES['araknoide_rojo'];
-    const scaledMaxHp = Math.round(cfg.maxHp * hpScale * difficultyHpMultiplier);
+    const scaledMaxHp = getBalancedEnemyMaxHp(cfg, missionId, hpScale, difficultyTier, partyAttackScale);
     const letter =
       configIds.length > 1 && configIds.filter((c) => c === cfgId).length > 1
         ? ` ${String.fromCharCode(65 + idx)}`
@@ -6350,6 +6383,29 @@ export const CombatView: React.FC = () => {
     heroes,
   } = useGame();
 
+  // Escalado de PV basado en el ATQ medio del equipo seleccionado.
+  // Así los enemigos mantienen una duración parecida aunque los héroes suban de nivel.
+  const getPartyAttackHpScale = (): number => {
+    const rawIds = Array.from(new Set(team.filter((id): id is string => Boolean(id))));
+    const isTome2 = Boolean(selectedCombatMissionId?.startsWith('t2_'));
+    const assignedIds = isTome2
+      ? (() => {
+          const tome2Ids = rawIds.filter((id) => (ALBA_DORADA_HERO_IDS as readonly string[]).includes(id));
+          return (tome2Ids.length > 0 ? tome2Ids : DEFAULT_ALBA_DORADA_PARTY).slice(0, 4);
+        })()
+      : rawIds.slice(0, 4);
+    const fallbackIds = assignedIds.length > 0 ? assignedIds : heroes.slice(0, 4).map((hero) => hero.id);
+    const attacks = fallbackIds
+      .map((id) => heroes.find((hero) => hero.id === id) ?? getHeroById(id))
+      .map((hero) => hero?.stats?.attack ?? 0)
+      .filter((attack) => attack > 0);
+    const averageAttack = attacks.length > 0
+      ? attacks.reduce((sum, attack) => sum + attack, 0) / attacks.length
+      : 300;
+    return Math.max(0.5, averageAttack / 300);
+  };
+  const partyAttackHpScale = getPartyAttackHpScale();
+
   // Determine starting floor based on selected mission
   const getInitialFloor = (): number => {
     if (
@@ -6411,7 +6467,7 @@ export const CombatView: React.FC = () => {
 
   // Active enemies in the chamber (1 to 3 enemies)
   const [activeEnemies, setActiveEnemies] = useState<ChamberEnemyState[]>(() =>
-    createChamberEnemies(getInitialFloor(), selectedCombatMissionId, selectedCombatDifficulty)
+    createChamberEnemies(getInitialFloor(), selectedCombatMissionId, selectedCombatDifficulty, partyAttackHpScale)
   );
   const activeEnemiesRef = useRef<ChamberEnemyState[]>(activeEnemies);
   activeEnemiesRef.current = activeEnemies;
@@ -7782,7 +7838,7 @@ export const CombatView: React.FC = () => {
 
     const initFloor = getInitialFloor();
     setCurrentFloor(initFloor);
-    const initialEnemies = createChamberEnemies(initFloor, selectedCombatMissionId, selectedCombatDifficulty);
+    const initialEnemies = createChamberEnemies(initFloor, selectedCombatMissionId, selectedCombatDifficulty, partyAttackHpScale);
     activeEnemiesRef.current = initialEnemies;
     setActiveEnemies(initialEnemies);
     setSelectedEnemyIdx(0);
@@ -8525,7 +8581,7 @@ export const CombatView: React.FC = () => {
     const cfg = DUNGEON_ENEMIES[chosenType] || DUNGEON_ENEMIES['araknoide_rojo'];
 
     const newIdx = activeEnemiesRef.current.length;
-    const scaledHp = Math.round(cfg.maxHp * 0.85 * (selectedCombatDifficulty === 3 ? 2 : selectedCombatDifficulty === 2 ? 1.5 : 1));
+    const scaledHp = getBalancedEnemyMaxHp(cfg, selectedCombatMissionId, 1, selectedCombatDifficulty, partyAttackHpScale, 0.85);
 
     const newMinion: ChamberEnemyState = {
       uid: `zancudo_summon_${chosenType}_${Date.now()}_${Math.random()}`,
@@ -8863,7 +8919,7 @@ export const CombatView: React.FC = () => {
       } catch {}
     }
 
-    const newEnemies = presetEnemies ?? createChamberEnemies(floorNumber, selectedCombatMissionId, selectedCombatDifficulty);
+    const newEnemies = presetEnemies ?? createChamberEnemies(floorNumber, selectedCombatMissionId, selectedCombatDifficulty, partyAttackHpScale);
     activeEnemiesRef.current = newEnemies;
     setActiveEnemies(newEnemies);
     setSelectedEnemyIdx(Math.max(0, newEnemies.findIndex((enemy) => enemy.hp > 0)));
@@ -9375,7 +9431,7 @@ export const CombatView: React.FC = () => {
         name: devoradorP2Cfg.name,
         title: devoradorP2Cfg.title,
         hp: 0,
-        maxHp: Math.round(devoradorP2Cfg.maxHp * (selectedCombatDifficulty === 3 ? 2 : selectedCombatDifficulty === 2 ? 1.5 : 1)),
+        maxHp: getBalancedEnemyMaxHp(devoradorP2Cfg, selectedCombatMissionId, 1, selectedCombatDifficulty, partyAttackHpScale),
         ultimateOrbs: 0,
         conditions: [],
         isAshDissolving: false,
@@ -9857,8 +9913,8 @@ export const CombatView: React.FC = () => {
         configId: 'medusa',
         name: medusaCfg.name,
         title: medusaCfg.title,
-        hp: medusaCfg.maxHp,
-        maxHp: medusaCfg.maxHp,
+        hp: getBalancedEnemyMaxHp(medusaCfg, selectedCombatMissionId, 1, selectedCombatDifficulty, partyAttackHpScale),
+        maxHp: getBalancedEnemyMaxHp(medusaCfg, selectedCombatMissionId, 1, selectedCombatDifficulty, partyAttackHpScale),
         ultimateOrbs: 0,
         conditions: [],
         isAshDissolving: false,
