@@ -15959,10 +15959,14 @@ export const CombatView: React.FC = () => {
                 ...getBreathVars(getHeroSpriteUrl()),
                 // Acento del ataque: el héroe empuja hacia el enemigo (que está a su derecha).
                 ...({ '--atk-lunge': '5px' } as React.CSSProperties),
-                filter:
-                  !isHeroHitShaking && !isHeroAshDissolving
-                    ? heroStatusShaderFilter
-                    : undefined,
+                filter: [
+                  !isHeroHitShaking && !isHeroAshDissolving ? heroStatusShaderFilter : '',
+                  activeHeroFrostStacks >= 3
+                    ? 'saturate(0.45) brightness(1.28) contrast(1.08) drop-shadow(0 0 18px rgba(186,230,253,0.95))'
+                    : activeHeroFrostStacks > 0
+                    ? `saturate(${1 - activeHeroFrostStacks * 0.12}) drop-shadow(0 0 ${activeHeroFrostStacks * 5}px rgba(56,189,248,0.7))`
+                    : '',
+                ].filter(Boolean).join(' ') || undefined,
               }}
               src={getHeroSpriteUrl()}
               alt={getHeroName()}
