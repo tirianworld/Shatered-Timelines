@@ -6636,6 +6636,18 @@ export const CombatView: React.FC = () => {
     return heroId;
   };
 
+  // Escala el daño de las habilidades según el ATQ real del héroe activo.
+  // La curva suavizada conserva el balance de los valores diseñados para nivel 1.
+  const getActiveHeroAttackMultiplier = (): number => {
+    const heroId = normalizeCombatHeroId(activeCombatHeroIdRef.current);
+    const currentHero = heroes.find((hero) => normalizeCombatHeroId(hero.id) === heroId);
+    const baseHero = getHeroById(heroId);
+    const baseAttack = baseHero?.stats?.attack ?? currentHero?.stats?.attack ?? 0;
+    const currentAttack = currentHero?.stats?.attack ?? baseAttack;
+    if (baseAttack <= 0 || currentAttack <= 0) return 1;
+    return Math.max(1, Math.min(4, Math.pow(currentAttack / baseAttack, 0.3)));
+  };
+
   const isTome2Combat = Boolean(selectedCombatMissionId?.startsWith('t2_'));
 
   // Vida compartida del grupo: la barra es una sola para todos, pero su máximo sale de sumar
@@ -12958,7 +12970,7 @@ export const CombatView: React.FC = () => {
           let anyAliveAfterUlt = false;
           const updatedEnemies = activeEnemiesRef.current.map((e) => {
             const isTarget = e.uid === target?.uid;
-            let dmg = isTarget ? 95 : 45;
+            let dmg = Math.round((isTarget ? 95 : 45) * getActiveHeroAttackMultiplier());
 
             // Jefe de las puertas selladas: Las ultis le hacen un 50% de daño
             const isPuertasBoss =
@@ -13673,7 +13685,7 @@ export const CombatView: React.FC = () => {
       }
 
       // --- GACHA DAMAGE FORMULA ---
-      let baseDmg = tierInfo.damage;
+      let baseDmg = Math.round(tierInfo.damage * getActiveHeroAttackMultiplier());
       let isCrit = card.tier === 3;
 
       // Active Food Buff: ATK Multiplier (Hamburguesa / Furia / McBites)
