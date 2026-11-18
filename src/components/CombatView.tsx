@@ -6104,7 +6104,7 @@ export interface AccumulatedLoot {
   }[];
 }
 
-export const createChamberEnemies = (floor: number, missionId?: string | null): ChamberEnemyState[] => {
+export const createChamberEnemies = (floor: number, missionId?: string | null, difficultyTier: 1 | 2 | 3 = 1): ChamberEnemyState[] => {
   let configIds: CombatEnemyId[] = [];
   if (missionId === 'evento_coliseo_suenos') {
     const chamber = COLISEO_SUENOS_CHAMBERS[floor - 1] || COLISEO_SUENOS_CHAMBERS[0];
@@ -6219,10 +6219,11 @@ export const createChamberEnemies = (floor: number, missionId?: string | null): 
       ? 1
       : 1 + (floor - 10) * 0.08;
   const isAlcoholGasMission = missionId === 'm14_planta_intermedia_ferton';
+  const difficultyHpMultiplier = difficultyTier === 3 ? 2 : difficultyTier === 2 ? 1.5 : 1;
 
   return configIds.map((cfgId, idx) => {
     const cfg = DUNGEON_ENEMIES[cfgId] || DUNGEON_ENEMIES['araknoide_rojo'];
-    const scaledMaxHp = Math.round(cfg.maxHp * hpScale);
+    const scaledMaxHp = Math.round(cfg.maxHp * hpScale * difficultyHpMultiplier);
     const letter =
       configIds.length > 1 && configIds.filter((c) => c === cfgId).length > 1
         ? ` ${String.fromCharCode(65 + idx)}`
@@ -6340,6 +6341,7 @@ export const CombatView: React.FC = () => {
     inventory,
     selectedCombatMissionId,
     setSelectedCombatMissionId,
+    selectedCombatDifficulty,
     questProgress,
     completeQuestMission,
     setActiveQuestChapter,
@@ -6409,7 +6411,7 @@ export const CombatView: React.FC = () => {
 
   // Active enemies in the chamber (1 to 3 enemies)
   const [activeEnemies, setActiveEnemies] = useState<ChamberEnemyState[]>(() =>
-    createChamberEnemies(getInitialFloor(), selectedCombatMissionId)
+    createChamberEnemies(getInitialFloor(), selectedCombatMissionId, selectedCombatDifficulty)
   );
   const activeEnemiesRef = useRef<ChamberEnemyState[]>(activeEnemies);
   activeEnemiesRef.current = activeEnemies;
@@ -6696,7 +6698,8 @@ export const CombatView: React.FC = () => {
   const ENEMY_DAMAGE_SCALE =
     38 *
     Math.pow(1.45, Math.max(0, ENEMY_STAGE_CHAPTER - 1)) *
-    Math.pow(1.04, Math.max(0, currentFloor - 1));
+    Math.pow(1.04, Math.max(0, currentFloor - 1)) *
+    (selectedCombatDifficulty === 3 ? 1.5 : selectedCombatDifficulty === 2 ? 1.25 : 1);
 
   // Turn Counter
   const [turnCounter, setTurnCounter] = useState<number>(1);
@@ -7779,7 +7782,7 @@ export const CombatView: React.FC = () => {
 
     const initFloor = getInitialFloor();
     setCurrentFloor(initFloor);
-    const initialEnemies = createChamberEnemies(initFloor, selectedCombatMissionId);
+    const initialEnemies = createChamberEnemies(initFloor, selectedCombatMissionId, selectedCombatDifficulty);
     activeEnemiesRef.current = initialEnemies;
     setActiveEnemies(initialEnemies);
     setSelectedEnemyIdx(0);
@@ -7807,7 +7810,7 @@ export const CombatView: React.FC = () => {
       aranaTimersRef.current.forEach((id) => window.clearTimeout(id));
       aranaTimersRef.current = [];
     };
-  }, [selectedCombatMissionId, createInitialHandForHero, resetCryovainCombatState, resetAranaCombatState]);
+  }, [selectedCombatMissionId, selectedCombatDifficulty, createInitialHandForHero, resetCryovainCombatState, resetAranaCombatState]);
 
   // Intro cinematográfica del jefe Cryovain: zoom centrado sobre el dragón y retorno a la arena
   useEffect(() => {
@@ -8860,7 +8863,7 @@ export const CombatView: React.FC = () => {
       } catch {}
     }
 
-    const newEnemies = presetEnemies ?? createChamberEnemies(floorNumber, selectedCombatMissionId);
+    const newEnemies = presetEnemies ?? createChamberEnemies(floorNumber, selectedCombatMissionId, selectedCombatDifficulty);
     activeEnemiesRef.current = newEnemies;
     setActiveEnemies(newEnemies);
     setSelectedEnemyIdx(Math.max(0, newEnemies.findIndex((enemy) => enemy.hp > 0)));
@@ -11446,7 +11449,7 @@ export const CombatView: React.FC = () => {
         setScreenFlash('red');
         setTimeout(() => setScreenFlash(null), 220);
         const copiedDndType = copiedInfo.dndDamageType || copiedSkill.dndDamageType || 'slashing';
-        let copiedDamage = Math.max(1, Math.round(getActiveHeroAttack() * copiedInfo.damagePercent / 100 * ENEMY_DAMAGE_SCALE));
+        let copiedDamage = Math.max(1, Math.round(getActiveHeroAttack() * copiedInfo.damagePercent / 100 * ENEMY_DAMAGE_SCALE * (selectedCombatDifficulty === 3 ? 1 / 1.4 : selectedCombatDifficulty === 2 ? 1 / 1.2 : 1)));
         const copiedHeroDef = heroConditions.find((c) => c.type === 'def_buff');
         if (copiedHeroDef) copiedDamage = Math.max(1, Math.round(copiedDamage * 0.7));
         if (heroConditions.some((c) => c.type === 'def_break')) copiedDamage = Math.round(copiedDamage * 1.4);
@@ -13682,7 +13685,7 @@ export const CombatView: React.FC = () => {
       }
 
       // --- GACHA DAMAGE FORMULA ---
-      let baseDmg = Math.round(getActiveHeroAttack() * tierInfo.damagePercent / 100);
+      let baseDmg = Math.round(getActiveHeroAttack() * tierInfo.damagePercent / 100 * (selectedCombatDifficulty === 3 ? 1 / 1.4 : selectedCombatDifficulty === 2 ? 1 / 1.2 : 1));
       let isCrit = card.tier === 3;
 
       // Active Food Buff: ATK Multiplier (Hamburguesa / Furia / McBites)
