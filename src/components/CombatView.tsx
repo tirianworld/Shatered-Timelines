@@ -11401,7 +11401,6 @@ export const CombatView: React.FC = () => {
         | { damage?: number; title?: string; dndDamageType?: DndDamageType; gachaEffectsApplied?: GachaSkillEffectApplication[] }
         | undefined;
       if (copiedSkill && copiedInfo && typeof copiedInfo.damage === 'number' && copiedInfo.damage > 0) {
-        setHeroCastSkill(actingEnemy.stolenSkillId);
         setActiveVfx({
           type: actingEnemy.stolenSkillId as CombatVfxType,
           tier: copiedTier,
