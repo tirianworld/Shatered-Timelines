@@ -8936,7 +8936,22 @@ export const CombatView: React.FC = () => {
     startChamber(currentFloor, enemiesSnapshot);
   };
 
-  /** Reintentar desde la derrota: cobra el reintento y retoma la sala donde cayó el jugador. */
+  /** Los combates contra jefes se reinician desde el comienzo, sin coste en cristales. */
+  const isBossFight = activeEnemies.some((enemy) => enemy.isBoss);
+
+  const handleRetryBossFight = () => {
+    sound.playSFX('click');
+    heroHpRef.current = MAX_HERO_HP;
+    setHeroHp(MAX_HERO_HP);
+    setHeroConditions([]);
+    setAirPrisonHero(null);
+    airPrisonHeroRef.current = null;
+    setHand([]);
+    setUltimateOrbs(0);
+    startChamber(currentFloor);
+  };
+
+  /** Reintento pagado para combates normales: conserva la sala y el estado de los enemigos. */
   const handleRetryBattle = () => {
     if (!canAffordRetry) {
       sound.playSFX('hurt');
@@ -18350,62 +18365,42 @@ export const CombatView: React.FC = () => {
                 {selectedCombatMissionId === 'evento_coliseo_suenos' ? 'Volver al Plano de los Sueños' : selectedCombatMissionId === 'm22_cryovain_final' || selectedCombatMissionId === 't2_c1_m4_arana_acorazada' || selectedCombatMissionId === 't2_c1_m3_custodios_anillo' || selectedCombatMissionId === 't2_c1_m2_jauria_salas' || selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos' || selectedCombatMissionId === 'm20_tercera_camara_bulezau' || selectedCombatMissionId === 'm19_segunda_camara_aire' || selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm12_recibidor_mansion_ferton' || selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' || selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm10c_callejon_hoggoblins' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
               </button>
 
-              <div className="w-full flex items-center justify-between gap-2 rounded-xl border border-stone-700/70 bg-black/50 px-3 py-1.5 text-[10px] font-mono">
-                <span className="text-stone-300">
-                  Reintento {retryCount + 1} ·{' '}
-                  <b className="text-cyan-300">💎 {retryCost.toLocaleString('es-ES')}</b>
-                </span>
-                <span className={canAffordRetry ? 'text-stone-400' : 'text-red-400 font-bold'}>
-                  {canAffordRetry
-                    ? `Tienes ${summonCrystals.toLocaleString('es-ES')}`
-                    : `Te faltan ${(retryCost - summonCrystals).toLocaleString('es-ES')}`}
-                </span>
-              </div>
-
-              <button
-                onClick={handleRetryBattle}
-                disabled={!canAffordRetry}
-                className={`w-full py-2 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors ${
-                  canAffordRetry
-                    ? 'bg-stone-800 hover:bg-stone-700 text-stone-200 cursor-pointer'
-                    : 'bg-stone-900 text-stone-500 border border-stone-800 cursor-not-allowed'
-                }`}
-              >
-                <span className="truncate">{selectedCombatMissionId === 'm22_cryovain_final'
-                  ? 'Reintentar Jefe Final: Cryovain'
-                  : selectedCombatMissionId === 't2_c1_m4_arana_acorazada'
-                  ? 'Reintentar Jefe: Araña Acorazada'
-                  : selectedCombatMissionId === 't2_c1_m3_custodios_anillo'
-                  ? 'Reintentar Custodios del Anillo (Oleada 1)'
-                  : selectedCombatMissionId === 't2_c1_m2_jauria_salas'
-                  ? 'Reintentar Barracón en Ruinas (Oleada 1)'
-                  : selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos'
-                  ? 'Reintentar Trincheras (Oleada 1)'
-                  : selectedCombatMissionId === 'evento_coliseo_suenos'
-                  ? 'Reintentar Torneo del Coliseo (Ronda 1)'
-                  : selectedCombatMissionId === 'm20_tercera_camara_bulezau'
-                  ? 'Reintentar Jefe: Bulezau'
-                  : selectedCombatMissionId === 'm19_segunda_camara_aire'
-                  ? 'Reintentar Jefe: Elemental de Aire'
-                  : selectedCombatMissionId === 'm18_primera_camara_gorgon'
-                  ? 'Reintentar Jefe: Gorgon de Hierro'
-                  : selectedCombatMissionId === 'm14_planta_intermedia_ferton'
-                  ? 'Reintentar Planta Intermedia (Oleada 1)'
-                  : selectedCombatMissionId === 'm13_escaleras_durnik'
-                  ? 'Reintentar Jefe: Durnik'
-                  : selectedCombatMissionId === 'm12_recibidor_mansion_ferton'
-                  ? 'Reintentar Recibidor (Ronda 1)'
-                  : selectedCombatMissionId === 'm10_hobgoblin_boss'
-                  ? 'Reintentar Duelo contra el Hoggoblin'
-                  : selectedCombatMissionId === 'm9_emboscada_ferton'
-                  ? 'Reintentar Combate de Ferton (Oleada 1)'
-                  : selectedCombatMissionId === 'm2_robo'
-                  ? 'Reintentar Asalto (Oleada 1)'
-                  : 'Reintentar desde Sala 1'}</span>
-                <span className={`shrink-0 ${canAffordRetry ? 'text-cyan-300' : 'text-stone-600'}`}>
-                  💎 {retryCost.toLocaleString('es-ES')}
-                </span>
-              </button>
+              {isBossFight ? (
+                <button
+                  onClick={handleRetryBossFight}
+                  className="w-full py-2.5 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-600 hover:to-orange-600 text-amber-50 font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer transition-colors"
+                >
+                  Intentar de nuevo desde el principio
+                </button>
+              ) : (
+                <>
+                  <div className="w-full flex items-center justify-between gap-2 rounded-xl border border-stone-700/70 bg-black/50 px-3 py-1.5 text-[10px] font-mono">
+                    <span className="text-stone-300">
+                      Reintento {retryCount + 1} ·{' '}
+                      <b className="text-cyan-300">💎 {retryCost.toLocaleString('es-ES')}</b>
+                    </span>
+                    <span className={canAffordRetry ? 'text-stone-400' : 'text-red-400 font-bold'}>
+                      {canAffordRetry
+                        ? `Tienes ${summonCrystals.toLocaleString('es-ES')}`
+                        : `Te faltan ${(retryCost - summonCrystals).toLocaleString('es-ES')}`}
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleRetryBattle}
+                    disabled={!canAffordRetry}
+                    className={`w-full py-2 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors ${
+                      canAffordRetry
+                        ? 'bg-stone-800 hover:bg-stone-700 text-stone-200 cursor-pointer'
+                        : 'bg-stone-900 text-stone-500 border border-stone-800 cursor-not-allowed'
+                    }`}
+                  >
+                    <span className="truncate">Reintentar desde la sala actual</span>
+                    <span className={`shrink-0 ${canAffordRetry ? 'text-cyan-300' : 'text-stone-600'}`}>
+                      💎 {retryCost.toLocaleString('es-ES')}
+                    </span>
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
