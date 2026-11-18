@@ -32,6 +32,7 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
     pendingMissionLaunch,
     setPendingMissionLaunch,
     setSelectedCombatMissionId,
+    setSelectedCombatDifficulty,
     soloMissionHeroId,
     setSoloMissionHeroId,
     navigateTo,
@@ -224,7 +225,8 @@ export const PartySelectionView: React.FC<PartySelectionViewProps> = ({ onClose 
   const handleConfirmMission = () => {
     if (!pendingMissionLaunch) return;
     sound.playSFX('click');
-    const { missionId, destination } = pendingMissionLaunch;
+    const { missionId, destination, difficultyTier = 1 } = pendingMissionLaunch;
+    setSelectedCombatDifficulty(difficultyTier);
     if (isSingleHeroMission) {
       if (!selectedSoloHeroId) return;
       setSoloMissionHeroId(selectedSoloHeroId);
