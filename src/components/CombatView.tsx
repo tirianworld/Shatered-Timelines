@@ -8192,6 +8192,10 @@ export const CombatView: React.FC = () => {
   const [heroConditions, setHeroConditions] = useState<ActiveGachaEffect[]>([]);
   // Escarcha de Cryovain: progreso independiente por héroe, incluso al cambiar de personaje.
   const [frostStacksByHero, setFrostStacksByHero] = useState<Record<string, number>>({});
+  // Ref sincronizada para consumir las cargas en el mismo instante en que se omite el turno.
+  // Evita que callbacks de combate con closures antiguos vuelvan a leer 3 cargas y encadenen skips.
+  const frostStacksByHeroRef = useRef<Record<string, number>>({});
+  frostStacksByHeroRef.current = frostStacksByHero;
   const activeHeroFrostStacks = frostStacksByHero[activeCombatHeroId] ?? 0;
   const isCurrentHeroFrostFrozen = activeHeroFrostStacks >= 3;
   const heroConditionsRef = useRef<ActiveGachaEffect[]>([]);
@@ -9232,10 +9236,12 @@ export const CombatView: React.FC = () => {
             c.type === 'stun' ||
             c.type === 'stunned'
         );
-        if (hardCC || activeHeroFrostStacks >= 3) {
+        const frostStacksAtTurnStart =
+          frostStacksByHeroRef.current[activeCombatHeroId] ?? activeHeroFrostStacks;
+        if (hardCC || frostStacksAtTurnStart >= 3) {
           willSkipPlayerTurn = true;
           skipReason =
-            activeHeroFrostStacks >= 3 || hardCC?.type === 'frozen'
+            frostStacksAtTurnStart >= 3 || hardCC?.type === 'frozen'
               ? 'Congelación'
               : hardCC?.type === 'stun' || hardCC?.type === 'stunned'
               ? 'Aturdimiento'
@@ -9292,8 +9298,15 @@ export const CombatView: React.FC = () => {
           setTimeout(() => setHeroTwitching(false), 900);
           sound.playSFX('necrotic');
 
-          if (skipReason === 'Congelación' && activeHeroFrostStacks >= 3) {
-            setFrostStacksByHero((prev) => ({ ...prev, [activeCombatHeroId]: 0 }));
+          if (skipReason === 'Congelación' && (frostStacksByHeroRef.current[activeCombatHeroId] ?? 0) >= 3) {
+            // Consumir inmediatamente las 3 cargas: el siguiente turno empieza sin congelación
+            // por acumulación, aunque haya callbacks pendientes del turno anterior.
+            const nextFrostStacks = {
+              ...frostStacksByHeroRef.current,
+              [activeCombatHeroId]: 0,
+            };
+            frostStacksByHeroRef.current = nextFrostStacks;
+            setFrostStacksByHero(nextFrostStacks);
           }
           queueStatusNotification({
             icon: skipReason === 'Congelación' ? '❄️' : '⚡',
@@ -12446,10 +12459,15 @@ export const CombatView: React.FC = () => {
       // Cryovain acumula escarcha sobre el héroe que recibe el impacto. A 3 cargas queda
       // congelado y pierde su siguiente turno; la carga se conserva al cambiar de héroe.
       if (actingEnemy.configId === 'cryovain_boss' && enemyDndType === 'cold' && dmg > 0) {
-        setFrostStacksByHero((prev) => ({
-          ...prev,
-          [activeCombatHeroId]: Math.min(3, (prev[activeCombatHeroId] ?? 0) + 1),
-        }));
+        const nextFrostStacks = {
+          ...frostStacksByHeroRef.current,
+          [activeCombatHeroId]: Math.min(
+            3,
+            (frostStacksByHeroRef.current[activeCombatHeroId] ?? 0) + 1
+          ),
+        };
+        frostStacksByHeroRef.current = nextFrostStacks;
+        setFrostStacksByHero(nextFrostStacks);
       }
 
       // Food Protective Barrier / Shield
