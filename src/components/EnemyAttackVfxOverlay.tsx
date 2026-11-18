@@ -26,6 +26,8 @@ export interface EnemyAttackVfxOverlayProps {
   enabled?: boolean;
   /** Marco normalizado del enemigo activo: sirve para que los proyectiles nazcan en su arma. */
   enemyFrame?: EnemyVfxFrame;
+  /** Ajusta los puntos de impacto cuando los héroes luchan al 50% de escala (p. ej. Araña Acorazada). */
+  isSmallHeroScale?: boolean;
 }
 
 type DeliveryMode =
@@ -130,6 +132,12 @@ interface EnemyVfxProfile {
   spriteSrc: string;
   secondarySpriteSrc?: string;
   flipImgX?: boolean;
+  /**
+   * El golpe (martillo, bandeja, puño) arranca en la punta del arma del enemigo y recorre la
+   * distancia hasta el héroe, en vez de aparecer ya encima del héroe. Obligatorio en los
+   * sprites espejados, cuyo arma ahora está en el lado que mira al héroe.
+   */
+  swingFromWeapon?: boolean;
   onoSrc?: string;
   ultOnoSrc?: string;
   onoGlowColor?: 'cyan' | 'crimson' | 'gold' | 'purple' | 'crimson_tint' | 'sickly';
@@ -475,6 +483,7 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     ultOnoSrc: '/assets/combat/bugbear_ono_swiing.webp',
     onoGlowColor: 'gold',
     energyGlint: true,
+    swingFromWeapon: true,
   },
   // === DURNIK (Guardaespaldas de Ferton - Escaleras) ===
   durnik_guardaespaldas: {
@@ -488,6 +497,7 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     ultOnoSrc: '/assets/combat/durnik_ono_bamm.webp',
     onoGlowColor: 'gold',
     energyGlint: true,
+    swingFromWeapon: true,
   },
   // === GORGON DE HIERRO (Capítulo V - Primera Cámara) ===
   gorgon_metal: {
@@ -1458,6 +1468,7 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
   activeAttack,
   enabled = true,
   enemyFrame,
+  isSmallHeroScale = false,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -1524,6 +1535,29 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
     const h = el.clientHeight || 380;
     setArenaBox((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
   }, [activeAttack]);
+
+  /**
+   * Desplazamiento inicial de un golpe que sale del arma del enemigo: del centro de la caja de
+   * impacto (la de siempre, encima del héroe) a la punta del arma, en píxeles del área. Con él
+   * el martillo o la bandeja entran desde la mano del enemigo en vez de aparecer ya en el héroe.
+   */
+  const getSwingStartOffset = (leftPct: number, bottomPct: number, sizePx: number) => {
+    const w = arenaBox.w || 407;
+    const h = arenaBox.h || 380;
+    const impactCx = (leftPct / 100) * w + sizePx / 2;
+    const impactCy = h - (bottomPct / 100) * h - sizePx / 2;
+    // La punta se ciñe a la caja del enemigo: en poses muy abiertas el alfa se sale del recorte y
+    // el golpe arrancaría fuera de la arena.
+    const frame = enemyFrame ?? DEFAULT_ENEMY_FRAME;
+    const boxLeft = frame.left ?? frame.x - frame.width * 0.5;
+    const boxTop = frame.top ?? frame.headY - frame.height * 0.15;
+    const tipX = Math.min(boxLeft + frame.width * 1.06, Math.max(boxLeft - frame.width * 0.06, launchTip.x));
+    const tipY = Math.min(boxTop + frame.height * 1.06, Math.max(boxTop - frame.height * 0.06, launchTip.y));
+    return {
+      x: Math.round(tipX * w - impactCx),
+      y: Math.round(tipY * h - impactCy),
+    };
+  };
   const vfxKey = activeAttack?.vfxKey ?? 0;
   const isUlt = Boolean(activeAttack?.isUlt);
   const isSpecial = Boolean(activeAttack?.isSpecial);
@@ -1732,10 +1766,10 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
       return;
     }
 
-    const heroX = width * 0.21;
-    const heroY = height * 0.62;
-    const enemyX = width * 0.77;
-    const enemyY = height * 0.54;
+    const heroX = width * (isSmallHeroScale ? 0.145 : 0.21);
+    const heroY = height * (isSmallHeroScale ? 0.85 : 0.62);
+    const enemyX = width * (isSmallHeroScale ? 0.60 : 0.77);
+    const enemyY = height * (isSmallHeroScale ? 0.34 : 0.54);
 
     const particles: CanvasParticle[] = [];
     const count = isUlt ? 24 : 15;
@@ -2104,8 +2138,8 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         }
         const mx = settledBreathMouth.x;
         const my = settledBreathMouth.y;
-        const targetHeroX = Math.max(26, width * 0.13);
-        const targetHeroY = height * 0.67;
+        const targetHeroX = Math.max(26, width * (isSmallHeroScale ? 0.14 : 0.13));
+        const targetHeroY = height * (isSmallHeroScale ? 0.86 : 0.67);
         const bp = Math.min(1, Math.max(0, (elapsed - 185) / 770));
         const beamAlpha = Math.sin(bp * Math.PI);
 
@@ -2274,7 +2308,7 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
 
     frameId = requestAnimationFrame(render);
     return () => cancelAnimationFrame(frameId);
-  }, [activeAttack, vfxKey, isUlt, effectiveAccent, effectiveParticles, profile]);
+  }, [activeAttack, vfxKey, isUlt, effectiveAccent, effectiveParticles, profile, isSmallHeroScale]);
 
   if (!isActive || !profile) return null;
 
@@ -2332,9 +2366,10 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
       // Sale de la punta del arma...
       const startX = launchTip.x * w;
       const startY = launchTip.y * h;
-      // ...y llega a la zona de impacto de siempre, sobre el héroe.
-      const endX = 0.065 * w + 74.5;
-      const endY = h - (p.endBottomPct / 100) * h;
+      // ...y llega a la zona de impacto sobre el héroe (adaptada si está al 50% de escala).
+      const endX = (isSmallHeroScale ? 0.04 : 0.065) * w + 74.5;
+      const targetBottomPct = isSmallHeroScale ? Math.max(8, p.endBottomPct * 0.42) : p.endBottomPct;
+      const endY = h - (targetBottomPct / 100) * h;
       const dx = endX - startX;
       const dy = endY - startY;
       // El arte de estos proyectiles apunta a la izquierda (180º): se gira para seguir la recta.
@@ -2883,6 +2918,15 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
             100% { transform: translate(-16px, 18px) rotate(-34deg) scale(0.92); opacity: 0; }
           }
 
+          /* El golpe arranca en la punta del arma del enemigo (--swing-x/--swing-y) y cae sobre el héroe */
+          @keyframes enemySwingFromWeapon {
+            0% { transform: translate(var(--swing-x), var(--swing-y)) rotate(48deg) scale(0.6); opacity: 0; }
+            12% { opacity: 1; }
+            52% { transform: translate(calc(var(--swing-x) * 0.32), calc(var(--swing-y) * 0.32 - 22px)) rotate(6deg) scale(0.98); opacity: 1; }
+            78% { transform: translate(0px, 0px) rotate(-26deg) scale(1.12); opacity: 1; }
+            100% { transform: translate(-8px, 12px) rotate(-34deg) scale(0.94); opacity: 0; }
+          }
+
           @keyframes enemyCeilingPlunge {
             0% { transform: translate(18px, -88px) scale(0.82); opacity: 0; }
             30% { transform: translate(4px, -16px) scale(1.06); opacity: 1; }
@@ -3080,42 +3124,76 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
 
         {/* MAZAS, GARROTES Y APLASTAMIENTO SÍSMICO */}
         {(isMode('club_smash') || isMode('hammer_slam')) &&
-          triggeredSteps.map((idx) => (
-            <div
-              key={`club-${vfxKey}-${idx}`}
-              className="absolute left-[5%] bottom-[18%] w-[172px] h-[172px] pointer-events-none z-20 flex items-center justify-center"
-            >
-              <img
-                src={profile.spriteSrc}
-                alt="Golpe Contundente"
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-contain animate-[enemyOverheadSwingLeft_0.44s_cubic-bezier(0.16,1,0.3,1)_forwards]"
-                style={{ filter: filterUrl }}
-              />
-            </div>
-          ))}
+          triggeredSteps.map((idx) => {
+            const swing = profile.swingFromWeapon ? getSwingStartOffset(5, 18, 172) : null;
+            return (
+              <div
+                key={`club-${vfxKey}-${idx}`}
+                className="absolute left-[5%] bottom-[18%] w-[172px] h-[172px] pointer-events-none z-20 flex items-center justify-center"
+              >
+                <img
+                  src={profile.spriteSrc}
+                  alt="Golpe Contundente"
+                  referrerPolicy="no-referrer"
+                  className={`w-full h-full object-contain ${
+                    swing
+                      ? 'animate-[enemySwingFromWeapon_0.46s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                      : 'animate-[enemyOverheadSwingLeft_0.44s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                  }`}
+                  style={
+                    swing
+                      ? ({
+                          filter: filterUrl,
+                          '--swing-x': `${swing.x}px`,
+                          '--swing-y': `${swing.y}px`,
+                        } as React.CSSProperties)
+                      : { filter: filterUrl }
+                  }
+                />
+              </div>
+            );
+          })}
 
         {/* APLASTAMIENTO SÍSMICO / GOLPE DE PUÑO (Titán Melenudo / Orco Caudillo / Araknoide Musculoso estilo Magordito) */}
         {isMode('punch_slam') &&
-          triggeredSteps.map((idx) => (
-            <div
-              key={`punch-slam-${vfxKey}-${idx}`}
-              className={`absolute pointer-events-none z-20 flex items-center justify-center ${
-                isSpiderWebPunchMode
-                  ? isUlt
-                    ? 'left-[5.5%] bottom-[22%] w-[156px] h-[156px]'
-                    : 'left-[6%] bottom-[23%] w-[138px] h-[138px]'
-                  : 'left-[3.5%] bottom-[16%] w-[196px] h-[196px]'
-              }`}
-            >
-              <div className="relative w-full h-full overflow-visible">
-                <img
-                  src={profile.spriteSrc}
-                  alt="Impacto de Puño"
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-contain animate-[enemySlamBurstPop_0.46s_cubic-bezier(0.16,1,0.3,1)_forwards]"
-                  style={{ filter: filterUrl }}
-                />
+          triggeredSteps.map((idx) => {
+            const punchLeft = isSpiderWebPunchMode ? (isUlt ? 5.5 : 6) : 3.5;
+            const punchBottom = isSpiderWebPunchMode ? (isUlt ? 22 : 23) : 16;
+            const punchSize = isSpiderWebPunchMode ? (isUlt ? 156 : 138) : 196;
+            const swing = profile.swingFromWeapon
+              ? getSwingStartOffset(punchLeft, punchBottom, punchSize)
+              : null;
+            return (
+              <div
+                key={`punch-slam-${vfxKey}-${idx}`}
+                className={`absolute pointer-events-none z-20 flex items-center justify-center ${
+                  isSpiderWebPunchMode
+                    ? isUlt
+                      ? 'left-[5.5%] bottom-[22%] w-[156px] h-[156px]'
+                      : 'left-[6%] bottom-[23%] w-[138px] h-[138px]'
+                    : 'left-[3.5%] bottom-[16%] w-[196px] h-[196px]'
+                }`}
+              >
+                <div className="relative w-full h-full overflow-visible">
+                  <img
+                    src={profile.spriteSrc}
+                    alt="Impacto de Puño"
+                    referrerPolicy="no-referrer"
+                    className={`w-full h-full object-contain ${
+                      swing
+                        ? 'animate-[enemySwingFromWeapon_0.46s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                        : 'animate-[enemySlamBurstPop_0.46s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                    }`}
+                    style={
+                      swing
+                        ? ({
+                            filter: filterUrl,
+                            '--swing-x': `${swing.x}px`,
+                            '--swing-y': `${swing.y}px`,
+                          } as React.CSSProperties)
+                        : { filter: filterUrl }
+                    }
+                  />
                 {profile.energyGlint && (
                   <img
                     src={profile.spriteSrc}
@@ -3129,9 +3207,10 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
                     }}
                   />
                 )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
         {/* MAZA CON PÚAS DEL SARGENTO ACORAZADO (Maza Rompe-Huesos) */}
         {isMode('mace_smash') &&
@@ -3181,17 +3260,32 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
                 />
               </div>
             )}
-            {triggeredSteps.includes(1) && (
-              <div className="absolute left-[3%] bottom-[15%] w-[212px] h-[212px] pointer-events-none z-[21] flex items-center justify-center">
-                <img
-                  src={profile.spriteSrc}
-                  alt="Juicio Marcial"
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-contain animate-[enemyMaceSmashLeft_0.48s_cubic-bezier(0.16,1,0.3,1)_forwards]"
-                  style={{ filter: 'url(#enemy-vfx-icespear-crimson-shader)' }}
-                />
-              </div>
-            )}
+            {triggeredSteps.includes(1) && (() => {
+              const swing = profile.swingFromWeapon ? getSwingStartOffset(3, 15, 212) : null;
+              return (
+                <div className="absolute left-[3%] bottom-[15%] w-[212px] h-[212px] pointer-events-none z-[21] flex items-center justify-center">
+                  <img
+                    src={profile.spriteSrc}
+                    alt="Juicio Marcial"
+                    referrerPolicy="no-referrer"
+                    className={`w-full h-full object-contain ${
+                      swing
+                        ? 'animate-[enemySwingFromWeapon_0.48s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                        : 'animate-[enemyMaceSmashLeft_0.48s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                    }`}
+                    style={
+                      swing
+                        ? ({
+                            filter: 'url(#enemy-vfx-icespear-crimson-shader)',
+                            '--swing-x': `${swing.x}px`,
+                            '--swing-y': `${swing.y}px`,
+                          } as React.CSSProperties)
+                        : { filter: 'url(#enemy-vfx-icespear-crimson-shader)' }
+                    }
+                  />
+                </div>
+              );
+            })()}
           </>
         )}
 
@@ -3633,7 +3727,11 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
           triggeredSteps.map((idx) => (
             <div
               key={`cryovain-claw-${vfxKey}-${idx}`}
-              className="absolute left-[1.5%] bottom-[11%] w-[252px] h-[252px] pointer-events-none z-[24] flex items-center justify-center overflow-visible"
+              className={`absolute pointer-events-none z-[24] flex items-center justify-center overflow-visible ${
+                isSmallHeroScale
+                  ? 'left-[1%] bottom-[2%] w-[178px] h-[178px]'
+                  : 'left-[1.5%] bottom-[11%] w-[252px] h-[252px]'
+              }`}
             >
               <div className="relative w-full h-full overflow-visible">
                 <img
@@ -3721,8 +3819,8 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
           triggeredSteps.map((idx) => {
             const mouthPxX = launchMouth.x * arenaBox.w;
             const mouthPxY = launchMouth.y * arenaBox.h;
-            const heroTargetX = Math.max(24, Math.round(arenaBox.w * 0.125));
-            const heroTargetY = Math.round(arenaBox.h * 0.67);
+            const heroTargetX = Math.max(24, Math.round(arenaBox.w * (isSmallHeroScale ? 0.14 : 0.125)));
+            const heroTargetY = Math.round(arenaBox.h * (isSmallHeroScale ? 0.86 : 0.67));
             const dx = heroTargetX - mouthPxX;
             const dy = heroTargetY - mouthPxY;
             const dist = Math.max(195, Math.round(Math.hypot(dx, dy) + 32));
@@ -3789,7 +3887,13 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
 
         {/* ESTALLIDO SOBRE EL HÉROE AL IMPACTAR EL ALIENTO (glacial o ígneo según jefe) */}
         {isMode('dragon_ice_breath') && triggeredImpact && (
-          <div className="absolute left-[1%] bottom-[13%] w-[196px] h-[196px] pointer-events-none z-[25] flex items-center justify-center overflow-visible">
+          <div
+            className={`absolute pointer-events-none z-[25] flex items-center justify-center overflow-visible ${
+              isSmallHeroScale
+                ? 'left-[1%] bottom-[3%] w-[142px] h-[142px]'
+                : 'left-[1%] bottom-[13%] w-[196px] h-[196px]'
+            }`}
+          >
             <div
               className="absolute inset-2 rounded-full animate-[enemySlamBurstPop_0.54s_cubic-bezier(0.16,1,0.3,1)_forwards]"
               style={{
@@ -3866,10 +3970,12 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         {/* IMPACTO LIMPIO SOBRE EL HÉROE (omitido en lanzas, espadas limpias, ballestas, flechas, garrote y rayo del chamán) */}
         {triggeredImpact && !omitGenericImpact && (
           <div
-            className="absolute left-[5.5%] bottom-[18%] pointer-events-none z-[22] flex items-center justify-center"
+            className={`absolute pointer-events-none z-[22] flex items-center justify-center ${
+              isSmallHeroScale ? 'left-[3%] bottom-[4%]' : 'left-[5.5%] bottom-[18%]'
+            }`}
             style={{
-              width: isUlt ? '164px' : '142px',
-              height: isUlt ? '164px' : '142px',
+              width: isUlt ? (isSmallHeroScale ? '122px' : '164px') : isSmallHeroScale ? '106px' : '142px',
+              height: isUlt ? (isSmallHeroScale ? '122px' : '164px') : isSmallHeroScale ? '106px' : '142px',
             }}
           >
             <img
@@ -3884,7 +3990,11 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
 
         {/* ONOMATOPEYA CÓMICA PRINCIPAL */}
         {triggeredOno && activePrimaryOnoSrc && (
-          <div className="absolute left-[5.5%] bottom-[47%] w-[126px] h-[72px] pointer-events-none z-[25] flex items-center justify-center">
+          <div
+            className={`absolute w-[126px] h-[72px] pointer-events-none z-[25] flex items-center justify-center ${
+              isSmallHeroScale ? 'left-[3.5%] bottom-[25%]' : 'left-[5.5%] bottom-[47%]'
+            }`}
+          >
             <img
               src={activePrimaryOnoSrc}
               alt="Onomatopeya"
@@ -3897,7 +4007,11 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
 
         {/* SEGUNDA ONOMATOPEYA ESCALONADA PARA ULTIMATES */}
         {triggeredUltOno && activeSecondaryOnoSrc && (
-          <div className="absolute left-[13%] bottom-[38%] w-[134px] h-[76px] pointer-events-none z-[26] flex items-center justify-center">
+          <div
+            className={`absolute w-[134px] h-[76px] pointer-events-none z-[26] flex items-center justify-center ${
+              isSmallHeroScale ? 'left-[10%] bottom-[18%]' : 'left-[13%] bottom-[38%]'
+            }`}
+          >
             <img
               src={activeSecondaryOnoSrc}
               alt="Onomatopeya Ultimate"

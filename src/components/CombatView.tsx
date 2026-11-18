@@ -5676,14 +5676,14 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       title: 'Jefe del Barracón · Bestia Colosal Blindada',
       chamberName: 'Sala Hexagonal Incandescente',
       chamberNumber: 1,
-      spriteUrl: '/assets/combat/arana_acorazada_idle.webp',
-      attackSpriteUrl: '/assets/combat/arana_acorazada_attack_barrido.webp',
-      hurtSpriteUrl: '/assets/combat/arana_acorazada_hurt.webp',
+      spriteUrl: '/assets/combat/arana_acorazada_colgada_idle.webp',
+      attackSpriteUrl: '/assets/combat/arana_acorazada_descenso_barrido.webp',
+      hurtSpriteUrl: '/assets/combat/arana_acorazada_colgada_hurt.webp',
       thumbUrl: '/assets/portraits/arana_acorazada_thumb.webp',
       maxHp: 780,
-      width: 356,
-      height: 440,
-      scaleClass: 'w-[356px] h-[440px]',
+      width: 328,
+      height: 278,
+      scaleClass: 'w-[328px] h-[278px]',
       isBoss: true,
       isSemiboss: false,
       normalSkill: {
@@ -6331,6 +6331,7 @@ export const CombatView: React.FC = () => {
     navigateTo,
     addGold,
     addCrystals,
+    summonCrystals,
     addShelfItem,
     inventory,
     selectedCombatMissionId,
@@ -6391,6 +6392,9 @@ export const CombatView: React.FC = () => {
     crystals: 0,
     items: [],
   });
+
+  // Reintentos pagados en esta expedición: el primero cuesta 100 cristales, el segundo 200…
+  const [retryCount, setRetryCount] = useState(0);
 
   const [waveClearBanner, setWaveClearBanner] = useState<{
     floor: number;
@@ -6589,6 +6593,7 @@ export const CombatView: React.FC = () => {
     setIsCryovainRoaring(false);
   }, []);
   const [aranaAttackPose, setAranaAttackPose] = useState<'idle' | 'barrido' | 'telarana' | 'bola_fuego' | 'aliento' | 'chirrido' | 'ceniza'>('idle');
+  const [aranaVerticalPhase, setAranaVerticalPhase] = useState<'perched' | 'descending' | 'falling_flip_1' | 'falling_flip_2' | 'grounded' | 'climbing'>('perched');
   const [aranaCameraMode, setAranaCameraMode] = useState<'idle' | 'boss_focus'>('idle');
   const [isAranaRoaring, setIsAranaRoaring] = useState<boolean>(false);
   const aranaStageTurnsRef = useRef<number>(0);
@@ -6610,6 +6615,7 @@ export const CombatView: React.FC = () => {
       aranaIntroUidRef.current = null;
     }
     setAranaAttackPose('idle');
+    setAranaVerticalPhase('perched');
     setAranaCameraMode('idle');
     setIsAranaRoaring(false);
   }, []);
@@ -6924,6 +6930,12 @@ export const CombatView: React.FC = () => {
   const [pendingLandingData, setPendingLandingData] = useState<{ damage: number; tier: 1 | 2 | 3; targetEnemyUid?: string } | null>(null);
   const pendingLandingDataRef = useRef<{ damage: number; tier: 1 | 2 | 3; targetEnemyUid?: string } | null>(null);
   pendingLandingDataRef.current = pendingLandingData;
+
+  const isAranaBossCombat =
+    targetEnemy?.configId === 'arana_acorazada_boss' ||
+    selectedCombatMissionId === 't2_c1_m4_arana_acorazada';
+  const isAranaBossCombatRef = useRef<boolean>(isAranaBossCombat);
+  isAranaBossCombatRef.current = isAranaBossCombat;
 
   const isRoxanneCombat = activeCombatHeroId === 'roxanne';
   const isEdacornCombat = activeCombatHeroId === 'edacorn';
@@ -7486,6 +7498,13 @@ export const CombatView: React.FC = () => {
   };
 
   /**
+   * Enemigos cuyo arte se espejó para mirar a la izquierda llevando el arma en el borde derecho
+   * (la bandeja del bugbear): la punta se escanea desde ese lado para que los objetos salgan de
+   * su mano y no del otro extremo de su caja.
+   */
+  const MIRRORED_WEAPON_TIP_ENEMIES = ['bugbear_criado'];
+
+  /**
    * Mide en pantalla al enemigo activo (cuerpo, cabeza y tamaño) para que los efectos de ataque
    * del héroe se adapten a él en lugar de usar coordenadas fijas.
    */
@@ -7522,10 +7541,25 @@ export const CombatView: React.FC = () => {
             mouthY: toY(rect.top + 0.425 * rect.height),
           }
         : imgSrc.includes('arana_acorazada')
-        ? {
-            mouthX: toX(rect.left + 0.28 * rect.width),
-            mouthY: toY(rect.top + 0.44 * rect.height),
-          }
+        ? imgSrc.includes('colgada_telarana')
+          ? {
+              mouthX: toX(rect.left + 0.30 * rect.width),
+              mouthY: toY(rect.top + 0.65 * rect.height),
+            }
+          : imgSrc.includes('colgada')
+          ? {
+              mouthX: toX(rect.left + 0.30 * rect.width),
+              mouthY: toY(rect.top + 0.65 * rect.height),
+            }
+          : imgSrc.includes('descenso_barrido')
+          ? {
+              mouthX: toX(rect.left + 0.42 * rect.width),
+              mouthY: toY(rect.top + 0.56 * rect.height),
+            }
+          : {
+              mouthX: toX(rect.left + 0.28 * rect.width),
+              mouthY: toY(rect.top + 0.40 * rect.height),
+            }
         : imgSrc.includes('cryovain')
         ? cryoHeadRect && cryoHeadRect.width > 0
           ? {
@@ -7540,6 +7574,15 @@ export const CombatView: React.FC = () => {
     };
     if (!withWeaponTip) return base;
     if (imgSrc.includes('arana_acorazada')) {
+      if (imgSrc.includes('colgada_telarana')) {
+        return { ...base, tipFx: 0.04, tipFy: 0.96 };
+      }
+      if (imgSrc.includes('colgada')) {
+        return { ...base, tipFx: 0.26, tipFy: 0.66 };
+      }
+      if (imgSrc.includes('descenso_barrido')) {
+        return { ...base, tipFx: 0.16, tipFy: 0.65 };
+      }
       return { ...base, tipFx: 0.14, tipFy: 0.52 };
     }
     if (imgSrc.includes('cryovain')) {
@@ -7556,21 +7599,23 @@ export const CombatView: React.FC = () => {
       return { ...base, tipFx: 0.12, tipFy: 0.41 };
     }
     // Punta del arma medida sobre el alfa del sprite (aún puede estar cargándose).
-    const tip = getSpriteWeaponTip(imgSrc);
+    const tipSide = MIRRORED_WEAPON_TIP_ENEMIES.some((id) => imgSrc.includes(id)) ? 'right' : 'left';
+    const tip = getSpriteWeaponTip(imgSrc, tipSide);
     return tip ? { ...base, tipFx: tip.fx, tipFy: tip.fy } : base;
   };
 
   /** Escala base del héroe por complexión: no depende de la pose ni del arma. */
   const getHeroBodyBaseScale = (): number => {
-    if (isPepeCombat) return 0.60375; // enano: ~40% más pequeño que el resto (0.575 + un 5%)
-    if (isBarledCombat) return 0.94875; // Barled: ~26,5% más grande que el resto de humanos (0.8625 + un 10%)
-    if (isArlemCombat) return 0.825; // Arlem: un 10% más grande que el resto de humanos
-    if (isEdacornCombat) return 0.825; // Edacorn: un 10% más grande que el resto de humanos
-    if (isPrometeoCombat) return 0.8625; // Prometeo: un 15% más grande que el resto de humanos
+    const bossScaleMul = isAranaBossCombat ? 0.5 : 1;
+    if (isPepeCombat) return 0.60375 * bossScaleMul; // enano: ~40% más pequeño que el resto (0.575 + un 5%)
+    if (isBarledCombat) return 0.94875 * bossScaleMul; // Barled: ~26,5% más grande que el resto de humanos (0.8625 + un 10%)
+    if (isArlemCombat) return 0.825 * bossScaleMul; // Arlem: un 10% más grande que el resto de humanos
+    if (isEdacornCombat) return 0.825 * bossScaleMul; // Edacorn: un 10% más grande que el resto de humanos
+    if (isPrometeoCombat) return 0.8625 * bossScaleMul; // Prometeo: un 15% más grande que el resto de humanos
     if (isKaironCombat || isRoxanneCombat || isGiovaniCombat) {
-      return 0.75; // héroes humanos o de talla humana: 25% más pequeños
+      return 0.75 * bossScaleMul; // héroes humanos o de talla humana: 25% más pequeños
     }
-    return 1;
+    return 1 * bossScaleMul;
   };
 
   /**
@@ -7634,10 +7679,18 @@ export const CombatView: React.FC = () => {
     if (isZancudoRoaring && enemy.configId === 'semiboss_zancudo') {
       return '/assets/combat/semiboss_zancudo_roar.webp';
     }
-    if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
-      return enemy.hurtSpriteUrl || enemy.spriteUrl;
-    }
     if (enemy.configId === 'arana_acorazada_boss') {
+      if (aranaVerticalPhase === 'falling_flip_1') {
+        return '/assets/combat/arana_acorazada_caida_volteo_1.webp';
+      }
+      if (aranaVerticalPhase === 'falling_flip_2') {
+        return '/assets/combat/arana_acorazada_caida_volteo_2.webp';
+      }
+      if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
+        return aranaVerticalPhase === 'grounded'
+          ? '/assets/combat/arana_acorazada_hurt.webp'
+          : '/assets/combat/arana_acorazada_colgada_hurt.webp';
+      }
       if (
         enemy.animation === 'strike' ||
         enemyAnimation === 'strike' ||
@@ -7652,11 +7705,16 @@ export const CombatView: React.FC = () => {
           return '/assets/combat/arana_acorazada_attack_bola.webp';
         }
         if (aranaAttackPose === 'telarana') {
-          return '/assets/combat/arana_acorazada_attack_telarana.webp';
+          return '/assets/combat/arana_acorazada_colgada_telarana.webp';
         }
-        return '/assets/combat/arana_acorazada_attack_barrido.webp';
+        return '/assets/combat/arana_acorazada_descenso_barrido.webp';
       }
-      return '/assets/combat/arana_acorazada_idle.webp';
+      return aranaVerticalPhase === 'grounded'
+        ? '/assets/combat/arana_acorazada_idle.webp'
+        : '/assets/combat/arana_acorazada_colgada_idle.webp';
+    }
+    if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
+      return enemy.hurtSpriteUrl || enemy.spriteUrl;
     }
     if (enemy.animation === 'strike' || enemyAnimation === 'strike') {
       if (enemy.configId === 'gorgon_metal') {
@@ -7764,7 +7822,7 @@ export const CombatView: React.FC = () => {
     }
   }, [targetEnemy?.uid, targetEnemy?.configId, targetEnemy?.hp, targetEnemy?.isAshDissolving]);
 
-  // Intro cinematográfica del jefe Araña Acorazada: zoom centrado sobre la bestia y retorno a la arena
+  // Intro cinematográfica del jefe Araña Acorazada: colgada cabeza abajo en las telarañas superiores, zoom + chillido
   useEffect(() => {
     if (
       targetEnemy?.configId === 'arana_acorazada_boss' &&
@@ -7773,20 +7831,48 @@ export const CombatView: React.FC = () => {
       aranaIntroUidRef.current !== targetEnemy.uid
     ) {
       aranaIntroUidRef.current = targetEnemy.uid;
+      setAranaVerticalPhase('perched');
       const tZoomIn = window.setTimeout(() => {
         setAranaCameraMode('boss_focus');
         setIsAranaRoaring(true);
-        setAranaAttackPose('chirrido');
-        sound.playSFX('roar');
+        setScreenShake('medium');
+        sound.playSFX('arana_screech');
       }, 180);
+      const tStopShake = window.setTimeout(() => setScreenShake('none'), 520);
       const tZoomOut = window.setTimeout(() => {
         setAranaCameraMode('idle');
         setIsAranaRoaring(false);
         setAranaAttackPose('idle');
-      }, 1450);
-      aranaTimersRef.current.push(tZoomIn, tZoomOut);
+      }, 1480);
+      aranaTimersRef.current.push(tZoomIn, tStopShake, tZoomOut);
     }
   }, [targetEnemy?.uid, targetEnemy?.configId, targetEnemy?.hp, targetEnemy?.isAshDissolving]);
+
+  // Caída con giro al morir: cuando la Araña Acorazada es derrotada, se desprende de las telarañas, da la vuelta y choca contra el suelo
+  useEffect(() => {
+    if (targetEnemy?.configId === 'arana_acorazada_boss' && targetEnemy?.isAshDissolving) {
+      setAranaCameraMode('boss_focus');
+      setIsAranaRoaring(false);
+      setAranaAttackPose('idle');
+      setAranaVerticalPhase('falling_flip_1');
+      sound.playSFX('arana_screech', { rate: 0.85 });
+      const tFlip2 = window.setTimeout(() => {
+        setAranaVerticalPhase('falling_flip_2');
+      }, 175);
+      const tCrash = window.setTimeout(() => {
+        setAranaVerticalPhase('grounded');
+        setScreenShake('heavy');
+        sound.playSFX('arana_fall_slam');
+      }, 355);
+      const tStopShake = window.setTimeout(() => {
+        setScreenShake('none');
+      }, 740);
+      const tCamReset = window.setTimeout(() => {
+        setAranaCameraMode('idle');
+      }, 1050);
+      aranaTimersRef.current.push(tFlip2, tCrash, tStopShake, tCamReset);
+    }
+  }, [targetEnemy?.configId, targetEnemy?.isAshDissolving]);
 
 
 
@@ -7950,6 +8036,12 @@ export const CombatView: React.FC = () => {
       '/assets/combat/armadura_reanimada_idle.webp',
       '/assets/combat/armadura_reanimada_attack.webp',
       '/assets/combat/armadura_reanimada_hurt.webp',
+      '/assets/combat/arana_acorazada_colgada_idle.webp',
+      '/assets/combat/arana_acorazada_colgada_hurt.webp',
+      '/assets/combat/arana_acorazada_colgada_telarana.webp',
+      '/assets/combat/arana_acorazada_descenso_barrido.webp',
+      '/assets/combat/arana_acorazada_caida_volteo_1.webp',
+      '/assets/combat/arana_acorazada_caida_volteo_2.webp',
       '/assets/combat/arana_acorazada_idle.webp',
       '/assets/combat/arana_acorazada_hurt.webp',
       '/assets/combat/arana_acorazada_attack_barrido.webp',
@@ -7994,6 +8086,9 @@ export const CombatView: React.FC = () => {
     setIsEnemyHitShaking(true);
     setEnemyAnimation('hit');
     setEnemyImpactDamageType(dndType || null);
+    if (isAranaBossCombatRef.current) {
+      sound.playSFX('arana_hurt');
+    }
     setTimeout(() => {
       setIsEnemyHitShaking(false);
       setEnemyAnimation('idle');
@@ -8333,7 +8428,7 @@ export const CombatView: React.FC = () => {
     );
     return () => timers.forEach((id) => window.clearTimeout(id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeEnemyAttackVisual?.vfxKey, targetEnemy?.uid, cryovainAttackPose, aranaAttackPose]);
+  }, [activeEnemyAttackVisual?.vfxKey, targetEnemy?.uid, cryovainAttackPose, aranaAttackPose, aranaVerticalPhase]);
 
   const switchActiveEnemy = useCallback(
     (newIdx: number, isAiSwitch = false) => {
@@ -8708,7 +8803,8 @@ export const CombatView: React.FC = () => {
   }, [getHeroCardPool]);
 
   // Start or transition to a specific dungeon chamber (Endless Wave flow)
-  const startChamber = (floorNumber: number) => {
+  // `presetEnemies` sirve para retomar una sala tal y como estaba (reintento pagado).
+  const startChamber = (floorNumber: number, presetEnemies?: ChamberEnemyState[]) => {
     sound.playSFX('powerup');
     setCurrentFloor(floorNumber);
     if (floorNumber > bestFloor) {
@@ -8718,10 +8814,10 @@ export const CombatView: React.FC = () => {
       } catch {}
     }
 
-    const newEnemies = createChamberEnemies(floorNumber, selectedCombatMissionId);
+    const newEnemies = presetEnemies ?? createChamberEnemies(floorNumber, selectedCombatMissionId);
     activeEnemiesRef.current = newEnemies;
     setActiveEnemies(newEnemies);
-    setSelectedEnemyIdx(0);
+    setSelectedEnemyIdx(Math.max(0, newEnemies.findIndex((enemy) => enemy.hp > 0)));
 
     // Cleanse negative conditions on hero between chambers
     clearStatusShowcases();
@@ -8747,7 +8843,7 @@ export const CombatView: React.FC = () => {
   };
 
   // Reset or restart run from Sala 1 (banks accumulated rewards first)
-  const handleRestartBattle = () => {
+  const restartRun = () => {
     if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
     if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
     accumulatedLoot.items.forEach((item) => {
@@ -8775,6 +8871,52 @@ export const CombatView: React.FC = () => {
     runStartedAtRef.current = Date.now();
     startChamber(1);
   };
+
+  // Coste del reintento: 100 cristales el primero, 200 el segundo, 300 el tercero…
+  const RETRY_BASE_COST = 100;
+  const retryCost = RETRY_BASE_COST * (retryCount + 1);
+  const canAffordRetry = summonCrystals >= retryCost;
+
+  /**
+   * Reintento pagado: retoma la expedición en la misma sala, oleada y ronda donde cayó el héroe,
+   * con los enemigos tal y como estaban (misma vida y fases). Lo único que se reinicia es el
+   * estado del jugador: efectos, puntos de vida y mano de cartas.
+   */
+  const retryAtCurrentChamber = () => {
+    const enemiesSnapshot = activeEnemiesRef.current.map((enemy) => ({
+      ...enemy,
+      animation: 'idle' as const,
+      isHitShaking: false,
+      isTwitching: false,
+      isAshDissolving: false,
+    }));
+
+    heroHpRef.current = MAX_HERO_HP;
+    setHeroHp(MAX_HERO_HP);
+    setHeroConditions([]);
+    setAirPrisonHero(null);
+    airPrisonHeroRef.current = null;
+    // La mano se vacía antes: `startChamber` la rellena con cartas nuevas.
+    setHand([]);
+    startChamber(currentFloor, enemiesSnapshot);
+  };
+
+  /** Reintentar desde la derrota: cobra el reintento y retoma la sala donde cayó el jugador. */
+  const handleRetryBattle = () => {
+    if (!canAffordRetry) {
+      sound.playSFX('hurt');
+      return;
+    }
+    addCrystals(-retryCost);
+    setRetryCount((prev) => prev + 1);
+    sound.playSFX('click');
+    retryAtCurrentChamber();
+  };
+
+  // Cada expedición nueva vuelve a empezar en 100 cristales.
+  useEffect(() => {
+    setRetryCount(0);
+  }, [selectedCombatMissionId]);
 
   // Retreat from dungeon and bank all accumulated rewards safely
   const handleRetreatAndClaim = () => {
@@ -11412,90 +11554,108 @@ export const CombatView: React.FC = () => {
       return;
     }
 
-    // Acciones cinematográficas sin impacto directo de la Araña Acorazada: Chirrido Acorazado y Capullo de Ceniza
+    // Acciones cinematográficas sin impacto directo de la Araña Acorazada: cae girando desde el techo, desata Chirrido / Capullo y vuelve a trepar
     if (isArana && (aranaAction === 'chirrido' || aranaAction === 'ceniza')) {
       setAranaCameraMode('boss_focus');
-      setAranaAttackPose(aranaAction);
+      setAranaVerticalPhase('falling_flip_1');
+      sound.playSFX('arana_screech', { rate: 1.12 });
 
-      if (aranaAction === 'chirrido') {
-        setIsAranaRoaring(true);
+      const tFlip2 = window.setTimeout(() => {
+        setAranaVerticalPhase('falling_flip_2');
+      }, 175);
+
+      const tLandAction = window.setTimeout(() => {
+        setAranaVerticalPhase('grounded');
+        setAranaAttackPose(aranaAction);
         setScreenShake('heavy');
-        sound.playSFX('roar');
-        sound.playSFX('powerup');
+        sound.playSFX('arana_fall_slam');
 
-        const applyChirridoBuffs = (e: ChamberEnemyState): ChamberEnemyState => {
-          if (e.uid !== workingEnemy.uid) return e;
-          let conds = stackGachaEffect(e.conditions, 'def_buff', 5, 2, 2, 'Quitina Blindada').updatedEffects;
-          conds = stackGachaEffect(conds, 'atk_buff', 5, 2, 2, 'Furia Arácnida').updatedEffects;
-          return {
-            ...e,
-            animation: 'idle',
-            conditions: conds,
-            ultimateOrbs: Math.min(5, e.ultimateOrbs + 1),
+        if (aranaAction === 'chirrido') {
+          setIsAranaRoaring(true);
+          sound.playSFX('arana_screech');
+
+          const applyChirridoBuffs = (e: ChamberEnemyState): ChamberEnemyState => {
+            if (e.uid !== workingEnemy.uid) return e;
+            let conds = stackGachaEffect(e.conditions, 'def_buff', 5, 2, 2, 'Quitina Blindada').updatedEffects;
+            conds = stackGachaEffect(conds, 'atk_buff', 5, 2, 2, 'Furia Arácnida').updatedEffects;
+            return {
+              ...e,
+              animation: 'idle',
+              conditions: conds,
+              ultimateOrbs: Math.min(5, e.ultimateOrbs + 1),
+            };
           };
-        };
-        activeEnemiesRef.current = activeEnemiesRef.current.map(applyChirridoBuffs);
-        setActiveEnemies((prev) => prev.map(applyChirridoBuffs));
-      } else {
-        setScreenFlash('red');
-        sound.playSFX('laser');
-        sound.playSFX('powerup');
-        aranaTookDamageThisTurnRef.current = false;
+          activeEnemiesRef.current = activeEnemiesRef.current.map(applyChirridoBuffs);
+          setActiveEnemies((prev) => prev.map(applyChirridoBuffs));
+        } else {
+          setScreenFlash('red');
+          sound.playSFX('arana_breath');
+          aranaTookDamageThisTurnRef.current = false;
 
-        setActiveEnemyAttackVisual({
-          enemyConfigId: 'arana_acorazada_boss',
-          skillName: 'Capullo de Ceniza y Brasa',
-          dndDamageType: 'fire',
-          vfxType: 'crimson_claw',
-          themeColor: '#f97316',
-          isUlt: false,
-          isSpecial: false,
-          vfxKey: Date.now(),
-        });
+          setActiveEnemyAttackVisual({
+            enemyConfigId: 'arana_acorazada_boss',
+            skillName: 'Capullo de Ceniza y Brasa',
+            dndDamageType: 'fire',
+            vfxType: 'crimson_claw',
+            themeColor: '#f97316',
+            isUlt: false,
+            isSpecial: false,
+            vfxKey: Date.now(),
+          });
 
-        const applyAshShroud = (e: ChamberEnemyState): ChamberEnemyState => {
-          if (e.uid !== workingEnemy.uid) return e;
-          const conds = stackGachaEffect(
-            e.conditions,
-            'frost_mist',
-            5,
-            1,
-            4,
-            'Capullo de Ceniza'
-          ).updatedEffects;
-          return {
-            ...e,
-            animation: 'idle',
-            conditions: conds,
-            ultimateOrbs: Math.min(5, e.ultimateOrbs + 1),
+          const applyAshShroud = (e: ChamberEnemyState): ChamberEnemyState => {
+            if (e.uid !== workingEnemy.uid) return e;
+            const conds = stackGachaEffect(
+              e.conditions,
+              'frost_mist',
+              5,
+              1,
+              4,
+              'Capullo de Ceniza'
+            ).updatedEffects;
+            return {
+              ...e,
+              animation: 'idle',
+              conditions: conds,
+              ultimateOrbs: Math.min(5, e.ultimateOrbs + 1),
+            };
           };
-        };
-        activeEnemiesRef.current = activeEnemiesRef.current.map(applyAshShroud);
-        setActiveEnemies((prev) => prev.map(applyAshShroud));
+          activeEnemiesRef.current = activeEnemiesRef.current.map(applyAshShroud);
+          setActiveEnemies((prev) => prev.map(applyAshShroud));
 
-        queueStatusNotification({
-          icon: '🔥',
-          title: '¡Capullo de Ceniza Incandescente!',
-          detail: 'La Araña Acorazada envuelve la cámara en brasas y seda ígnea. ¡Atácala en tu turno o se curará!',
-          target: 'enemy',
-          isBuff: true,
-        });
-      }
+          queueStatusNotification({
+            icon: '🔥',
+            title: '¡Capullo de Ceniza Incandescente!',
+            detail: 'La Araña Acorazada envuelve la cámara en brasas y seda ígnea. ¡Atácala en tu turno o se curará!',
+            target: 'enemy',
+            isBuff: true,
+          });
+        }
+      }, 355);
 
-      const tClearFlash = window.setTimeout(() => setScreenFlash(null), 260);
-      const tEndZoom = window.setTimeout(() => {
-        setAranaCameraMode('idle');
+      const tStopShake = window.setTimeout(() => setScreenShake('none'), 720);
+      const tClearFlash = window.setTimeout(() => setScreenFlash(null), 620);
+
+      const tClimbStart = window.setTimeout(() => {
         setIsAranaRoaring(false);
         setAranaAttackPose('idle');
         if (aranaAction === 'ceniza') {
           setActiveEnemyAttackVisual(null);
         }
+        setAranaVerticalPhase('climbing');
+        sound.playSFX('arana_climb');
+      }, aranaAction === 'ceniza' ? 1320 : 1140);
+
+      const tEndZoom = window.setTimeout(() => {
+        setAranaVerticalPhase('perched');
+        setAranaCameraMode('idle');
         setActiveEnemies((prev) =>
           prev.map((e) => (e.uid === workingEnemy.uid ? { ...e, animation: 'idle' } : e))
         );
         finalizeEnemyPhase();
-      }, aranaAction === 'ceniza' ? 1320 : 1120);
-      aranaTimersRef.current.push(tClearFlash, tEndZoom);
+      }, aranaAction === 'ceniza' ? 1620 : 1440);
+
+      aranaTimersRef.current.push(tFlip2, tLandAction, tStopShake, tClearFlash, tClimbStart, tEndZoom);
       return;
     }
 
@@ -11809,24 +11969,44 @@ export const CombatView: React.FC = () => {
           aranaAttackKind === 'telarana' ? '#e7e5e4' : '#f97316';
         attackSfx =
           aranaAttackKind === 'aliento'
-            ? 'laser'
+            ? 'arana_breath'
             : aranaAttackKind === 'bola_fuego'
-            ? 'magic'
+            ? 'arana_fireball'
             : aranaAttackKind === 'telarana'
-            ? 'laser2'
-            : 'slash';
+            ? 'arana_web'
+            : 'arana_sweep';
         if (aranaAttackKind === 'barrido') {
+          setAranaVerticalPhase('descending');
           const tAranaShake = window.setTimeout(() => {
             setScreenShake('heavy');
-            const tStopShake = window.setTimeout(() => setScreenShake('none'), 240);
+            const tStopShake = window.setTimeout(() => setScreenShake('none'), 280);
             aranaTimersRef.current.push(tStopShake);
-          }, 260);
+          }, 230);
           aranaTimersRef.current.push(tAranaShake);
+        } else if (aranaAttackKind === 'telarana') {
+          setAranaVerticalPhase('perched');
+          const tWebShake = window.setTimeout(() => {
+            setScreenShake('medium');
+            const tStopShake = window.setTimeout(() => setScreenShake('none'), 220);
+            aranaTimersRef.current.push(tStopShake);
+          }, 180);
+          aranaTimersRef.current.push(tWebShake);
+        } else {
+          // bola_fuego y aliento: cae de las telarañas, da la vuelta en el aire y aterriza de frente antes de disparar
+          setAranaVerticalPhase('falling_flip_1');
+          sound.playSFX('arana_screech', { rate: 1.08 });
+          const tFlip2 = window.setTimeout(() => {
+            setAranaVerticalPhase('falling_flip_2');
+          }, 180);
+          const tLandGround = window.setTimeout(() => {
+            setAranaVerticalPhase('grounded');
+            setScreenShake('heavy');
+            sound.playSFX('arana_fall_slam');
+            const tStopShake = window.setTimeout(() => setScreenShake('none'), 260);
+            aranaTimersRef.current.push(tStopShake);
+          }, 355);
+          aranaTimersRef.current.push(tFlip2, tLandGround);
         }
-        const tAranaZoomBack = window.setTimeout(() => {
-          setAranaCameraMode('idle');
-        }, aranaAttackKind === 'aliento' ? 230 : 340);
-        aranaTimersRef.current.push(tAranaZoomBack);
         break;
       }
       case 'gladiador_onirico':
@@ -11886,7 +12066,9 @@ export const CombatView: React.FC = () => {
         attackSfx = 'attack';
     }
 
-    setActiveEnemyAttackVisual({
+    const aranaDelayedGroundFire =
+      isArana && (aranaAttackKind === 'bola_fuego' || aranaAttackKind === 'aliento');
+    const nextEnemyAttackVisual: ActiveEnemyAttackVfxState = {
       enemyConfigId: actingEnemy.configId,
       skillName: skill.name,
       dndDamageType: skill.dndDamageType || 'slashing',
@@ -11912,9 +12094,18 @@ export const CombatView: React.FC = () => {
         : !isUlt && !isDevoradorP2 && turnCounter % 2 === 0,
       hobgoblinPhase: actingEnemy.configId === 'hobgoblin_capataz' ? currentHobPhase : undefined,
       vfxKey: Date.now(),
-    });
+    };
 
-    sound.playSFX(attackSfx);
+    if (aranaDelayedGroundFire) {
+      const tFireLaunch = window.setTimeout(() => {
+        setActiveEnemyAttackVisual({ ...nextEnemyAttackVisual, vfxKey: Date.now() });
+        sound.playSFX(attackSfx);
+      }, 375);
+      aranaTimersRef.current.push(tFireLaunch);
+    } else {
+      setActiveEnemyAttackVisual(nextEnemyAttackVisual);
+      sound.playSFX(attackSfx);
+    }
 
     setTimeout(() => {
       // Return animation to idle
@@ -11924,7 +12115,18 @@ export const CombatView: React.FC = () => {
       }
       if (isArana) {
         setAranaAttackPose('idle');
-        setAranaCameraMode('idle');
+        if (aranaAttackKind === 'telarana') {
+          setAranaVerticalPhase('perched');
+          setAranaCameraMode('idle');
+        } else {
+          setAranaVerticalPhase('climbing');
+          sound.playSFX('arana_climb');
+          const tFinishClimb = window.setTimeout(() => {
+            setAranaVerticalPhase('perched');
+            setAranaCameraMode('idle');
+          }, 260);
+          aranaTimersRef.current.push(tFinishClimb);
+        }
       }
       setActiveEnemies((prev) =>
         prev.map((e) => (e.uid === actingEnemy.uid ? { ...e, animation: 'idle' } : e))
@@ -12432,7 +12634,15 @@ export const CombatView: React.FC = () => {
       }
 
       setTimeout(finalizeEnemyPhase, 400);
-    }, (isCryovain && cryoAttackKind === 'aliento') || (isArana && aranaAttackKind === 'aliento') ? 980 : 700);
+    }, isArana
+      ? aranaAttackKind === 'aliento'
+        ? 1240
+        : aranaAttackKind === 'bola_fuego'
+        ? 980
+        : 740
+      : isCryovain && cryoAttackKind === 'aliento'
+      ? 980
+      : 700);
   };
 
   // Fate/Grand Order (FGO): Execute Player Noble Phantasm (Cataclismo Astral / Stella Judicium)
@@ -15038,17 +15248,36 @@ export const CombatView: React.FC = () => {
           100% { transform: translate3d(-65px, 280px, 0px); opacity: 0; }
         }
 
-        /* ARAÑA ACORAZADA SINGLE-SPRITE ANIMATED COLOSSAL BOSS KEYFRAMES */
+        /* ARAÑA ACORAZADA: COLGADA EN TELARAÑAS SUPERIORES, DESCENSO TIPO CRYOVAIN Y CAÍDA CON VOLTEO */
+        @keyframes aranaCeilingHangSway {
+          0%, 100% { transform: rotate(-1.6deg) translateY(0px) scaleY(1); }
+          50% { transform: rotate(1.8deg) translateY(4px) scaleY(1.015); }
+        }
         @keyframes aranaBodyBreath {
           0%, 100% { transform: scaleY(1) scaleX(1) translateY(0px); }
           50% { transform: scaleY(0.982) scaleX(1.02) translateY(3px); }
         }
-        @keyframes aranaLegSweep {
-          0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
-          20% { transform: translate(16px, -14px) rotate(5deg) scale(1.03); }
-          48% { transform: translate(-34px, 8px) rotate(-6deg) scale(1.05); }
-          78% { transform: translate(-12px, 3px) rotate(-2deg) scale(1.02); }
+        @keyframes aranaDiveBarrido {
+          0% { transform: translate(10px, -16px) rotate(6deg) scale(0.98); }
+          32% { transform: translate(-26px, 8px) rotate(-6deg) scale(1.06); }
+          62% { transform: translate(-18px, 4px) rotate(-3deg) scale(1.04); }
           100% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+        }
+        @keyframes aranaCeilingSpit {
+          0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+          25% { transform: translate(14px, -6px) rotate(5deg) scale(1.03); }
+          55% { transform: translate(-20px, 12px) rotate(-6deg) scale(1.06); }
+          82% { transform: translate(-8px, 5px) rotate(-2deg) scale(1.02); }
+          100% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+        }
+        @keyframes aranaFlipTumble1 {
+          0% { transform: rotate(0deg) scale(0.96); }
+          100% { transform: rotate(-22deg) scale(1.04); }
+        }
+        @keyframes aranaFlipLand2 {
+          0% { transform: rotate(18deg) scale(1.04); }
+          70% { transform: rotate(-4deg) scale(1.02); }
+          100% { transform: rotate(0deg) scale(1); }
         }
         @keyframes aranaSingleSpitLunge {
           0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
@@ -15075,6 +15304,11 @@ export const CombatView: React.FC = () => {
           0%, 35% { transform: translateX(-50%) scale(0.35); opacity: 0; }
           58% { transform: translateX(-50%) scale(1.08); opacity: 0.95; }
           100% { transform: translateX(-50%) scale(1.55); opacity: 0; }
+        }
+        @keyframes aranaFloorSlamShockwave {
+          0% { transform: translateX(-50%) scale(0.3); opacity: 0.95; }
+          60% { transform: translateX(-50%) scale(1.12); opacity: 0.85; }
+          100% { transform: translateX(-50%) scale(1.65); opacity: 0; }
         }
         @keyframes aranaEmberRise {
           0% { transform: translate3d(0px, 20px, 0px) scale(0.9); opacity: 0; }
@@ -15276,13 +15510,25 @@ export const CombatView: React.FC = () => {
         <div
           className="absolute inset-0 z-0"
           style={{
-            transformOrigin: '58% 52%',
+            transformOrigin:
+              targetEnemy?.configId === 'arana_acorazada_boss'
+                ? aranaVerticalPhase === 'perched' || aranaVerticalPhase === 'climbing'
+                  ? '58% 12%'
+                  : aranaVerticalPhase === 'descending' || aranaVerticalPhase === 'falling_flip_1'
+                  ? '56% 36%'
+                  : '54% 64%'
+                : '58% 52%',
             transform:
-              (targetEnemy?.configId === 'cryovain_boss' && cryovainCameraMode === 'boss_focus') ||
-              (targetEnemy?.configId === 'arana_acorazada_boss' && aranaCameraMode === 'boss_focus')
+              targetEnemy?.configId === 'arana_acorazada_boss' && aranaCameraMode === 'boss_focus'
+                ? aranaVerticalPhase === 'perched' || aranaVerticalPhase === 'climbing'
+                  ? 'scale(1.30) translate3d(-10px, 12px, 0px)'
+                  : aranaVerticalPhase === 'descending' || aranaVerticalPhase === 'falling_flip_1'
+                  ? 'scale(1.28) translate3d(-12px, 0px, 0px)'
+                  : 'scale(1.26) translate3d(-10px, -6px, 0px)'
+                : targetEnemy?.configId === 'cryovain_boss' && cryovainCameraMode === 'boss_focus'
                 ? 'scale(1.24) translate3d(-12px, 0px, 0px)'
                 : 'scale(1) translate3d(0px, 0px, 0px)',
-            transition: 'transform 540ms cubic-bezier(0.22, 1, 0.36, 1)',
+            transition: 'transform 480ms cubic-bezier(0.22, 1, 0.36, 1)',
           }}
         >
         {/* Línea limpia de la Velada Encantadora de Roxanne: une al héroe con el enemigo encantado */}
@@ -15588,9 +15834,7 @@ export const CombatView: React.FC = () => {
                 ? 'translateY(0px)'
                 : edacornCounter?.active
                 ? undefined // en guardia de contraataque no avanza ni cambia de pose
-                : heroAnimation === 'lunge'
-                ? 'translateX(35px)' // avanza al atacar, sin zoom
-                : undefined,
+                : undefined, // el paso hacia el enemigo lo anima `heroAttackStep`, que arranca en 0
           }}
           className={`absolute ${
             targetEnemy?.configId === 'cryovain_boss' || targetEnemy?.configId === 'arana_acorazada_boss'
@@ -15602,6 +15846,10 @@ export const CombatView: React.FC = () => {
               : heroTwitching
               ? 'animate-[pokemonParalysisTwitch_0.8s_ease-in-out] filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]'
               : 'filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]'
+          } ${
+            heroAnimation === 'lunge' && !isHeroHitShaking && !isSmurphAirborne && !isSmurphLandingAction
+              ? 'animate-[heroAttackStep_0.5s_cubic-bezier(0.22,0.9,0.3,1)_both]'
+              : ''
           }`}
         >
           {/* Authentic Shadow sprite anchored in the exact middle of feet contact plane */}
@@ -15668,6 +15916,8 @@ export const CombatView: React.FC = () => {
                 scale: getHeroSpriteScale(),
                 transformOrigin: 'bottom center',
                 ...getBreathVars(getHeroSpriteUrl()),
+                // Acento del ataque: el héroe empuja hacia el enemigo (que está a su derecha).
+                ...({ '--atk-lunge': '5px' } as React.CSSProperties),
                 filter:
                   !isHeroHitShaking && !isHeroAshDissolving
                     ? heroStatusShaderFilter
@@ -15694,10 +15944,12 @@ export const CombatView: React.FC = () => {
                   ? 'filter drop-shadow-[0_0_35px_rgba(56,189,248,1)] brightness-125'
                   : ''
               } ${
-                (heroAnimation === 'idle' || heroAnimation === 'lunge') &&
-                !isHeroHitShaking &&
-                !isHeroAshDissolving
+                heroAnimation === 'idle' && !isHeroHitShaking && !isHeroAshDissolving
                   ? 'combat-sprite-breath'
+                  : ''
+              } ${
+                heroAnimation === 'lunge' && !isHeroHitShaking && !isHeroAshDissolving
+                  ? 'combat-sprite-attack'
                   : ''
               }`}
             />
@@ -15955,7 +16207,11 @@ export const CombatView: React.FC = () => {
           )}
 
         {/* ENEMY ATTACK VFX OVERLAY */}
-        <EnemyAttackVfxOverlay activeAttack={activeEnemyAttackVisual} enemyFrame={enemyVfxFrame} />
+        <EnemyAttackVfxOverlay
+          activeAttack={activeEnemyAttackVisual}
+          enemyFrame={enemyVfxFrame}
+          isSmallHeroScale={isAranaBossCombat}
+        />
         {/* SINGLE ACTIVE ENEMY IN ARENA (1 vs 1 Pokemon Style, Stably Mounted) */}
         {targetEnemy && (
           <div
@@ -15965,28 +16221,121 @@ export const CombatView: React.FC = () => {
                 : 'absolute inset-0 overflow-visible pointer-events-none z-20'
             }
           >
+          {/* Hilos de telaraña anclados al margen superior de la cámara para la Araña Acorazada */}
+          {targetEnemy.configId === 'arana_acorazada_boss' &&
+            !targetEnemy.isAshDissolving &&
+            targetEnemy.hp > 0 &&
+            (aranaVerticalPhase === 'perched' ||
+              aranaVerticalPhase === 'descending' ||
+              aranaVerticalPhase === 'climbing') && (
+              <svg
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 w-full h-[55%] pointer-events-none z-[12] opacity-70"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              >
+                <line x1="48" y1="0" x2="54" y2={aranaVerticalPhase === 'descending' ? '44' : '16'} stroke="#e7e5e4" strokeWidth="0.35" />
+                <line x1="58" y1="0" x2="58" y2={aranaVerticalPhase === 'descending' ? '48' : '18'} stroke="#f5f5f4" strokeWidth="0.45" />
+                <line x1="68" y1="0" x2="62" y2={aranaVerticalPhase === 'descending' ? '44' : '16'} stroke="#d6d3d1" strokeWidth="0.35" />
+              </svg>
+            )}
+
+          {/* Sombra proyectada en el suelo de piedra bajo la Araña Acorazada (crece al descender o caer) */}
+          {targetEnemy.configId === 'arana_acorazada_boss' && (
+            <>
+              <img
+                src="/assets/aistudio/sombra_6ce1cba3.webp"
+                alt="Sombra"
+                data-enemy-shadow=""
+                style={{
+                  width:
+                    aranaVerticalPhase === 'grounded'
+                      ? 312
+                      : aranaVerticalPhase === 'descending' || aranaVerticalPhase === 'falling_flip_2'
+                      ? 268
+                      : 215,
+                  height: aranaVerticalPhase === 'grounded' ? 38 : 26,
+                  bottom: '3.5%',
+                  opacity:
+                    targetEnemy.isAshDissolving || targetEnemy.hp <= 0
+                      ? 0
+                      : aranaVerticalPhase === 'grounded'
+                      ? 0.68
+                      : aranaVerticalPhase === 'descending' || aranaVerticalPhase === 'falling_flip_2'
+                      ? 0.48
+                      : 0.28,
+                }}
+                className="absolute left-[56%] -translate-x-1/2 object-fill pointer-events-none z-0 transition-all duration-300"
+              />
+              {/* Onda sísmica en el suelo al estrellarse o barrer */}
+              {(aranaVerticalPhase === 'grounded' || aranaVerticalPhase === 'descending') &&
+                !targetEnemy.isAshDissolving && (
+                  <div
+                    key={`arana-floor-shockwave-${aranaVerticalPhase}-${aranaAttackPose}`}
+                    aria-hidden="true"
+                    className="absolute left-[54%] bottom-[3%] w-[310px] h-[48px] rounded-full border-4 border-orange-300/85 bg-orange-500/20 shadow-[0_0_26px_rgba(249,115,22,0.8)] pointer-events-none z-[13] animate-[aranaFloorSlamShockwave_0.65s_ease-out_forwards]"
+                  />
+                )}
+            </>
+          )}
+
           <div
             key={`active-enemy-${targetEnemy.uid}`}
             data-enemy-sprite={targetEnemy.uid}
             style={{
-              transform:
-                targetEnemy.animation === 'strike'
-                  ? targetEnemy.configId === 'bulezau' && bulezauAttackPose === 'toque'
-                    ? 'translateX(-118px)'
-                    : targetEnemy.configId === 'cryovain_boss' || targetEnemy.configId === 'arana_acorazada_boss'
-                    ? 'translateX(-4px)'
-                    : 'translateX(-40px)'
-                  : enemySwitchState === 'exit'
-                  ? 'translateX(120px)'
-                  : undefined,
+              ...(targetEnemy.configId === 'arana_acorazada_boss'
+                ? {
+                    top:
+                      aranaVerticalPhase === 'perched'
+                        ? '-2%'
+                        : aranaVerticalPhase === 'climbing'
+                        ? '2%'
+                        : aranaVerticalPhase === 'falling_flip_1'
+                        ? 'calc(48% - 278px)'
+                        : aranaVerticalPhase === 'falling_flip_2'
+                        ? 'calc(84% - 278px)'
+                        : aranaVerticalPhase === 'descending'
+                        ? 'calc(89% - 278px)'
+                        : 'calc(96% - 278px)',
+                    transform:
+                      aranaVerticalPhase === 'descending'
+                        ? 'translateX(-46px)'
+                        : aranaVerticalPhase === 'falling_flip_1'
+                        ? 'translateX(-14px)'
+                        : aranaVerticalPhase === 'falling_flip_2'
+                        ? 'translateX(-22px)'
+                        : aranaVerticalPhase === 'grounded'
+                        ? 'translateX(-18px)'
+                        : undefined,
+                    transition:
+                      aranaVerticalPhase === 'falling_flip_1' || aranaVerticalPhase === 'falling_flip_2'
+                        ? 'top 175ms cubic-bezier(0.55, 0.06, 0.85, 0.45), transform 175ms ease-in'
+                        : aranaVerticalPhase === 'descending'
+                        ? 'top 230ms cubic-bezier(0.22, 1, 0.36, 1), transform 230ms cubic-bezier(0.22, 1, 0.36, 1)'
+                        : aranaVerticalPhase === 'grounded'
+                        ? 'top 180ms cubic-bezier(0.22, 1, 0.36, 1), transform 180ms ease-out'
+                        : 'top 300ms cubic-bezier(0.22, 1, 0.36, 1), transform 300ms ease-out',
+                  }
+                : {
+                    transform:
+                      targetEnemy.animation === 'strike'
+                        ? targetEnemy.configId === 'bulezau' && bulezauAttackPose === 'toque'
+                          ? 'translateX(-118px)'
+                          : targetEnemy.configId === 'cryovain_boss'
+                          ? 'translateX(-4px)'
+                          : 'translateX(-40px)'
+                        : enemySwitchState === 'exit'
+                        ? 'translateX(120px)'
+                        : undefined,
+                  }),
             }}
             className={`absolute ${
               targetEnemy.configId === 'cryovain_boss'
-                ? 'left-[calc(56%-184px)] bottom-[2%] z-[14]'
+                ? 'left-[calc(56%-184px)] bottom-[2%] z-[14] transition-all duration-300'
                 : targetEnemy.configId === 'arana_acorazada_boss'
-                ? 'left-[calc(56%-178px)] bottom-[3%] z-[14]'
-                : 'right-[5%] bottom-[21%] z-20'
-            } ${targetEnemy.scaleClass} flex items-end justify-center transition-all duration-300 ${
+                ? 'left-[calc(58%-164px)] z-[14]'
+                : 'right-[5%] bottom-[21%] z-20 transition-all duration-300'
+            } ${targetEnemy.scaleClass} flex items-end justify-center ${
               targetEnemy.hp <= 0 &&
               !targetEnemy.isAshDissolving &&
               !(
@@ -16018,69 +16367,70 @@ export const CombatView: React.FC = () => {
             }`}
           >
             {/* Authentic Shadow anchored in the exact middle of enemy feet / claws contact plane */}
-            <img
-              src="/assets/aistudio/sombra_6ce1cba3.webp"
-              alt="Sombra"
-              data-enemy-shadow=""
-              style={{
-                width: targetEnemy.configId === 'cryovain_boss' ? 320 : targetEnemy.configId === 'arana_acorazada_boss' ? 310 : 140,
-                height: targetEnemy.configId === 'cryovain_boss' || targetEnemy.configId === 'arana_acorazada_boss' ? 38 : 18,
-                bottom: targetEnemy.configId === 'cryovain_boss' || targetEnemy.configId === 'arana_acorazada_boss' ? '6%' : -9,
-              }}
-              className={`absolute left-1/2 transform -translate-x-1/2 object-fill pointer-events-none z-0 transition-opacity duration-1000 ${
-                targetEnemy.isAshDissolving ||
-                (targetEnemy.hp <= 0 &&
-                  !(
-                    targetEnemy.configId.includes('devorador') &&
-                    (targetEnemy.hasPhaseTwo || isDevoradorRoaring || isDevoradorRefilling)
-                  ))
-                  ? 'opacity-0'
-                  : targetEnemy.configId === 'elemental_aire'
-                  ? 'opacity-50 animate-[airElementalShadowPulse_3.4s_ease-in-out_infinite]'
-                  : 'opacity-50'
-              }`}
-            />
+            {targetEnemy.configId !== 'arana_acorazada_boss' && (
+              <img
+                src="/assets/aistudio/sombra_6ce1cba3.webp"
+                alt="Sombra"
+                data-enemy-shadow=""
+                style={{
+                  width: targetEnemy.configId === 'cryovain_boss' ? 320 : 140,
+                  height: targetEnemy.configId === 'cryovain_boss' ? 38 : 18,
+                  bottom: targetEnemy.configId === 'cryovain_boss' ? '6%' : -9,
+                }}
+                className={`absolute left-1/2 transform -translate-x-1/2 object-fill pointer-events-none z-0 transition-opacity duration-1000 ${
+                  targetEnemy.isAshDissolving ||
+                  (targetEnemy.hp <= 0 &&
+                    !(
+                      targetEnemy.configId.includes('devorador') &&
+                      (targetEnemy.hasPhaseTwo || isDevoradorRoaring || isDevoradorRefilling)
+                    ))
+                    ? 'opacity-0'
+                    : targetEnemy.configId === 'elemental_aire'
+                    ? 'opacity-50 animate-[airElementalShadowPulse_3.4s_ease-in-out_infinite]'
+                    : 'opacity-50'
+                }`}
+              />
+            )}
 
             {/* Enemy Sprite (Transparent Background, Stably Mounted) */}
             <div className="relative w-full h-full flex items-end justify-center">
               {targetEnemy.configId === 'arana_acorazada_boss' ? (
-                <div className="relative w-full h-full flex items-end justify-center overflow-visible">
-                  <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={356} height={440} />
+                <div className="relative w-full h-full flex items-start justify-center overflow-visible">
+                  <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={328} height={278} />
 
-                  {/* Aura incandescente bajo la Araña Acorazada */}
+                  {/* Aura incandescente alrededor de la Araña Acorazada */}
                   {!targetEnemy.isAshDissolving && targetEnemy.hp > 0 && (
-                    <div className="absolute -bottom-1 left-[48%] -translate-x-1/2 w-[300px] h-[44px] rounded-full bg-orange-500/24 blur-md pointer-events-none z-[1]" />
+                    <div
+                      className={`absolute left-[48%] -translate-x-1/2 w-[260px] h-[44px] rounded-full bg-orange-500/24 blur-md pointer-events-none z-[1] ${
+                        aranaVerticalPhase === 'grounded' ? '-bottom-1' : 'top-[42%]'
+                      }`}
+                    />
                   )}
-
-                  {/* Onda de choque de hierro y brasas al ejecutar Barrido de Piernas */}
-                  {targetEnemy.animation === 'strike' &&
-                    aranaAttackPose === 'barrido' &&
-                    !targetEnemy.isAshDissolving && (
-                      <div
-                        aria-hidden="true"
-                        className="absolute left-[46%] bottom-[3%] w-[320px] h-[52px] rounded-full border-4 border-orange-300/90 bg-orange-500/25 shadow-[0_0_28px_rgba(249,115,22,0.85)] pointer-events-none z-[14] animate-[aranaStompShockwave_0.68s_ease-out_forwards]"
-                      />
-                    )}
 
                   {/* Ondas expansivas al lanzar Chirrido Acorazado */}
                   {isAranaRoaring && !targetEnemy.isAshDissolving && (
                     <div className="absolute inset-0 pointer-events-none z-[15] flex items-center justify-center">
-                      <div className="w-[260px] h-[260px] rounded-full border-4 border-orange-400/85 bg-orange-500/15 shadow-[0_0_40px_rgba(249,115,22,0.85)] animate-[devoradorRoarWave_0.55s_ease-out_infinite]" />
+                      <div className="w-[240px] h-[240px] rounded-full border-4 border-orange-400/85 bg-orange-500/15 shadow-[0_0_40px_rgba(249,115,22,0.85)] animate-[devoradorRoarWave_0.55s_ease-out_infinite]" />
                       <div
-                        className="absolute w-[210px] h-[210px] rounded-full border-2 border-amber-200/80 animate-[devoradorRoarWave_0.55s_ease-out_infinite]"
+                        className="absolute w-[190px] h-[190px] rounded-full border-2 border-amber-200/80 animate-[devoradorRoarWave_0.55s_ease-out_infinite]"
                         style={{ animationDelay: '0.22s' }}
                       />
                     </div>
                   )}
 
-                  {/* Sprite único animado de la Araña Acorazada (cambia de pose según ataque, daño o reposo) */}
+                  {/* Sprite animado de la Araña Acorazada (colgada arriba, descenso tipo Cryovain y giro al caer) */}
                   <img
                     ref={enemySpriteImgRef}
                     data-enemy-main=""
                     key={`enemy-arana-single-${targetEnemy.uid}`}
                     src={getEnemySpriteUrl(targetEnemy)}
                     style={{
-                      transformOrigin: 'bottom center',
+                      transformOrigin:
+                        aranaVerticalPhase === 'falling_flip_1' || aranaVerticalPhase === 'falling_flip_2'
+                          ? 'center center'
+                          : aranaVerticalPhase === 'grounded'
+                          ? 'bottom center'
+                          : 'top center',
                       ...(!isEnemyHitShaking && !targetEnemy.isAshDissolving
                         ? enemyStatusShaderFilter
                           ? { filter: enemyStatusShaderFilter }
@@ -16091,23 +16441,30 @@ export const CombatView: React.FC = () => {
                     className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-[10] ${
                       targetEnemy.isAshDissolving
                         ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                        : aranaVerticalPhase === 'falling_flip_1'
+                        ? 'animate-[aranaFlipTumble1_0.18s_ease-in_forwards] filter drop-shadow-[0_0_24px_rgba(249,115,22,0.85)]'
+                        : aranaVerticalPhase === 'falling_flip_2'
+                        ? 'animate-[aranaFlipLand2_0.18s_ease-out_forwards] filter drop-shadow-[0_0_26px_rgba(249,115,22,0.85)]'
                         : isEnemyHitShaking
                         ? getDndImpactAnimationClass(enemyImpactDamageType)
                         : targetEnemy.animation === 'strike' && aranaAttackPose === 'barrido'
-                        ? 'animate-[aranaLegSweep_0.66s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_28px_rgba(249,115,22,0.82)]'
-                        : targetEnemy.animation === 'strike' &&
-                          (aranaAttackPose === 'telarana' || aranaAttackPose === 'bola_fuego')
+                        ? 'animate-[aranaDiveBarrido_0.66s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_28px_rgba(249,115,22,0.82)]'
+                        : targetEnemy.animation === 'strike' && aranaAttackPose === 'telarana'
+                        ? 'animate-[aranaCeilingSpit_0.66s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_26px_rgba(245,245,244,0.85)]'
+                        : targetEnemy.animation === 'strike' && aranaAttackPose === 'bola_fuego'
                         ? 'animate-[aranaSingleSpitLunge_0.68s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_28px_rgba(249,115,22,0.85)]'
                         : (targetEnemy.animation === 'strike' && aranaAttackPose === 'aliento') ||
                           aranaAttackPose === 'ceniza'
                         ? 'animate-[aranaSingleBreathAttack_1.04s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_30px_rgba(249,115,22,0.92)]'
                         : aranaAttackPose === 'chirrido' || isAranaRoaring
                         ? 'animate-[aranaSingleRoar_1.06s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_30px_rgba(249,115,22,0.92)]'
-                        : 'animate-[aranaBodyBreath_3.6s_ease-in-out_infinite] filter drop-shadow-[0_0_20px_rgba(249,115,22,0.42)]'
+                        : aranaVerticalPhase === 'grounded'
+                        ? 'animate-[aranaBodyBreath_3.6s_ease-in-out_infinite] filter drop-shadow-[0_0_20px_rgba(249,115,22,0.42)]'
+                        : 'animate-[aranaCeilingHangSway_4.2s_ease-in-out_infinite] filter drop-shadow-[0_0_18px_rgba(249,115,22,0.42)]'
                     }`}
                   />
 
-                  {/* Capullo de ceniza envolviendo las patas de la Araña Acorazada */}
+                  {/* Capullo de ceniza envolviendo a la Araña Acorazada */}
                   {!targetEnemy.isAshDissolving &&
                     targetEnemy.hp > 0 &&
                     targetEnemy.conditions.some((c) => c.type === 'frost_mist') && (
@@ -16128,7 +16485,7 @@ export const CombatView: React.FC = () => {
                     durationMs={activeEnemyStatusShowcase?.durationMs ?? 450}
                     spriteUrl={getEnemySpriteUrl(targetEnemy)}
                     spriteImgRef={enemySpriteImgRef}
-                    scaleKey={`${targetEnemy.uid}-${aranaAttackPose}-${targetEnemy.animation}-${isEnemyHitShaking}`}
+                    scaleKey={`${targetEnemy.uid}-${aranaAttackPose}-${aranaVerticalPhase}-${targetEnemy.animation}-${isEnemyHitShaking}`}
                     disabled={targetEnemy.isAshDissolving || targetEnemy.hp <= 0}
                   />
                 </div>
@@ -16484,6 +16841,8 @@ export const CombatView: React.FC = () => {
                             getEnemySpriteUrl(targetEnemy),
                             targetEnemy.isBoss || targetEnemy.isSemiboss ? 1.5 : 1,
                           ),
+                          // Acento del ataque: el enemigo empuja hacia el héroe (que está a su izquierda).
+                          ...({ '--atk-lunge': '-6px' } as React.CSSProperties),
                           filter:
                             !isEnemyHitShaking && !targetEnemy.isAshDissolving
                               ? enemyStatusShaderFilter
@@ -16515,8 +16874,14 @@ export const CombatView: React.FC = () => {
                         } ${
                           !targetEnemy.isAshDissolving &&
                           !isEnemyHitShaking &&
-                          (targetEnemy.animation === 'idle' || targetEnemy.animation === 'strike')
+                          targetEnemy.animation === 'idle'
                             ? 'combat-sprite-breath'
+                            : ''
+                        } ${
+                          !targetEnemy.isAshDissolving &&
+                          !isEnemyHitShaking &&
+                          targetEnemy.animation === 'strike'
+                            ? 'combat-sprite-attack'
                             : ''
                         }`}
                       />
@@ -16753,8 +17118,20 @@ export const CombatView: React.FC = () => {
                   : item.slotIndex === 2
                   ? '46%'
                   : '72%'
+                : isAranaBossCombat
+                ? '15%'
                 : '26%',
-              top: item.isEnemy ? (item.tier === 3 ? '30%' : '35%') : '39%',
+              top: item.isEnemy
+                ? targetEnemy?.configId === 'arana_acorazada_boss'
+                  ? aranaVerticalPhase === 'perched' || aranaVerticalPhase === 'climbing'
+                    ? '18%'
+                    : '46%'
+                  : item.tier === 3
+                  ? '30%'
+                  : '35%'
+                : isAranaBossCombat
+                ? '62%'
+                : '39%',
             }}
             className={`absolute pointer-events-none z-50 transform -translate-x-1/2 font-black tracking-wider animate-bounce flex flex-col items-center gap-0.5 ${
               item.isHeal
@@ -17600,7 +17977,7 @@ export const CombatView: React.FC = () => {
               </button>
 
               <button
-                onClick={handleRestartBattle}
+                onClick={restartRun}
                 className="w-full py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs rounded-xl cursor-pointer transition-colors"
               >
                 Reiniciar desde Sala 1
@@ -17756,11 +18133,28 @@ export const CombatView: React.FC = () => {
                 {selectedCombatMissionId === 'evento_coliseo_suenos' ? 'Volver al Plano de los Sueños' : selectedCombatMissionId === 'm22_cryovain_final' || selectedCombatMissionId === 't2_c1_m4_arana_acorazada' || selectedCombatMissionId === 't2_c1_m3_custodios_anillo' || selectedCombatMissionId === 't2_c1_m2_jauria_salas' || selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos' || selectedCombatMissionId === 'm20_tercera_camara_bulezau' || selectedCombatMissionId === 'm19_segunda_camara_aire' || selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm12_recibidor_mansion_ferton' || selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' || selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm10c_callejon_hoggoblins' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
               </button>
 
+              <div className="w-full flex items-center justify-between gap-2 rounded-xl border border-stone-700/70 bg-black/50 px-3 py-1.5 text-[10px] font-mono">
+                <span className="text-stone-300">
+                  Reintento {retryCount + 1} ·{' '}
+                  <b className="text-cyan-300">💎 {retryCost.toLocaleString('es-ES')}</b>
+                </span>
+                <span className={canAffordRetry ? 'text-stone-400' : 'text-red-400 font-bold'}>
+                  {canAffordRetry
+                    ? `Tienes ${summonCrystals.toLocaleString('es-ES')}`
+                    : `Te faltan ${(retryCost - summonCrystals).toLocaleString('es-ES')}`}
+                </span>
+              </div>
+
               <button
-                onClick={handleRestartBattle}
-                className="w-full py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs rounded-xl cursor-pointer"
+                onClick={handleRetryBattle}
+                disabled={!canAffordRetry}
+                className={`w-full py-2 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors ${
+                  canAffordRetry
+                    ? 'bg-stone-800 hover:bg-stone-700 text-stone-200 cursor-pointer'
+                    : 'bg-stone-900 text-stone-500 border border-stone-800 cursor-not-allowed'
+                }`}
               >
-                {selectedCombatMissionId === 'm22_cryovain_final'
+                <span className="truncate">{selectedCombatMissionId === 'm22_cryovain_final'
                   ? 'Reintentar Jefe Final: Cryovain'
                   : selectedCombatMissionId === 't2_c1_m4_arana_acorazada'
                   ? 'Reintentar Jefe: Araña Acorazada'
@@ -17790,7 +18184,10 @@ export const CombatView: React.FC = () => {
                   ? 'Reintentar Combate de Ferton (Oleada 1)'
                   : selectedCombatMissionId === 'm2_robo'
                   ? 'Reintentar Asalto (Oleada 1)'
-                  : 'Reintentar desde Sala 1'}
+                  : 'Reintentar desde Sala 1'}</span>
+                <span className={`shrink-0 ${canAffordRetry ? 'text-cyan-300' : 'text-stone-600'}`}>
+                  💎 {retryCost.toLocaleString('es-ES')}
+                </span>
               </button>
             </div>
           </div>

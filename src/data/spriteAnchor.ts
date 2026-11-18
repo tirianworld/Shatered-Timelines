@@ -383,4 +383,10 @@ export const SPRITE_ANCHOR: Record<string, SpriteAnchor> = {
   '/assets/combat/cryovain_full_mordisco.webp': { c: 0.4589, b: 0.9949, hx: 0.2454, hy: 0.42 },
   '/assets/combat/cryovain_full_aliento.webp': { c: 0.4892, b: 0.9949, hx: 0.2277, hy: 0.22 },
   '/assets/combat/cryovain_full_rugido.webp': { c: 0.4952, b: 0.9949, hx: 0.2527, hy: 0.14 },
+  '/assets/combat/arana_acorazada_colgada_idle.webp': { c: 0.532, b: 1, hx: 0.30, hy: 0.65 },
+  '/assets/combat/arana_acorazada_colgada_hurt.webp': { c: 0.532, b: 1, hx: 0.30, hy: 0.65 },
+  '/assets/combat/arana_acorazada_colgada_telarana.webp': { c: 0.512, b: 1, hx: 0.30, hy: 0.65 },
+  '/assets/combat/arana_acorazada_descenso_barrido.webp': { c: 0.5018, b: 0.97, hx: 0.42, hy: 0.56 },
+  '/assets/combat/arana_acorazada_caida_volteo_1.webp': { c: 0.5216, b: 0.97, hx: 0.36, hy: 0.68 },
+  '/assets/combat/arana_acorazada_caida_volteo_2.webp': { c: 0.5644, b: 0.99, hx: 0.32, hy: 0.48 },
 };

@@ -20,6 +20,58 @@
     calc(var(--breath-dur, 3.4s) * -0.37) infinite;
 }
 
+/* Acento de las poses de ataque: en vez de respirar, el sprite carga, se estira hacia el rival
+   (--atk-lunge: positivo si ataca hacia la derecha, negativo si hacia la izquierda) y se asienta.
+   Amplitudes mínimas (≤6 px y ~2,5 % de escala) para que acompañe al dibujo sin taparlo. */
+@keyframes combatSpriteAttack {
+  0% {
+    transform: translate3d(0, 0, 0) scaleY(1) scaleX(1);
+  }
+  16% {
+    transform: translate3d(calc(var(--atk-lunge, 5px) * 0.45), 2px, 0) scaleY(1.028) scaleX(0.984);
+  }
+  34% {
+    transform: translate3d(var(--atk-lunge, 5px), -2px, 0) scaleY(0.976) scaleX(1.024);
+  }
+  54% {
+    transform: translate3d(calc(var(--atk-lunge, 5px) * 0.34), 0, 0) scaleY(1.014) scaleX(0.992);
+  }
+  74% {
+    transform: translate3d(calc(var(--atk-lunge, 5px) * 0.1), 0, 0) scaleY(0.996) scaleX(1.003);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scaleY(1) scaleX(1);
+  }
+}
+
+.combat-sprite-attack {
+  transform-origin: bottom center;
+  animation: combatSpriteAttack var(--atk-dur, 0.54s) cubic-bezier(0.22, 0.9, 0.3, 1) both;
+}
+
+/* Paso del héroe al atacar: arranca en 0 (la pose aparece donde está el idle, sin salto) y avanza
+   hacia el enemigo, que siempre está a su derecha, para volver a su sitio. */
+@keyframes heroAttackStep {
+  0% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(34px);
+  }
+  64% {
+    transform: translateX(29px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .combat-sprite-attack {
+    animation: none;
+  }
+}
+
 /* ===== Ambiente de los escenarios de combate (nieve, lluvia, niebla, polvo, viento, brasas) ===== */
 .stage-fx__p {
   position: absolute;

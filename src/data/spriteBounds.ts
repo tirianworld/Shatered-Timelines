@@ -362,4 +362,10 @@ export const SPRITE_BOUNDS: Record<string, SpriteBounds> = {
   '/assets/combat/cryovain_full_mordisco.webp': { cx: 0.4589, w: 0.9816, headTopY: 0.0691, bodyBotY: 0.9949, contour: [[0.02,0.44],[0.26,0.08],[0.97,0.08],[0.96,0.76],[0.72,0.96],[0.06,0.94],[0.04,0.6]] },
   '/assets/combat/cryovain_full_aliento.webp': { cx: 0.4892, w: 0.9684, headTopY: 0.0081, bodyBotY: 0.9949, contour: [[0.04,0.26],[0.32,0.02],[0.97,0.06],[0.96,0.74],[0.72,0.96],[0.06,0.94],[0.05,0.52]] },
   '/assets/combat/cryovain_full_rugido.webp': { cx: 0.4952, w: 0.9663, headTopY: 0.0081, bodyBotY: 0.9949, contour: [[0.06,0.16],[0.32,0.02],[0.97,0.06],[0.96,0.74],[0.72,0.96],[0.06,0.94],[0.06,0.48]] },
+  '/assets/combat/arana_acorazada_colgada_idle.webp': { cx: 0.532, w: 0.999, headTopY: 0.0, bodyBotY: 0.999, contour: [[0.02,0.02],[0.98,0.02],[0.98,0.68],[0.84,0.96],[0.06,0.92],[0.02,0.44]] },
+  '/assets/combat/arana_acorazada_colgada_hurt.webp': { cx: 0.532, w: 0.999, headTopY: 0.0, bodyBotY: 0.999, contour: [[0.02,0.02],[0.98,0.02],[0.98,0.68],[0.84,0.96],[0.06,0.92],[0.02,0.44]] },
+  '/assets/combat/arana_acorazada_colgada_telarana.webp': { cx: 0.512, w: 0.999, headTopY: 0.0, bodyBotY: 0.999, contour: [[0.02,0.02],[0.98,0.02],[0.96,0.78],[0.54,0.88],[0.04,0.98],[0.02,0.42]] },
+  '/assets/combat/arana_acorazada_descenso_barrido.webp': { cx: 0.4995, w: 0.999, headTopY: 0.0, bodyBotY: 0.999, contour: [[0.48,0.04],[0.96,0.04],[0.88,0.72],[0.36,0.98],[0.04,0.72],[0.12,0.32]] },
+  '/assets/combat/arana_acorazada_caida_volteo_1.webp': { cx: 0.4994, w: 0.9988, headTopY: 0.0, bodyBotY: 0.999, contour: [[0.32,0.02],[0.84,0.14],[0.94,0.74],[0.46,0.98],[0.06,0.74],[0.14,0.34]] },
+  '/assets/combat/arana_acorazada_caida_volteo_2.webp': { cx: 0.499, w: 0.998, headTopY: 0.0, bodyBotY: 0.9988, contour: [[0.14,0.22],[0.68,0.04],[0.98,0.44],[0.92,0.92],[0.44,0.98],[0.04,0.76]] },
 };

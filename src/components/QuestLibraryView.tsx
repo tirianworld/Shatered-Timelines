@@ -118,15 +118,8 @@ export const QuestLibraryView: React.FC<QuestLibraryViewProps> = ({ onSelectTome
 
           return (
             <section key={shelfNum} aria-label={meta.label} className="relative">
-              {/* Shelf Label Bar (clean unboxed cartoony wood text) */}
-              <div className="flex items-center justify-between px-2 mb-1.5 text-[11px]">
-                <span className="font-serif font-black text-amber-100 tracking-wide drop-shadow-[0_2px_2px_rgba(0,0,0,0.95)]">
-                  {meta.label}
-                </span>
-                <span className="font-semibold text-amber-200/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.95)]">
-                  {meta.caption}
-                </span>
-              </div>
+              {/* Shelf Spacing (text removed) */}
+              <div className="h-4 mb-1.5" aria-hidden="true" />
 
               {/* Cartoony Stylized Recessed Wooden Shelf Niche */}
               <div className="relative rounded-t-xl bg-gradient-to-b from-[#2f1307]/88 via-[#441c0a]/85 to-[#54230c]/90 border-x-2 border-t-2 border-[#230c03] px-2.5 pt-2.5 pb-1 shadow-[inset_0_8px_16px_rgba(0,0,0,0.65)]">

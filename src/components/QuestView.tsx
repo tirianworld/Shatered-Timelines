@@ -1428,21 +1428,7 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
       </div>
 
       {/* 3. CABIN / MINE ILLUSTRATION SPACER (Framed window shows cabin in Ch1 or Mine Tunnel in Ch2) */}
-      <div className="relative z-10 w-full h-[14.5%] sm:h-[15%] min-h-[92px] max-h-[135px] shrink-0 pointer-events-none">
-        <button
-          type="button"
-          onClick={() => {
-            sound.playSFX('click');
-            onBackToLibrary();
-          }}
-          className="pointer-events-auto absolute top-1.5 left-[4.5%] inline-flex items-center gap-1.5 min-h-[32px] px-2.5 py-1 rounded-lg bg-[#170803]/88 hover:bg-[#2b1007]/95 border border-[#7c3f18]/80 text-amber-100 text-[11px] font-bold shadow-[0_3px_10px_rgba(0,0,0,0.8)] cursor-pointer transition-all active:scale-95 whitespace-nowrap"
-          title="Volver a la Librería de Tomos"
-        >
-          <ChevronLeft className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-          <BookOpen className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-          <span>Tomos</span>
-        </button>
-      </div>
+      <div className="relative z-10 w-full h-[14.5%] sm:h-[15%] min-h-[92px] max-h-[135px] shrink-0 pointer-events-none" />
 
       {/* 4. MAIN CONTENT AREA ON WOODEN PLANKS */}
       <div className="relative z-10 w-full flex-1 flex flex-col px-[4%] sm:px-[4.5%] pb-2 overflow-hidden min-h-0">

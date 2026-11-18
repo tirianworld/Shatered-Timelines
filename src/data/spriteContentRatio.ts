@@ -1,103 +1,105 @@
-// Escalas por pose verificadas visualmente sobre rejilla (cabeza, torso y anchura corporal)
-// para que el cuerpo de un mismo personaje mida exactamente lo mismo en idle, ataque, daño,
-// habilidades y cambios de fase, sin verse encogido por armas altas, halos o efectos VFX.
+// Escalas por pose para que el cuerpo de un mismo personaje mida exactamente lo mismo en idle,
+// ataque, daño, habilidades y cambios de fase, sin verse encogido por armas altas, halos o efectos.
+// En los héroes la escala es la estatura del idle entre la estatura de la pose, con la estatura
+// medida de la cabeza a la línea de los pies en spriteAnchor.ts (hy y b): así la pose de la
+// habilidad spawnea con el mismo tamaño y el mismo punto que el idle. Los VFX no se escalan.
 export const SPRITE_POSE_SCALE: Record<string, number> = {
   // === ARLEM ===
   '/assets/combat/arlem_idle.webp': 1.0,
-  '/assets/combat/arlem_attack.webp': 1.02,
-  '/assets/combat/arlem_hurt.webp': 1.0,
-  '/assets/combat/arlem_cast_balada.webp': 1.0,
-  '/assets/combat/arlem_cast_estocada.webp': 1.06,
-  '/assets/combat/arlem_cast_inspiracion.webp': 1.0,
+  '/assets/combat/arlem_attack.webp': 0.925,
+  '/assets/combat/arlem_hurt.webp': 1.009,
+  '/assets/combat/arlem_cast_balada.webp': 0.984,
+  '/assets/combat/arlem_cast_estocada.webp': 0.942,
+  '/assets/combat/arlem_cast_inspiracion.webp': 1.008,
 
   // === BARLED ===
   '/assets/combat/barled_idle.webp': 1.0,
-  '/assets/combat/barled_attack.webp': 0.98,
-  '/assets/combat/barled_hurt.webp': 0.96,
-  '/assets/combat/barled_cast.webp': 0.98,
+  '/assets/combat/barled_attack.webp': 0.991,
+  '/assets/combat/barled_hurt.webp': 0.95,
+  '/assets/combat/barled_cast.webp': 0.967,
 
   // === CHISPO ===
   '/assets/combat/chispo_idle.webp': 1.0,
-  '/assets/combat/chispo_attack.webp': 1.06,
-  '/assets/combat/chispo_hurt.webp': 0.99,
-  '/assets/combat/chispo_cast.webp': 1.11,
+  '/assets/combat/chispo_attack.webp': 0.976,
+  '/assets/combat/chispo_hurt.webp': 0.963,
+  '/assets/combat/chispo_cast.webp': 0.989,
 
   // === EDACORN ===
   '/assets/combat/edacorn_idle.webp': 1.0,
-  '/assets/combat/edacorn_attack.webp': 1.05,
-  '/assets/combat/edacorn_hurt.webp': 0.99,
-  '/assets/combat/edacorn_cast_contraataque.webp': 1.0,
-  '/assets/combat/edacorn_cast_furtivo.webp': 1.05,
-  '/assets/combat/edacorn_cast_sigilo.webp': 1.02,
-  '/assets/combat/edacorn_alas_idle.webp': 0.98,
-  '/assets/combat/edacorn_alas_attack.webp': 1.04,
-  '/assets/combat/edacorn_alas_hurt.webp': 0.99,
+  '/assets/combat/edacorn_attack.webp': 1.04,
+  '/assets/combat/edacorn_hurt.webp': 0.986,
+  '/assets/combat/edacorn_cast_contraataque.webp': 1.012,
+  '/assets/combat/edacorn_cast_furtivo.webp': 1.04,
+  '/assets/combat/edacorn_cast_sigilo.webp': 1.054,
+  '/assets/combat/edacorn_alas_idle.webp': 0.982,
+  '/assets/combat/edacorn_alas_attack.webp': 1.007,
+  '/assets/combat/edacorn_alas_hurt.webp': 0.987,
 
   // === GIOVANI ===
   '/assets/combat/giovani_idle.webp': 1.0,
-  '/assets/combat/giovani_attack.webp': 1.04,
-  '/assets/combat/giovani_hurt.webp': 1.02,
-  '/assets/combat/giovani_cast.webp': 1.0,
+  '/assets/combat/giovani_attack.webp': 1.044,
+  '/assets/combat/giovani_hurt.webp': 1.008,
+  '/assets/combat/giovani_cast.webp': 0.98,
 
   // === KAIRON ===
   '/assets/combat/kairon_idle.webp': 1.0,
-  '/assets/combat/kairon_attack.webp': 1.06,
-  '/assets/combat/kairon_attack_dual.webp': 1.05,
-  '/assets/combat/kairon_hurt.webp': 1.03,
-  '/assets/combat/kairon_cast.webp': 1.09,
+  '/assets/combat/kairon_attack.webp': 1.074,
+  '/assets/combat/kairon_attack_dual.webp': 1.042,
+  '/assets/combat/kairon_hurt.webp': 1.044,
+  '/assets/combat/kairon_cast.webp': 1.139,
 
   // === MAGORDITO ===
   '/assets/combat/magordito_idle.webp': 1.0,
-  '/assets/combat/magordito_clean.webp': 1.0,
-  '/assets/combat/magordito_hurt.webp': 1.02,
-  '/assets/combat/magordito_cast_dios.webp': 0.99,
-  '/assets/combat/magordito_cast_rayo.webp': 1.0,
-  '/assets/combat/magordito_cast_slash.webp': 1.0,
-  '/assets/combat/magordito_cast_toxic.webp': 1.0,
+  '/assets/combat/magordito_clean.webp': 0.983,
+  '/assets/combat/magordito_hurt.webp': 1.007,
+  '/assets/combat/magordito_cast_dios.webp': 0.969,
+  '/assets/combat/magordito_cast_rayo.webp': 1.001,
+  '/assets/combat/magordito_cast_slash.webp': 0.999,
+  '/assets/combat/magordito_cast_toxic.webp': 0.987,
 
   // === PEPE LOUX ===
   '/assets/combat/pepe_loux_idle.webp': 1.0,
-  '/assets/combat/pepe_loux_attack.webp': 1.1,
+  '/assets/combat/pepe_loux_attack.webp': 1.002,
   '/assets/combat/pepe_loux_hurt.webp': 1.0,
-  '/assets/combat/pepe_loux_cast_escudo.webp': 1.0,
-  '/assets/combat/pepe_loux_cast_hacha.webp': 1.1,
-  '/assets/combat/pepe_loux_cast_mandoble.webp': 1.1,
-  '/assets/combat/pepe_loux_cast_remo.webp': 1.0,
+  '/assets/combat/pepe_loux_cast_escudo.webp': 0.999,
+  '/assets/combat/pepe_loux_cast_hacha.webp': 1.002,
+  '/assets/combat/pepe_loux_cast_mandoble.webp': 1.002,
+  '/assets/combat/pepe_loux_cast_remo.webp': 0.99,
 
   // === PROMETEO ===
   '/assets/combat/prometeo_idle.webp': 1.0,
-  '/assets/combat/prometeo_attack.webp': 1.05,
-  '/assets/combat/prometeo_hurt.webp': 1.05,
-  '/assets/combat/prometeo_cast.webp': 1.03,
+  '/assets/combat/prometeo_attack.webp': 0.964,
+  '/assets/combat/prometeo_hurt.webp': 1.066,
+  '/assets/combat/prometeo_cast.webp': 0.974,
 
   // === RAGNAVALDR ===
   '/assets/combat/ragnavaldr_idle.webp': 1.0,
-  '/assets/combat/ragnavaldr_attack.webp': 1.06,
-  '/assets/combat/ragnavaldr_hurt.webp': 1.02,
-  '/assets/combat/ragnavaldr_cast.webp': 1.0,
-  '/assets/combat/ragnavaldr_furia.webp': 1.02,
+  '/assets/combat/ragnavaldr_attack.webp': 1.033,
+  '/assets/combat/ragnavaldr_hurt.webp': 1.01,
+  '/assets/combat/ragnavaldr_cast.webp': 0.984,
+  '/assets/combat/ragnavaldr_furia.webp': 1.007,
 
   // === RAXXAR ===
   '/assets/combat/raxxar_idle.webp': 1.0,
-  '/assets/combat/raxxar_attack.webp': 1.01,
-  '/assets/combat/raxxar_hurt.webp': 1.02,
-  '/assets/combat/raxxar_shield.webp': 1.0,
-  '/assets/combat/raxxar_spear.webp': 1.0,
+  '/assets/combat/raxxar_attack.webp': 0.999,
+  '/assets/combat/raxxar_hurt.webp': 1.008,
+  '/assets/combat/raxxar_shield.webp': 0.98,
+  '/assets/combat/raxxar_spear.webp': 0.997,
 
   // === ROXANNE ===
   '/assets/combat/roxanne_idle.webp': 1.0,
-  '/assets/combat/roxanne_attack.webp': 1.03,
-  '/assets/combat/roxanne_hurt.webp': 0.99,
-  '/assets/combat/roxanne_cast.webp': 1.06,
+  '/assets/combat/roxanne_attack.webp': 1.062,
+  '/assets/combat/roxanne_hurt.webp': 1.016,
+  '/assets/combat/roxanne_cast.webp': 0.984,
 
   // === SMURPH ===
   '/assets/combat/smurph_idle.webp': 1.0,
-  '/assets/combat/smurph_attack.webp': 1.05,
-  '/assets/combat/smurph_hurt.webp': 1.0,
-  '/assets/combat/smurph_cast.webp': 1.02,
-  '/assets/combat/smurph_flight.webp': 1.03,
-  '/assets/combat/smurph_landing.webp': 1.05,
-  '/assets/combat/smurph_lightning.webp': 1.02,
+  '/assets/combat/smurph_attack.webp': 1.01,
+  '/assets/combat/smurph_hurt.webp': 0.993,
+  '/assets/combat/smurph_cast.webp': 1.004,
+  '/assets/combat/smurph_flight.webp': 1.015,
+  '/assets/combat/smurph_landing.webp': 1.01,
+  '/assets/combat/smurph_lightning.webp': 1.017,
 
   // === ENEMIGOS Y NPCs ===
   '/assets/aistudio/araknoide_clean.webp': 1.0,
@@ -275,5 +277,11 @@ export const SPRITE_POSE_SCALE: Record<string, number> = {
   '/assets/combat/arana_acorazada_attack_telarana.webp': 1.0,
   '/assets/combat/arana_acorazada_attack_bola.webp': 1.0,
   '/assets/combat/arana_acorazada_attack_aliento.webp': 1.0,
+  '/assets/combat/arana_acorazada_colgada_idle.webp': 1.0,
+  '/assets/combat/arana_acorazada_colgada_hurt.webp': 1.0,
+  '/assets/combat/arana_acorazada_colgada_telarana.webp': 1.0,
+  '/assets/combat/arana_acorazada_descenso_barrido.webp': 1.0,
+  '/assets/combat/arana_acorazada_caida_volteo_1.webp': 1.0,
+  '/assets/combat/arana_acorazada_caida_volteo_2.webp': 1.0,
   '/assets/portraits/cid_pose.webp': 1.0,
 };

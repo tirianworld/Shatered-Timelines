@@ -149,6 +149,16 @@ class SoundService {
     // Fusión de cartas: campanilla celestial (Pixabay, licencia libre). El arpa es
     // más larga, así que sale de vez en cuando para no encadenar glissandos.
     celestial: ['celestial_twinkle.mp3', 'celestial_twinkle.mp3', 'celestial_harp.mp3'],
+
+    // Araña Acorazada (sonidos inspirados en Demon's Souls: Stonefang Tunnel 2-1)
+    arana_screech: ['arana/arana_screech.mp3'],
+    arana_web: ['arana/arana_web.mp3'],
+    arana_sweep: ['arana/arana_sweep.mp3'],
+    arana_fireball: ['arana/arana_fireball.mp3'],
+    arana_breath: ['arana/arana_breath.mp3'],
+    arana_fall_slam: ['arana/arana_fall_slam.mp3'],
+    arana_hurt: ['arana/arana_hurt.mp3'],
+    arana_climb: ['arana/arana_climb.mp3'],
   };
 
   constructor() {
@@ -253,7 +263,8 @@ class SoundService {
     const variants = this.ASSET_SFX[name];
     if (!variants || variants.length === 0) return;
     const file = variants[Math.floor(Math.random() * variants.length)];
-    this.playAssetAudio(`/assets/audio/cartoon/${file}`, options);
+    const audioPath = file.includes('/') ? `/assets/audio/${file}` : `/assets/audio/cartoon/${file}`;
+    this.playAssetAudio(audioPath, options);
   }
 
   /**

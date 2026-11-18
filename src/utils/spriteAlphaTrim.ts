@@ -2,11 +2,15 @@
  * Punta del arma de un sprite enemigo, medida sobre el propio PNG.
  *
  * Los sprites llevan padding transparente, así que el borde de la imagen no es el filo de la
- * lanza ni la punta de la flecha. Aquí se escanea el canal alfa desde la izquierda hasta el
- * primer píxel opaco: en las poses de ataque ese píxel es justo la punta del arma.
+ * lanza ni la punta de la flecha. Aquí se escanea el canal alfa desde un borde hasta el primer
+ * píxel opaco: en las poses de ataque ese píxel es justo la punta del arma.
  *
- * El resultado se cachea por URL y se expresa en fracciones (0..1) del propio sprite, para que
- * valga igual con cualquier tamaño en pantalla.
+ * El lado del escaneo importa: las poses espejadas para mirar a la izquierda llevan el arma en
+ * el borde derecho (la bandeja del bugbear, por ejemplo), así que ahí hay que escanear desde la
+ * derecha o la «punta» sale del otro extremo del dibujo.
+ *
+ * El resultado se cachea por URL y lado, y se expresa en fracciones (0..1) del propio sprite,
+ * para que valga igual con cualquier tamaño en pantalla.
  */
 export interface SpriteWeaponTip {
   /** Fracción horizontal de la punta dentro del sprite. */
@@ -15,19 +19,24 @@ export interface SpriteWeaponTip {
   fy: number;
 }
 
+export type WeaponTipSide = 'left' | 'right';
+
 const cache = new Map<string, SpriteWeaponTip | null>();
 const loading = new Set<string>();
+
+const cacheKey = (url: string, side: WeaponTipSide) => `${side}|${url}`;
 
 /**
  * Devuelve la punta del arma del sprite o `null` mientras la imagen aún se está midiendo
  * (la primera llamada lanza la medición y las siguientes ya encuentran el valor cacheado).
  */
-export const getSpriteWeaponTip = (url: string): SpriteWeaponTip | null => {
+export const getSpriteWeaponTip = (url: string, side: WeaponTipSide = 'left'): SpriteWeaponTip | null => {
   if (!url) return null;
-  if (cache.has(url)) return cache.get(url) ?? null;
-  if (loading.has(url) || typeof document === 'undefined') return null;
+  const key = cacheKey(url, side);
+  if (cache.has(key)) return cache.get(key) ?? null;
+  if (loading.has(key) || typeof document === 'undefined') return null;
 
-  loading.add(url);
+  loading.add(key);
   const img = new Image();
   img.onload = () => {
     try {
@@ -41,7 +50,10 @@ export const getSpriteWeaponTip = (url: string): SpriteWeaponTip | null => {
 
       let fx: number | null = null;
       let fy = 0.5;
-      outer: for (let x = 0; x < canvas.width; x++) {
+      const lastX = canvas.width - 1;
+      const step = side === 'right' ? -1 : 1;
+      let x = side === 'right' ? lastX : 0;
+      outer: for (; x >= 0 && x <= lastX; x += step) {
         for (let y = 0; y < canvas.height; y++) {
           if (data[(y * canvas.width + x) * 4 + 3] > 24) {
             fx = x / canvas.width;
@@ -50,15 +62,15 @@ export const getSpriteWeaponTip = (url: string): SpriteWeaponTip | null => {
           }
         }
       }
-      cache.set(url, fx === null ? null : { fx, fy });
+      cache.set(key, fx === null ? null : { fx, fy });
     } catch {
-      cache.set(url, null);
+      cache.set(key, null);
     }
-    loading.delete(url);
+    loading.delete(key);
   };
   img.onerror = () => {
-    cache.set(url, null);
-    loading.delete(url);
+    cache.set(key, null);
+    loading.delete(key);
   };
   img.src = url;
   return null;
