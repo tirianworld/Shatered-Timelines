@@ -9375,7 +9375,7 @@ export const CombatView: React.FC = () => {
         name: devoradorP2Cfg.name,
         title: devoradorP2Cfg.title,
         hp: 0,
-        maxHp: devoradorP2Cfg.maxHp,
+        maxHp: Math.round(devoradorP2Cfg.maxHp * (selectedCombatDifficulty === 3 ? 2 : selectedCombatDifficulty === 2 ? 1.5 : 1)),
         ultimateOrbs: 0,
         conditions: [],
         isAshDissolving: false,
