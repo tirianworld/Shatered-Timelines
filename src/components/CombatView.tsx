@@ -6797,6 +6797,13 @@ export const CombatView: React.FC = () => {
       }
       return enemy.attackSpriteUrl || enemy.spriteUrl;
     }
+    // La coraza permanece abierta mientras el núcleo esté expuesto o haya sido fracturado.
+    if (
+      enemy.configId === 'gorgon_metal' &&
+      ((enemy.gorgonCoreExposedTurns ?? 0) > 0 || enemy.gorgonCoreBroken)
+    ) {
+      return '/assets/combat/gorgon_core_exposed.webp';
+    }
     return enemy.spriteUrl;
   };
 
