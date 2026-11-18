@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
-import { Volume2, VolumeX, RotateCcw, User, Info, X, Smartphone, Download, Package, Gamepad2, Trophy, Cloud, CheckCheck, Gift, Star } from 'lucide-react';
+import { Volume2, VolumeX, RotateCcw, User, Info, X, Smartphone, Download, Package, Gamepad2, Trophy, Cloud, CheckCheck, Gift, Star, Crown } from 'lucide-react';
 import { usePWAInstall } from '../hooks/usePWAInstall';
 import { playGames } from '../services/playGamesService';
 
@@ -9,6 +9,7 @@ export const OptionsModal: React.FC = () => {
   const {
     isOptionsOpen,
     setIsOptionsOpen,
+    setHeroes,
     playerName,
     setPlayerName,
     resetAllData,
@@ -35,6 +36,7 @@ export const OptionsModal: React.FC = () => {
   const [showAndroidInfo, setShowAndroidInfo] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [allMissionsDoneFeedback, setAllMissionsDoneFeedback] = useState(false);
+  const [maxLevelFeedback, setMaxLevelFeedback] = useState(false);
 
   if (!isOptionsOpen) return null;
 
@@ -333,6 +335,63 @@ export const OptionsModal: React.FC = () => {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Max level all owned heroes */}
+        <div className="bg-[#17102b] border border-violet-600/70 rounded-xl p-3 text-left space-y-2 shadow-inner">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-black text-violet-200 flex items-center gap-1.5">
+              <Crown className="w-4 h-4 text-amber-300" />
+              <span>Entrenamiento Supremo</span>
+            </span>
+            <span className="text-[10px] text-violet-200 font-bold bg-violet-950/80 px-2 py-0.5 rounded border border-violet-700">
+              Nivel 60
+            </span>
+          </div>
+          <p className="text-[11px] text-stone-300 leading-snug">
+            Lleva a todos los héroes reclutados al nivel máximo y aplica las mejoras de estadísticas de cada nivel, sin consumir oro.
+          </p>
+          <button
+            onClick={() => {
+              sound.playSFX('upgrade');
+              setHeroes((prev) => prev.map((hero) => {
+                const levelsToGain = Math.max(0, 60 - (hero.level ?? 1));
+                if (levelsToGain === 0) return hero;
+
+                let maxHp = hero.stats.maxHp;
+                let attack = hero.stats.attack;
+                let defense = hero.stats.defense;
+                let xpToNextLevel = hero.xpToNextLevel;
+
+                for (let level = 0; level < levelsToGain; level += 1) {
+                  maxHp = Math.round(maxHp * 1.08);
+                  attack = Math.round(attack * 1.08);
+                  defense = Math.round(defense * 1.08);
+                  xpToNextLevel = Math.round(xpToNextLevel * 1.25);
+                }
+
+                return {
+                  ...hero,
+                  level: 60,
+                  currentXp: 0,
+                  xpToNextLevel,
+                  stats: {
+                    ...hero.stats,
+                    hp: maxHp,
+                    maxHp,
+                    attack,
+                    defense,
+                  },
+                };
+              }));
+              setMaxLevelFeedback(true);
+              window.setTimeout(() => setMaxLevelFeedback(false), 2600);
+            }}
+            className="w-full py-1.5 bg-gradient-to-r from-violet-700 via-purple-700 to-indigo-700 hover:brightness-110 active:scale-95 text-white font-bold text-xs rounded-lg shadow cursor-pointer flex items-center justify-center gap-1.5 transition-all border border-violet-400/50"
+          >
+            <Crown className="w-3.5 h-3.5 text-amber-300" />
+            <span>{maxLevelFeedback ? '¡Todos tus héroes están al nivel 60!' : 'Subir todos los héroes al nivel máximo'}</span>
+          </button>
         </div>
 
         {/* Completar Todas las Misiones Section */}
