@@ -1901,6 +1901,9 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
               'm12_recibidor_mansion_ferton', 'm13_escaleras_durnik',
               'm14_planta_intermedia_ferton', 'm18_primera_camara_gorgon',
               'm19_segunda_camara_aire', 'm20_tercera_camara_bulezau',
+              'm22_cryovain_final', 't2_c1_m1_trincheras_nomuertos',
+              't2_c1_m2_jauria_salas', 't2_c1_m3_custodios_anillo',
+              't2_c1_m4_arana_acorazada',
             ]);
             const replayMissions = missions.filter((mission) => replayableIds.has(mission.id));
             const tierDone = (tier: 2 | 3) => replayMissions.length > 0 && replayMissions.every((mission) =>
