@@ -12455,7 +12455,7 @@ export const CombatView: React.FC = () => {
       }
 
       // Bandido Líder y Caudillo Gorrak: Robo de orbes de definitiva del jugador
-      if (actingEnemy.configId === 'bandido_lider' || actingEnemy.configId === 'orco_caudillo') {
+      if (actingEnemy.configId === 'bandido_lider') {
         const stealCount = isUlt ? 2 : 1;
         setUltimateOrbs((prevOrbs) => {
           const actualStolen = Math.min(prevOrbs, stealCount);
