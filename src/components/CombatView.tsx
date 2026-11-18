@@ -12651,7 +12651,7 @@ export const CombatView: React.FC = () => {
           if (candidate.skillId === 'cataclismo_astral') return false;
           const def = SKILL_DEFINITIONS[candidate.skillId];
           const info = def?.tiers?.[candidate.tier] as { damage?: number } | undefined;
-          return Boolean(def && info && typeof info.damage === 'number' && info.damage > 0);
+          return Boolean(def && def.type !== 'buff' && info && typeof info.damage === 'number' && info.damage > 0);
         });
         if (stealableCards.length > 0) {
           const stolenCard = stealableCards[Math.floor(Math.random() * stealableCards.length)];
