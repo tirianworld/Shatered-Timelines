@@ -11,6 +11,7 @@ import { DAILY_REWARDS } from '../data/dailyRewardsData';
 import { DAILY_PRESENTERS, DEFAULT_PRESENTER_ID } from '../data/dailyRewardPresenters';
 import { sound } from '../services/soundService';
 import {
+  clearGoldRunMission,
   GOLD_RUN_BOONS,
   GOLD_RUN_CHAPTER_MISSIONS,
   GOLD_RUN_LEVELS_PER_CHAPTER,
@@ -1870,6 +1871,17 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const isColiseoEventUnlocked = isDreamPlaneUnlocked;
 
   const completeQuestMission = (missionId: string, stars: number) => {
+    // Los jefes de Midas tienen manejadores de victoria propios, fuera del flujo
+    // genérico de salas. Registra aquí su progreso para que también quede guardado
+    // en la expedición y aparezcan como completados al volver a la mazmorra.
+    if (
+      missionId === 'midas_dungeon_boss_mimico' ||
+      missionId === 'midas_dungeon_boss_caballero' ||
+      missionId === 'midas_dungeon_boss_ignivrax'
+    ) {
+      clearGoldRunMission(missionId);
+    }
+
     const progressMissionId = selectedCombatDifficulty === 2
       ? `${missionId}__normal`
       : selectedCombatDifficulty === 3
