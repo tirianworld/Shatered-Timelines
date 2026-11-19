@@ -6125,7 +6125,12 @@ const getBalancedEnemyMaxHp = (
       : missionId?.startsWith('t2_')
         ? 4.5
         : 15;
-  const difficultyMultiplier = difficultyTier === 3 ? 2 : difficultyTier === 2 ? 1.5 : 1;
+  // En el Bastión, la dificultad aumenta la resistencia sin convertir cada combate
+  // en una esponja de PV. Las demás misiones conservan su escalado original.
+  const isTrainingTrial = missionId === 'resource_trial_gold' || missionId === 'resource_trial_xp';
+  const difficultyMultiplier = isTrainingTrial
+    ? difficultyTier === 3 ? 1.65 : difficultyTier === 2 ? 1.3 : 1
+    : difficultyTier === 3 ? 2 : difficultyTier === 2 ? 1.5 : 1;
   return Math.max(
     1,
     Math.round(
@@ -6765,11 +6770,15 @@ export const CombatView: React.FC = () => {
   // golpes pasan a ocupar cada vez menos porcentaje: sobrenivelado casi no te hacen nada.
   const ENEMY_STAGE_CHAPTER =
     ENEMY_CHAPTER_BY_MISSION[selectedCombatMissionId ?? ''] ?? (activeQuestChapter || 1);
+  const isTrainingTrial = selectedCombatMissionId === 'resource_trial_gold' || selectedCombatMissionId === 'resource_trial_xp';
+  const enemyDifficultyDamageScale = isTrainingTrial
+    ? selectedCombatDifficulty === 3 ? 1.35 : selectedCombatDifficulty === 2 ? 1.15 : 1
+    : selectedCombatDifficulty === 3 ? 1.5 : selectedCombatDifficulty === 2 ? 1.25 : 1;
   const ENEMY_DAMAGE_SCALE =
     38 *
     Math.pow(1.45, Math.max(0, ENEMY_STAGE_CHAPTER - 1)) *
     Math.pow(1.04, Math.max(0, currentFloor - 1)) *
-    (selectedCombatDifficulty === 3 ? 1.5 : selectedCombatDifficulty === 2 ? 1.25 : 1);
+    enemyDifficultyDamageScale;
 
   // Turn Counter
   const [turnCounter, setTurnCounter] = useState<number>(1);
