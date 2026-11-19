@@ -347,31 +347,14 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void }> = ({ 
       <div className="absolute inset-0 bg-gradient-to-b from-[#07101e]/55 via-[#08101d]/35 to-[#05070d]/90 pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(69,139,190,0.28),transparent_58%)] pointer-events-none" />
 
-      {/* Accesos rápidos de vínculos y tributo */}
-      <div className="relative z-20 flex items-center justify-between px-3 pt-2 pb-1 shrink-0 gap-2">
+      {/* Cabecera limpia: únicamente regreso a la biblioteca */}
+      <div className="relative z-20 flex items-center px-3 pt-2 pb-1 shrink-0">
         <button
           onClick={() => { sound.playSFX('click'); onBackToLibrary(); }}
           className="w-9 h-9 shrink-0 rounded-lg border border-amber-300/60 bg-[#160e0b]/90 text-amber-100 shadow-lg flex items-center justify-center"
-          title="Volver al Bastión"
-          aria-label="Volver al Bastión"
+          title="Volver a la biblioteca"
+          aria-label="Volver a la biblioteca"
         ><span className="text-xl leading-none">‹</span></button>
-        <button
-          onClick={() => { sound.playSFX('click'); setShowBondModal(true); }}
-          className="flex items-center gap-2 rounded-full border border-amber-300/45 bg-[#160e0b]/85 px-3 py-1.5 shadow-lg"
-          title="Vínculos de héroes"
-        >
-          <span className="text-rose-300 text-sm">♥</span>
-          <span className="text-[10px] font-bold tracking-wide text-amber-100">VÍNCULOS</span>
-        </button>
-        <button
-          onClick={() => { sound.playSFX('click'); setShowBlessingModal(true); }}
-          className="relative flex items-center gap-2 rounded-full border border-amber-300/45 bg-[#160e0b]/85 px-3 py-1.5 shadow-lg"
-          title="Tributo del santuario"
-        >
-          <img src="/assets/items/Insignia Mercado Negro app.webp" alt="" className="w-5 h-5 object-contain" />
-          <span className="text-[10px] font-bold text-amber-100">TRIBUTO</span>
-          {idleEarningsAvailable > 0 && <span className="absolute -right-1 -top-1 w-3 h-3 rounded-full bg-red-500 border border-amber-100 animate-pulse" />}
-        </button>
       </div>
 
       {claimedNotice && (
@@ -384,8 +367,8 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void }> = ({ 
       <div className="relative z-10 flex-1 min-h-0 overflow-y-auto no-scrollbar px-2.5 pt-1 pb-2 space-y-[7px]">
         <div className="px-1 flex items-end justify-between">
           <div>
-            <div className="text-[9px] uppercase tracking-[0.28em] text-sky-200/80 font-bold">Santuario de Icespear</div>
-            <h2 className="text-[19px] leading-tight font-serif font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">Centro de actividades</h2>
+            <div className="text-[9px] uppercase tracking-[0.28em] text-sky-200/80 font-bold">Bastión de Entrenamiento</div>
+            <h2 className="text-[19px] leading-tight font-serif font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">Centro de entrenamiento</h2>
           </div>
           <div className="text-[9px] uppercase tracking-widest text-amber-200/80 pb-1">Aventuras</div>
         </div>
@@ -473,15 +456,6 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void }> = ({ 
           <span className="absolute right-3 bottom-2 text-amber-100 text-lg">›</span>
         </button>
 
-        {/* Acceso al mapa */}
-        <button
-          onClick={() => { sound.playSFX('click'); navigateTo('world'); }}
-          className="mx-auto flex items-center gap-2 rounded-full border border-sky-200/45 bg-gradient-to-b from-[#132d42]/90 to-[#07111d]/95 px-4 py-1.5 shadow-[0_3px_10px_rgba(0,0,0,0.8)]"
-          title="Mapa del mundo"
-        >
-          <img src="/assets/items/WORLD BUTTON.webp" alt="" className="w-6 h-6 object-contain" />
-          <span className="text-[9px] font-bold uppercase tracking-widest text-sky-100">Mapa del mundo</span>
-        </button>
       </div>
 
       {/* Bond / Affection Modal */}
