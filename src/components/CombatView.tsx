@@ -6164,17 +6164,49 @@ const getBalancedEnemyMaxHp = (
 export const createChamberEnemies = (floor: number, missionId?: string | null, difficultyTier: 1 | 2 | 3 = 1, partyAttackScale = 1): ChamberEnemyState[] => {
   let configIds: CombatEnemyId[] = [];
   if (missionId === 'resource_trial_gold') {
-    configIds = difficultyTier === 1
-      ? ['goblin_daga', 'goblin_honda', 'goblin_garrote']
-      : difficultyTier === 2
-      ? ['guardia_lanza', 'guardia_espada', 'guardia_ballesta']
-      : ['hoggoblin_encapuchado_daga', 'guarda_negro_espada', 'guarda_negro_alabarda', 'guarda_negro_ballesta'];
+    const goldRooms: Record<1 | 2 | 3, CombatEnemyId[][]> = {
+      1: [
+        ['goblin_daga', 'goblin_honda', 'goblin_garrote'],
+        ['goblin_honda', 'goblin_honda', 'goblin_garrote'],
+        ['goblin_daga', 'goblin_garrote', 'goblin_garrote'],
+        ['goblin_daga', 'goblin_honda', 'goblin_garrote', 'goblin_garrote'],
+      ],
+      2: [
+        ['guardia_lanza', 'guardia_espada', 'guardia_ballesta'],
+        ['guardia_espada', 'guardia_ballesta', 'guardia_pesado'],
+        ['guardia_lanza', 'guardia_lanza', 'guardia_pesado'],
+        ['guardia_espada', 'guardia_ballesta', 'guardia_pesado', 'guardia_pesado'],
+      ],
+      3: [
+        ['hoggoblin_encapuchado_daga', 'guarda_negro_espada', 'guarda_negro_alabarda'],
+        ['guarda_negro_espada', 'guarda_negro_ballesta', 'guarda_negro_alabarda'],
+        ['hoggoblin_encapuchado_daga', 'guarda_negro_espada', 'guarda_negro_ballesta', 'guarda_negro_alabarda'],
+        ['guarda_negro_espada', 'guarda_negro_ballesta', 'guarda_negro_alabarda', 'guarda_negro_alabarda'],
+      ],
+    };
+    configIds = goldRooms[difficultyTier][Math.min(Math.max(floor, 1), 4) - 1];
   } else if (missionId === 'resource_trial_xp') {
-    configIds = difficultyTier === 1
-      ? ['no_muerto', 'no_muerto', 'perro_asalvajado']
-      : difficultyTier === 2
-      ? ['soldado_no_muerto', 'soldado_no_muerto', 'araknoide_rojo']
-      : ['soldado_no_muerto', 'araknoide_voraz', 'guarda_negro_espada'];
+    const xpRooms: Record<1 | 2 | 3, CombatEnemyId[][]> = {
+      1: [
+        ['no_muerto', 'no_muerto', 'perro_asalvajado'],
+        ['no_muerto', 'perro_asalvajado', 'perro_asalvajado'],
+        ['no_muerto', 'no_muerto', 'no_muerto'],
+        ['no_muerto', 'no_muerto', 'perro_asalvajado', 'perro_asalvajado'],
+      ],
+      2: [
+        ['soldado_no_muerto', 'soldado_no_muerto', 'araknoide_rojo'],
+        ['soldado_no_muerto', 'araknoide_rojo', 'araknoide_rojo'],
+        ['soldado_no_muerto', 'soldado_no_muerto', 'soldado_no_muerto'],
+        ['soldado_no_muerto', 'araknoide_rojo', 'araknoide_rojo', 'soldado_no_muerto'],
+      ],
+      3: [
+        ['soldado_no_muerto', 'araknoide_voraz', 'guarda_negro_espada'],
+        ['araknoide_voraz', 'guarda_negro_espada', 'guarda_negro_espada'],
+        ['soldado_no_muerto', 'soldado_no_muerto', 'araknoide_voraz'],
+        ['araknoide_voraz', 'guarda_negro_espada', 'guarda_negro_espada', 'soldado_no_muerto'],
+      ],
+    };
+    configIds = xpRooms[difficultyTier][Math.min(Math.max(floor, 1), 4) - 1];
   } else if (missionId === 'evento_coliseo_suenos') {
     const chamber = COLISEO_SUENOS_CHAMBERS[floor - 1] || COLISEO_SUENOS_CHAMBERS[0];
     configIds = chamber.enemyConfigIds;
@@ -11152,6 +11184,21 @@ export const CombatView: React.FC = () => {
 
     // Recompensas exclusivas del Bastión: solo oro o botellas de EXP existentes.
     if (selectedCombatMissionId === 'resource_trial_gold' || selectedCombatMissionId === 'resource_trial_xp') {
+      // Las pruebas del Bastión son expediciones de cuatro salas. Solo se cobra
+      // la recompensa y se marca la misión al superar la cuarta.
+      const TRAINING_TRIAL_ROOMS = 4;
+      if (currentFloor < TRAINING_TRIAL_ROOMS) {
+        sound.playSFX('victory');
+        setWaveClearBanner({
+          floor: currentFloor,
+          gold: 0,
+          crystals: 0,
+          nextFloor: currentFloor + 1,
+        });
+        setTimeout(() => startChamber(currentFloor + 1), 1500);
+        return;
+      }
+
       sound.playSFX('victory');
       launchConfetti();
       const tier = selectedCombatDifficulty;
