@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
 import { Volume2, VolumeX, RotateCcw, User, Info, X, Smartphone, Download, Package, Gamepad2, Trophy, Cloud, CheckCheck, Gift, Star, Crown } from 'lucide-react';
@@ -38,7 +38,34 @@ export const OptionsModal: React.FC = () => {
   const [allMissionsDoneFeedback, setAllMissionsDoneFeedback] = useState(false);
   const [maxLevelFeedback, setMaxLevelFeedback] = useState(false);
 
+  // Deslizar el panel de ajustes para bajar y subir (ratón o dedo), igual que el resto de listas.
+  const optionsScrollRef = useRef<HTMLDivElement | null>(null);
+  const optionsDragStartY = useRef(0);
+  const optionsDragStartScroll = useRef(0);
+  const isOptionsDragging = useRef(false);
+
   if (!isOptionsOpen) return null;
+
+  const handleOptionsPointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+    const target = e.target as HTMLElement;
+    if (target.closest('button, input, textarea, select, a')) return;
+    isOptionsDragging.current = true;
+    optionsDragStartY.current = e.clientY;
+    optionsDragStartScroll.current = optionsScrollRef.current?.scrollTop ?? 0;
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+  };
+
+  const handleOptionsPointerMove = (e: React.PointerEvent) => {
+    if (!isOptionsDragging.current || !optionsScrollRef.current) return;
+    optionsScrollRef.current.scrollTop =
+      optionsDragStartScroll.current - (e.clientY - optionsDragStartY.current);
+  };
+
+  const handleOptionsPointerUp = (e: React.PointerEvent) => {
+    isOptionsDragging.current = false;
+    (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
+  };
 
   const handleToggleSound = () => {
     const muted = sound.toggleMute();
@@ -57,7 +84,14 @@ export const OptionsModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xs p-4 select-none animate-fade-in">
-      <div className="wood-frame max-w-sm w-full p-5 rounded-2xl space-y-4 border-2 border-amber-700 shadow-2xl">
+      <div
+        ref={optionsScrollRef}
+        onPointerDown={handleOptionsPointerDown}
+        onPointerMove={handleOptionsPointerMove}
+        onPointerUp={handleOptionsPointerUp}
+        onPointerCancel={handleOptionsPointerUp}
+        className="wood-frame max-w-sm w-full max-h-[85vh] overflow-y-auto overscroll-contain touch-pan-y p-5 rounded-2xl space-y-4 border-2 border-amber-700 shadow-2xl cursor-grab active:cursor-grabbing [scrollbar-width:thin]"
+      >
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-2 border-b border-amber-900/60">
           <span className="font-serif font-black text-amber-200 text-base">

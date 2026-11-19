@@ -597,6 +597,31 @@ export const MISSION_AUTO_REWARDS: Record<string, MissionAutoRewardConfig> = {
     ],
     tavernStockBonus: { ing_especias_dragon: 5 },
   },
+  t2_c2_m1_ten_piedad: {
+    gold: 20000,
+    crystals: 680,
+    items: [
+      {
+        id: 'clavo_culto_piedad',
+        name: 'Clavo Consagrado del Culto a la Piedad',
+        category: 'materials',
+        rarity: 'UR',
+        icon: '/assets/portraits/ten_piedad_thumb.webp',
+        count: 1,
+        description: 'Clavo ritual forjado en hierro bendecido arrancado de la osamenta de Ten Piedad.',
+      },
+      {
+        id: 'zarza_maldita_santuario',
+        name: 'Zarza Espinada del Santuario',
+        category: 'materials',
+        rarity: 'SSR',
+        icon: '/assets/portraits/ten_piedad_thumb.webp',
+        count: 2,
+        description: 'Raíz espinosa impregnada de penitencia recogida entre las losas rotas de la iglesia.',
+      },
+    ],
+    tavernStockBonus: { ing_especias_dragon: 6 },
+  },
 };
 
 const DEFAULT_REWARD: MissionAutoRewardConfig = {

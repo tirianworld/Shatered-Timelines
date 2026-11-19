@@ -28,6 +28,8 @@ export interface EnemyAttackVfxOverlayProps {
   enemyFrame?: EnemyVfxFrame;
   /** Ajusta los puntos de impacto cuando los héroes luchan al 50% de escala (p. ej. Araña Acorazada). */
   isSmallHeroScale?: boolean;
+  /** Multiplicador de escala del héroe (1 normal, 0.75 Ten Piedad, 0.5 Araña Acorazada). */
+  heroScaleMul?: number;
 }
 
 type DeliveryMode =
@@ -72,8 +74,16 @@ type DeliveryMode =
   | 'dragon_claw_slam'
   | 'dragon_double_stomp'
   | 'dragon_bite_frost'
+  | 'dragon_bite_fire'
+  | 'dragon_crater_slam'
+  | 'dragon_fireballs'
+  | 'dragon_fire_breath'
   | 'dragon_ice_breath'
-  | 'dragon_frost_mist_breath';
+  | 'dragon_frost_mist_breath'
+  | 'ten_piedad_barrido'
+  | 'ten_piedad_zarzas'
+  | 'ten_piedad_pisoton'
+  | 'ten_piedad_escupir';
 
 type ShaderKey =
   | 'none'
@@ -104,7 +114,8 @@ type ShaderKey =
   | 'lightning'
   | 'crimson_ono_tint'
   | 'arana_fire'
-  | 'spider_web';
+  | 'spider_web'
+  | 'bramble_thorn';
 
 type ParticlePreset =
   | 'sparks'
@@ -122,7 +133,8 @@ type ParticlePreset =
   | 'void'
   | 'lightning'
   | 'shaman_lightning'
-  | 'lifesteal';
+  | 'lifesteal'
+  | 'bramble_spores';
 
 interface EnemyVfxProfile {
   mode: DeliveryMode;
@@ -177,6 +189,7 @@ const FILTER_ID_MAP: Record<ShaderKey, string | undefined> = {
   crimson_ono_tint: 'url(#enemy-vfx-crimson-ono-tint-shader)',
   arana_fire: 'url(#enemy-vfx-arana-fire-shader)',
   spider_web: 'url(#enemy-vfx-spider-web-shader)',
+  bramble_thorn: 'url(#enemy-vfx-bramble-thorn-shader)',
 };
 
 const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
@@ -548,6 +561,19 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     onoGlowColor: 'cyan',
     energyGlint: true,
   },
+  // === IGNIVRAX, EL TIRANO CARMESÍ (Mazmorra de Midas · Nivel II Jefe Final) ===
+  ignivrax_boss: {
+    mode: 'dragon_claw_slam',
+    shader: 'icespear_fire',
+    particles: 'fire',
+    accentColor: '#f97316',
+    spriteSrc: '/assets/combat/ignivrax_vfx_claw_slash.webp',
+    swingFromWeapon: true,
+    onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
   araknoide_azul: {
     mode: 'ice_shard',
     shader: 'frost_cryo',
@@ -649,13 +675,26 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     spriteSrc: '/assets/combat/smurph_vfx_impacto.webp',
     impactSrc: '/assets/combat/smurph_vfx_impacto.webp',
   },
+  // === TOMO II CAPÍTULO II: SANTUARIO — TEN PIEDAD ===
+  ten_piedad: {
+    mode: 'ten_piedad_barrido',
+    shader: 'bramble_thorn',
+    particles: 'bramble_spores',
+    accentColor: '#84cc16',
+    spriteSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    impactSrc: '/assets/combat/ten_piedad_vfx_zarza_suelo.webp',
+    onoSrc: '/assets/combat/guardia_ono_crack.webp',
+    ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+    onoGlowColor: 'sickly',
+    energyGlint: true,
+  },
   // === TOMO II CAPÍTULO I: BARRACÓN ABANDONADO ===
   no_muerto: {
     mode: 'punch_slam',
     shader: 'crimson',
     particles: 'dust',
     accentColor: '#a8a29e',
-    spriteSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+    spriteSrc: '/assets/combat/no_muerto_vfx_slam.webp',
     impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
     onoSrc: '/assets/combat/guardia_ono_crack.webp',
     onoGlowColor: 'crimson',
@@ -665,8 +704,8 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     shader: 'crimson',
     particles: 'sparks',
     accentColor: '#dc2626',
-    spriteSrc: '/assets/aistudio/image_ddc0d845.webp',
-    flipImgX: true,
+    spriteSrc: '/assets/combat/soldado_no_muerto_vfx_tajo.webp',
+    flipImgX: false,
     onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
     ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
     onoGlowColor: 'crimson',
@@ -678,20 +717,19 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     particles: 'blood',
     accentColor: '#ef4444',
     spriteSrc: '/assets/combat/enemy_vfx_fang_bite.webp',
-    impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+    impactSrc: '/assets/combat/perro_asalvajado_vfx_dentellada.webp',
     onoSrc: '/assets/combat/guardia_ono_crack.webp',
     onoGlowColor: 'crimson',
   },
   armadura_reanimada: {
-    mode: 'hammer_slam',
+    mode: 'punch_slam',
     shader: 'steel',
     particles: 'sparks',
-    accentColor: '#cbd5e1',
-    spriteSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+    accentColor: '#38bdf8',
+    spriteSrc: '/assets/combat/armadura_reanimada_vfx_runas.webp',
     impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
     onoSrc: '/assets/combat/guardia_ono_crack.webp',
     ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
-    alwaysDoubleSlash: true,
     onoGlowColor: 'cyan',
     energyGlint: true,
   },
@@ -707,6 +745,251 @@ const ENEMY_VFX_PROFILES: Record<string, EnemyVfxProfile> = {
     onoGlowColor: 'gold',
     energyGlint: true,
   },
+  // === MAZMORRA DE MIDAS: TUNDRA DE ESCARCHA (CAPÍTULO II) ===
+  caballero_escarcha_boss: {
+    mode: 'spear_thrust',
+    shader: 'frost_cryo',
+    particles: 'cryo_blizzard',
+    accentColor: '#7dd3fc',
+    spriteSrc: '/assets/combat/enemy_vfx_azul_web_ball.webp',
+    impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+    onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
+  ciervo_tundra: {
+    mode: 'spine_shot',
+    shader: 'frost_cryo',
+    particles: 'cryo_blizzard',
+    accentColor: '#bae6fd',
+    spriteSrc: '/assets/combat/enemy_vfx_azul_web_ball.webp',
+    impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+    onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
+  lobo_tundra: {
+    mode: 'fang_bite',
+    shader: 'frost_cryo',
+    particles: 'frost',
+    accentColor: '#7dd3fc',
+    spriteSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+    impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+    onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
+  zorro_tundra: {
+    mode: 'claw_swipe',
+    shader: 'frost_cryo',
+    particles: 'cryo_blizzard',
+    accentColor: '#38bdf8',
+    spriteSrc: '/assets/combat/enemy_vfx_devorador_slash.webp',
+    impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+    onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
+  conejo_tundra: {
+    mode: 'ice_shard',
+    shader: 'frost_cryo',
+    particles: 'frost',
+    accentColor: '#a5f3fc',
+    spriteSrc: '/assets/combat/enemy_vfx_azul_web_ball.webp',
+    impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+    onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
+  // === MAZMORRA DE MIDAS: INSECTOS DEL TESORO ===
+  insecto_joya: {
+    mode: 'fang_bite',
+    shader: 'venom_acid',
+    particles: 'acid',
+    accentColor: '#22c55e',
+    spriteSrc: '/assets/combat/enemy_vfx_fang_bite.webp',
+    impactSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+    onoSrc: '/assets/combat/roxanne_vfx_tshk.webp',
+    ultOnoSrc: '/assets/combat/bulezau_ono_bzzz.webp',
+    onoGlowColor: 'sickly',
+    energyGlint: true,
+  },
+  insecto_moneda: {
+    mode: 'acid_glob',
+    shader: 'venom_acid',
+    particles: 'acid',
+    accentColor: '#84cc16',
+    spriteSrc: '/assets/combat/enemy_vfx_miasma_orb.webp',
+    impactSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+    onoSrc: '/assets/combat/bulezau_ono_bzzz.webp',
+    ultOnoSrc: '/assets/combat/roxanne_vfx_tshk.webp',
+    onoGlowColor: 'sickly',
+    energyGlint: true,
+  },
+  insecto_collar_perlas: {
+    mode: 'spine_shot',
+    shader: 'venom_acid',
+    particles: 'acid',
+    accentColor: '#10b981',
+    spriteSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+    impactSrc: '/assets/combat/enemy_vfx_fang_bite.webp',
+    onoSrc: '/assets/combat/roxanne_vfx_tshk.webp',
+    ultOnoSrc: '/assets/combat/bulezau_ono_bzzz.webp',
+    onoGlowColor: 'sickly',
+    energyGlint: true,
+  },
+  // === MAZMORRA DE MIDAS: MANADA DE AURUMVORAX ===
+  aurumvorax_joven: {
+    mode: 'claw_swipe',
+    shader: 'gold_slash',
+    particles: 'sparks',
+    accentColor: '#f59e0b',
+    spriteSrc: '/assets/combat/enemy_vfx_devorador_slash.webp',
+    impactSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    onoSrc: '/assets/combat/guardia_ono_slash.webp',
+    ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
+  aurumvorax_alfa: {
+    mode: 'claw_swipe',
+    shader: 'gold_slash',
+    particles: 'sparks',
+    accentColor: '#d97706',
+    spriteSrc: '/assets/combat/enemy_vfx_devorador_slash.webp',
+    impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+    onoSrc: '/assets/combat/guardia_ono_slash.webp',
+    ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
+  // === MAZMORRA DE MIDAS: GUARDIA ÁUREA (ESCORPIÓN Y ARAÑA) ===
+  escorpion_aureo: {
+    mode: 'claw_swipe',
+    shader: 'gold_slash',
+    particles: 'sparks',
+    accentColor: '#eab308',
+    spriteSrc: '/assets/combat/enemy_vfx_devorador_slash.webp',
+    impactSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    onoSrc: '/assets/combat/guardia_ono_slash.webp',
+    ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
+  arana_coronada: {
+    mode: 'spine_shot',
+    shader: 'venom_acid',
+    particles: 'acid',
+    accentColor: '#84cc16',
+    spriteSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+    impactSrc: '/assets/combat/enemy_vfx_fang_bite.webp',
+    onoSrc: '/assets/combat/roxanne_vfx_tshk.webp',
+    ultOnoSrc: '/assets/combat/bulezau_ono_bzzz.webp',
+    onoGlowColor: 'sickly',
+    energyGlint: true,
+  },
+  escarabajo_aureo: {
+    mode: 'claw_swipe',
+    shader: 'venom_acid',
+    particles: 'acid',
+    accentColor: '#a3e635',
+    spriteSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+    impactSrc: '/assets/combat/enemy_vfx_fang_bite.webp',
+    onoSrc: '/assets/combat/roxanne_vfx_tshk.webp',
+    ultOnoSrc: '/assets/combat/bulezau_ono_bzzz.webp',
+    onoGlowColor: 'sickly',
+    energyGlint: true,
+  },
+  murcielago_carmesi: {
+    mode: 'acid_glob',
+    shader: 'venom_acid',
+    particles: 'acid',
+    accentColor: '#be123c',
+    spriteSrc: '/assets/combat/ten_piedad_vfx_escupir.webp',
+    impactSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+    onoSrc: '/assets/combat/roxanne_vfx_tshk.webp',
+    ultOnoSrc: '/assets/combat/bulezau_ono_bzzz.webp',
+    onoGlowColor: 'sickly',
+    energyGlint: true,
+  },
+  // === MAZMORRA DE MIDAS: JEFE ARAÑA ENJOYADA (VENENO) ===
+  arana_joya_boss: {
+    mode: 'acid_glob',
+    shader: 'venom_acid',
+    particles: 'acid',
+    accentColor: '#65a30d',
+    spriteSrc: '/assets/combat/ten_piedad_vfx_escupir.webp',
+    impactSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+    onoSrc: '/assets/combat/roxanne_vfx_tshk.webp',
+    ultOnoSrc: '/assets/combat/bulezau_ono_bzzz.webp',
+    onoGlowColor: 'sickly',
+    energyGlint: true,
+  },
+  // === MAZMORRA DE MIDAS: JEFE MÍMICO DE LA BÓVEDA ===
+  mimico_boss: {
+    mode: 'claw_swipe',
+    shader: 'crimson_claw',
+    particles: 'blood',
+    accentColor: '#dc2626',
+    spriteSrc: '/assets/combat/enemy_vfx_devorador_slash.webp',
+    impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+    onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+    onoGlowColor: 'crimson',
+    alwaysDoubleSlash: true,
+    energyGlint: true,
+  },
+  // === MAZMORRA DE MIDAS (NIVEL II): CULTO DRACÓNICO ROJO ===
+  kobold_alado: {
+    mode: 'sword_slash',
+    shader: 'none',
+    particles: 'sparks',
+    accentColor: '#f97316',
+    spriteSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+    onoSrc: '/assets/combat/guardia_ono_slash.webp',
+    ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
+  kobold_escudo_rojo: {
+    mode: 'spear_thrust',
+    shader: 'icespear_fire',
+    particles: 'fire',
+    accentColor: '#ef4444',
+    spriteSrc: '/assets/combat/enemy_vfx_oviparo_lanza.webp',
+    impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+    onoSrc: '/assets/combat/enemy_ono_shlink.webp',
+    ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+    onoGlowColor: 'crimson',
+    energyGlint: true,
+  },
+  draco_guardian_rojo: {
+    mode: 'dragon_bite_fire',
+    shader: 'icespear_fire',
+    particles: 'fire',
+    accentColor: '#dc2626',
+    spriteSrc: '/assets/combat/ignivrax_vfx_bite.webp',
+    impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+    onoSrc: '/assets/combat/guardia_ono_crack.webp',
+    ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+    alwaysDualOno: true,
+    onoGlowColor: 'crimson',
+    energyGlint: true,
+  },
+  semidragon_rojo_veterano: {
+    mode: 'sword_slash',
+    shader: 'icespear_fire',
+    particles: 'fire',
+    accentColor: '#f97316',
+    spriteSrc: '/assets/combat/enemy_vfx_voraz_corte_espada.webp',
+    impactSrc: '/assets/combat/edacorn_vfx_slash.webp',
+    onoSrc: '/assets/combat/enemy_ono_shlink.webp',
+    ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+    alwaysDoubleSlash: true,
+    onoGlowColor: 'gold',
+    energyGlint: true,
+  },
 };
 
 function resolveEnemyProfile(attack: ActiveEnemyAttackVfxState): EnemyVfxProfile {
@@ -715,6 +998,285 @@ function resolveEnemyProfile(attack: ActiveEnemyAttackVfxState): EnemyVfxProfile
   const isUlt = Boolean(attack.isUlt);
   const isSpecial = Boolean(attack.isSpecial);
   const dmgType = attack.dndDamageType || '';
+
+  // Treasure Insects (Mazmorra de Midas)
+  if (id === 'insecto_joya') {
+    if (isUlt || isSpecial || skillLower.includes('ponzo')) {
+      return {
+        ...ENEMY_VFX_PROFILES.insecto_joya,
+        mode: 'acid_glob',
+        spriteSrc: '/assets/combat/enemy_vfx_miasma_orb.webp',
+        impactSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+        alwaysDualOno: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.insecto_joya;
+  }
+
+  if (id === 'insecto_moneda') {
+    if (isUlt || isSpecial || skillLower.includes('espora') || skillLower.includes('ácid')) {
+      return {
+        ...ENEMY_VFX_PROFILES.insecto_moneda,
+        mode: 'acid_glob',
+        spriteSrc: '/assets/combat/bulezau_vfx_bola_putrida.webp',
+        impactSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+        alwaysDualOno: true,
+      };
+    }
+    return {
+      ...ENEMY_VFX_PROFILES.insecto_moneda,
+      mode: 'fang_bite',
+      spriteSrc: '/assets/combat/enemy_vfx_fang_bite.webp',
+    };
+  }
+
+  if (id === 'insecto_collar_perlas') {
+    if (isUlt || isSpecial || skillLower.includes('chorro') || skillLower.includes('toxina')) {
+      return {
+        ...ENEMY_VFX_PROFILES.insecto_collar_perlas,
+        mode: 'acid_glob',
+        spriteSrc: '/assets/combat/ten_piedad_vfx_escupir.webp',
+        impactSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+        alwaysDualOno: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.insecto_collar_perlas;
+  }
+
+  // Guardia Áurea (Mazmorra de Midas): escorpión y araña coronada
+  if (id === 'escorpion_aureo') {
+    const base = ENEMY_VFX_PROFILES.escorpion_aureo;
+    if (isUlt || isSpecial || skillLower.includes('aguijón') || skillLower.includes('furia')) {
+      return {
+        ...base,
+        mode: 'fang_bite',
+        spriteSrc: '/assets/combat/enemy_vfx_fang_bite.webp',
+        impactSrc: '/assets/combat/enemy_vfx_devorador_mordisco.webp',
+        alwaysDualOno: true,
+      };
+    }
+    return base;
+  }
+  if (id === 'escarabajo_aureo') {
+    const base = ENEMY_VFX_PROFILES.escarabajo_aureo;
+    if (isUlt || isSpecial || skillLower.includes('chorro') || skillLower.includes('furia')) {
+      return {
+        ...base,
+        mode: 'acid_glob',
+        spriteSrc: '/assets/combat/ten_piedad_vfx_escupir.webp',
+        impactSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+        alwaysDualOno: true,
+      };
+    }
+    return base;
+  }
+  if (id === 'arana_coronada') {
+    const base = ENEMY_VFX_PROFILES.arana_coronada;
+    if (isUlt || isSpecial || skillLower.includes('seda') || skillLower.includes('corona')) {
+      return {
+        ...base,
+        mode: 'acid_glob',
+        spriteSrc: '/assets/combat/ten_piedad_vfx_escupir.webp',
+        impactSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+        alwaysDualOno: true,
+      };
+    }
+    return base;
+  }
+
+  // Boss: Aracnia, la Viuda Enjoyada (mismo repertorio que la Araña Acorazada, pero veneno)
+  if (id === 'arana_joya_boss') {
+    if (isUlt || skillLower.includes('aliento')) {
+      return {
+        ...ENEMY_VFX_PROFILES.arana_joya_boss,
+        mode: 'dragon_ice_breath',
+        shader: 'venom_acid',
+        particles: 'acid',
+        accentColor: '#84cc16',
+        spriteSrc: '/assets/combat/cryovain_vfx_aliento_hielo.webp',
+        onoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        ultOnoSrc: '/assets/combat/enemy_ono_shlink.webp',
+        alwaysDualOno: true,
+        onoGlowColor: 'sickly',
+        energyGlint: true,
+      };
+    }
+    if (isSpecial || skillLower.includes('bilis') || skillLower.includes('escup') || skillLower.includes('bola')) {
+      return {
+        ...ENEMY_VFX_PROFILES.arana_joya_boss,
+        mode: 'bulezau_fireball',
+        shader: 'venom_acid',
+        particles: 'acid',
+        accentColor: '#a3e635',
+        spriteSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+        impactSrc: '/assets/combat/edacorn_vfx_slosh.webp',
+        onoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        onoGlowColor: 'sickly',
+        energyGlint: true,
+      };
+    }
+    if (skillLower.includes('telara')) {
+      return {
+        ...ENEMY_VFX_PROFILES.arana_joya_boss,
+        mode: 'ice_shard',
+        shader: 'spider_web',
+        particles: 'dust',
+        accentColor: '#f5f5f4',
+        spriteSrc: '/assets/combat/enemy_vfx_azul_web_ball.webp',
+        impactSrc: '/assets/combat/enemy_vfx_espinoso_web.webp',
+        onoSrc: '/assets/combat/roxanne_vfx_tshk.webp',
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    return {
+      ...ENEMY_VFX_PROFILES.arana_joya_boss,
+      mode: 'dragon_claw_slam',
+      shader: 'gold_slash',
+      particles: 'sparks',
+      accentColor: '#eab308',
+      spriteSrc: '/assets/combat/enemy_vfx_devorador_slash.webp',
+      impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+      onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+      ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+      onoGlowColor: 'gold',
+      energyGlint: true,
+    };
+  }
+
+  // Boss: Mímico de la Bóveda (Zarpazo / Mordisco / Rugido)
+  if (id === 'mimico_boss') {
+    if (isUlt || skillLower.includes('rugido') || dmgType === 'thunder') {
+      return {
+        ...ENEMY_VFX_PROFILES.mimico_boss,
+        mode: 'warcry_roar',
+        shader: 'crimson',
+        particles: 'blood',
+        accentColor: '#e11d48',
+        spriteSrc: '/assets/combat/guardia_vfx_rugido_onda.webp',
+        impactSrc: '/assets/combat/guardia_vfx_rugido_onda.webp',
+        onoSrc: '/assets/combat/guardia_ono_roar.webp',
+        ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+        alwaysDoubleSlash: false,
+        alwaysDualOno: true,
+        onoGlowColor: 'crimson',
+        energyGlint: true,
+      };
+    }
+    if (isSpecial || skillLower.includes('mordisco') || dmgType === 'piercing') {
+      return {
+        ...ENEMY_VFX_PROFILES.mimico_boss,
+        mode: 'fang_bite',
+        shader: 'crimson',
+        particles: 'blood',
+        accentColor: '#be123c',
+        spriteSrc: '/assets/combat/enemy_vfx_fang_bite.webp',
+        impactSrc: '/assets/combat/enemy_vfx_devorador_mordisco.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        alwaysDoubleSlash: false,
+        alwaysDualOno: true,
+        onoGlowColor: 'crimson',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.mimico_boss;
+  }
+
+  // Culto Dracónico Rojo (Mazmorra de Midas · Nivel II)
+  if (id === 'kobold_alado') {
+    if (isUlt || isSpecial || skillLower.includes('roca') || dmgType === 'bludgeoning') {
+      return {
+        ...ENEMY_VFX_PROFILES.kobold_alado,
+        mode: 'sling_stone',
+        shader: 'none',
+        particles: 'dust',
+        accentColor: '#d97706',
+        spriteSrc: '/assets/combat/enemy_vfx_sling_stone.webp',
+        impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        alwaysDualOno: isUlt,
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.kobold_alado;
+  }
+
+  if (id === 'kobold_escudo_rojo') {
+    if (isSpecial || skillLower.includes('escudo') || dmgType === 'bludgeoning') {
+      return {
+        ...ENEMY_VFX_PROFILES.kobold_escudo_rojo,
+        mode: 'shield_bash',
+        shader: 'icespear_fire',
+        particles: 'fire',
+        accentColor: '#ef4444',
+        spriteSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+        impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        alwaysDualOno: true,
+        onoGlowColor: 'crimson',
+        energyGlint: true,
+      };
+    }
+    if (isUlt || skillLower.includes('corazón') || skillLower.includes('corazon')) {
+      return {
+        ...ENEMY_VFX_PROFILES.kobold_escudo_rojo,
+        mode: 'spear_vanguard_ult',
+        shader: 'icespear_fire',
+        particles: 'fire',
+        accentColor: '#f97316',
+        spriteSrc: '/assets/combat/enemy_vfx_oviparo_lanza.webp',
+        impactSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        onoSrc: '/assets/combat/guardia_ono_roar.webp',
+        ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+        alwaysDualOno: true,
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.kobold_escudo_rojo;
+  }
+
+  if (id === 'draco_guardian_rojo') {
+    if (skillLower.includes('coletazo') || skillLower.includes('cola') || (!isUlt && dmgType === 'bludgeoning')) {
+      return {
+        ...ENEMY_VFX_PROFILES.draco_guardian_rojo,
+        mode: 'dragon_crater_slam',
+        shader: 'icespear_fire',
+        particles: 'fire',
+        accentColor: '#f97316',
+        spriteSrc: '/assets/combat/ignivrax_vfx_crater_burst.webp',
+        impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        alwaysDualOno: true,
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.draco_guardian_rojo;
+  }
+
+  if (id === 'semidragon_rojo_veterano') {
+    if (isUlt || skillLower.includes('aliento') || dmgType === 'fire') {
+      return {
+        ...ENEMY_VFX_PROFILES.semidragon_rojo_veterano,
+        mode: 'dragon_fire_breath',
+        shader: 'icespear_fire',
+        particles: 'fire',
+        accentColor: '#f97316',
+        spriteSrc: '/assets/combat/ignivrax_vfx_fire_breath.webp',
+        impactSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        onoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        ultOnoSrc: '/assets/combat/enemy_ono_shlink.webp',
+        alwaysDoubleSlash: false,
+        alwaysDualOno: true,
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.semidragon_rojo_veterano;
+  }
 
   // Clean skill routing for Icespear Guard Knights (Capítulo I - Robo no tan Justo)
   if (id === 'guardia_lanza') {
@@ -1211,6 +1773,110 @@ function resolveEnemyProfile(attack: ActiveEnemyAttackVfxState): EnemyVfxProfile
     };
   }
 
+  if (id === 'ignivrax_boss') {
+    if (skillLower.includes('brasas') || skillLower.includes('ceniza') || skillLower.includes('manto')) {
+      return {
+        ...ENEMY_VFX_PROFILES.ignivrax_boss,
+        mode: 'dragon_frost_mist_breath',
+        shader: 'arana_fire',
+        particles: 'fire',
+        accentColor: '#fb923c',
+        spriteSrc: '/assets/combat/gorgon_vfx_niebla.webp',
+        onoSrc: '/assets/combat/gorgon_ono_shhhhh.webp',
+        alwaysDualOno: false,
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    if (skillLower.includes('bola') || skillLower.includes('bolas')) {
+      return {
+        ...ENEMY_VFX_PROFILES.ignivrax_boss,
+        mode: 'dragon_fireballs',
+        shader: 'icespear_fire',
+        particles: 'fire',
+        accentColor: '#f97316',
+        spriteSrc: '/assets/combat/ignivrax_vfx_fireball.webp',
+        impactSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        onoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    if (
+      isUlt ||
+      skillLower.includes('aliento') ||
+      skillLower.includes('infernal')
+    ) {
+      return {
+        ...ENEMY_VFX_PROFILES.ignivrax_boss,
+        mode: 'dragon_fire_breath',
+        shader: 'icespear_fire',
+        particles: 'fire',
+        accentColor: '#f97316',
+        spriteSrc: '/assets/combat/ignivrax_vfx_fire_breath.webp',
+        onoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        ultOnoSrc: '/assets/combat/enemy_ono_shlink.webp',
+        alwaysDualOno: true,
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    if (
+      skillLower.includes('cráter') ||
+      skillLower.includes('crater') ||
+      skillLower.includes('planeo') ||
+      skillLower.includes('picado') ||
+      skillLower.includes('pisot') ||
+      skillLower.includes('doble')
+    ) {
+      return {
+        ...ENEMY_VFX_PROFILES.ignivrax_boss,
+        mode: 'dragon_crater_slam',
+        shader: 'icespear_fire',
+        particles: 'fire',
+        accentColor: '#fbbf24',
+        spriteSrc: '/assets/combat/ignivrax_vfx_crater_burst.webp',
+        impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        alwaysDualOno: true,
+        onoGlowColor: 'gold',
+        energyGlint: true,
+      };
+    }
+    if (isSpecial || skillLower.includes('mordisco') || skillLower.includes('incandescente')) {
+      return {
+        ...ENEMY_VFX_PROFILES.ignivrax_boss,
+        mode: 'dragon_bite_fire',
+        shader: 'icespear_fire',
+        particles: 'fire',
+        accentColor: '#ef4444',
+        spriteSrc: '/assets/combat/ignivrax_vfx_bite.webp',
+        impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        alwaysDualOno: true,
+        onoGlowColor: 'crimson',
+        energyGlint: true,
+      };
+    }
+    return {
+      ...ENEMY_VFX_PROFILES.ignivrax_boss,
+      mode: 'dragon_claw_slam',
+      shader: 'icespear_fire',
+      particles: 'fire',
+      accentColor: '#f97316',
+      spriteSrc: '/assets/combat/ignivrax_vfx_claw_slash.webp',
+      swingFromWeapon: true,
+      impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+      onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+      ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+      onoGlowColor: 'gold',
+      energyGlint: true,
+    };
+  }
+
   if (id === 'arana_acorazada_boss') {
     if (isUlt || skillLower.includes('aliento')) {
       return {
@@ -1256,6 +1922,171 @@ function resolveEnemyProfile(attack: ActiveEnemyAttackVfxState): EnemyVfxProfile
       };
     }
     return ENEMY_VFX_PROFILES.arana_acorazada_boss;
+  }
+
+  if (id === 'ten_piedad') {
+    if (skillLower.includes('zarzas alrededor') || skillLower.includes('zarzas')) {
+      if (skillLower.includes('escup')) {
+        return {
+          ...ENEMY_VFX_PROFILES.ten_piedad,
+          mode: 'ten_piedad_escupir',
+          shader: 'bramble_thorn',
+          particles: 'bramble_spores',
+          accentColor: '#a3e635',
+          spriteSrc: '/assets/combat/ten_piedad_vfx_escupir.webp',
+          impactSrc: '/assets/combat/ten_piedad_vfx_zarza_suelo.webp',
+          onoSrc: '/assets/combat/roxanne_vfx_tshk.webp',
+          onoGlowColor: 'sickly',
+          energyGlint: true,
+        };
+      }
+      if (skillLower.includes('pisot')) {
+        return {
+          ...ENEMY_VFX_PROFILES.ten_piedad,
+          mode: 'ten_piedad_pisoton',
+          shader: 'bramble_thorn',
+          particles: 'bramble_spores',
+          accentColor: '#65a30d',
+          spriteSrc: '/assets/combat/ten_piedad_vfx_zarza_suelo.webp',
+          impactSrc: '/assets/combat/ten_piedad_vfx_zarza_suelo.webp',
+          onoSrc: '/assets/combat/guardia_ono_crack.webp',
+          ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+          alwaysDualOno: isUlt || isSpecial,
+          onoGlowColor: 'sickly',
+          energyGlint: true,
+        };
+      }
+      return {
+        ...ENEMY_VFX_PROFILES.ten_piedad,
+        mode: 'ten_piedad_zarzas',
+        shader: 'bramble_thorn',
+        particles: 'bramble_spores',
+        accentColor: '#84cc16',
+        spriteSrc: '/assets/combat/ten_piedad_vfx_zarza_suelo.webp',
+        impactSrc: '/assets/combat/ten_piedad_vfx_zarza_suelo.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        onoGlowColor: 'sickly',
+        energyGlint: true,
+      };
+    }
+    if (skillLower.includes('pisot')) {
+      return {
+        ...ENEMY_VFX_PROFILES.ten_piedad,
+        mode: 'ten_piedad_pisoton',
+        shader: 'bramble_thorn',
+        particles: 'bramble_spores',
+        accentColor: '#65a30d',
+        spriteSrc: '/assets/combat/ten_piedad_vfx_zarza_suelo.webp',
+        impactSrc: '/assets/combat/ten_piedad_vfx_zarza_suelo.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        alwaysDualOno: isUlt || isSpecial,
+        onoGlowColor: 'sickly',
+        energyGlint: true,
+      };
+    }
+    if (skillLower.includes('escup')) {
+      return {
+        ...ENEMY_VFX_PROFILES.ten_piedad,
+        mode: 'ten_piedad_escupir',
+        shader: 'bramble_thorn',
+        particles: 'bramble_spores',
+        accentColor: '#a3e635',
+        spriteSrc: '/assets/combat/ten_piedad_vfx_escupir.webp',
+        impactSrc: '/assets/combat/ten_piedad_vfx_zarza_suelo.webp',
+        onoSrc: '/assets/combat/roxanne_vfx_tshk.webp',
+        onoGlowColor: 'sickly',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.ten_piedad;
+  }
+
+  if (id === 'no_muerto') {
+    if (isUlt || isSpecial || skillLower.includes('fortaleza') || skillLower.includes('acometida')) {
+      return {
+        ...ENEMY_VFX_PROFILES.no_muerto,
+        mode: 'punch_slam',
+        shader: 'crimson',
+        particles: 'dust',
+        accentColor: '#a3e635',
+        spriteSrc: '/assets/combat/no_muerto_vfx_slam.webp',
+        impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        alwaysDualOno: isUlt,
+        onoGlowColor: 'crimson',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.no_muerto;
+  }
+
+  if (id === 'perro_asalvajado') {
+    if (isUlt || isSpecial || skillLower.includes('dentellada') || skillLower.includes('frenes')) {
+      return {
+        ...ENEMY_VFX_PROFILES.perro_asalvajado,
+        mode: 'claw_swipe',
+        shader: 'crimson_claw',
+        particles: 'blood',
+        accentColor: '#dc2626',
+        spriteSrc: '/assets/combat/perro_asalvajado_vfx_dentellada.webp',
+        impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+        onoSrc: '/assets/combat/edacorn_vfx_corte.webp',
+        ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+        alwaysDoubleSlash: isUlt,
+        alwaysDualOno: isUlt || isSpecial,
+        onoGlowColor: 'crimson',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.perro_asalvajado;
+  }
+
+  if (id === 'soldado_no_muerto') {
+    if (isUlt || isSpecial || skillLower.includes('estocada') || skillLower.includes('asalto')) {
+      return {
+        ...ENEMY_VFX_PROFILES.soldado_no_muerto,
+        mode: 'sword_slash',
+        shader: 'crimson',
+        particles: 'sparks',
+        accentColor: '#ef4444',
+        spriteSrc: '/assets/combat/soldado_no_muerto_vfx_tajo.webp',
+        flipImgX: false,
+        onoSrc: '/assets/combat/edacorn_vfx_slash.webp',
+        ultOnoSrc: '/assets/combat/guardia_ono_crack.webp',
+        alwaysDoubleSlash: true,
+        alwaysDualOno: isUlt,
+        onoGlowColor: 'crimson',
+        energyGlint: true,
+      };
+    }
+    return ENEMY_VFX_PROFILES.soldado_no_muerto;
+  }
+
+  if (id === 'armadura_reanimada') {
+    if (isUlt || isSpecial || skillLower.includes('sentencia') || skillLower.includes('multiataque')) {
+      return {
+        ...ENEMY_VFX_PROFILES.armadura_reanimada,
+        mode: 'punch_slam',
+        shader: 'steel',
+        particles: 'sparks',
+        accentColor: '#22d3ee',
+        spriteSrc: '/assets/combat/armadura_reanimada_vfx_runas.webp',
+        impactSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+        onoSrc: '/assets/combat/guardia_ono_crack.webp',
+        ultOnoSrc: '/assets/combat/prometeo_vfx_boom.webp',
+        alwaysDualOno: isUlt || isSpecial,
+        onoGlowColor: 'cyan',
+        energyGlint: true,
+      };
+    }
+    return {
+      ...ENEMY_VFX_PROFILES.armadura_reanimada,
+      mode: 'punch_slam',
+      spriteSrc: '/assets/combat/enemy_vfx_slam_crush.webp',
+      impactSrc: '/assets/combat/raxxar_vfx_impacto.webp',
+    };
   }
 
   if (id === 'hobgoblin_capataz') {
@@ -1469,7 +2300,10 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
   enabled = true,
   enemyFrame,
   isSmallHeroScale = false,
+  heroScaleMul,
 }) => {
+  const effectiveHeroScale = heroScaleMul ?? (isSmallHeroScale ? 0.5 : 1);
+  const isMediumHeroScale = !isSmallHeroScale && effectiveHeroScale < 0.9;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [triggeredSteps, setTriggeredSteps] = useState<number[]>([]);
@@ -1498,6 +2332,21 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
     };
   }, [enemyFrame]);
 
+  const weaponTip2 = useMemo(() => {
+    const f = enemyFrame ?? DEFAULT_ENEMY_FRAME;
+    if (f.tip2Fx === undefined || f.tip2Fy === undefined) return null;
+    const x =
+      f.left !== undefined
+        ? f.left + f.width * f.tip2Fx
+        : f.x - f.width * 0.5 + f.width * f.tip2Fx;
+    const topY = f.top !== undefined ? f.top : f.headY - f.height * 0.15;
+    const y = topY + f.height * f.tip2Fy;
+    return {
+      x: Math.min(0.96, Math.max(0.02, x)),
+      y: Math.min(0.94, Math.max(0.06, y)),
+    };
+  }, [enemyFrame]);
+
   const mouthOrigin = useMemo(() => {
     const f = enemyFrame ?? DEFAULT_ENEMY_FRAME;
     const fallbackX = f.left !== undefined ? f.left + f.width * 0.27 : f.x - f.width * 0.23;
@@ -1512,18 +2361,25 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
 
   // La punta y la boca se congelan al despegar el ataque para que el efecto no salte en vuelo.
   const [launchTip, setLaunchTip] = useState(weaponTip);
+  const [launchTip2, setLaunchTip2] = useState(weaponTip2);
   const [launchMouth, setLaunchMouth] = useState(mouthOrigin);
+  const launchTipRef = useRef(launchTip);
+  launchTipRef.current = launchTip;
+  const launchTip2Ref = useRef(launchTip2);
+  launchTip2Ref.current = launchTip2;
   useEffect(() => {
     setLaunchTip(weaponTip);
+    setLaunchTip2(weaponTip2);
     setLaunchMouth(mouthOrigin);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeAttack?.vfxKey]);
   useEffect(() => {
     if (triggeredSteps.length === 0) {
       setLaunchTip(weaponTip);
+      setLaunchTip2(weaponTip2);
       setLaunchMouth(mouthOrigin);
     }
-  }, [weaponTip, mouthOrigin, triggeredSteps.length]);
+  }, [weaponTip, weaponTip2, mouthOrigin, triggeredSteps.length]);
 
   // Tamaño real del área de combate: hace falta para pasar de porcentajes a píxeles al calcular
   // la recta entre la punta del arma y el héroe.
@@ -1597,8 +2453,16 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
     profile?.mode === 'dragon_claw_slam' ||
     profile?.mode === 'dragon_double_stomp' ||
     profile?.mode === 'dragon_bite_frost' ||
+    profile?.mode === 'dragon_bite_fire' ||
+    profile?.mode === 'dragon_crater_slam' ||
+    profile?.mode === 'dragon_fireballs' ||
+    profile?.mode === 'dragon_fire_breath' ||
     profile?.mode === 'dragon_ice_breath' ||
     profile?.mode === 'dragon_frost_mist_breath' ||
+    profile?.mode === 'ten_piedad_barrido' ||
+    profile?.mode === 'ten_piedad_zarzas' ||
+    profile?.mode === 'ten_piedad_pisoton' ||
+    profile?.mode === 'ten_piedad_escupir' ||
     isDevoradorMode ||
     isSpiderWebPunchMode ||
     isBugbearMansionVfx;
@@ -1668,12 +2532,28 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         return [95];
       case 'dragon_double_stomp':
         return [85, 195];
+      case 'dragon_crater_slam':
+        return [40, 210];
       case 'dragon_bite_frost':
         return [135];
+      case 'dragon_bite_fire':
+        return [125];
+      case 'dragon_fireballs':
+        return [70, 195, 320];
+      case 'dragon_fire_breath':
+        return [180];
       case 'dragon_ice_breath':
         return [190];
       case 'dragon_frost_mist_breath':
         return [150];
+      case 'ten_piedad_barrido':
+        return [90];
+      case 'ten_piedad_zarzas':
+        return [75, 165, 255];
+      case 'ten_piedad_pisoton':
+        return [80, 180];
+      case 'ten_piedad_escupir':
+        return isUlt ? [75, 225] : [75];
       case 'bulezau_fireball':
         return (
           isUlt
@@ -1716,8 +2596,14 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
     const impactDelay =
       profile.mode === 'lifesteal_bite'
         ? 185
-        : profile.mode === 'dragon_ice_breath'
-        ? 280
+        : profile.mode === 'dragon_ice_breath' || profile.mode === 'dragon_fire_breath'
+        ? 275
+        : profile.mode === 'dragon_fireballs'
+        ? 340
+        : profile.mode === 'dragon_crater_slam'
+        ? 240
+        : profile.mode === 'dragon_bite_fire'
+        ? 210
         : profile.mode === 'grenade_throw' || profile.mode === 'sling_stone'
         ? isUlt
           ? 360
@@ -1766,8 +2652,8 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
       return;
     }
 
-    const heroX = width * (isSmallHeroScale ? 0.145 : 0.21);
-    const heroY = height * (isSmallHeroScale ? 0.85 : 0.62);
+    const heroX = width * (isSmallHeroScale ? 0.145 : isMediumHeroScale ? 0.175 : 0.21);
+    const heroY = height * (isSmallHeroScale ? 0.85 : isMediumHeroScale ? 0.74 : 0.62);
     const enemyX = width * (isSmallHeroScale ? 0.60 : 0.77);
     const enemyY = height * (isSmallHeroScale ? 0.34 : 0.54);
 
@@ -1791,6 +2677,7 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
       lightning: ['#e0f2fe', '#38bdf8', '#22d3ee'],
       shaman_lightning: ['#a7f3d0', '#6ee7b7', '#34d399', '#ecfdf5'],
       lifesteal: ['#ef4444', '#fda4af', '#dc2626'],
+      bramble_spores: ['#84cc16', '#bef264', '#a16207', '#ef4444'],
     };
 
     const palette = paletteByPreset[effectiveParticles];
@@ -1843,6 +2730,102 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
           trail: true,
           shape: i % 2 === 0 ? 'spark' : 'diamond',
           gravity: 0.16,
+        });
+      }
+    }
+
+    // Chispas de magma, ascuas y colmillos incandescentes en el mordisco de Ignivrax
+    if (profile.mode === 'dragon_bite_fire') {
+      for (let i = 0; i < 24; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const spd = 2.6 + Math.random() * 4.4;
+        particles.push({
+          x: heroX + (Math.random() - 0.5) * 24,
+          y: heroY + (Math.random() - 0.5) * 24,
+          vx: Math.cos(ang) * spd,
+          vy: Math.sin(ang) * spd - 0.9,
+          size: 2.2 + Math.random() * 2.4,
+          life: -5 - Math.random() * 4,
+          maxLife: 20 + Math.random() * 10,
+          color: i % 3 === 0 ? '#fef08a' : i % 2 === 0 ? '#ef4444' : '#f97316',
+          trail: true,
+          shape: i % 2 === 0 ? 'spark' : 'diamond',
+          gravity: 0.08,
+        });
+      }
+    }
+
+    // Bolas de Fuego desde las dos manos alzadas de Ignivrax: chispas y estelas ígneas reales
+    if (profile.mode === 'dragon_fireballs') {
+      const h1x = launchTipRef.current.x * width;
+      const h1y = launchTipRef.current.y * height;
+      const h2x = (launchTip2Ref.current?.x ?? launchTipRef.current.x) * width;
+      const h2y = (launchTip2Ref.current?.y ?? launchTipRef.current.y) * height;
+      const volleyHands = [
+        { x: h1x, y: h1y, delayFrames: 4 },
+        { x: h2x, y: h2y, delayFrames: 11 },
+        { x: h1x, y: h1y, delayFrames: 19 },
+      ];
+      volleyHands.forEach((hand) => {
+        const travelX = heroX - hand.x;
+        const travelY = heroY - hand.y;
+        for (let i = 0; i < 12; i++) {
+          const steps = 13 + Math.random() * 7;
+          particles.push({
+            x: hand.x + (Math.random() - 0.5) * 14,
+            y: hand.y + (Math.random() - 0.5) * 14,
+            vx: travelX / steps + (Math.random() - 0.5) * 1.4,
+            vy: travelY / steps + (Math.random() - 0.5) * 1.4,
+            size: 2.4 + Math.random() * 2.5,
+            life: -hand.delayFrames - i * 0.65,
+            maxLife: Math.round(steps) + 8,
+            color: i % 3 === 0 ? '#fef08a' : i % 2 === 0 ? '#f97316' : '#ef4444',
+            trail: true,
+            shape: i % 3 === 0 ? 'diamond' : 'spark',
+            gravity: -0.02,
+          });
+        }
+      });
+    }
+
+    // Erupción sísmica desde el cráter de los puños de Ignivrax hacia el héroe
+    if (profile.mode === 'dragon_crater_slam') {
+      const slamX = launchTipRef.current.x * width;
+      const slamY = launchTipRef.current.y * height;
+      for (let i = 0; i < 24; i++) {
+        const ang = -Math.PI * (0.15 + Math.random() * 0.7);
+        const spd = 3.0 + Math.random() * 5.2;
+        particles.push({
+          x: slamX + (Math.random() - 0.5) * 58,
+          y: slamY + (Math.random() - 0.5) * 12,
+          vx: Math.cos(ang) * spd - 0.8,
+          vy: Math.sin(ang) * spd - 0.6,
+          size: 2.5 + Math.random() * 3.0,
+          life: -1 - Math.random() * 5,
+          maxLife: 24 + Math.random() * 12,
+          color: i % 3 === 0 ? '#fde047' : i % 2 === 0 ? '#f97316' : '#dc2626',
+          trail: true,
+          shape: i % 3 === 0 ? 'diamond' : 'spark',
+          gravity: 0.16,
+        });
+      }
+    }
+
+    // Zarpazo ígneo de Ignivrax: arco diagonal de ascuas y chispas ardientes sobre el héroe
+    if (profile.mode === 'dragon_claw_slam' && effectiveParticles === 'fire') {
+      for (let i = 0; i < 18; i++) {
+        particles.push({
+          x: heroX + 34 - i * 3.4 + (Math.random() - 0.5) * 14,
+          y: heroY - 34 + i * 3.4 + (Math.random() - 0.5) * 14,
+          vx: -2.2 - Math.random() * 2.4,
+          vy: 1.6 + Math.random() * 2.2,
+          size: 2.2 + Math.random() * 2.2,
+          life: -4 - i * 0.45,
+          maxLife: 18 + Math.random() * 8,
+          color: i % 3 === 0 ? '#fef08a' : i % 2 === 0 ? '#f97316' : '#ef4444',
+          trail: true,
+          shape: 'spark',
+          gravity: 0.04,
         });
       }
     }
@@ -1947,7 +2930,13 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
     let frameId = 0;
     const startTime = performance.now();
     const totalDurationMs =
-      profile.mode === 'dragon_ice_breath' ? 1020 : isUlt ? 900 : 780;
+      profile.mode === 'dragon_ice_breath' || profile.mode === 'dragon_fire_breath'
+        ? 1060
+        : profile.mode === 'dragon_fireballs'
+        ? 980
+        : isUlt
+        ? 900
+        : 780;
 
     const render = (now: number) => {
       const elapsed = now - startTime;
@@ -1972,6 +2961,10 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         profile.mode === 'dragon_claw_slam' ||
         profile.mode === 'dragon_double_stomp' ||
         profile.mode === 'dragon_bite_frost' ||
+        profile.mode === 'dragon_bite_fire' ||
+        profile.mode === 'dragon_crater_slam' ||
+        profile.mode === 'dragon_fireballs' ||
+        profile.mode === 'dragon_fire_breath' ||
         profile.mode === 'dragon_ice_breath';
       const ringCount =
         profile.mode === 'shaman_lightning' ||
@@ -1985,6 +2978,7 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
             : 2
           : 1;
 
+      const ringYOffset = isSmallHeroScale ? 26 : 58;
       for (let r = 0; r < ringCount; r++) {
         const ringStart = 0.2 + r * 0.11;
         const ringSpan = 0.45;
@@ -1994,9 +2988,9 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
           ctx.beginPath();
           ctx.ellipse(
             heroX,
-            heroY + 58,
-            20 + p * (50 + r * 12),
-            6 + p * (16 + r * 4),
+            heroY + ringYOffset,
+            (isSmallHeroScale ? 15 : 20) + p * (50 + r * 12),
+            (isSmallHeroScale ? 5 : 6) + p * (16 + r * 4),
             0,
             0,
             Math.PI * 2
@@ -2187,6 +3181,97 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         ctx.restore();
       }
 
+      // Aliento Infernal AAA de Ignivrax: núcleo blanco-dorado y estela de llamas/ascuas saliendo 100% de su boca
+      if (profile.mode === 'dragon_fire_breath' && elapsed >= 170 && elapsed <= 980) {
+        if (!settledBreathMouth) {
+          settledBreathMouth = {
+            x: mouthOriginRef.current.x * width,
+            y: mouthOriginRef.current.y * height,
+          };
+        }
+        const mx = settledBreathMouth.x;
+        const my = settledBreathMouth.y;
+        const targetHeroX = Math.max(24, width * (isSmallHeroScale ? 0.135 : 0.13));
+        const targetHeroY = height * (isSmallHeroScale ? 0.87 : 0.67);
+        const bp = Math.min(1, Math.max(0, (elapsed - 170) / 810));
+        const beamAlpha = Math.sin(bp * Math.PI);
+
+        if (elapsed <= 740) {
+          const travelX = targetHeroX - mx;
+          const travelY = targetHeroY - my;
+          for (let k = 0; k < 3; k++) {
+            const steps = 9 + Math.random() * 6;
+            particles.push({
+              x: mx + (Math.random() - 0.5) * 10,
+              y: my + (Math.random() - 0.5) * 10,
+              vx: travelX / steps + (Math.random() - 0.5) * 1.9,
+              vy: travelY / steps + (Math.random() - 0.5) * 1.9,
+              size: 2.3 + Math.random() * 2.8,
+              life: 0,
+              maxLife: Math.round(steps) + 7,
+              color:
+                k === 0
+                  ? '#fef08a'
+                  : Math.random() < 0.45
+                  ? '#f97316'
+                  : '#ef4444',
+              trail: true,
+              shape: k === 0 ? 'diamond' : 'spark',
+              gravity: -0.05,
+            });
+          }
+        }
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(mx, my);
+        ctx.lineTo(targetHeroX, targetHeroY);
+        ctx.strokeStyle = `rgba(239, 68, 68, ${beamAlpha * 0.56})`;
+        ctx.lineWidth = 22 * (0.7 + beamAlpha * 0.45);
+        ctx.lineCap = 'round';
+        ctx.shadowColor = '#f97316';
+        ctx.shadowBlur = 28;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(mx, my);
+        ctx.lineTo(targetHeroX, targetHeroY);
+        ctx.strokeStyle = `rgba(251, 146, 60, ${beamAlpha * 0.78})`;
+        ctx.lineWidth = 11 * (0.72 + beamAlpha * 0.45);
+        ctx.lineCap = 'round';
+        ctx.shadowColor = '#fbbf24';
+        ctx.shadowBlur = 16;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(mx, my);
+        ctx.lineTo(targetHeroX, targetHeroY);
+        ctx.strokeStyle = `rgba(254, 249, 195, ${beamAlpha * 0.96})`;
+        ctx.lineWidth = 4.5 * (0.75 + beamAlpha * 0.4);
+        ctx.lineCap = 'round';
+        ctx.shadowColor = '#fef08a';
+        ctx.shadowBlur = 10;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Ondas sísmicas ardientes en el punto exacto de impacto de los puños de Ignivrax (Cráter)
+      if (profile.mode === 'dragon_crater_slam' && elapsed >= 35 && elapsed <= 680) {
+        const cp = (elapsed - 35) / 645;
+        const slamX = launchTipRef.current.x * width;
+        const slamY = launchTipRef.current.y * height + 10;
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(slamX, slamY, 28 + cp * 116, 8 + cp * 26, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = '#fb923c';
+        ctx.globalAlpha = (1 - cp) * 0.92;
+        ctx.lineWidth = 3.5 * (1 - cp * 0.45);
+        ctx.shadowColor = '#f97316';
+        ctx.shadowBlur = 18;
+        ctx.stroke();
+        ctx.restore();
+      }
+
       // Clean lightning arc for Medusa / Melenudo
       if (effectiveParticles === 'lightning' && progress > 0.12 && progress < 0.62) {
         ctx.save();
@@ -2308,7 +3393,7 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
 
     frameId = requestAnimationFrame(render);
     return () => cancelAnimationFrame(frameId);
-  }, [activeAttack, vfxKey, isUlt, effectiveAccent, effectiveParticles, profile, isSmallHeroScale]);
+  }, [activeAttack, vfxKey, isUlt, effectiveAccent, effectiveParticles, profile, isSmallHeroScale, isMediumHeroScale]);
 
   if (!isActive || !profile) return null;
 
@@ -2366,9 +3451,13 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
       // Sale de la punta del arma...
       const startX = launchTip.x * w;
       const startY = launchTip.y * h;
-      // ...y llega a la zona de impacto sobre el héroe (adaptada si está al 50% de escala).
-      const endX = (isSmallHeroScale ? 0.04 : 0.065) * w + 74.5;
-      const targetBottomPct = isSmallHeroScale ? Math.max(8, p.endBottomPct * 0.42) : p.endBottomPct;
+      // ...y llega a la zona de impacto sobre el héroe (adaptada a su escala en jefes gigantes).
+      const endX = (isSmallHeroScale ? 0.04 : isMediumHeroScale ? 0.045 : 0.065) * w + 74.5;
+      const targetBottomPct = isSmallHeroScale
+        ? Math.max(8, p.endBottomPct * 0.42)
+        : isMediumHeroScale
+        ? Math.max(12, p.endBottomPct * 0.66)
+        : p.endBottomPct;
       const endY = h - (targetBottomPct / 100) * h;
       const dx = endX - startX;
       const dy = endY - startY;
@@ -2862,6 +3951,15 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
               <feMergeNode in="webSilver" />
             </feMerge>
           </filter>
+          <filter id="enemy-vfx-bramble-thorn-shader" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="0" stdDeviation="2.8" floodColor="#84cc16" floodOpacity="0.82" result="thornAura" />
+            <feDropShadow dx="0" dy="0" stdDeviation="1.2" floodColor="#d9f99d" floodOpacity="0.72" result="sporeRim" />
+            <feMerge>
+              <feMergeNode in="thornAura" />
+              <feMergeNode in="sporeRim" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
       </svg>
 
@@ -3085,6 +4183,28 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
             25% { transform: scale(1.02); opacity: 0.85; }
             72% { transform: scale(1.06); opacity: 0.78; }
             100% { transform: scale(1.1); opacity: 0; }
+          }
+
+          @keyframes enemyClawOriginSweep {
+            0% { transform: translate(var(--swing-x), var(--swing-y)) scale(0.36); opacity: 0; }
+            20% { transform: translate(calc(var(--swing-x) * 0.25), calc(var(--swing-y) * 0.25)) scale(0.96); opacity: 1; }
+            55% { transform: translate(-4px, 4px) scale(1.1); opacity: 1; }
+            100% { transform: translate(-18px, 14px) scale(1.16); opacity: 0; }
+          }
+
+          @keyframes enemyDragonBiteChomp {
+            0% { transform: scale(1.22) scaleY(1.3); opacity: 0; }
+            22% { transform: scale(1.08) scaleY(1.18); opacity: 1; }
+            46% { transform: scale(1.0) scaleY(0.84); opacity: 1; }
+            68% { transform: scale(1.02) scaleY(0.94); opacity: 1; }
+            100% { transform: scale(1.06) scaleY(0.88); opacity: 0; }
+          }
+
+          @keyframes enemyFireballChargeOrb {
+            0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+            28% { transform: translate(-50%, -50%) scale(1.12); opacity: 1; }
+            66% { transform: translate(-50%, -50%) scale(0.96); opacity: 0.92; }
+            100% { transform: translate(-50%, -50%) scale(1.32); opacity: 0; }
           }
         `}</style>
 
@@ -3722,41 +4842,204 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
             { flipImgX: false }
           )}
 
-        {/* CRYOVAIN ATAQUE 1: ZARPAZO GLACIAL (triple garra helada sobre el héroe) */}
+        {/* CRYOVAIN / IGNIVRAX: ZARPAZO (sale desde la garra real hacia el héroe cuando swingFromWeapon=true) */}
         {isMode('dragon_claw_slam') &&
-          triggeredSteps.map((idx) => (
-            <div
-              key={`cryovain-claw-${vfxKey}-${idx}`}
-              className={`absolute pointer-events-none z-[24] flex items-center justify-center overflow-visible ${
-                isSmallHeroScale
-                  ? 'left-[1%] bottom-[2%] w-[178px] h-[178px]'
-                  : 'left-[1.5%] bottom-[11%] w-[252px] h-[252px]'
-              }`}
-            >
-              <div className="relative w-full h-full overflow-visible">
-                <img
-                  src={profile.spriteSrc}
-                  alt="Zarpazo Glacial"
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-contain animate-[enemyCryovainClawSlash_0.48s_cubic-bezier(0.16,1,0.3,1)_forwards]"
-                  style={{ filter: filterUrl }}
-                />
-                {profile.energyGlint && (
+          triggeredSteps.map((idx) => {
+            const clawLeft = isSmallHeroScale ? 0.5 : 1.5;
+            const clawBottom = isSmallHeroScale ? 1.5 : 11;
+            const clawSize = isSmallHeroScale ? 184 : 252;
+            const swing = profile.swingFromWeapon
+              ? getSwingStartOffset(clawLeft, clawBottom, clawSize)
+              : null;
+            return (
+              <div
+                key={`dragon-claw-${vfxKey}-${idx}`}
+                className={`absolute pointer-events-none z-[24] flex items-center justify-center overflow-visible ${
+                  isSmallHeroScale
+                    ? 'left-[0.5%] bottom-[1.5%] w-[184px] h-[184px]'
+                    : 'left-[1.5%] bottom-[11%] w-[252px] h-[252px]'
+                }`}
+              >
+                <div className="relative w-full h-full overflow-visible">
                   <img
                     src={profile.spriteSrc}
-                    alt=""
+                    alt="Zarpazo"
                     referrerPolicy="no-referrer"
-                    className="absolute inset-0 w-full h-full object-contain pointer-events-none"
-                    style={{
-                      ...GLINT_MASK_STYLE,
-                      animation:
-                        'enemyCryovainClawSlash 0.48s cubic-bezier(0.16,1,0.3,1) forwards, enemyEnergySweep 0.4s ease-out forwards',
-                    }}
+                    className={`w-full h-full object-contain ${
+                      swing
+                        ? 'animate-[enemyClawOriginSweep_0.48s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                        : 'animate-[enemyCryovainClawSlash_0.48s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                    }`}
+                    style={
+                      swing
+                        ? ({
+                            filter: filterUrl,
+                            '--swing-x': `${swing.x}px`,
+                            '--swing-y': `${swing.y}px`,
+                          } as React.CSSProperties)
+                        : { filter: filterUrl }
+                    }
                   />
-                )}
+                  {profile.energyGlint && (
+                    <img
+                      src={profile.spriteSrc}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                      className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                      style={
+                        swing
+                          ? ({
+                              ...GLINT_MASK_STYLE,
+                              '--swing-x': `${swing.x}px`,
+                              '--swing-y': `${swing.y}px`,
+                              animation:
+                                'enemyClawOriginSweep 0.48s cubic-bezier(0.16,1,0.3,1) forwards, enemyEnergySweep 0.4s ease-out forwards',
+                            } as React.CSSProperties)
+                          : {
+                              ...GLINT_MASK_STYLE,
+                              animation:
+                                'enemyCryovainClawSlash 0.48s cubic-bezier(0.16,1,0.3,1) forwards, enemyEnergySweep 0.4s ease-out forwards',
+                            }
+                      }
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
+
+        {/* IGNIVRAX: BOLAS DE FUEGO DESDE AMBAS MANOS ALZADAS */}
+        {isMode('dragon_fireballs') && (
+          <>
+            {[launchTip, launchTip2 ?? launchTip].map((hand, hIdx) => (
+              <div
+                key={`ignivrax-palm-flare-${vfxKey}-${hIdx}`}
+                className="absolute pointer-events-none z-[22] w-[86px] h-[86px] rounded-full animate-[enemyFireballChargeOrb_0.52s_ease-out_forwards]"
+                style={{
+                  left: `${(hand.x * 100).toFixed(2)}%`,
+                  top: `${(hand.y * 100).toFixed(2)}%`,
+                  background:
+                    'radial-gradient(circle, rgba(254,249,195,0.98) 0%, rgba(251,146,60,0.85) 36%, rgba(239,68,68,0.42) 66%, transparent 82%)',
+                  boxShadow: '0 0 28px rgba(249,115,22,0.9)',
+                  mixBlendMode: 'screen',
+                }}
+              />
+            ))}
+            {triggeredSteps.map((idx) => {
+              const { w, h } = arenaBox;
+              const handOrigin = idx === 1 && launchTip2 ? launchTip2 : launchTip;
+              const startX = handOrigin.x * w;
+              const startY = handOrigin.y * h;
+              const endX = w * (isSmallHeroScale ? 0.135 : 0.18) + (idx - 1) * 8;
+              const endY = h * (isSmallHeroScale ? 0.855 : 0.62) + (idx - 1) * 5;
+              const dx = endX - startX;
+              const dy = endY - startY;
+              const flightAngle = (Math.atan2(dy, dx) * 180) / Math.PI - 180;
+              const widthPx = idx === 1 ? 196 : 176;
+              const heightPx = Math.round(widthPx * 0.56);
+              return (
+                <div
+                  key={`ignivrax-fireball-${vfxKey}-${idx}`}
+                  className="absolute pointer-events-none z-[24] overflow-visible"
+                  style={
+                    {
+                      left: `${(handOrigin.x * 100).toFixed(2)}%`,
+                      top: `${(handOrigin.y * 100).toFixed(2)}%`,
+                      width: `${widthPx}px`,
+                      height: `${heightPx}px`,
+                      '--dx': `${dx.toFixed(1)}px`,
+                      '--dy': `${dy.toFixed(1)}px`,
+                      animation: 'enemyProjectileFlyToTarget 290ms cubic-bezier(0.16,0.9,0.28,1) forwards',
+                    } as React.CSSProperties
+                  }
+                >
+                  <div
+                    className="relative w-full h-full"
+                    style={{
+                      transform: `translate(-22%, -50%) rotate(${flightAngle.toFixed(2)}deg)`,
+                      transformOrigin: '22% 50%',
+                    }}
+                  >
+                    <img
+                      src={profile.spriteSrc}
+                      alt="Bola de Fuego"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-contain"
+                      style={{ filter: filterUrl }}
+                    />
+                    {profile.energyGlint && (
+                      <img
+                        src={profile.spriteSrc}
+                        alt=""
+                        referrerPolicy="no-referrer"
+                        className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                        style={{
+                          ...GLINT_MASK_STYLE,
+                          animation: 'enemyEnergySweep 0.34s ease-out forwards',
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+            {triggeredImpact && (
+              <div
+                className={`absolute pointer-events-none z-[25] flex items-center justify-center ${
+                  isSmallHeroScale ? 'left-[1%] bottom-[2%] w-[132px] h-[132px]' : 'left-[5%] bottom-[16%] w-[176px] h-[176px]'
+                }`}
+              >
+                <img
+                  src={activeImpactSrc}
+                  alt="Explosión Ígnea"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-contain animate-[enemySlamBurstPop_0.44s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                  style={{ filter: filterUrl }}
+                />
+              </div>
+            )}
+          </>
+        )}
+
+        {/* IGNIVRAX: CRÁTER SÍSMICO (erupción en los puños del dragón + onda volcánica bajo el héroe) */}
+        {isMode('dragon_crater_slam') && (
+          <>
+            {triggeredSteps.includes(0) && (
+              <div
+                className="absolute w-[276px] h-[240px] pointer-events-none z-[24] flex items-center justify-center overflow-visible"
+                style={{
+                  left: `calc(${(launchTip.x * 100).toFixed(2)}% - 138px)`,
+                  top: `calc(${(launchTip.y * 100).toFixed(2)}% - 156px)`,
+                }}
+              >
+                <img
+                  src={profile.spriteSrc}
+                  alt="Cráter Sísmico"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-contain animate-[enemySlamBurstPop_0.6s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                  style={{ filter: filterUrl }}
+                />
+              </div>
+            )}
+            {triggeredSteps.includes(1) && (
+              <div
+                className={`absolute pointer-events-none z-[25] flex items-center justify-center overflow-visible ${
+                  isSmallHeroScale
+                    ? 'left-[-1%] bottom-[0.5%] w-[184px] h-[156px]'
+                    : 'left-[2%] bottom-[6%] w-[238px] h-[200px]'
+                }`}
+              >
+                <img
+                  src={profile.spriteSrc}
+                  alt="Onda Volcánica"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-contain animate-[enemySlamBurstPop_0.54s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                  style={{ filter: filterUrl }}
+                />
+              </div>
+            )}
+          </>
+        )}
 
         {/* CRYOVAIN ATAQUE 1B: PISOTÓN SÍSMICO CON LAS DOS PATAS DELANTERAS */}
         {isMode('dragon_double_stomp') &&
@@ -3814,22 +5097,59 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
             </div>
           ))}
 
-        {/* CRYOVAIN ATAQUE 3: ALIENTO DE HIELO CONCENTRADO (punta del haz 100% dentro de su boca y disipación suave sin cortes sobre el héroe) */}
-        {isMode('dragon_ice_breath') &&
+        {/* IGNIVRAX: MORDISCO INCANDESCENTE (fauces de fuego mirando a la izquierda cerrándose sobre el héroe) */}
+        {isMode('dragon_bite_fire') &&
+          triggeredSteps.map((idx) => (
+            <div
+              key={`ignivrax-bite-${vfxKey}-${idx}`}
+              className={`absolute pointer-events-none z-[24] flex items-center justify-center overflow-visible ${
+                isSmallHeroScale
+                  ? 'left-[0%] bottom-[0.5%] w-[184px] h-[184px]'
+                  : 'left-[1%] bottom-[12%] w-[256px] h-[244px]'
+              }`}
+            >
+              <div className="relative w-full h-full overflow-visible">
+                <img
+                  src={profile.spriteSrc}
+                  alt="Mordisco Incandescente"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-contain animate-[enemyDragonBiteChomp_0.54s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                  style={{ filter: filterUrl }}
+                />
+                {profile.energyGlint && (
+                  <img
+                    src={profile.spriteSrc}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                    style={{
+                      ...GLINT_MASK_STYLE,
+                      animation:
+                        'enemyDragonBiteChomp 0.54s cubic-bezier(0.16,1,0.3,1) forwards, enemyEnergySweep 0.44s ease-out forwards',
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+
+        {/* CRYOVAIN / IGNIVRAX: ALIENTO CONCENTRADO (punta del haz 100% dentro de la boca hacia el héroe) */}
+        {(isMode('dragon_ice_breath') || isMode('dragon_fire_breath')) &&
           triggeredSteps.map((idx) => {
+            const isFireBreath = isMode('dragon_fire_breath');
             const mouthPxX = launchMouth.x * arenaBox.w;
             const mouthPxY = launchMouth.y * arenaBox.h;
-            const heroTargetX = Math.max(24, Math.round(arenaBox.w * (isSmallHeroScale ? 0.14 : 0.125)));
-            const heroTargetY = Math.round(arenaBox.h * (isSmallHeroScale ? 0.86 : 0.67));
+            const heroTargetX = Math.max(24, Math.round(arenaBox.w * (isSmallHeroScale ? 0.135 : 0.125)));
+            const heroTargetY = Math.round(arenaBox.h * (isSmallHeroScale ? 0.87 : 0.67));
             const dx = heroTargetX - mouthPxX;
             const dy = heroTargetY - mouthPxY;
-            const dist = Math.max(195, Math.round(Math.hypot(dx, dy) + 32));
+            const dist = Math.max(195, Math.round(Math.hypot(dx, dy) + 34));
             const angleDeg = (Math.atan2(-dy, -dx) * 180) / Math.PI;
-            const beamH = Math.min(204, Math.round(dist * 0.58));
-            const tipInset = Math.round(dist * 0.05);
+            const beamH = Math.min(208, Math.round(dist * 0.56));
+            const tipInset = Math.round(dist * (isFireBreath ? 0.035 : 0.05));
             return (
               <div
-                key={`cryovain-breath-${vfxKey}-${idx}`}
+                key={`dragon-breath-${vfxKey}-${idx}`}
                 className="absolute pointer-events-none z-[24] overflow-visible"
                 style={{
                   left: `${Math.round(mouthPxX - dist + tipInset)}px`,
@@ -3841,7 +5161,7 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
                 }}
               >
                 <div
-                  className="relative w-full h-full overflow-visible animate-[enemyCryovainIceBeam_0.76s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                  className="relative w-full h-full overflow-visible animate-[enemyCryovainIceBeam_0.78s_cubic-bezier(0.16,1,0.3,1)_forwards]"
                   style={{
                     transformOrigin: 'right center',
                     WebkitMaskImage:
@@ -3861,10 +5181,13 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
                   >
                     <img
                       src={profile.spriteSrc}
-                      alt="Aliento de Hielo Concentrado"
+                      alt={isFireBreath ? 'Aliento de Fuego Infernal' : 'Aliento de Hielo Concentrado'}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-fill"
-                      style={{ transform: 'scaleX(-1)', filter: filterUrl }}
+                      style={{
+                        transform: isFireBreath ? undefined : 'scaleX(-1)',
+                        filter: filterUrl,
+                      }}
                     />
                     {profile.energyGlint && (
                       <img
@@ -3874,7 +5197,7 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
                         className="absolute inset-0 w-full h-full object-fill pointer-events-none"
                         style={{
                           ...GLINT_MASK_STYLE,
-                          transform: 'scaleX(-1)',
+                          transform: isFireBreath ? undefined : 'scaleX(-1)',
                           animation: 'enemyEnergySweep 0.56s ease-out forwards',
                         }}
                       />
@@ -3886,11 +5209,11 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
           })}
 
         {/* ESTALLIDO SOBRE EL HÉROE AL IMPACTAR EL ALIENTO (glacial o ígneo según jefe) */}
-        {isMode('dragon_ice_breath') && triggeredImpact && (
+        {(isMode('dragon_ice_breath') || isMode('dragon_fire_breath')) && triggeredImpact && (
           <div
             className={`absolute pointer-events-none z-[25] flex items-center justify-center overflow-visible ${
               isSmallHeroScale
-                ? 'left-[1%] bottom-[3%] w-[142px] h-[142px]'
+                ? 'left-[0.5%] bottom-[2%] w-[144px] h-[144px]'
                 : 'left-[1%] bottom-[13%] w-[196px] h-[196px]'
             }`}
           >
@@ -3898,15 +5221,15 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
               className="absolute inset-2 rounded-full animate-[enemySlamBurstPop_0.54s_cubic-bezier(0.16,1,0.3,1)_forwards]"
               style={{
                 background:
-                  profile.shader === 'arana_fire'
-                    ? 'radial-gradient(circle, rgba(254,243,199,0.92) 0%, rgba(249,115,22,0.68) 42%, transparent 74%)'
+                  isMode('dragon_fire_breath') || profile.shader === 'arana_fire'
+                    ? 'radial-gradient(circle, rgba(254,243,199,0.94) 0%, rgba(249,115,22,0.72) 42%, transparent 74%)'
                     : 'radial-gradient(circle, rgba(240,249,255,0.92) 0%, rgba(56,189,248,0.62) 40%, transparent 74%)',
                 mixBlendMode: 'screen',
               }}
             />
             <div
               className={`absolute inset-5 rounded-full border-4 animate-[enemySlamBurstPop_0.5s_cubic-bezier(0.16,1,0.3,1)_forwards] ${
-                profile.shader === 'arana_fire'
+                isMode('dragon_fire_breath') || profile.shader === 'arana_fire'
                   ? 'border-amber-200/90 shadow-[0_0_26px_rgba(249,115,22,0.9)]'
                   : 'border-cyan-200/90 shadow-[0_0_26px_rgba(56,189,248,0.88)]'
               }`}
@@ -3960,9 +5283,144 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
                   className="absolute inset-0 pointer-events-none z-[23] animate-[enemyCryovainFieldSurge_1.2s_ease-out_forwards]"
                   style={{
                     background:
-                      'radial-gradient(ellipse at 50% 62%, rgba(224,242,254,0.52) 0%, rgba(125,211,252,0.34) 48%, rgba(14,165,233,0.16) 82%, transparent 100%)',
+                      profile.shader === 'arana_fire'
+                        ? 'radial-gradient(ellipse at 50% 62%, rgba(254,215,170,0.52) 0%, rgba(251,146,60,0.34) 48%, rgba(234,88,12,0.18) 82%, transparent 100%)'
+                        : 'radial-gradient(ellipse at 50% 62%, rgba(224,242,254,0.52) 0%, rgba(125,211,252,0.34) 48%, rgba(14,165,233,0.16) 82%, transparent 100%)',
                   }}
                 />
+              </React.Fragment>
+            );
+          })}
+
+        {/* TEN PIEDAD: BARRIDO COLOSAL A RAS DE SUELO */}
+        {isMode('ten_piedad_barrido') &&
+          triggeredSteps.map((idx) => (
+            <div
+              key={`ten-piedad-barrido-${vfxKey}-${idx}`}
+              className="absolute left-[1%] bottom-[4%] w-[245px] h-[126px] pointer-events-none z-[24] flex items-center justify-center overflow-visible"
+            >
+              <div
+                className="absolute inset-x-0 bottom-2 h-8 rounded-full animate-[enemyShieldBashLeft_0.48s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                style={{
+                  background:
+                    'linear-gradient(90deg, rgba(220,38,38,0.82) 0%, rgba(163,230,53,0.65) 45%, transparent 100%)',
+                  filter: 'blur(4px)',
+                }}
+              />
+              <img
+                src="/assets/combat/enemy_vfx_devorador_slash.webp"
+                alt="Barrido de Ten Piedad"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-contain animate-[enemyShieldBashLeft_0.48s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                style={{ filter: filterUrl }}
+              />
+            </div>
+          ))}
+
+        {/* TEN PIEDAD: BROTE DE ZARZAS ALREDEDOR */}
+        {isMode('ten_piedad_zarzas') &&
+          triggeredSteps.map((idx) => {
+            const spots = [
+              { left: '34%', bottom: '4%', size: 138 },
+              { left: '22%', bottom: '3.5%', size: 150 },
+              { left: '10%', bottom: '3%', size: 162 },
+            ];
+            const spot = spots[idx % spots.length];
+            return (
+              <div
+                key={`ten-piedad-zarza-ring-${vfxKey}-${idx}`}
+                style={{ left: spot.left, bottom: spot.bottom, width: spot.size, height: Math.round(spot.size * 0.86) }}
+                className="absolute pointer-events-none z-[24] flex items-end justify-center overflow-visible"
+              >
+                <img
+                  src="/assets/combat/ten_piedad_vfx_zarza_suelo.webp"
+                  alt="Zarza"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-contain animate-[enemySlamBurstPop_0.62s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                  style={{ filter: filterUrl }}
+                />
+              </div>
+            );
+          })}
+
+        {/* TEN PIEDAD: PISOTÓN DE ZARZAS DIRECTO BAJO EL HÉROE */}
+        {isMode('ten_piedad_pisoton') &&
+          triggeredSteps.map((idx) => (
+            <div
+              key={`ten-piedad-pisoton-${vfxKey}-${idx}`}
+              style={{
+                left: idx === 0 ? '2.5%' : '9%',
+                bottom: idx === 0 ? '3%' : '5%',
+                transform: idx === 1 ? 'scaleX(-1)' : undefined,
+              }}
+              className="absolute w-[166px] h-[146px] pointer-events-none z-[24] flex items-end justify-center overflow-visible"
+            >
+              <img
+                src="/assets/combat/ten_piedad_vfx_zarza_suelo.webp"
+                alt="Pisotón de Zarzas"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-contain animate-[enemySlamBurstPop_0.58s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+                style={{ filter: filterUrl }}
+              />
+            </div>
+          ))}
+
+        {/* TEN PIEDAD: RÁFAGA DE ESPINAS DESDE LA BOCA AL HÉROE */}
+        {isMode('ten_piedad_escupir') &&
+          triggeredSteps.map((idx) => {
+            const { w, h } = arenaBox;
+            const startX = launchMouth.x * w;
+            const startY = launchMouth.y * h;
+            const endX = (isMediumHeroScale ? 0.045 : 0.065) * w + 74.5;
+            const targetBottomPct = isMediumHeroScale ? (idx === 0 ? 22 : 16) : idx === 0 ? 34 : 28;
+            const endY = h - (targetBottomPct / 100) * h;
+            const dx = endX - startX;
+            const dy = endY - startY;
+            const flightAngle = (Math.atan2(dy, dx) * 180) / Math.PI - 180;
+            return (
+              <React.Fragment key={`ten-piedad-escupir-volley-${vfxKey}-${idx}`}>
+                <div
+                  style={{
+                    left: `${Math.round(startX - 42)}px`,
+                    top: `${Math.round(startY - 28)}px`,
+                  }}
+                  className="absolute w-[84px] h-[56px] pointer-events-none z-[23] flex items-center justify-center overflow-visible"
+                >
+                  <img
+                    src="/assets/combat/ten_piedad_vfx_escupir.webp"
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-contain animate-[enemyMuzzlePop_0.34s_ease-out_forwards]"
+                    style={{ filter: filterUrl }}
+                  />
+                </div>
+                <div
+                  className="absolute pointer-events-none z-[24] overflow-visible"
+                  style={
+                    {
+                      left: `${(launchMouth.x * 100).toFixed(2)}%`,
+                      bottom: `${((1 - launchMouth.y) * 100).toFixed(2)}%`,
+                      width: '138px',
+                      height: '64px',
+                      transformOrigin: 'left center',
+                      '--dx': `${dx.toFixed(1)}px`,
+                      '--dy': `${dy.toFixed(1)}px`,
+                      animation: 'enemyProjectileFlyToTarget 310ms cubic-bezier(0.16,0.9,0.28,1) forwards',
+                    } as React.CSSProperties
+                  }
+                >
+                  <img
+                    src="/assets/combat/ten_piedad_vfx_escupir.webp"
+                    alt="Escupir Zarzas"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-contain"
+                    style={{
+                      transform: `rotate(${flightAngle.toFixed(2)}deg)`,
+                      transformOrigin: 'left center',
+                      filter: filterUrl,
+                    }}
+                  />
+                </div>
               </React.Fragment>
             );
           })}
@@ -3971,11 +5429,35 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         {triggeredImpact && !omitGenericImpact && (
           <div
             className={`absolute pointer-events-none z-[22] flex items-center justify-center ${
-              isSmallHeroScale ? 'left-[3%] bottom-[4%]' : 'left-[5.5%] bottom-[18%]'
+              isSmallHeroScale
+                ? 'left-[3%] bottom-[4%]'
+                : isMediumHeroScale
+                ? 'left-[4%] bottom-[10%]'
+                : 'left-[5.5%] bottom-[18%]'
             }`}
             style={{
-              width: isUlt ? (isSmallHeroScale ? '122px' : '164px') : isSmallHeroScale ? '106px' : '142px',
-              height: isUlt ? (isSmallHeroScale ? '122px' : '164px') : isSmallHeroScale ? '106px' : '142px',
+              width: isUlt
+                ? isSmallHeroScale
+                  ? '122px'
+                  : isMediumHeroScale
+                  ? '142px'
+                  : '164px'
+                : isSmallHeroScale
+                ? '106px'
+                : isMediumHeroScale
+                ? '124px'
+                : '142px',
+              height: isUlt
+                ? isSmallHeroScale
+                  ? '122px'
+                  : isMediumHeroScale
+                  ? '142px'
+                  : '164px'
+                : isSmallHeroScale
+                ? '106px'
+                : isMediumHeroScale
+                ? '124px'
+                : '142px',
             }}
           >
             <img
@@ -3992,7 +5474,11 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         {triggeredOno && activePrimaryOnoSrc && (
           <div
             className={`absolute w-[126px] h-[72px] pointer-events-none z-[25] flex items-center justify-center ${
-              isSmallHeroScale ? 'left-[3.5%] bottom-[25%]' : 'left-[5.5%] bottom-[47%]'
+              isSmallHeroScale
+                ? 'left-[3.5%] bottom-[25%]'
+                : isMediumHeroScale
+                ? 'left-[4.5%] bottom-[35%]'
+                : 'left-[5.5%] bottom-[47%]'
             }`}
           >
             <img
@@ -4009,7 +5495,11 @@ export const EnemyAttackVfxOverlay: React.FC<EnemyAttackVfxOverlayProps> = ({
         {triggeredUltOno && activeSecondaryOnoSrc && (
           <div
             className={`absolute w-[134px] h-[76px] pointer-events-none z-[26] flex items-center justify-center ${
-              isSmallHeroScale ? 'left-[10%] bottom-[18%]' : 'left-[13%] bottom-[38%]'
+              isSmallHeroScale
+                ? 'left-[10%] bottom-[18%]'
+                : isMediumHeroScale
+                ? 'left-[11.5%] bottom-[27%]'
+                : 'left-[13%] bottom-[38%]'
             }`}
           >
             <img

@@ -72,6 +72,260 @@
   }
 }
 
+/* PvP: números de daño/curación flotando sobre el sprite. */
+@keyframes pvpFloat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -6px) scale(1.08);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -38px) scale(1);
+  }
+}
+
+/* PvP: paso del combatiente hacia el rival al lanzar una carta (y su versión espejada). */
+@keyframes pvpAttackStepRight {
+  0% {
+    transform: translateX(0);
+  }
+  38% {
+    transform: translateX(52px);
+  }
+  62% {
+    transform: translateX(44px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes pvpAttackStepLeft {
+  0% {
+    transform: translateX(0);
+  }
+  38% {
+    transform: translateX(-52px);
+  }
+  62% {
+    transform: translateX(-44px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.pvp-attack-right {
+  transform-origin: bottom center;
+  animation: pvpAttackStepRight 0.6s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+}
+
+.pvp-attack-left {
+  transform-origin: bottom center;
+  animation: pvpAttackStepLeft 0.6s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pvp-attack-right,
+  .pvp-attack-left {
+    animation: none;
+  }
+}
+
+/* Inspección de enemigos: emblema con relleno radial en sentido horario (--hold va de 0deg a 360deg). */
+@property --hold {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* Envoltorio desenfocado: al aplicar el blur al contenedor, el desenfoque tambien suaviza el
+   borde de la mascara (si se aplicara al propio img lo haria antes del recorte y seguiria duro). */
+.enemy-scan-fill-wrap {
+  filter: blur(1.6px);
+}
+
+.enemy-scan-fill {
+  --hold: 0deg;
+  /* Ademas de la mascara, se recorta en circulo para que la caja cuadrada del sprite nunca asome. */
+  border-radius: 50%;
+  /* El borde de avance se funde hacia delante (~90°) para que el relleno no quede cortado a cuchillo. */
+  -webkit-mask-image: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(0, 0, 0, 0.35) 6deg,
+    rgba(0, 0, 0, 0.75) 11deg,
+    #000 17deg,
+    #000 var(--hold),
+    rgba(0, 0, 0, 0.78) calc(var(--hold) + 24deg),
+    rgba(0, 0, 0, 0.5) calc(var(--hold) + 48deg),
+    rgba(0, 0, 0, 0.22) calc(var(--hold) + 70deg),
+    transparent calc(var(--hold) + 90deg)
+  );
+  mask-image: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(0, 0, 0, 0.35) 6deg,
+    rgba(0, 0, 0, 0.75) 11deg,
+    #000 17deg,
+    #000 var(--hold),
+    rgba(0, 0, 0, 0.78) calc(var(--hold) + 24deg),
+    rgba(0, 0, 0, 0.5) calc(var(--hold) + 48deg),
+    rgba(0, 0, 0, 0.22) calc(var(--hold) + 70deg),
+    transparent calc(var(--hold) + 90deg)
+  );
+  filter: drop-shadow(0 0 9px rgba(56, 189, 248, 0.9)) drop-shadow(0 0 20px rgba(125, 211, 252, 0.55));
+}
+
+/* Juice de la inspección: entrada con rebote, pulso, barrido de escáner, carga y estallido final. */
+.enemy-scan-shell {
+  transform-origin: 50% 50%;
+}
+
+.enemy-scan-shell--in {
+  animation: inspectPop 300ms cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    inspectJitter 90ms linear 4 calc(var(--hold-ms, 900ms) - 360ms);
+}
+
+@keyframes inspectPop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.14);
+    opacity: 1;
+  }
+  78% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes inspectJitter {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(1.5px, -1px) scale(1.02);
+  }
+  50% {
+    transform: translate(-1.5px, 1px) scale(1.02);
+  }
+  75% {
+    transform: translate(1px, 1.5px) scale(1.02);
+  }
+}
+
+.enemy-scan-ghost {
+  border-radius: 50%;
+  animation: inspectPulse 1.15s ease-in-out infinite;
+}
+
+@keyframes inspectPulse {
+  0%,
+  100% {
+    opacity: 0.16;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.34;
+    transform: scale(1.035);
+  }
+}
+
+.enemy-scan-charge {
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(56, 189, 248, 0.65) 0%,
+    rgba(56, 189, 248, 0.34) 42%,
+    rgba(56, 189, 248, 0.12) 62%,
+    rgba(56, 189, 248, 0) 74%
+  );
+  animation: inspectCharge var(--hold-ms, 900ms) linear forwards;
+}
+
+@keyframes inspectCharge {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  55% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+}
+
+.enemy-scan-ring {
+  mix-blend-mode: screen;
+  background: conic-gradient(
+    from 0deg,
+    rgba(56, 189, 248, 0) 0deg,
+    rgba(56, 189, 248, 0) 190deg,
+    rgba(125, 211, 252, 0.95) 300deg,
+    rgba(186, 230, 253, 0.7) 336deg,
+    rgba(56, 189, 248, 0) 360deg
+  );
+  -webkit-mask-image: radial-gradient(circle, transparent 55%, #000 64%, #000 73%, transparent 82%);
+  mask-image: radial-gradient(circle, transparent 55%, #000 64%, #000 73%, transparent 82%);
+  animation: inspectSweep 1.15s linear infinite;
+  opacity: 0.85;
+}
+
+@keyframes inspectSweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.enemy-scan-burst {
+  border: 4px solid rgba(186, 230, 253, 0.95);
+  box-shadow: 0 0 26px rgba(56, 189, 248, 0.9), inset 0 0 26px rgba(56, 189, 248, 0.6);
+  animation: inspectBurst 420ms cubic-bezier(0.2, 0.75, 0.3, 1) forwards;
+}
+
+.enemy-scan-burst--late {
+  border-color: rgba(56, 189, 248, 0.85);
+  animation-delay: 90ms;
+}
+
+@keyframes inspectBurst {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  60% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+@keyframes dossierIn {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* ===== Ambiente de los escenarios de combate (nieve, lluvia, niebla, polvo, viento, brasas) ===== */
 .stage-fx__p {
   position: absolute;

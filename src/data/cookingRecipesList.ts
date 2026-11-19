@@ -33,6 +33,8 @@ const INGREDIENT_NAMES: Record<string, string> = {
   ing_carne_devorador: 'Carne de Devorador',
   ing_larvas_araknoide: 'Larvas de Araknoide',
   ing_huevos_araknoide: 'Huevos de Araknoide',
+  ing_bichos_tesoro: 'Bichos del Tesoro',
+  ing_carne_aurea: 'Carne Áurea',
 };
 
 const CATEGORY_PRIORITY: Record<IngredientCategory, number> = {
@@ -112,6 +114,14 @@ const SIGNATURES: Record<
     buffBadge: '+50 PV & +25% CRÍTICO',
     buffDescription: 'Restaura 50 PV de vitalidad de inmediato y aumenta un 25% la tasa y daño de impactos críticos.',
     lore: 'Larvas de la colonia carmesí salteadas a fuego vivo con hortalizas frescas y especias ardientes de dragón.',
+  },
+  'ing_carne_aurea__ing_especias_dragon__ing_mantequilla_salada': {
+    name: 'Solomillo Áureo de Aurumvorax',
+    icon: '/assets/items/ing_carne_aurea.webp',
+    rarity: 'UR',
+    buffBadge: '+40% ATK & +30% ORO',
+    buffDescription: 'Carne áurea de Aurumvorax sellada en mantequilla dorada: aumenta un 40% el poder de ataque y otorga +30% de oro extra al combate.',
+    lore: 'Corte regio veteado en oro de la manada de seis patas, sellado a fuego fuerte con mantequilla salada y especias de dragón.',
   },
   'ing_lomo_jabali__ing_mantequilla_salada__ing_setas_cueva': {
     name: 'Boeuf Bourguignon de la Taberna',
@@ -422,6 +432,10 @@ function getDishIcon(ings: CookingIngredient[]): string {
     rawIcon = '/assets/items/food_tortilla_araknoide.webp';
   } else if (ids.has('ing_larvas_araknoide')) {
     rawIcon = '/assets/items/food_larvas_crujientes.webp';
+  } else if (ids.has('ing_carne_aurea')) {
+    rawIcon = '/assets/items/ing_carne_aurea.webp';
+  } else if (ids.has('ing_bichos_tesoro')) {
+    rawIcon = '/assets/items/ing_bichos_tesoro.webp';
   } else if (ids.has('ing_carne_devorador')) {
     rawIcon = '/assets/items/food_devorador_empanada.webp';
   } else if (ids.has('ing_masa_madre')) {
@@ -490,6 +504,13 @@ function calculateBuff(ings: CookingIngredient[]): {
     rarity = 'SR';
   }
 
+  if (ids.has('ing_carne_aurea')) {
+    return {
+      rarity,
+      buffBadge: '+40% ATK & +30% ORO',
+      buffDescription: 'Carne áurea de Aurumvorax: aumenta un 40% el ataque en combate y otorga +30% de oro extra al ganar.',
+    };
+  }
   if (ids.has('ing_carne_devorador')) {
     return {
       rarity,
@@ -516,6 +537,13 @@ function calculateBuff(ings: CookingIngredient[]): {
       rarity,
       buffBadge: '+50 PV & +25% CRÍTICO',
       buffDescription: 'Proteína bioluminiscente: restaura 50 PV de vitalidad y aumenta un 25% la tasa crítica.',
+    };
+  }
+  if (ids.has('ing_bichos_tesoro')) {
+    return {
+      rarity,
+      buffBadge: '+25% ORO & RESISTENCIA VENENO',
+      buffDescription: 'Manjar áureo del enjambre: otorga +25% de Oro al combatir y protege frente a venenos acumulativos.',
     };
   }
   if (ids.has('ing_salmon_helado')) {
@@ -620,6 +648,8 @@ const SHORT_INGREDIENT_NAMES: Record<string, DishIngredientName> = {
   ing_carne_devorador: { label: 'Devorador', feminine: false, plural: false },
   ing_larvas_araknoide: { label: 'Larvas', feminine: true, plural: true },
   ing_huevos_araknoide: { label: 'Arácnido', feminine: false, plural: false },
+  ing_bichos_tesoro: { label: 'Bichos', feminine: false, plural: true },
+  ing_carne_aurea: { label: 'Áurea', feminine: true, plural: false },
 };
 
 // Adjetivos de la casa (con género) para distinguir recetas del mismo plato base

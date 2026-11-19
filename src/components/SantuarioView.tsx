@@ -37,12 +37,8 @@ export const SantuarioView: React.FC = () => {
     switch (type) {
       case 'pozos':
         sound.playSFX('attack');
-        setUndergroundNotice({
-          title: 'Pozos de Pelea',
-          subtitle: 'Arena Clandestina de Gladiadores',
-          desc: 'Los combates a muerte y apuestas clandestinas se forjan en esta arena de piedra circular. Los mejores guerreros del Mercado Negro se miden en combates sin piedad.',
-          iconType: 'swords',
-        });
+        // Arena PvP real: duelos 1v1 por turnos contra otros jugadores.
+        navigateTo('pits');
         break;
       case 'subastas':
         sound.playSFX('coin');
@@ -161,20 +157,21 @@ export const SantuarioView: React.FC = () => {
             aria-label="Casa de Subastas"
           />
 
-          {/* 3. Pozos de pelea (centro) */}
-          <button
-            onClick={() => handleUndergroundElementClick('pozos')}
-            className="absolute top-[50%] left-[18%] w-[64%] h-[21%] rounded-full cursor-pointer focus:outline-none"
-            title="Pozos de Pelea"
-            aria-label="Pozos de Pelea"
-          />
-
-          {/* 4. Tienda de pociones y encantamientos con sello arcano (abajo derecha) */}
+          {/* 3. Tienda de pociones y encantamientos con sello arcano (abajo derecha) */}
           <button
             onClick={() => handleUndergroundElementClick('pociones')}
             className="absolute top-[58%] right-[0%] w-[50%] h-[32%] cursor-pointer focus:outline-none"
             title="Tienda de Pociones y Encantamientos"
             aria-label="Tienda de Pociones y Encantamientos"
+          />
+
+          {/* 4. Pozos de pelea (centro). Va después y con z-10 porque su área se solapa con
+              la tienda de pociones y debe recibir el clic en la zona de la arena. */}
+          <button
+            onClick={() => handleUndergroundElementClick('pozos')}
+            className="absolute top-[50%] left-[18%] w-[64%] h-[21%] rounded-full cursor-pointer focus:outline-none z-10"
+            title="Pozos de Pelea"
+            aria-label="Pozos de Pelea"
           />
         </div>
 

@@ -62,6 +62,7 @@ export const BOLETARIA_MISSION_IDS: string[] = [
   't2_c1_m3_custodios_anillo',
   't2_c1_m4_arana_acorazada',
   't2_c1_m5_carreta_cid',
+  't2_c2_m1_ten_piedad',
 ];
 
 export const QUEST_TOMES: QuestTomeEntry[] = [
@@ -98,7 +99,7 @@ export const QUEST_TOMES: QuestTomeEntry[] = [
     title: 'Barracón, Santuario y Boletaria',
     synopsis:
       'Una nueva crónica más allá de las tierras heladas: desde un barracón abandonado hasta un santuario olvidado y las murallas de Boletaria.',
-    chaptersCount: 1,
+    chaptersCount: 2,
     missionIds: BOLETARIA_MISSION_IDS,
     coverImage: tomeBoletariaImg,
     unlocked: true,

@@ -2,7 +2,24 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom';
 import { useGame } from '../context/GameContext';
 import { sound } from '../services/soundService';
+import {
+  clearGoldRunMission,
+  goldRunAtkMultiplier,
+  goldRunMaxHpMultiplier,
+  goldRunRoomHealPct,
+  goldRunStartOrbs,
+  isGoldRunMission,
+  goldRunLevelSourceMission,
+  goldRunLevelDropMission,
+  parseGoldRunLevelMissionId,
+  loadGoldRun,
+  recordGoldRunProgress,
+  resetGoldRun,
+} from '../data/goldRun';
 import { StageAmbientFx, AMBIENT_BY_BACKGROUND } from './StageAmbientFx';
+import { FrostFreezeOverlay } from './FrostFreezeOverlay';
+import { EnemyDossierHold } from './EnemyDossierHold';
+import { buildEnemyDossier } from '../data/enemyDossier';
 import { launchConfetti } from '../utils/confetti';
 import {
   Trophy,
@@ -2250,6 +2267,11 @@ export interface CombatVfxState {
 }
 
 export type CombatEnemyId =
+  | 'caballero_escarcha_boss'
+  | 'ciervo_tundra'
+  | 'lobo_tundra'
+  | 'zorro_tundra'
+  | 'conejo_tundra'
   | 'araknoide_rojo'
   | 'araknoide_azul'
   | 'araknoide_glacial'
@@ -2296,11 +2318,32 @@ export type CombatEnemyId =
   | 'bulezau'
   | 'gladiador_onirico'
   | 'cryovain_boss'
+  | 'ignivrax_boss'
   | 'no_muerto'
   | 'soldado_no_muerto'
   | 'perro_asalvajado'
   | 'armadura_reanimada'
-  | 'arana_acorazada_boss';
+  | 'arana_acorazada_boss'
+  | 'ten_piedad'
+  | 'guinbang_espada'
+  | 'guinbang_maza'
+  | 'guinbang_saqueador'
+  | 'devorador_hierro'
+  | 'insecto_joya'
+  | 'insecto_moneda'
+  | 'insecto_collar_perlas'
+  | 'aurumvorax_joven'
+  | 'aurumvorax_alfa'
+  | 'escarabajo_aureo'
+  | 'murcielago_carmesi'
+  | 'mimico_boss'
+  | 'arana_joya_boss'
+  | 'kobold_alado'
+  | 'kobold_escudo_rojo'
+  | 'draco_guardian_rojo'
+  | 'semidragon_rojo_veterano'
+  | 'escorpion_aureo'
+  | 'arana_coronada';
 
 export interface EnemyConfig {
   id: CombatEnemyId;
@@ -2311,6 +2354,7 @@ export interface EnemyConfig {
   chamberNumber: number;
   spriteUrl: string;
   attackSpriteUrl?: string;
+  skillSpriteUrl?: string;
   hurtSpriteUrl?: string;
   thumbUrl: string;
   maxHp: number;
@@ -5452,6 +5496,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       chamberNumber: 1,
       spriteUrl: '/assets/combat/no_muerto_idle.webp',
       attackSpriteUrl: '/assets/combat/no_muerto_attack.webp',
+      skillSpriteUrl: '/assets/combat/no_muerto_skill.webp',
       hurtSpriteUrl: '/assets/combat/no_muerto_hurt.webp',
       thumbUrl: '/assets/portraits/no_muerto_thumb.webp',
       maxHp: 340,
@@ -5504,6 +5549,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       chamberNumber: 1,
       spriteUrl: '/assets/combat/perro_asalvajado_idle.webp',
       attackSpriteUrl: '/assets/combat/perro_asalvajado_attack.webp',
+      skillSpriteUrl: '/assets/combat/perro_asalvajado_skill.webp',
       hurtSpriteUrl: '/assets/combat/perro_asalvajado_hurt.webp',
       thumbUrl: '/assets/portraits/perro_asalvajado_thumb.webp',
       maxHp: 370,
@@ -5562,6 +5608,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       chamberNumber: 2,
       spriteUrl: '/assets/combat/soldado_no_muerto_idle.webp',
       attackSpriteUrl: '/assets/combat/soldado_no_muerto_attack.webp',
+      skillSpriteUrl: '/assets/combat/soldado_no_muerto_skill.webp',
       hurtSpriteUrl: '/assets/combat/soldado_no_muerto_hurt.webp',
       thumbUrl: '/assets/portraits/soldado_no_muerto_thumb.webp',
       maxHp: 410,
@@ -5614,6 +5661,7 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       chamberNumber: 2,
       spriteUrl: '/assets/combat/armadura_reanimada_idle.webp',
       attackSpriteUrl: '/assets/combat/armadura_reanimada_attack.webp',
+      skillSpriteUrl: '/assets/combat/armadura_reanimada_skill.webp',
       hurtSpriteUrl: '/assets/combat/armadura_reanimada_hurt.webp',
       thumbUrl: '/assets/portraits/armadura_reanimada_thumb.webp',
       maxHp: 680,
@@ -5688,8 +5736,8 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       isSemiboss: false,
       normalSkill: {
         name: 'Barrido de Piernas',
-        desc: 'Barre toda la vanguardia con sus colosales patas blindadas con púas de hierro.',
-        damage: [28, 38],
+        desc: 'Barre con sus colosales patas acorazadas en doble golpe cortante dentro de su Multiataque.',
+        damage: [14, 19],
         vfx: 'crimson_claw',
         sfx: 'slash',
         dndDamageType: 'slashing',
@@ -5702,8 +5750,8 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       },
       specialSkill: {
         name: 'Escupir Bola de Fuego',
-        desc: 'Lanza desde sus mandíbulas un proyectil ígneo que abrasa el suelo de piedra.',
-        damage: [32, 43],
+        desc: 'Lanza desde sus mandíbulas un proyectil ígneo que quema al objetivo y abrasa el suelo de piedra.',
+        damage: [26, 36],
         vfx: 'crimson_claw',
         sfx: 'magic',
         dndDamageType: 'fire',
@@ -5716,8 +5764,8 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
       },
       ultimateSkill: {
         name: '¡Aliento de Fuego Incandescente!',
-        desc: 'Desciende su cabeza acorazada y exhala un torrente de fuego abrasador que envuelve la cámara hexagonal.',
-        damage: 56,
+        desc: 'Exhala una cascada de llamas de sus fauces; héroes ágiles o cubiertos pueden mitigar el impacto a la mitad.',
+        damage: 52,
         dndDamageType: 'fire',
         condition: {
           type: 'burn',
@@ -5736,6 +5784,1636 @@ export const DUNGEON_ENEMIES: Record<CombatEnemyId, EnemyConfig> = {
           count: 1,
           icon: '/assets/portraits/arana_acorazada_thumb.webp',
           description: 'Ojo ígneo intacto recuperado del coloso arácnido entre piedra negra incandescente.',
+        },
+      },
+    },
+    ten_piedad: {
+      id: 'ten_piedad',
+      missionId: 't2_c2_m1_ten_piedad',
+      name: 'Ten Piedad',
+      title: 'Coloso del Culto a la Piedad · Santuario',
+      chamberName: 'Iglesia Destrozada e Invadida por la Maleza',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/ten_piedad_idle.webp',
+      attackSpriteUrl: '/assets/combat/ten_piedad_barrido.webp',
+      hurtSpriteUrl: '/assets/combat/ten_piedad_hurt.webp',
+      thumbUrl: '/assets/portraits/ten_piedad_thumb.webp',
+      maxHp: 960,
+      width: 286,
+      height: 368,
+      scaleClass: 'w-[286px] h-[368px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Barrido',
+        desc: 'Se agacha y barre el suelo con su garra colosal, debilitando el ataque del héroe.',
+        damage: [34, 44],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'atk_down',
+          duration: 2,
+          stacks: 1,
+          title: 'Barrido Aplastante',
+        },
+      },
+      specialSkill: {
+        name: 'Zarzas',
+        desc: 'Clava ambos puños y hace brotar zarzas espinosas a su alrededor. Cuanta menos vida, más zarzas.',
+        damage: [22, 30],
+        vfx: 'earth_titan',
+        sfx: 'thud',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 1,
+          title: 'Espinas del Santuario',
+        },
+      },
+      ultimateSkill: {
+        name: 'Pisotón de Zarzas',
+        desc: 'Pisa el suelo con fuerza haciendo brotar zarzas bajo tus pies. Más frecuente al bajar del 50% de vida.',
+        damage: 36,
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 2,
+          title: 'Raíces Desgarradoras',
+        },
+      },
+      rewards: {
+        gold: 20000,
+        crystals: 680,
+        item: {
+          id: 'clavo_culto_piedad',
+          name: 'Clavo Ritual del Culto a la Piedad',
+          rarity: 'UR',
+          count: 1,
+          icon: '/assets/portraits/ten_piedad_thumb.webp',
+          description: 'Clavo colosal forjado por El Culto a la Piedad e incrustado en Ten Piedad.',
+        },
+      },
+    },
+    guinbang_espada: {
+      id: 'guinbang_espada',
+      missionId: 'midas_dungeon_easy',
+      name: 'Guinbang Espadachín',
+      title: 'Custodio del Botín • Espada de Empuñadura Áurea',
+      chamberName: 'Bóveda de Piedra de la Diosa Midas',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/guinbang_espada_clean.webp',
+      attackSpriteUrl: '/assets/combat/guinbang_espada_attack.webp',
+      hurtSpriteUrl: '/assets/combat/guinbang_espada_hurt.webp',
+      thumbUrl: '/assets/portraits/guinbang_espada_thumb.webp',
+      maxHp: 64,
+      width: 136,
+      height: 194,
+      scaleClass: 'w-[126px] h-[180px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Tajo de Empuñadura Áurea',
+        desc: 'Estocada ágil con su sable saqueado de un galeón hundido con guarda de oro macizo.',
+        damage: [11, 15],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+      },
+      specialSkill: {
+        name: 'Furia por el Botín',
+        desc: 'Desata un corte doble frenético al sentir que intentan arrebatarle su oro.',
+        damage: [15, 19],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 1,
+          title: 'Filo Dorado',
+        },
+      },
+      ultimateSkill: {
+        name: 'Sentencia del Naufragio',
+        desc: 'Acomete en picado con su espada áurea defendiendo el tesoro de Midas hasta la muerte.',
+        damage: 24,
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Guardia Quebrada',
+        },
+      },
+      rewards: {
+        gold: 1200,
+        crystals: 30,
+        item: {
+          id: 'moneda_semiplano_midas',
+          name: 'Doblón del Semiplano de Midas',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/guinbang_espada_thumb.webp',
+          description: 'Pieza de oro puro venerada por los Guinbang en el semiplano helado de Midas.',
+        },
+      },
+    },
+    guinbang_maza: {
+      id: 'guinbang_maza',
+      missionId: 'midas_dungeon_easy',
+      name: 'Guinbang Aplastador',
+      title: 'Guardia de Caverna • Maza con Inscripciones de Oro',
+      chamberName: 'Bóveda de Piedra de la Diosa Midas',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/guinbang_maza_clean.webp',
+      attackSpriteUrl: '/assets/combat/guinbang_maza_attack.webp',
+      hurtSpriteUrl: '/assets/combat/guinbang_maza_hurt.webp',
+      thumbUrl: '/assets/portraits/guinbang_maza_thumb.webp',
+      maxHp: 82,
+      width: 152,
+      height: 188,
+      scaleClass: 'w-[140px] h-[174px]',
+      isBoss: false,
+      isSemiboss: true,
+      normalSkill: {
+        name: 'Mazazo de Oro Pesado',
+        desc: 'Descarga su pesada maza de piedra y oro macizo sobre el aventurero.',
+        damage: [13, 17],
+        vfx: 'earth_titan',
+        sfx: 'thud',
+        dndDamageType: 'bludgeoning',
+      },
+      specialSkill: {
+        name: 'Quebrantahuesos de Bóveda',
+        desc: 'Golpe contundente que hace retumbar las losas de piedra y debilita las defensas.',
+        damage: [17, 22],
+        vfx: 'earth_titan',
+        sfx: 'thud',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Impacto Dorado',
+        },
+      },
+      ultimateSkill: {
+        name: 'Aplastamiento del Tesoro',
+        desc: 'Salta con todo su peso y descarga su maza áurea con fuerza sísmica sobre el héroe.',
+        damage: 27,
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'stun',
+          duration: 1,
+          stacks: 1,
+          title: 'Aturdido por la Maza',
+        },
+      },
+      rewards: {
+        gold: 1500,
+        crystals: 40,
+        item: {
+          id: 'lingote_venerado_guinbang',
+          name: 'Lingote Venerado por los Guinbang',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/guinbang_maza_thumb.webp',
+          description: 'Lingote de oro marcado con runas marinas recogidas en islas heladas.',
+        },
+      },
+    },
+    guinbang_saqueador: {
+      id: 'guinbang_saqueador',
+      missionId: 'midas_dungeon_easy',
+      name: 'Guinbang Saqueador',
+      title: 'Corsario del Hielo • Hacha y Daga Dorada',
+      chamberName: 'Bóveda de Piedra de la Diosa Midas',
+      chamberNumber: 3,
+      spriteUrl: '/assets/combat/guinbang_saqueador_clean.webp',
+      attackSpriteUrl: '/assets/combat/guinbang_saqueador_attack.webp',
+      hurtSpriteUrl: '/assets/combat/guinbang_saqueador_hurt.webp',
+      thumbUrl: '/assets/portraits/guinbang_saqueador_thumb.webp',
+      maxHp: 58,
+      width: 144,
+      height: 175,
+      scaleClass: 'w-[132px] h-[160px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Abordaje de Pecio',
+        desc: 'Combina su hacha de abordaje y su daga dorada en un asalto rápido de corsario.',
+        damage: [10, 14],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'piercing',
+      },
+      specialSkill: {
+        name: 'Tasador Codicioso',
+        desc: 'Lanza tajos certeros buscando el brillo metálico en el equipo de los aventureros.',
+        damage: [14, 18],
+        vfx: 'shadow_needle',
+        sfx: 'slash',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'atk_down',
+          duration: 2,
+          stacks: 1,
+          title: 'Botín Codiciado',
+        },
+      },
+      ultimateSkill: {
+        name: 'Ráfaga del Saqueador Áureo',
+        desc: 'Torbellino de acero y oro que inflige hemorragia al intentar proteger su alijo.',
+        damage: 23,
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 2,
+          title: 'Corte de Abordaje',
+        },
+      },
+      rewards: {
+        gold: 1300,
+        crystals: 35,
+        item: {
+          id: 'daga_dorada_pecio',
+          name: 'Daga Dorada de Pecio',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/guinbang_saqueador_thumb.webp',
+          description: 'Daga saqueada de un navío mercante que los Guinbang adoraban como reliquia.',
+        },
+      },
+    },
+    devorador_hierro: {
+      id: 'devorador_hierro',
+      missionId: 'midas_dungeon_boss_devorador',
+      name: 'Devorador de Hierro',
+      title: 'Miniboss • Monstruosidad (Metal / Óxido)',
+      chamberName: 'Bóveda Profunda de la Diosa Midas',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/devorador_hierro_idle.webp',
+      attackSpriteUrl: '/assets/combat/devorador_hierro_mordisco.webp',
+      hurtSpriteUrl: '/assets/combat/devorador_hierro_hurt.webp',
+      thumbUrl: '/assets/portraits/devorador_hierro_thumb.webp',
+      maxHp: 120,
+      width: 248,
+      height: 168,
+      scaleClass: 'w-[248px] h-[168px]',
+      isBoss: false,
+      isSemiboss: true,
+      normalSkill: {
+        name: 'Mordisco triturador',
+        desc: 'Ataque físico que aplica 1 acumulación de óxido; inflige daño adicional con 3 o más acumulaciones.',
+        damage: [16, 22],
+        vfx: 'crimson_claw',
+        sfx: 'armor',
+        dndDamageType: 'piercing',
+      },
+      specialSkill: {
+        name: 'Antenas corrosivas',
+        desc: 'Libera una onda oxidante con sus antenas: daño moderado y 2 acumulaciones de óxido.',
+        damage: [17, 23],
+        vfx: 'void_miasma',
+        sfx: 'slime',
+        dndDamageType: 'acid',
+      },
+      ultimateSkill: {
+        name: 'Corrosión profunda',
+        desc: 'Consume 5 acumulaciones de óxido para descargar un golpe devastador y reducir la defensa.',
+        damage: 38,
+        dndDamageType: 'acid',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Corrosión Profunda',
+        },
+      },
+      rewards: {
+        gold: 2400,
+        crystals: 70,
+        item: {
+          id: 'antena_aurea_devorador',
+          name: 'Antena Áurea del Devorador de Hierro',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/devorador_hierro_thumb.webp',
+          description: 'Antena dorada vibrante extraída del Monstruo del Óxido que acechaba la bóveda inicial de Midas.',
+        },
+      },
+    },
+    insecto_joya: {
+      id: 'insecto_joya',
+      missionId: 'midas_dungeon_easy_insectos',
+      name: 'Insecto Joya',
+      title: 'Enjambre del Tesoro • Ponzoña Áurea',
+      chamberName: 'Bóveda Inferior de Joyas de Midas',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/insecto_joya_idle.webp',
+      attackSpriteUrl: '/assets/combat/insecto_joya_attack.webp',
+      hurtSpriteUrl: '/assets/combat/insecto_joya_hurt.webp',
+      thumbUrl: '/assets/portraits/insecto_joya_thumb.webp',
+      maxHp: 16,
+      width: 98,
+      height: 86,
+      scaleClass: 'w-[98px] h-[86px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Aguijón de Rubí',
+        desc: 'Picadura ágil de escasa fuerza, pero inocula veneno potente acumulativo en el héroe.',
+        damage: [4, 7],
+        vfx: 'crimson_claw',
+        sfx: 'slime',
+        dndDamageType: 'piercing',
+      },
+      specialSkill: {
+        name: 'Ponzoña del Tesoro',
+        desc: 'Lanza una descarga venenosa (+2 cargas) que debilita el ataque del héroe y drena vida todo el combate.',
+        damage: [6, 9],
+        vfx: 'void_miasma',
+        sfx: 'slime',
+        dndDamageType: 'poison',
+      },
+      ultimateSkill: {
+        name: 'Picadura de Gema Letal',
+        desc: 'Inyecta una dosis concentrada de neurotoxina (+2 cargas) permanente para el resto del combate.',
+        damage: 11,
+        dndDamageType: 'poison',
+      },
+      rewards: {
+        gold: 1600,
+        crystals: 40,
+        item: {
+          id: 'ing_bichos_tesoro',
+          name: 'Bichos del Tesoro',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/items/ing_bichos_tesoro.webp',
+          description: 'Bol de porcelana con un Insecto Joya, un Insecto Moneda y un Insecto Collar de Perlas dentro. Ingrediente exótico de cocina de monstruos.',
+        },
+      },
+    },
+    insecto_moneda: {
+      id: 'insecto_moneda',
+      missionId: 'midas_dungeon_easy_insectos',
+      name: 'Insecto Moneda',
+      title: 'Enjambre del Tesoro • Espora Tóxica',
+      chamberName: 'Bóveda Inferior de Joyas de Midas',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/insecto_moneda_idle.webp',
+      attackSpriteUrl: '/assets/combat/insecto_moneda_attack.webp',
+      skillSpriteUrl: '/assets/combat/insecto_moneda_skill.webp',
+      hurtSpriteUrl: '/assets/combat/insecto_moneda_hurt.webp',
+      thumbUrl: '/assets/portraits/insecto_moneda_thumb.webp',
+      maxHp: 14,
+      width: 96,
+      height: 86,
+      scaleClass: 'w-[96px] h-[86px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Mordisco de Oro',
+        desc: 'Pequeño mordisco cortante que inyecta veneno acumulativo al impactar.',
+        damage: [4, 6],
+        vfx: 'crimson_claw',
+        sfx: 'bite',
+        dndDamageType: 'piercing',
+      },
+      specialSkill: {
+        name: 'Esporas Ácidas',
+        desc: 'Sacude su caparazón de doblón liberando toxinas (+2 cargas) que merman la salud todo el combate.',
+        damage: [5, 8],
+        vfx: 'void_miasma',
+        sfx: 'slime',
+        dndDamageType: 'poison',
+      },
+      ultimateSkill: {
+        name: 'Nube de Doblón Ponzoñoso',
+        desc: 'Emisión tóxica (+2 cargas) que debilita severamente al héroe alcanzado.',
+        damage: 10,
+        dndDamageType: 'poison',
+      },
+      rewards: {
+        gold: 1600,
+        crystals: 40,
+        item: {
+          id: 'ing_bichos_tesoro',
+          name: 'Bichos del Tesoro',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/items/ing_bichos_tesoro.webp',
+          description: 'Bol de porcelana con un Insecto Joya, un Insecto Moneda y un Insecto Collar de Perlas dentro. Ingrediente exótico de cocina de monstruos.',
+        },
+      },
+    },
+    insecto_collar_perlas: {
+      id: 'insecto_collar_perlas',
+      missionId: 'midas_dungeon_easy_insectos',
+      name: 'Insecto Collar de Perlas',
+      title: 'Enjambre del Tesoro • Veneno Nacárado',
+      chamberName: 'Bóveda Inferior de Joyas de Midas',
+      chamberNumber: 3,
+      spriteUrl: '/assets/combat/insecto_perlas_idle.webp',
+      attackSpriteUrl: '/assets/combat/insecto_perlas_attack.webp',
+      skillSpriteUrl: '/assets/combat/insecto_perlas_skill.webp',
+      hurtSpriteUrl: '/assets/combat/insecto_perlas_hurt.webp',
+      thumbUrl: '/assets/portraits/insecto_perlas_thumb.webp',
+      maxHp: 20,
+      width: 106,
+      height: 94,
+      scaleClass: 'w-[106px] h-[94px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Tenaza Nacárada',
+        desc: 'Pellizco rápido con sus mandíbulas perladas que transmite veneno acumulativo.',
+        damage: [5, 8],
+        vfx: 'crimson_claw',
+        sfx: 'bite',
+        dndDamageType: 'piercing',
+      },
+      specialSkill: {
+        name: 'Chorro de Toxina Perla',
+        desc: 'Escupe un proyectil de veneno nacárado (+2 cargas) que debilita al héroe y drena vida por turno.',
+        damage: [7, 10],
+        vfx: 'void_miasma',
+        sfx: 'slime',
+        dndDamageType: 'poison',
+      },
+      ultimateSkill: {
+        name: 'Mordedura de Collar Letal',
+        desc: 'Descarga tóxica concentrada (+2 cargas) imposible de disipar entre oleadas.',
+        damage: 12,
+        dndDamageType: 'poison',
+      },
+      rewards: {
+        gold: 1800,
+        crystals: 45,
+        item: {
+          id: 'ing_bichos_tesoro',
+          name: 'Bichos del Tesoro',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/items/ing_bichos_tesoro.webp',
+          description: 'Bol de porcelana con un Insecto Joya, un Insecto Moneda y un Insecto Collar de Perlas dentro. Ingrediente exótico de cocina de monstruos.',
+        },
+      },
+    },
+    aurumvorax_joven: {
+      id: 'aurumvorax_joven',
+      missionId: 'midas_dungeon_easy_aurumvorax',
+      name: 'Aurumvorax Dorado',
+      title: 'Bestia Áurea • Depredador de Seis Patas',
+      chamberName: 'Guarida Áurea de los Aurumvorax',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/aurumvorax_joven_idle.webp',
+      attackSpriteUrl: '/assets/combat/aurumvorax_joven_attack.webp',
+      skillSpriteUrl: '/assets/combat/aurumvorax_joven_skill.webp',
+      hurtSpriteUrl: '/assets/combat/aurumvorax_joven_hurt.webp',
+      thumbUrl: '/assets/portraits/aurumvorax_joven_thumb.webp',
+      maxHp: 38,
+      width: 118,
+      height: 96,
+      scaleClass: 'w-[118px] h-[96px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Zarpazo de Seis Patas',
+        desc: 'Embestida veloz con sus seis patas armadas de garras metálicas.',
+        damage: [10, 15],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+      },
+      specialSkill: {
+        name: 'Mordisco Aferrador',
+        desc: 'Clava sus colmillos áureos provocando sangrado en el héroe.',
+        damage: [13, 18],
+        vfx: 'crimson_claw',
+        sfx: 'bite',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 2,
+          title: 'Sangrado Áureo',
+        },
+      },
+      ultimateSkill: {
+        name: 'Frenesí del Oro',
+        desc: 'Ráfaga brutal de zarpazos y dentelladas que perfora la defensa.',
+        damage: 22,
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Armadura Hendida',
+        },
+      },
+      rewards: {
+        gold: 2200,
+        crystals: 55,
+        item: {
+          id: 'ing_carne_aurea',
+          name: 'Carne Áurea',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/items/ing_carne_aurea.webp',
+          description: 'Corte veteado con filamentos de oro metálico. Útil en cocina de monstruos, botica de pociones y venta en tienda.',
+        },
+      },
+    },
+    aurumvorax_alfa: {
+      id: 'aurumvorax_alfa',
+      missionId: 'midas_dungeon_easy_aurumvorax',
+      name: 'Aurumvorax Alfa Áureo',
+      title: 'Líder de Manada • Pelaje Metálico',
+      chamberName: 'Guarida Áurea de los Aurumvorax',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/aurumvorax_alfa_idle.webp',
+      attackSpriteUrl: '/assets/combat/aurumvorax_alfa_attack.webp',
+      skillSpriteUrl: '/assets/combat/aurumvorax_alfa_skill.webp',
+      hurtSpriteUrl: '/assets/combat/aurumvorax_alfa_hurt.webp',
+      thumbUrl: '/assets/portraits/aurumvorax_alfa_thumb.webp',
+      maxHp: 52,
+      width: 134,
+      height: 110,
+      scaleClass: 'w-[134px] h-[110px]',
+      isBoss: false,
+      isSemiboss: true,
+      normalSkill: {
+        name: 'Desgarro Metálico',
+        desc: 'Doble zarpazo pesado con garras de acero dorado.',
+        damage: [12, 18],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+      },
+      specialSkill: {
+        name: 'Mandíbula de Hierro y Oro',
+        desc: 'Mordedura trituradora que provoca hemorragia severa.',
+        damage: [15, 22],
+        vfx: 'crimson_claw',
+        sfx: 'bite',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'bleed',
+          duration: 3,
+          stacks: 2,
+          title: 'Hemorragia Áurea',
+        },
+      },
+      ultimateSkill: {
+        name: 'Asalto de la Manada Áurea',
+        desc: 'Carga salvaje de seis patas que destroza la guardia enemiga.',
+        damage: 26,
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Coraza Quebrada',
+        },
+      },
+      rewards: {
+        gold: 2800,
+        crystals: 70,
+        item: {
+          id: 'ing_carne_aurea',
+          name: 'Carne Áurea',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/items/ing_carne_aurea.webp',
+          description: 'Corte veteado con filamentos de oro metálico del líder Alfa. Útil en cocina de monstruos, botica de pociones y venta en tienda.',
+        },
+      },
+    },
+    escarabajo_aureo: {
+      id: 'escarabajo_aureo',
+      missionId: 'midas_dungeon_easy_insectos',
+      name: 'Escarabajo Áureo',
+      title: 'Joya Viviente • Bilis Corrosiva',
+      chamberName: 'Sala del Tesoro de Midas',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/escarabajo_aureo_idle.webp',
+      attackSpriteUrl: '/assets/combat/escarabajo_aureo_attack.webp',
+      hurtSpriteUrl: '/assets/combat/escarabajo_aureo_hurt.webp',
+      thumbUrl: '/assets/portraits/escarabajo_aureo_thumb.webp',
+      maxHp: 50,
+      width: 186,
+      height: 158,
+      scaleClass: 'w-[186px] h-[158px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Mandíbula de Jade',
+        desc: 'Abre sus quelíceros verdes y muerde la guardia del héroe.',
+        damage: [10, 15],
+        vfx: 'crimson_claw',
+        sfx: 'bite',
+        dndDamageType: 'piercing',
+      },
+      specialSkill: {
+        name: 'Chorro Ámbar',
+        desc: 'Escupe un chorro de bilis verdosa que corroe la armadura.',
+        damage: [13, 18],
+        vfx: 'void_miasma',
+        sfx: 'slime',
+        dndDamageType: 'acid',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Bilis Corrosiva',
+        },
+      },
+      ultimateSkill: {
+        name: 'Furia de la Joya',
+        desc: 'Embiste con el caparazón enjoyado y deja veneno entre las grietas.',
+        damage: 22,
+        dndDamageType: 'poison',
+        condition: {
+          type: 'poison',
+          duration: 2,
+          stacks: 2,
+          title: 'Icor de Jade',
+        },
+      },
+      rewards: {
+        gold: 2200,
+        crystals: 55,
+        item: {
+          id: 'ing_carne_aurea',
+          name: 'Carne Áurea',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/items/ing_carne_aurea.webp',
+          description: 'Corte de la fauna dorada de la bóveda de Midas. Útil en cocina de monstruos y venta en tienda.',
+        },
+      },
+    },
+    murcielago_carmesi: {
+      id: 'murcielago_carmesi',
+      missionId: 'midas_dungeon_easy_insectos',
+      name: 'Murciélago Carmesí',
+      title: 'Semiboss • Aliento Drenante',
+      chamberName: 'Galería de las Alfombras de Midas',
+      chamberNumber: 3,
+      spriteUrl: '/assets/combat/murcielago_carmesi_idle.webp',
+      attackSpriteUrl: '/assets/combat/murcielago_carmesi_attack.webp',
+      hurtSpriteUrl: '/assets/combat/murcielago_carmesi_hurt.webp',
+      thumbUrl: '/assets/portraits/murcielago_carmesi_thumb.webp',
+      maxHp: 96,
+      width: 268,
+      height: 186,
+      scaleClass: 'w-[268px] h-[186px]',
+      isBoss: false,
+      isSemiboss: true,
+      normalSkill: {
+        name: 'Ala de Terciopelo',
+        desc: 'Golpea con el borde de su alfombra voladora.',
+        damage: [11, 16],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+      },
+      specialSkill: {
+        name: 'Aliento Drenante',
+        desc: 'Exhala una bruma carmesí que envenena y roba 1 orbe de definitiva al inicio de cada turno.',
+        damage: [12, 17],
+        vfx: 'void_miasma',
+        sfx: 'slime',
+        dndDamageType: 'poison',
+      },
+      ultimateSkill: {
+        name: 'Eco de la Alfombra',
+        desc: 'Su aliento se espesa: veneno acumulado y drenaje de orbes más agresivo.',
+        damage: 20,
+        dndDamageType: 'poison',
+      },
+      rewards: {
+        gold: 2600,
+        crystals: 70,
+        item: {
+          id: 'ala_carmesi',
+          name: 'Ala de Alfombra Carmesí',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/murcielago_carmesi_thumb.webp',
+          description: 'Jirón de la alfombra voladora que sirve de alas al Murciélago Carmesí.',
+        },
+      },
+    },
+    mimico_boss: {
+      id: 'mimico_boss',
+      missionId: 'midas_dungeon_boss_mimico',
+      name: 'El Mímico de la Bóveda',
+      title: 'Jefe del Capítulo I • Aberración Voraz',
+      chamberName: 'Bóveda Maldita de Midas',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/mimico_idle.webp',
+      attackSpriteUrl: '/assets/combat/mimico_attack_zarpazo.webp',
+      skillSpriteUrl: '/assets/combat/mimico_attack_mordisco.webp',
+      hurtSpriteUrl: '/assets/combat/mimico_hurt.webp',
+      thumbUrl: '/assets/portraits/mimico_thumb.webp',
+      maxHp: 900,
+      width: 240,
+      height: 304,
+      scaleClass: 'w-[240px] h-[304px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Zarpazo Voraz',
+        desc: 'Desgarra al objetivo con sus enormes garras negras e inflige sangrado acumulable.',
+        damage: [18, 25],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'bleed',
+          duration: 3,
+          stacks: 1,
+          title: 'Desgarro del Mímico',
+        },
+      },
+      specialSkill: {
+        name: 'Mordisco de Fauces Óseas',
+        desc: 'Clava sus hileras de colmillos y lengua en una dentellada profunda que acumula hemorragia.',
+        damage: [23, 30],
+        vfx: 'crimson_claw',
+        sfx: 'bite',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'bleed',
+          duration: 3,
+          stacks: 2,
+          title: 'Hemorragia de Colmillos',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Rugido de la Bóveda Maldita!',
+        desc: 'Abre su tapa de par en par y desata un bramido ensordecedor que hace sangrar al enemigo.',
+        damage: 34,
+        dndDamageType: 'thunder',
+        condition: {
+          type: 'bleed',
+          duration: 4,
+          stacks: 2,
+          title: 'Tímpanos Sangrantes',
+        },
+      },
+      rewards: {
+        gold: 12000,
+        crystals: 350,
+        item: {
+          id: 'cofre_maldito_mimico',
+          name: 'Cofre Maldito',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/combat/mimico_cofre_normal.webp',
+          description: 'Cofre dorado sellado tras derrotar a la Viuda Enjoyada en la Bóveda Maldita de Midas. Aún palpita con codicia contenida.',
+        },
+      },
+    },
+    arana_joya_boss: {
+      id: 'arana_joya_boss',
+      missionId: 'midas_dungeon_boss_mimico',
+      name: 'Aracnia, la Viuda Enjoyada',
+      title: 'Jefe del Capítulo I • Tejedora de Ponzoña',
+      chamberName: 'Bóveda Maldita de Midas',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/arana_joya_boss_idle.webp',
+      attackSpriteUrl: '/assets/combat/arana_joya_boss_attack.webp',
+      hurtSpriteUrl: '/assets/combat/arana_joya_boss_hurt.webp',
+      thumbUrl: '/assets/portraits/arana_joya_boss_thumb.webp',
+      maxHp: 780,
+      width: 328,
+      height: 278,
+      scaleClass: 'w-[328px] h-[278px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Barrido de Piernas',
+        desc: 'Barre con sus colosales patas enjoyadas en doble golpe cortante dentro de su Multiataque.',
+        damage: [14, 19],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'atk_down',
+          duration: 2,
+          stacks: 1,
+          title: 'Barrido Aplastante',
+        },
+      },
+      specialSkill: {
+        name: 'Escupitajo de Bilis Esmeralda',
+        desc: 'Lanza desde sus mandíbulas un chorro de bilis verde que envenena al objetivo y empapa la piedra.',
+        damage: [26, 36],
+        vfx: 'crimson_claw',
+        sfx: 'magic',
+        dndDamageType: 'poison',
+        condition: {
+          type: 'poison',
+          duration: 2,
+          stacks: 1,
+          title: 'Bilis Incandescente',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Aliento de Veneno Esmeralda!',
+        desc: 'Exhala una cascada de ponzoña desde sus fauces; héroes ágiles o cubiertos mitigan el impacto a la mitad.',
+        damage: 52,
+        dndDamageType: 'poison',
+        condition: {
+          type: 'poison',
+          duration: 3,
+          stacks: 2,
+          title: 'Veneno de la Viuda',
+        },
+      },
+      rewards: {
+        gold: 12000,
+        crystals: 350,
+        item: {
+          id: 'cofre_maldito_mimico',
+          name: 'Cofre Maldito',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/combat/mimico_cofre_normal.webp',
+          description:
+            'Cofre dorado sellado que la Viuda Enjoyada custodiaba en la Bóveda Maldita de Midas. Aún palpita con codicia contenida.',
+        },
+      },
+    },
+    ignivrax_boss: {
+      id: 'ignivrax_boss',
+      missionId: 'midas_dungeon_boss_ignivrax',
+      name: 'Ignivrax, El Tirano Carmesí',
+      title: 'Dragón Rojo de Brasas • Sala del Tesoro',
+      chamberName: 'Sala del Tesoro con Ascuas',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/ignivrax_flying_idle.webp',
+      attackSpriteUrl: '/assets/combat/ignivrax_claw_swipe.webp',
+      hurtSpriteUrl: '/assets/combat/ignivrax_hurt.webp',
+      thumbUrl: '/assets/portraits/ignivrax_boss_thumb.webp',
+      maxHp: 560,
+      width: 344,
+      height: 344,
+      scaleClass: 'w-[344px] h-[344px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Zarpazo Ígneo',
+        desc: 'Desgarra el frente con sus garras carmesíes encendidas al rojo vivo.',
+        damage: [18, 24],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 1,
+          title: 'Garra Abrasadora',
+        },
+      },
+      specialSkill: {
+        name: 'Mordisco Incandescente',
+        desc: 'Se abalanza y tritura al objetivo con fauces de magma y obsidiana.',
+        damage: [24, 34],
+        vfx: 'crimson_claw',
+        sfx: 'bite',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Fauces de Obsidiana',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Aliento de Fuego Infernal!',
+        desc: 'Exhala una llamarada infernal sobre la sala del tesoro; héroes ágiles o cubiertos reducen el daño a la mitad.',
+        damage: 48,
+        dndDamageType: 'fire',
+        condition: {
+          type: 'burn',
+          duration: 3,
+          stacks: 2,
+          title: 'Infierno Carmesí',
+        },
+      },
+      rewards: {
+        gold: 35000,
+        crystals: 600,
+        item: {
+          id: 'corazon_igneo_ignivrax',
+          name: 'Corazón Ígneo de Ignivrax',
+          rarity: 'UR',
+          count: 1,
+          icon: '/assets/portraits/ignivrax_boss_thumb.webp',
+          description: 'Núcleo ardiente arrancado al dragón rojo que custodiaba el final del Nivel II de la Mazmorra de Midas.',
+        },
+      },
+    },
+    kobold_alado: {
+      id: 'kobold_alado',
+      missionId: 'midas_dungeon_n2_c1_kobolds_alados',
+      name: 'Kobold Alado (Urd)',
+      title: 'Explorador Alado • Tácticas de Manada',
+      chamberName: 'Galerías de la Vanguardia Dracónica',
+      chamberNumber: 1,
+      spriteUrl: '/assets/combat/kobold_alado_idle.webp',
+      attackSpriteUrl: '/assets/combat/kobold_alado_attack.webp',
+      hurtSpriteUrl: '/assets/combat/kobold_alado_hurt.webp',
+      thumbUrl: '/assets/portraits/kobold_alado_thumb.webp',
+      maxHp: 38,
+      width: 112,
+      height: 112,
+      scaleClass: 'w-[112px] h-[112px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Picado con Daga',
+        desc: 'Se lanza en vuelo rasante para apuñalar con su daga mellada.',
+        damage: [11, 16],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'piercing',
+      },
+      specialSkill: {
+        name: 'Lanzamiento de Roca desde las Alturas',
+        desc: 'Arroja un pesado pedrusco sobre la cabeza del héroe desde el techo de la bóveda.',
+        damage: [15, 22],
+        vfx: 'earth_titan',
+        sfx: 'attack',
+        dndDamageType: 'bludgeoning',
+      },
+      ultimateSkill: {
+        name: 'Bombardeo de Manada',
+        desc: 'Descarga una roca afilada en picado capaz de aturdir brevemente al objetivo.',
+        damage: 25,
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'stun',
+          duration: 1,
+          stacks: 1,
+          title: 'Pedrada Aturdidora',
+        },
+      },
+      rewards: {
+        gold: 2100,
+        crystals: 45,
+        item: {
+          id: 'escama_draconica_roja',
+          name: 'Escama Dracónica Roja',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/kobold_escudo_rojo_thumb.webp',
+          description: 'Escama carmesí recogida tras derrotar a los exploradores alados del culto rojo.',
+        },
+      },
+    },
+    ciervo_tundra: {
+      id: 'ciervo_tundra',
+      missionId: 'midas_dungeon_n2_c1_kobolds_alados',
+      name: 'Ciervo de Escarcha',
+      title: 'Guardián de la Tundra • Congela la Huida',
+      chamberName: 'Galería de Escarcha',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/tundra_ciervo_idle.webp',
+      attackSpriteUrl: '/assets/combat/tundra_ciervo_attack.webp',
+      hurtSpriteUrl: '/assets/combat/tundra_ciervo_hurt.webp',
+      thumbUrl: '/assets/portraits/tundra_ciervo_thumb.webp',
+      maxHp: 64,
+      width: 152,
+      height: 152,
+      scaleClass: 'w-[152px] h-[152px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Cornamenta de Cristal',
+        desc: 'Embiste con una cornamenta de hielo que astilla el aire.',
+        damage: [14, 20],
+        vfx: 'frost_blizzard',
+        sfx: 'attack',
+        dndDamageType: 'cold',
+      },
+      specialSkill: {
+        name: 'Pisotón Glacial',
+        desc: 'Clava las pezuñas y levanta una onda de escarcha.',
+        damage: [16, 23],
+        vfx: 'frost_blizzard',
+        sfx: 'slash',
+        dndDamageType: 'cold',
+        condition: {
+          type: 'chill',
+          duration: 2,
+          stacks: 1,
+          title: 'Onda de Escarcha',
+        },
+      },
+      ultimateSkill: {
+        name: 'Bramido del Invierno',
+        desc: 'Su bramido hiela la salida: nadie abandona la ventisca.',
+        damage: 32,
+        dndDamageType: 'cold',
+      },
+      rewards: {
+        gold: 2000,
+        crystals: 40,
+        item: {
+          id: 'escama_draconica_roja',
+          name: 'Escama Dracónica Roja',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/kobold_escudo_rojo_thumb.webp',
+          description: 'Reliquia de la Tundra de Escarcha: astilla de la cornamenta de un ciervo glacial.',
+        },
+      },
+    },
+    caballero_escarcha_boss: {
+      id: 'caballero_escarcha_boss',
+      missionId: 'midas_dungeon_boss_caballero',
+      name: 'Caballero de Escarcha',
+      title: 'Jefe del Capítulo II • Réquiem de la Ventisca',
+      chamberName: 'Sala del Trono Helado',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/caballero_escarcha_boss_idle.webp',
+      attackSpriteUrl: '/assets/combat/caballero_escarcha_boss_attack.webp',
+      hurtSpriteUrl: '/assets/combat/caballero_escarcha_boss_hurt.webp',
+      thumbUrl: '/assets/portraits/caballero_escarcha_boss_thumb.webp',
+      maxHp: 760,
+      width: 210,
+      height: 210,
+      scaleClass: 'w-[210px] h-[210px]',
+      isBoss: true,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Estocada de Hielo Eterno',
+        desc: 'Clava su lanza glacial con una precisión que hiela la sangre.',
+        damage: [20, 28],
+        vfx: 'frost_blizzard',
+        sfx: 'slash',
+        dndDamageType: 'cold',
+      },
+      specialSkill: {
+        name: 'Llamada de la Ventisca',
+        desc: 'Golpea con la lanza y convoca a la fiera de la Tundra cuyas cargas de escarcha arrastra el héroe.',
+        damage: [18, 25],
+        vfx: 'frost_blizzard',
+        sfx: 'roar',
+        dndDamageType: 'cold',
+        condition: {
+          type: 'chill',
+          duration: 2,
+          stacks: 1,
+          title: 'Escarcha del Réquiem',
+        },
+      },
+      ultimateSkill: {
+        name: 'Juicio del Invierno',
+        desc: 'Descarga toda la ventisca de la bóveda sobre el héroe: daño masivo y escarcha acumulable.',
+        damage: 46,
+        dndDamageType: 'cold',
+        condition: {
+          type: 'chill',
+          duration: 3,
+          stacks: 2,
+          title: 'Sentencia Glacial',
+        },
+      },
+      rewards: {
+        gold: 18000,
+        crystals: 420,
+        item: {
+          id: 'lanza_escarcha_eterna',
+          name: 'Punta de la Lanza Eterna',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/portraits/caballero_escarcha_boss_thumb.webp',
+          description: 'Astilla de la lanza del Caballero de Escarcha, aún escarchada tras siglos en la bóveda.',
+        },
+      },
+    },
+    lobo_tundra: {
+      id: 'lobo_tundra',
+      missionId: 'midas_dungeon_n2_c1_kobolds_alados',
+      name: 'Lobo de Tundra',
+      title: 'Cazador Gélido • Congelación Acumulable',
+      chamberName: 'Galería de Escarcha',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/tundra_lobo_idle.webp',
+      attackSpriteUrl: '/assets/combat/tundra_lobo_attack.webp',
+      hurtSpriteUrl: '/assets/combat/tundra_lobo_hurt.webp',
+      thumbUrl: '/assets/portraits/tundra_lobo_thumb.webp',
+      maxHp: 56,
+      width: 150,
+      height: 150,
+      scaleClass: 'w-[150px] h-[150px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Zarpazo de Escarcha',
+        desc: 'Desgarra con garras cubiertas de hielo y clava una carga de congelación en la barra de vida del héroe.',
+        damage: [13, 19],
+        vfx: 'frost_blizzard',
+        sfx: 'slash',
+        dndDamageType: 'cold',
+      },
+      specialSkill: {
+        name: 'Aullido Glacial',
+        desc: 'Su aullido hiela el aire y acumula escarcha sobre el héroe hasta congelarlo.',
+        damage: [17, 24],
+        vfx: 'frost_blizzard',
+        sfx: 'necrotic',
+        dndDamageType: 'cold',
+        condition: {
+          type: 'chill',
+          duration: 2,
+          stacks: 1,
+          title: 'Escarcha Aullante',
+        },
+      },
+      ultimateSkill: {
+        name: 'Mordisco del Invierno',
+        desc: 'Salta a la yugular con colmillos de hielo negro.',
+        damage: 34,
+        dndDamageType: 'cold',
+        condition: {
+          type: 'chill',
+          duration: 2,
+          stacks: 1,
+          title: 'Colmillos de Escarcha',
+        },
+      },
+      rewards: {
+        gold: 2100,
+        crystals: 40,
+        item: {
+          id: 'escama_draconica_roja',
+          name: 'Escama Dracónica Roja',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/kobold_escudo_rojo_thumb.webp',
+          description: 'Trofeo de la Tundra de Escarcha: pelaje rígido de un lobo que caza entre ventiscas.',
+        },
+      },
+    },
+    zorro_tundra: {
+      id: 'zorro_tundra',
+      missionId: 'midas_dungeon_n2_c1_kobolds_alados',
+      name: 'Zorro de Tundra',
+      title: 'Embaucador Gélido • Congela el Inventario',
+      chamberName: 'Galería de Escarcha',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/tundra_zorro_idle.webp',
+      attackSpriteUrl: '/assets/combat/tundra_zorro_attack.webp',
+      hurtSpriteUrl: '/assets/combat/tundra_zorro_hurt.webp',
+      thumbUrl: '/assets/portraits/tundra_zorro_thumb.webp',
+      maxHp: 44,
+      width: 138,
+      height: 138,
+      scaleClass: 'w-[138px] h-[138px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Mordisco del Ventisquero',
+        desc: 'Se cuela por el flanco y muerde con colmillos escarchados.',
+        damage: [11, 16],
+        vfx: 'frost_blizzard',
+        sfx: 'slash',
+        dndDamageType: 'cold',
+      },
+      specialSkill: {
+        name: 'Trampa de Escarcha',
+        desc: 'Congela el aire alrededor de tus cartas para helarte los objetos.',
+        damage: [14, 20],
+        vfx: 'frost_blizzard',
+        sfx: 'necrotic',
+        dndDamageType: 'cold',
+        condition: {
+          type: 'chill',
+          duration: 1,
+          stacks: 1,
+          title: 'Escarcha Tramposa',
+        },
+      },
+      ultimateSkill: {
+        name: 'Danza de Copos',
+        desc: 'Se multiplica en espejismos helados y desgarra sin dejar rastro.',
+        damage: 29,
+        dndDamageType: 'cold',
+      },
+      rewards: {
+        gold: 1900,
+        crystals: 40,
+        item: {
+          id: 'escama_draconica_roja',
+          name: 'Escama Dracónica Roja',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/kobold_escudo_rojo_thumb.webp',
+          description: 'Reliquia de la Tundra de Escarcha: cola de zorro endurecida por la ventisca.',
+        },
+      },
+    },
+    conejo_tundra: {
+      id: 'conejo_tundra',
+      missionId: 'midas_dungeon_n2_c1_kobolds_alados',
+      name: 'Conejo de Escarcha',
+      title: 'Guardián de Hielo • Congela Orbes de Definitiva',
+      chamberName: 'Galería de Escarcha',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/tundra_conejo_idle.webp',
+      attackSpriteUrl: '/assets/combat/tundra_conejo_attack.webp',
+      hurtSpriteUrl: '/assets/combat/tundra_conejo_hurt.webp',
+      thumbUrl: '/assets/portraits/tundra_conejo_thumb.webp',
+      maxHp: 38,
+      width: 124,
+      height: 124,
+      scaleClass: 'w-[124px] h-[124px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Patada de Cristal',
+        desc: 'Cocea con patas envueltas en hielo cristalino.',
+        damage: [10, 15],
+        vfx: 'frost_blizzard',
+        sfx: 'attack',
+        dndDamageType: 'cold',
+      },
+      specialSkill: {
+        name: 'Aliento de Ventisca',
+        desc: 'Exhala una nube de escarcha que ralentiza al héroe.',
+        damage: [13, 18],
+        vfx: 'frost_blizzard',
+        sfx: 'necrotic',
+        dndDamageType: 'cold',
+        condition: {
+          type: 'chill',
+          duration: 2,
+          stacks: 1,
+          title: 'Ventisca de Escarcha',
+        },
+      },
+      ultimateSkill: {
+        name: 'Cristal de Definitiva',
+        desc: 'Concentra la ventisca y congela la energía definitiva del héroe.',
+        damage: 26,
+        dndDamageType: 'cold',
+      },
+      rewards: {
+        gold: 1700,
+        crystals: 35,
+        item: {
+          id: 'escama_draconica_roja',
+          name: 'Escama Dracónica Roja',
+          rarity: 'SR',
+          count: 1,
+          icon: '/assets/portraits/kobold_escudo_rojo_thumb.webp',
+          description: 'Reliquia de la Tundra de Escarcha: astillas de hielo de los cuernos de un conejo de escarcha.',
+        },
+      },
+    },
+    kobold_escudo_rojo: {
+      id: 'kobold_escudo_rojo',
+      missionId: 'midas_dungeon_n2_c2_escudos_dragon',
+      name: 'Kobold Escudo de Dragón Rojo',
+      title: 'Guardia de Élite • Resistencia al Fuego',
+      chamberName: 'Falange de Escamas Carmesíes',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/kobold_escudo_rojo_idle.webp',
+      attackSpriteUrl: '/assets/combat/kobold_escudo_rojo_attack.webp',
+      hurtSpriteUrl: '/assets/combat/kobold_escudo_rojo_hurt.webp',
+      thumbUrl: '/assets/portraits/kobold_escudo_rojo_thumb.webp',
+      maxHp: 56,
+      width: 116,
+      height: 116,
+      scaleClass: 'w-[116px] h-[116px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Lanza de Escama Roja',
+        desc: 'Estocada precisa desde detrás de su pesado escudo de escamas de dragón rojo.',
+        damage: [13, 19],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'piercing',
+      },
+      specialSkill: {
+        name: 'Golpe de Escudo Dracónico',
+        desc: 'Embiste con el escudo reforzado con escamas rojas para quebrar la guardia.',
+        damage: [17, 24],
+        vfx: 'earth_titan',
+        sfx: 'attack',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Guardia Hendida',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Corazón del Dragón!',
+        desc: 'Invoca el fervor de Ignivrax y lanza un doble ataque de lanza abrasadora.',
+        damage: 28,
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'burn',
+          duration: 2,
+          stacks: 1,
+          title: 'Fervor Carmesí',
+        },
+      },
+      rewards: {
+        gold: 2600,
+        crystals: 60,
+        item: {
+          id: 'escama_draconica_roja',
+          name: 'Escama Dracónica Roja',
+          rarity: 'SR',
+          count: 2,
+          icon: '/assets/portraits/kobold_escudo_rojo_thumb.webp',
+          description: 'Escamas carmesíes arrancadas al escudo de un Kobold Escudo de Dragón Rojo.',
+        },
+      },
+    },
+    draco_guardian_rojo: {
+      id: 'draco_guardian_rojo',
+      missionId: 'midas_dungeon_n2_c3_dracos_guardianes',
+      name: 'Draco Guardián Rojo',
+      title: 'Bestia Cuadrúpeda Dracónica • Sin Alas',
+      chamberName: 'Perrera Ritual de Ignivrax',
+      chamberNumber: 3,
+      spriteUrl: '/assets/combat/draco_guardian_rojo_idle.webp',
+      attackSpriteUrl: '/assets/combat/draco_guardian_rojo_attack.webp',
+      skillSpriteUrl: '/assets/combat/draco_guardian_rojo_skill.webp',
+      hurtSpriteUrl: '/assets/combat/draco_guardian_rojo_hurt.webp',
+      thumbUrl: '/assets/portraits/draco_guardian_rojo_thumb.webp',
+      maxHp: 88,
+      width: 148,
+      height: 148,
+      scaleClass: 'w-[148px] h-[148px]',
+      isBoss: false,
+      isSemiboss: true,
+      normalSkill: {
+        name: 'Mordisco de Guardián',
+        desc: 'Clava sus mandíbulas reforzadas con escamas rojas desgarrando al objetivo.',
+        damage: [16, 23],
+        vfx: 'crimson_claw',
+        sfx: 'bite',
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 1,
+          title: 'Dentellada del Draco',
+        },
+      },
+      specialSkill: {
+        name: 'Coletazo Aplastante',
+        desc: 'Azota la arena con su pesada cola espinosa resquebrajando la armadura.',
+        damage: [19, 27],
+        vfx: 'earth_titan',
+        sfx: 'attack',
+        dndDamageType: 'bludgeoning',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Armadura Agrietada',
+        },
+      },
+      ultimateSkill: {
+        name: 'Multiataque: Fauces y Cola',
+        desc: 'Encadena una feroz dentellada en el frente con un impacto devastador de su cola.',
+        damage: 34,
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'bleed',
+          duration: 3,
+          stacks: 2,
+          title: 'Desgarro del Guardián',
+        },
+      },
+      rewards: {
+        gold: 3400,
+        crystals: 85,
+        item: {
+          id: 'escama_draco_guardian',
+          name: 'Escama de Draco Guardián',
+          rarity: 'SSR',
+          count: 2,
+          icon: '/assets/portraits/draco_guardian_rojo_thumb.webp',
+          description: 'Gruesas placas escarlata resistentes al fuego obtenidas de un Draco Guardián Rojo.',
+        },
+      },
+    },
+    semidragon_rojo_veterano: {
+      id: 'semidragon_rojo_veterano',
+      missionId: 'midas_dungeon_n2_c4_semidragones_rojos',
+      name: 'Semidragón Rojo Veterano',
+      title: 'Campeón Acorazado • Sangre de Dragón Rojo',
+      chamberName: 'Antesala del Tirano Carmesí',
+      chamberNumber: 4,
+      spriteUrl: '/assets/combat/semidragon_rojo_veterano_idle.webp',
+      attackSpriteUrl: '/assets/combat/semidragon_rojo_veterano_attack.webp',
+      skillSpriteUrl: '/assets/combat/semidragon_rojo_veterano_skill.webp',
+      hurtSpriteUrl: '/assets/combat/semidragon_rojo_veterano_hurt.webp',
+      thumbUrl: '/assets/portraits/semidragon_rojo_veterano_thumb.webp',
+      maxHp: 132,
+      width: 168,
+      height: 168,
+      scaleClass: 'w-[168px] h-[168px]',
+      isBoss: false,
+      isSemiboss: true,
+      normalSkill: {
+        name: 'Esgrima Doble Carmesí',
+        desc: 'Combina tajos de espada larga y estocadas de espada corta con precisión veterana.',
+        damage: [19, 27],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'bleed',
+          duration: 2,
+          stacks: 1,
+          title: 'Corte de Doble Acero',
+        },
+      },
+      specialSkill: {
+        name: 'Multiataque del Veterano',
+        desc: 'Tres asaltos encadenados que atraviesan cualquier guardia.',
+        damage: [24, 33],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Placas Rotas',
+        },
+      },
+      ultimateSkill: {
+        name: '¡Aliento de Fuego Dracónico!',
+        desc: 'Exhala un cono abrasador de fuego rojo heredado directamente de sangre dracónica.',
+        damage: 40,
+        dndDamageType: 'fire',
+        condition: {
+          type: 'burn',
+          duration: 3,
+          stacks: 2,
+          title: 'Brasas del Semidragón',
+        },
+      },
+      rewards: {
+        gold: 4600,
+        crystals: 115,
+        item: {
+          id: 'blason_sangre_draconica',
+          name: 'Blasón de Sangre Dracónica',
+          rarity: 'SSR',
+          count: 2,
+          icon: '/assets/portraits/semidragon_rojo_veterano_thumb.webp',
+          description: 'Insignia de acero y fuego arrebatada a un Semidragón Rojo Veterano.',
+        },
+      },
+    },
+    escorpion_aureo: {
+      id: 'escorpion_aureo',
+      missionId: 'midas_dungeon_easy_aurumvorax',
+      name: 'Escorpión Áureo',
+      title: 'Guardián de la Bóveda • Aguijón Envenenado',
+      chamberName: 'Sala del Tesoro de Midas',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/escorpion_aureo_idle.webp',
+      attackSpriteUrl: '/assets/combat/escorpion_aureo_attack.webp',
+      hurtSpriteUrl: '/assets/combat/escorpion_aureo_hurt.webp',
+      thumbUrl: '/assets/portraits/escorpion_aureo_thumb.webp',
+      maxHp: 46,
+      width: 182,
+      height: 156,
+      scaleClass: 'w-[182px] h-[156px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Pinza Dorada',
+        desc: 'Abre sus pinzas enjoyadas y tritura la guardia del héroe.',
+        damage: [10, 15],
+        vfx: 'crimson_claw',
+        sfx: 'slash',
+        dndDamageType: 'slashing',
+      },
+      specialSkill: {
+        name: 'Aguijón de Rubí',
+        desc: 'Encorva la cola y clava el aguijón cargado de veneno áureo.',
+        damage: [13, 18],
+        vfx: 'void_miasma',
+        sfx: 'slime',
+        dndDamageType: 'poison',
+        condition: {
+          type: 'poison',
+          duration: 2,
+          stacks: 2,
+          title: 'Veneno Áureo',
+        },
+      },
+      ultimateSkill: {
+        name: 'Furia del Escorpión',
+        desc: 'Doble pinzazo y aguijonazo que perfora la armadura del escuadrón.',
+        damage: 22,
+        dndDamageType: 'piercing',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Coraza Hendida',
+        },
+      },
+      rewards: {
+        gold: 2200,
+        crystals: 55,
+        item: {
+          id: 'ing_carne_aurea',
+          name: 'Carne Áurea',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/items/ing_carne_aurea.webp',
+          description: 'Corte de la fauna dorada de la bóveda de Midas. Útil en cocina de monstruos y venta en tienda.',
+        },
+      },
+    },
+    arana_coronada: {
+      id: 'arana_coronada',
+      missionId: 'midas_dungeon_easy_aurumvorax',
+      name: 'Araña Coronada',
+      title: 'Reina de la Bóveda • Seda Ácida',
+      chamberName: 'Sala del Tesoro de Midas',
+      chamberNumber: 2,
+      spriteUrl: '/assets/combat/arana_coronada_idle.webp',
+      attackSpriteUrl: '/assets/combat/arana_coronada_attack.webp',
+      hurtSpriteUrl: '/assets/combat/arana_coronada_hurt.webp',
+      thumbUrl: '/assets/portraits/arana_coronada_thumb.webp',
+      maxHp: 48,
+      width: 176,
+      height: 152,
+      scaleClass: 'w-[176px] h-[152px]',
+      isBoss: false,
+      isSemiboss: false,
+      normalSkill: {
+        name: 'Colmillos de Esmeralda',
+        desc: 'Muerde con sus quelíceros verdes y deja veneno corriendo por la herida.',
+        damage: [10, 14],
+        vfx: 'crimson_claw',
+        sfx: 'bite',
+        dndDamageType: 'poison',
+      },
+      specialSkill: {
+        name: 'Chorro de Seda Ácida',
+        desc: 'Escupe un chorro de seda corrosiva desde la corona enjoyada.',
+        damage: [12, 17],
+        vfx: 'void_miasma',
+        sfx: 'slime',
+        dndDamageType: 'acid',
+        condition: {
+          type: 'def_break',
+          duration: 2,
+          stacks: 1,
+          title: 'Seda Corrosiva',
+        },
+      },
+      ultimateSkill: {
+        name: 'Corona de Midas',
+        desc: 'La corona estalla en hilos ácidos que empapan a todo el escuadrón.',
+        damage: 21,
+        dndDamageType: 'acid',
+        condition: {
+          type: 'poison',
+          duration: 2,
+          stacks: 2,
+          title: 'Icor de la Reina',
+        },
+      },
+      rewards: {
+        gold: 2200,
+        crystals: 55,
+        item: {
+          id: 'ing_carne_aurea',
+          name: 'Carne Áurea',
+          rarity: 'SSR',
+          count: 1,
+          icon: '/assets/items/ing_carne_aurea.webp',
+          description: 'Corte de la fauna dorada de la bóveda de Midas. Útil en cocina de monstruos y venta en tienda.',
         },
       },
     },
@@ -5932,9 +7610,17 @@ export const CRYOVAIN_CHAMBERS: BaseChamber[] = [
   { floor: 1, name: 'Cima Helada: Cryovain, El Tirano Blanco', isBoss: true, enemyConfigIds: ['cryovain_boss'], missionId: 'm22_cryovain_final' },
 ];
 
+export const IGNIVRAX_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Altar Ígneo: Ignivrax, El Tirano Carmesí', isBoss: true, enemyConfigIds: ['ignivrax_boss'], missionId: 'midas_dungeon_boss_ignivrax' },
+];
+
 export const TOMO2_C1_M1_CHAMBERS: BaseChamber[] = [
   { floor: 1, name: 'Oleada 1: Entrada a las Trincheras', isBoss: false, enemyConfigIds: ['no_muerto', 'no_muerto'], missionId: 't2_c1_m1_trincheras_nomuertos' },
   { floor: 2, name: 'Oleada 2: Patios de Tierra Batida', isBoss: true, enemyConfigIds: ['no_muerto', 'no_muerto', 'no_muerto'], missionId: 't2_c1_m1_trincheras_nomuertos' },
+];
+
+export const TOMO2_C2_M1_CHAMBERS: BaseChamber[] = [
+  { floor: 1, name: 'Santuario: Iglesia Destrozada de Ten Piedad', isBoss: true, enemyConfigIds: ['ten_piedad'], missionId: 't2_c2_m1_ten_piedad' },
 ];
 
 export const TOMO2_C1_M2_CHAMBERS: BaseChamber[] = [
@@ -6144,7 +7830,16 @@ const getBalancedEnemyMaxHp = (
   );
   // En el Bastión, la dificultad aumenta la resistencia sin convertir cada combate
   // en una esponja de PV. Las demás misiones conservan su escalado original.
-  const isTrainingTrial = missionId === 'resource_trial_gold' || missionId === 'resource_trial_xp';
+  const isTrainingTrial =
+    missionId === 'resource_trial_gold' ||
+    missionId === 'resource_trial_xp' ||
+    missionId === 'midas_dungeon_easy' ||
+    missionId === 'midas_dungeon_easy_insectos' ||
+    missionId === 'midas_dungeon_easy_aurumvorax' ||
+    missionId === 'midas_dungeon_boss_ignivrax' ||
+    missionId === 'midas_dungeon_boss_caballero' ||
+    Boolean(missionId?.startsWith('midas_dungeon_n2_')) ||
+    Boolean(parseGoldRunLevelMissionId(missionId));
   const difficultyMultiplier = isTrainingTrial
     ? difficultyTier === 3 ? 1.65 : difficultyTier === 2 ? 1.3 : 1
     : difficultyTier === 3 ? 2 : difficultyTier === 2 ? 1.5 : 1;
@@ -6161,9 +7856,217 @@ const getBalancedEnemyMaxHp = (
   );
 };
 
+/** La Viuda Enjoyada reutiliza el combate de la Araña Acorazada con otra piel. */
+const isAranaBossConfigId = (configId?: string | null): boolean =>
+  configId === 'arana_acorazada_boss' || configId === 'arana_joya_boss';
+
+/** Elemento de las habilidades de la araña: fuego en el Barracón, veneno en la bóveda. */
+const aranaBossElement = (configId?: string | null): DndDamageType =>
+  configId === 'arana_joya_boss' ? 'poison' : 'fire';
+
+/** Estado que aplican esas habilidades: quemadura o ponzoña según la versión. */
+const aranaBossStatus = (configId?: string | null): GachaEffectType =>
+  configId === 'arana_joya_boss' ? 'poison' : 'burn';
+
+/** ¿Es la versión enjoyada (veneno) de la araña? */
+const isAranaJoyaConfig = (configId?: string | null): boolean =>
+  configId === 'arana_joya_boss';
+
+/**
+ * Cargas de escarcha por animal de la Tundra. Se guardan en el navegador para que el
+ * jefe del Capítulo II sepa qué animales has estado usando y pueda invocarlos, y para
+ * que las cargas sigan contando en la misión siguiente.
+ */
+const FROST_CHARGES_KEY = 'cdd_frost_charges_v1';
+type FrostAnimalKey = 'lobo' | 'zorro' | 'conejo' | 'ciervo';
+const FROST_ANIMAL_CONFIG: Record<FrostAnimalKey, CombatEnemyId> = {
+  lobo: 'lobo_tundra',
+  zorro: 'zorro_tundra',
+  conejo: 'conejo_tundra',
+  ciervo: 'ciervo_tundra',
+};
+const EMPTY_FROST_CHARGES: Record<FrostAnimalKey, number> = {
+  lobo: 0,
+  zorro: 0,
+  conejo: 0,
+  ciervo: 0,
+};
+const loadFrostCharges = (): Record<FrostAnimalKey, number> => {
+  try {
+    const raw = localStorage.getItem(FROST_CHARGES_KEY);
+    if (!raw) return { ...EMPTY_FROST_CHARGES };
+    const parsed = JSON.parse(raw) as Partial<Record<FrostAnimalKey, number>>;
+    return {
+      lobo: Math.max(0, Number(parsed.lobo) || 0),
+      zorro: Math.max(0, Number(parsed.zorro) || 0),
+      conejo: Math.max(0, Number(parsed.conejo) || 0),
+      ciervo: Math.max(0, Number(parsed.ciervo) || 0),
+    };
+  } catch {
+    return { ...EMPTY_FROST_CHARGES };
+  }
+};
+const addFrostCharge = (animal: FrostAnimalKey): void => {
+  const next = loadFrostCharges();
+  next[animal] = Math.min(99, next[animal] + 1);
+  try {
+    localStorage.setItem(FROST_CHARGES_KEY, JSON.stringify(next));
+  } catch {
+    // sin persistencia, el jefe invocará igualmente con lo que haya en esta partida
+  }
+};
+const clearFrostCharges = (): void => {
+  try {
+    localStorage.removeItem(FROST_CHARGES_KEY);
+  } catch {}
+};
+
+/** Enemigos disponibles en cada sección de la Mazmorra de Midas. */
+const MIDAS_RANDOM_POOLS: Record<string, CombatEnemyId[]> = {
+  midas_dungeon_easy_insectos: [
+    'insecto_joya',
+    'insecto_moneda',
+    'insecto_collar_perlas',
+    'escorpion_aureo',
+    'arana_coronada',
+    'escarabajo_aureo',
+  ],
+  midas_dungeon_easy_aurumvorax: [
+    'escorpion_aureo',
+    'arana_coronada',
+    'escarabajo_aureo',
+    'insecto_collar_perlas',
+    'insecto_joya',
+  ],
+  midas_dungeon_n2_c1_kobolds_alados: [
+    'lobo_tundra',
+    'zorro_tundra',
+    'conejo_tundra',
+    'ciervo_tundra',
+  ],
+  midas_dungeon_n2_c2_escudos_dragon: [
+    'kobold_escudo_rojo',
+    'kobold_alado',
+    'draco_guardian_rojo',
+  ],
+  midas_dungeon_n2_c3_dracos_guardianes: [
+    'draco_guardian_rojo',
+    'kobold_alado',
+    'kobold_escudo_rojo',
+  ],
+  midas_dungeon_n2_c4_semidragones_rojos: [
+    'semidragon_rojo_veterano',
+    'draco_guardian_rojo',
+  ],
+  midas_dungeon_n2_c5_horda_ignivrax: [
+    'kobold_alado',
+    'kobold_escudo_rojo',
+    'draco_guardian_rojo',
+    'semidragon_rojo_veterano',
+  ],
+};
+
+/**
+ * Capítulo II (Tundra de Escarcha): cada sala es de un solo tipo de daño (frío) y
+ * la forman lobos, zorros y conejos de escarcha en distinta composición.
+ */
+const MIDAS_TUNDRA_ROOMS: CombatEnemyId[][] = [
+  ['conejo_tundra', 'conejo_tundra'],
+  ['lobo_tundra'],
+  ['conejo_tundra', 'zorro_tundra'],
+  ['lobo_tundra', 'lobo_tundra'],
+  ['zorro_tundra', 'conejo_tundra', 'conejo_tundra'],
+  ['lobo_tundra', 'zorro_tundra', 'ciervo_tundra'],
+  ['conejo_tundra', 'conejo_tundra', 'ciervo_tundra'],
+  ['lobo_tundra', 'lobo_tundra', 'zorro_tundra'],
+  ['zorro_tundra', 'zorro_tundra', 'conejo_tundra'],
+  ['lobo_tundra', 'zorro_tundra', 'conejo_tundra', 'lobo_tundra'],
+];
+
+/** Semibosses que rondan de la sala 2 en adelante en cualquier sección. */
+const MIDAS_SEMIBOSSES: CombatEnemyId[] = ['devorador_hierro', 'murcielago_carmesi'];
+
+const seededRandom = (seed: number) => {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+
+/**
+ * Salas procedurales de la Mazmorra de Midas. La semilla sale de la expedición guardada,
+ * así que cada run nueva (primera entrada o tras morir) baraja los niveles, pero dentro
+ * de una misma expedición una sala siempre se genera igual.
+ */
+const buildRandomMidasChamber = (floor: number, missionId: string): CombatEnemyId[] => {
+  const pool = MIDAS_RANDOM_POOLS[missionId] ?? MIDAS_RANDOM_POOLS.midas_dungeon_easy_insectos;
+  let hash = 2166136261 ^ (loadGoldRun().seed | 0);
+  for (let i = 0; i < missionId.length; i++) {
+    hash = Math.imul(hash ^ missionId.charCodeAt(i), 16777619);
+  }
+  const rnd = seededRandom((hash ^ Math.imul(floor, 374761393)) >>> 0);
+  const count = floor <= 1 ? 2 + (rnd() < 0.5 ? 1 : 0) : 3 + (rnd() < 0.5 ? 1 : 0);
+  const picked: CombatEnemyId[] = [];
+  for (let i = 0; i < count; i++) {
+    let pick = pool[Math.floor(rnd() * pool.length)];
+    // Como mucho dos copias del mismo bicho por sala.
+    if (picked.filter((p) => p === pick).length >= 2) {
+      pick = pool[Math.floor(rnd() * pool.length)];
+    }
+    picked.push(pick);
+  }
+  if (floor >= 2 && picked.length > 0 && rnd() < 0.34) {
+    picked[picked.length - 1] = MIDAS_SEMIBOSSES[rnd() < 0.5 ? 0 : 1];
+  }
+  return picked;
+};
+
 export const createChamberEnemies = (floor: number, missionId?: string | null, difficultyTier: 1 | 2 | 3 = 1, partyAttackScale = 1): ChamberEnemyState[] => {
   let configIds: CombatEnemyId[] = [];
-  if (missionId === 'resource_trial_gold') {
+  // Cada tarjeta de nivel de la expedición es una única sala de su capítulo.
+  const goldLevelRoom = parseGoldRunLevelMissionId(missionId);
+  if (goldLevelRoom) {
+    // El Capítulo II son salas de escarcha puras: sin semibosses de otro tipo de daño.
+    configIds =
+      goldLevelRoom.chapter === 2
+        ? MIDAS_TUNDRA_ROOMS[Math.min(Math.max(goldLevelRoom.level, 1), 10) - 1]
+        : buildRandomMidasChamber(
+            goldLevelRoom.level,
+            goldRunLevelSourceMission(goldLevelRoom.chapter, goldLevelRoom.level)
+          );
+  } else if (missionId === 'midas_dungeon_easy') {
+    const midasEasyRooms: CombatEnemyId[][] = [
+      ['guinbang_espada', 'guinbang_saqueador'],
+      ['guinbang_espada', 'guinbang_saqueador', 'guinbang_maza'],
+      ['guinbang_espada', 'guinbang_espada', 'guinbang_maza'],
+      ['guinbang_saqueador', 'guinbang_maza', 'guinbang_espada', 'guinbang_maza'],
+      ['guinbang_espada', 'guinbang_maza', 'guinbang_saqueador'],
+      ['guinbang_saqueador', 'guinbang_saqueador', 'guinbang_maza'],
+      ['guinbang_espada', 'guinbang_espada', 'guinbang_saqueador', 'guinbang_maza'],
+      ['guinbang_maza', 'guinbang_maza', 'guinbang_espada'],
+      ['guinbang_espada', 'guinbang_saqueador', 'guinbang_maza', 'guinbang_maza'],
+      ['guinbang_saqueador', 'guinbang_espada', 'guinbang_espada', 'guinbang_maza'],
+    ];
+    configIds = midasEasyRooms[Math.min(Math.max(floor, 1), 10) - 1];
+  } else if (missionId === 'midas_dungeon_boss_devorador') {
+    configIds = ['devorador_hierro'];
+  } else if (missionId === 'midas_dungeon_boss_mimico') {
+    configIds = ['arana_joya_boss'];
+  } else if (missionId === 'midas_dungeon_boss_ignivrax') {
+    configIds = ['ignivrax_boss'];
+  } else if (missionId === 'midas_dungeon_boss_caballero') {
+    configIds = ['caballero_escarcha_boss'];
+  } else if (missionId === 'midas_dungeon_n2_c1_kobolds_alados') {
+    // Tundra de Escarcha: una sala por nivel, todas de daño de frío.
+    configIds = MIDAS_TUNDRA_ROOMS[Math.min(Math.max(floor, 1), 10) - 1];
+  } else if (missionId && MIDAS_RANDOM_POOLS[missionId]) {
+    // Cada expedición baraja sus propias salas (semilla guardada en la run).
+    configIds = buildRandomMidasChamber(floor, missionId);
+  } else if (missionId === 'resource_trial_gold') {
     const goldRooms: Record<1 | 2 | 3, CombatEnemyId[][]> = {
       1: [
         ['goblin_daga', 'goblin_honda', 'goblin_garrote'],
@@ -6212,6 +8115,8 @@ export const createChamberEnemies = (floor: number, missionId?: string | null, d
     configIds = chamber.enemyConfigIds;
   } else if (missionId === 'm22_cryovain_final') {
     configIds = ['cryovain_boss'];
+  } else if (missionId === 't2_c2_m1_ten_piedad') {
+    configIds = ['ten_piedad'];
   } else if (missionId === 't2_c1_m4_arana_acorazada') {
     configIds = ['arana_acorazada_boss'];
   } else if (missionId === 't2_c1_m3_custodios_anillo') {
@@ -6309,8 +8214,26 @@ export const createChamberEnemies = (floor: number, missionId?: string | null, d
     configIds = getInfiniteChamberEnemies(floor);
   }
 
+  const midasN2BaseHpScale: Record<string, number> = {
+    midas_dungeon_n2_c1_kobolds_alados: 0.95,
+    midas_dungeon_n2_c2_escudos_dragon: 1.08,
+    midas_dungeon_n2_c3_dracos_guardianes: 1.22,
+    midas_dungeon_n2_c4_semidragones_rojos: 1.38,
+    midas_dungeon_n2_c5_horda_ignivrax: 1.55,
+  };
+  const goldLevelRoomScale = parseGoldRunLevelMissionId(missionId);
+  const scaleFloor = goldLevelRoomScale ? goldLevelRoomScale.level : floor;
+  const goldLevelSource = goldLevelRoomScale
+    ? goldRunLevelSourceMission(goldLevelRoomScale.chapter, goldLevelRoomScale.level)
+    : null;
+  const midasBaseScale = missionId
+    ? midasN2BaseHpScale[missionId] ??
+      (goldLevelSource ? midasN2BaseHpScale[goldLevelSource] : undefined)
+    : undefined;
   const hpScale =
-    missionId === 'evento_coliseo_suenos'
+    midasBaseScale
+      ? midasBaseScale * (1 + Math.max(0, scaleFloor - 1) * 0.05)
+      : missionId === 'evento_coliseo_suenos'
       ? floor >= 3
         ? 1.25
         : floor === 2
@@ -6320,9 +8243,17 @@ export const createChamberEnemies = (floor: number, missionId?: string | null, d
       ? 1
       : 1 + (floor - 10) * 0.08;
   const isAlcoholGasMission = missionId === 'm14_planta_intermedia_ferton';
+  const isMidasN2WaveMission = Boolean(missionId?.startsWith('midas_dungeon_n2_'));
+
   return configIds.map((cfgId, idx) => {
     const cfg = DUNGEON_ENEMIES[cfgId] || DUNGEON_ENEMIES['araknoide_rojo'];
-    const scaledMaxHp = getBalancedEnemyMaxHp(cfg, missionId, hpScale, difficultyTier, partyAttackScale);
+    const waveBossExtraMul =
+      isMidasN2WaveMission && cfgId === 'mimico_boss'
+        ? 0.62
+        : isMidasN2WaveMission && cfgId === 'devorador_hierro'
+        ? 0.85
+        : 1;
+    const scaledMaxHp = getBalancedEnemyMaxHp(cfg, missionId, hpScale, difficultyTier, partyAttackScale, waveBossExtraMul);
     const letter =
       configIds.length > 1 && configIds.filter((c) => c === cfgId).length > 1
         ? ` ${String.fromCharCode(65 + idx)}`
@@ -6428,9 +8359,151 @@ const ENEMY_CHAPTER_BY_MISSION: Record<string, number> = {
   t2_c1_m2_jauria_salas: 6,
   t2_c1_m3_custodios_anillo: 6,
   t2_c1_m4_arana_acorazada: 6,
+  t2_c2_m1_ten_piedad: 6,
+  midas_dungeon_easy: 1,
+  midas_dungeon_boss_devorador: 1,
+  midas_dungeon_boss_mimico: 1,
+  midas_dungeon_easy_insectos: 1,
+  midas_dungeon_easy_aurumvorax: 1,
+  midas_dungeon_n2_c1_kobolds_alados: 1.5,
+  midas_dungeon_n2_c2_escudos_dragon: 1.8,
+  midas_dungeon_n2_c3_dracos_guardianes: 2.1,
+  midas_dungeon_n2_c4_semidragones_rojos: 2.5,
+  midas_dungeon_n2_c5_horda_ignivrax: 2.8,
+  midas_dungeon_boss_ignivrax: 3.1,
 };
 
-export const CombatView: React.FC = () => {
+const buildRadialOrbWeb = (
+  cx: number,
+  cy: number,
+  spokes: Array<{ angleDeg: number; len: number }>,
+  ringRadii: number[],
+  innerStartR: number,
+  sagFactor: number,
+  closedLoop: boolean
+) => {
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const spokePaths: string[] = [];
+  const ringPaths: string[] = [];
+
+  for (const sp of spokes) {
+    const rad = toRad(sp.angleDeg);
+    const x1 = +(cx + innerStartR * Math.cos(rad)).toFixed(1);
+    const y1 = +(cy + innerStartR * Math.sin(rad)).toFixed(1);
+    const x2 = +(cx + sp.len * Math.cos(rad)).toFixed(1);
+    const y2 = +(cy + sp.len * Math.sin(rad)).toFixed(1);
+    spokePaths.push(`M${x1},${y1} L${x2},${y2}`);
+  }
+
+  const sectorCount = closedLoop ? spokes.length : spokes.length - 1;
+  for (const r of ringRadii) {
+    for (let i = 0; i < sectorCount; i++) {
+      const s1 = spokes[i];
+      const s2 = spokes[(i + 1) % spokes.length];
+      if (r > Math.min(s1.len, s2.len) - 4) continue;
+      let a1 = s1.angleDeg;
+      let a2 = s2.angleDeg;
+      if (a2 < a1) a2 += 360;
+      const midRad = toRad((a1 + a2) / 2);
+      const r1 = toRad(a1);
+      const r2 = toRad(a2);
+      const x1 = +(cx + r * Math.cos(r1)).toFixed(1);
+      const y1 = +(cy + r * Math.sin(r1)).toFixed(1);
+      const x2 = +(cx + r * Math.cos(r2)).toFixed(1);
+      const y2 = +(cy + r * Math.sin(r2)).toFixed(1);
+      const qx = +(cx + r * sagFactor * Math.cos(midRad)).toFixed(1);
+      const qy = +(cy + r * sagFactor * Math.sin(midRad)).toFixed(1);
+      ringPaths.push(`M${x1},${y1} Q${qx},${qy} ${x2},${y2}`);
+    }
+  }
+
+  return { spokePaths, ringPaths };
+};
+
+const ARANA_MAIN_ORB_WEB = buildRadialOrbWeb(
+  236,
+  136,
+  [
+    { angleDeg: -90.7, len: 152 }, // Pata trasera sup. izq (L4) -> bóveda superior
+    { angleDeg: -66.2, len: 168 }, // Arco superior derecho
+    { angleDeg: -41.7, len: 230 }, // Pata trasera sup. der (R4) -> muro sup. derecho
+    { angleDeg: -17.5, len: 192 }, // Muro derecho sobre cornisa
+    { angleDeg: 6.7, len: 190 },   // Roca / pared derecha
+    { angleDeg: 30.9, len: 265 },  // Pata media-trasera der (R2) -> cornisa de columnata derecha
+    { angleDeg: 55.4, len: 295 },  // Pata delantera der (R1) -> arco / muro inferior derecho hasta el balcón
+    { angleDeg: 73.8, len: 290 },  // Roca derecha / arco del puente hasta el balcón
+    { angleDeg: 92.3, len: 285 },  // Pata delantera central (L1) -> puente en ruinas hasta el balcón
+    { angleDeg: 113.8, len: 285 }, // Puente de piedra en ruinas izquierdo hasta el balcón
+    { angleDeg: 135.4, len: 285 }, // Pata delantera inf. izq (L2) -> columnata izquierda
+    { angleDeg: 155.1, len: 285 }, // Tejado y arco de piedra izquierdo alargado hasta margen izquierdo
+    { angleDeg: 174.9, len: 284 }, // Pata media-sup. izq (L3) -> pilar y borde izquierdo
+    { angleDeg: 199.4, len: 284 }, // Muro de piedra superior izquierdo hasta margen izquierdo
+    { angleDeg: 223.9, len: 256 }, // Arco superior izquierdo hasta borde superior
+    { angleDeg: 247.0, len: 176 }, // Bóveda superior izquierda
+  ],
+  [24, 48, 72, 96, 118, 144, 168, 194, 222, 250, 278],
+  7,
+  0.84,
+  true
+);
+
+export interface PvpCombatStatusView {
+  kind: string;
+  label: string;
+  icon: string;
+  turns: number;
+  stacks: number;
+  hostile: boolean;
+}
+
+export interface PvpCombatCardView {
+  uid: string;
+  skillId: string;
+  tier: 1 | 2 | 3;
+  name: string;
+}
+
+export interface PvpCombatFoeView {
+  name: string;
+  title?: string;
+  hp: number;
+  maxHp: number;
+  spriteUrl: string;
+  attackSpriteUrl?: string;
+  hurtSpriteUrl?: string;
+  thumbUrl: string;
+  statuses: PvpCombatStatusView[];
+}
+
+/** Puente con el duelo de los Pozos de Pelea: el servidor manda y esta vista es la de la campaña. */
+export interface PvpCombatBridge {
+  heroHp: number;
+  heroMaxHp: number;
+  orbs: number;
+  activeHeroId: string;
+  hand: PvpCombatCardView[];
+  foe: PvpCombatFoeView;
+  myStatuses: PvpCombatStatusView[];
+  myTurn: boolean;
+  seat: 0 | 1;
+  lastAction: {
+    at: number;
+    seat: 0 | 1;
+    kind?: 'card' | 'merge' | 'move' | 'switch';
+    skillId?: string;
+    tier?: 1 | 2 | 3;
+    damage?: number;
+    heal?: number;
+    crit?: boolean;
+    missed?: boolean;
+  } | null;
+  onPlayCard: (uid: string) => void;
+  onMergeCards: (uid: string, targetUid: string) => void;
+  onSwitchHero: (heroId: string) => void;
+  onBlockedAction?: (reason: string) => void;
+}
+
+export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) => {
   const {
     navigateTo,
     addGold,
@@ -6480,6 +8553,7 @@ export const CombatView: React.FC = () => {
       selectedCombatMissionId === 't2_c1_m2_jauria_salas' ||
       selectedCombatMissionId === 't2_c1_m3_custodios_anillo' ||
       selectedCombatMissionId === 't2_c1_m4_arana_acorazada' ||
+      selectedCombatMissionId === 't2_c2_m1_ten_piedad' ||
       selectedCombatMissionId === 'm22_cryovain_final' ||
       selectedCombatMissionId === 'm20_tercera_camara_bulezau' ||
       selectedCombatMissionId === 'm19_segunda_camara_aire' ||
@@ -6496,7 +8570,15 @@ export const CombatView: React.FC = () => {
       selectedCombatMissionId === 'm1_tirano' ||
       selectedCombatMissionId === 'm2_robo' ||
       selectedCombatMissionId === 'm3_bosque' ||
-      selectedCombatMissionId === 'm4_puertas_selladas'
+      selectedCombatMissionId === 'm4_puertas_selladas' ||
+      selectedCombatMissionId === 'midas_dungeon_easy' ||
+      selectedCombatMissionId === 'midas_dungeon_boss_devorador' ||
+      selectedCombatMissionId === 'midas_dungeon_boss_mimico' ||
+      selectedCombatMissionId === 'midas_dungeon_boss_ignivrax' ||
+    selectedCombatMissionId === 'midas_dungeon_boss_caballero' ||
+      selectedCombatMissionId === 'midas_dungeon_easy_insectos' ||
+      selectedCombatMissionId === 'midas_dungeon_easy_aurumvorax' ||
+      Boolean(selectedCombatMissionId?.startsWith('midas_dungeon_n2_'))
     ) return 1;
     if (selectedCombatMissionId === 'm3_cuevas_rojo') return 1;
     if (selectedCombatMissionId === 'm4_cuevas_azul') return 1;
@@ -6581,7 +8663,18 @@ export const CombatView: React.FC = () => {
       activeEnemies.forEach((enemy) => {
         if (enemy.hp > 0 || droppedUidsRef.current.has(enemy.uid)) return;
         droppedUidsRef.current.add(enemy.uid);
-        if (selectedCombatMissionId === 'resource_trial_gold' || selectedCombatMissionId === 'resource_trial_xp') return;
+        if (
+          selectedCombatMissionId === 'resource_trial_gold' ||
+          selectedCombatMissionId === 'resource_trial_xp' ||
+          selectedCombatMissionId === 'midas_dungeon_easy' ||
+          selectedCombatMissionId === 'midas_dungeon_boss_devorador' ||
+          selectedCombatMissionId === 'midas_dungeon_boss_mimico' ||
+          selectedCombatMissionId === 'midas_dungeon_boss_ignivrax' ||
+    selectedCombatMissionId === 'midas_dungeon_boss_caballero' ||
+          selectedCombatMissionId === 'midas_dungeon_easy_insectos' ||
+          selectedCombatMissionId === 'midas_dungeon_easy_aurumvorax' ||
+          Boolean(selectedCombatMissionId?.startsWith('midas_dungeon_n2_'))
+        ) return;
 
         const cfg = DUNGEON_ENEMIES[enemy.configId];
         const goldMultiplier = enemy.isBoss ? 6 : enemy.isSemiboss ? 3 : 1;
@@ -6699,6 +8792,7 @@ export const CombatView: React.FC = () => {
   const [gorgonAttackPose, setGorgonAttackPose] = useState<'cornada' | 'aliento'>('cornada');
   const [elementalAireAttackPose, setElementalAireAttackPose] = useState<'tajo' | 'vortice'>('tajo');
   const [bulezauAttackPose, setBulezauAttackPose] = useState<'toque' | 'orbe'>('toque');
+  const [barraconAttackPose, setBarraconAttackPose] = useState<'normal' | 'skill'>('normal');
   const [cryovainAttackPose, setCryovainAttackPose] = useState<'idle' | 'garra' | 'pisoton' | 'mordisco' | 'aliento' | 'rugido' | 'niebla'>('idle');
   const [cryovainCameraMode, setCryovainCameraMode] = useState<'idle' | 'boss_focus'>('idle');
   const [isCryovainRoaring, setIsCryovainRoaring] = useState<boolean>(false);
@@ -6728,15 +8822,57 @@ export const CombatView: React.FC = () => {
     setCryovainCameraMode('idle');
     setIsCryovainRoaring(false);
   }, []);
+  const [ignivraxAttackPose, setIgnivraxAttackPose] = useState<'idle' | 'bolas_fuego' | 'aliento' | 'planeo_crater' | 'mordisco' | 'zarpazo' | 'rugido' | 'brasas'>('idle');
+  const [ignivraxVerticalPhase, setIgnivraxVerticalPhase] = useState<'flying' | 'gliding' | 'crater_slam' | 'grounded' | 'taking_off' | 'falling'>('flying');
+  const [ignivraxCameraMode, setIgnivraxCameraMode] = useState<'idle' | 'boss_focus'>('idle');
+  const [isIgnivraxRoaring, setIsIgnivraxRoaring] = useState<boolean>(false);
+  const [ignivraxCraterVisible, setIgnivraxCraterVisible] = useState<boolean>(false);
+  const [ignivraxCraterPulseKey, setIgnivraxCraterPulseKey] = useState<number>(0);
+  const [ignivraxMouthClosed, setIgnivraxMouthClosed] = useState<boolean>(false);
+  const ignivraxVerticalPhaseRef = useRef<'flying' | 'gliding' | 'crater_slam' | 'grounded' | 'taking_off' | 'falling'>('flying');
+  ignivraxVerticalPhaseRef.current = ignivraxVerticalPhase;
+  const ignivraxStageTurnsRef = useRef<number>(0);
+  const ignivraxTurnCountRef = useRef<number>(0);
+  const ignivraxHasRoaredRef = useRef<boolean>(false);
+  const ignivraxHasEmberShroudRef = useRef<boolean>(false);
+  const ignivraxTookDamageThisTurnRef = useRef<boolean>(false);
+  const ignivraxBreathChargedRef = useRef<boolean>(true);
+  const ignivraxBreathCooldownTurnsRef = useRef<number>(0);
+  const ignivraxIntroUidRef = useRef<string | null>(null);
+  const ignivraxTimersRef = useRef<number[]>([]);
+  const resetIgnivraxCombatState = useCallback((clearIntro = false) => {
+    ignivraxTimersRef.current.forEach((id) => window.clearTimeout(id));
+    ignivraxTimersRef.current = [];
+    ignivraxStageTurnsRef.current = 0;
+    ignivraxTurnCountRef.current = 0;
+    ignivraxHasRoaredRef.current = false;
+    ignivraxHasEmberShroudRef.current = false;
+    ignivraxTookDamageThisTurnRef.current = false;
+    ignivraxBreathChargedRef.current = true;
+    ignivraxBreathCooldownTurnsRef.current = 0;
+    if (clearIntro) {
+      ignivraxIntroUidRef.current = null;
+    }
+    setIgnivraxAttackPose('idle');
+    setIgnivraxVerticalPhase('flying');
+    setIgnivraxCameraMode('idle');
+    setIsIgnivraxRoaring(false);
+    setIgnivraxCraterVisible(false);
+    setIgnivraxCraterPulseKey(0);
+    setIgnivraxMouthClosed(false);
+  }, []);
   const [aranaAttackPose, setAranaAttackPose] = useState<'idle' | 'barrido' | 'telarana' | 'bola_fuego' | 'aliento' | 'chirrido' | 'ceniza'>('idle');
-  const [aranaVerticalPhase, setAranaVerticalPhase] = useState<'perched' | 'descending' | 'falling_flip_1' | 'falling_flip_2' | 'grounded' | 'climbing'>('perched');
+  const [aranaVerticalPhase, setAranaVerticalPhase] = useState<'perched' | 'jumping_down' | 'descending' | 'falling_flip_1' | 'falling_flip_2' | 'grounded' | 'jumping_up' | 'climbing'>('perched');
   const [aranaCameraMode, setAranaCameraMode] = useState<'idle' | 'boss_focus'>('idle');
   const [isAranaRoaring, setIsAranaRoaring] = useState<boolean>(false);
+  const [aranaFangSnap, setAranaFangSnap] = useState<boolean>(false);
   const aranaStageTurnsRef = useRef<number>(0);
   const aranaTurnCountRef = useRef<number>(0);
   const aranaHasRoaredRef = useRef<boolean>(false);
   const aranaHasCenizaRef = useRef<boolean>(false);
   const aranaTookDamageThisTurnRef = useRef<boolean>(false);
+  const aranaBreathChargedRef = useRef<boolean>(true);
+  const aranaBreathCooldownTurnsRef = useRef<number>(0);
   const aranaIntroUidRef = useRef<string | null>(null);
   const aranaTimersRef = useRef<number[]>([]);
   const resetAranaCombatState = useCallback((clearIntro = false) => {
@@ -6747,6 +8883,8 @@ export const CombatView: React.FC = () => {
     aranaHasRoaredRef.current = false;
     aranaHasCenizaRef.current = false;
     aranaTookDamageThisTurnRef.current = false;
+    aranaBreathChargedRef.current = true;
+    aranaBreathCooldownTurnsRef.current = 0;
     if (clearIntro) {
       aranaIntroUidRef.current = null;
     }
@@ -6754,7 +8892,54 @@ export const CombatView: React.FC = () => {
     setAranaVerticalPhase('perched');
     setAranaCameraMode('idle');
     setIsAranaRoaring(false);
+    setAranaFangSnap(false);
   }, []);
+
+  // === BOSS TEN PIEDAD (TOMO II · CAPÍTULO II: SANTUARIO) ===
+  const [tenPiedadAttackPose, setTenPiedadAttackPose] = useState<'idle' | 'barrido' | 'zarzas' | 'pisoton' | 'escupir'>('idle');
+  const [tenPiedadCameraMode, setTenPiedadCameraMode] = useState<'idle' | 'boss_focus'>('idle');
+  const [tenPiedadFloorCrackKey, setTenPiedadFloorCrackKey] = useState<number>(0);
+  const tenPiedadTurnCountRef = useRef<number>(0);
+  const tenPiedadIntroUidRef = useRef<string | null>(null);
+  const tenPiedadTimersRef = useRef<number[]>([]);
+
+  const resetTenPiedadCombatState = useCallback((clearIntro = false) => {
+    tenPiedadTimersRef.current.forEach((id) => window.clearTimeout(id));
+    tenPiedadTimersRef.current = [];
+    tenPiedadTurnCountRef.current = 0;
+    if (clearIntro) {
+      tenPiedadIntroUidRef.current = null;
+    }
+    setTenPiedadAttackPose('idle');
+    setTenPiedadCameraMode('idle');
+    setTenPiedadFloorCrackKey(0);
+  }, []);
+  const [devoradorHierroAttackPose, setDevoradorHierroAttackPose] = useState<'idle' | 'mordisco' | 'antenas' | 'banquete' | 'corrosion_profunda'>('idle');
+  const [mimicoAttackPose, setMimicoAttackPose] = useState<'idle' | 'zarpazo' | 'mordisco' | 'rugido'>('idle');
+  const [mimicoChestGrace, setMimicoChestGrace] = useState<boolean>(false);
+  const mimicoChestGraceRef = useRef<boolean>(false);
+  mimicoChestGraceRef.current = mimicoChestGrace;
+  const mimicoTurnCountRef = useRef<number>(0);
+  const resetMimicoCombatState = useCallback(() => {
+    mimicoTurnCountRef.current = 0;
+    mimicoChestGraceRef.current = false;
+    setMimicoChestGrace(false);
+    setMimicoAttackPose('idle');
+  }, []);
+  const hasMimicKnockoutCondition = useCallback(
+    (enemy: Pick<ChamberEnemyState, 'configId' | 'conditions'>): boolean =>
+      enemy.configId === 'mimico_boss' &&
+      enemy.conditions.some((c) =>
+        ['stun', 'stunned', 'paralyze', 'paralyzed', 'shock', 'frozen'].includes(c.type.toLowerCase())
+      ),
+    []
+  );
+  const isMimicKnockedOut = useCallback(
+    (enemy: Pick<ChamberEnemyState, 'configId' | 'conditions'>): boolean =>
+      enemy.configId === 'mimico_boss' &&
+      (mimicoChestGraceRef.current || hasMimicKnockoutCondition(enemy)),
+    [hasMimicKnockoutCondition]
+  );
   const [airPrisonHero, setAirPrisonHero] = useState<{ heroId: string; turnsRemaining: number } | null>(null);
   const [airPrisonVfxKey, setAirPrisonVfxKey] = useState<number>(1);
   const airPrisonHeroRef = useRef<{ heroId: string; turnsRemaining: number } | null>(null);
@@ -6772,7 +8957,10 @@ export const CombatView: React.FC = () => {
   const getActiveHeroAttack = (): number => {
     const heroId = normalizeCombatHeroId(activeCombatHeroIdRef.current);
     const currentHero = heroes.find((hero) => normalizeCombatHeroId(hero.id) === heroId);
-    return Math.max(0, currentHero?.stats?.attack ?? getHeroById(heroId)?.stats?.attack ?? 0);
+    const baseAttack = Math.max(0, currentHero?.stats?.attack ?? getHeroById(heroId)?.stats?.attack ?? 0);
+    if (!selectedCombatMissionId || !isGoldRunMission(selectedCombatMissionId)) return baseAttack;
+    // Power-ups de la expedición de la Mazmorra de Midas.
+    return Math.round(baseAttack * goldRunAtkMultiplier(loadGoldRun().boons));
   };
 
   const isTome2Combat = Boolean(selectedCombatMissionId?.startsWith('t2_'));
@@ -6780,6 +8968,7 @@ export const CombatView: React.FC = () => {
   // Vida compartida del grupo: la barra es una sola para todos, pero su máximo sale de sumar
   // el 75 % de la vida máxima de cada héroe del equipo (h1×0.75 + h2×0.75 + h3×0.75 + h4×0.75).
   const MAX_HERO_HP = useMemo(() => {
+    if (pvp) return Math.max(1, pvp.heroMaxHp);
     const rawIds = Array.from(new Set(team.filter((id): id is string => Boolean(id))));
     const assignedIds = isTome2Combat
       ? (() => {
@@ -6795,8 +8984,12 @@ export const CombatView: React.FC = () => {
     }, 0);
     // Sin equipo asignado se mantiene la base de siempre para no dejar la partida con 1 HP.
     if (total <= 0) return 100;
-    return Math.max(1, Math.round(total * 0.75));
-  }, [team, heroes, isTome2Combat]);
+    const goldRunHpScale =
+      selectedCombatMissionId && isGoldRunMission(selectedCombatMissionId)
+        ? goldRunMaxHpMultiplier(loadGoldRun().boons)
+        : 1;
+    return Math.max(1, Math.round(total * 0.75 * goldRunHpScale));
+  }, [team, heroes, isTome2Combat, pvp?.heroMaxHp, selectedCombatMissionId]);
   const [heroHp, setHeroHp] = useState<number>(MAX_HERO_HP);
   const heroHpRef = useRef<number>(MAX_HERO_HP);
   const heroMaxHp = MAX_HERO_HP;
@@ -6824,15 +9017,34 @@ export const CombatView: React.FC = () => {
   // la historia y con la profundidad de la sala. Si subes de nivel y tu barra crece, los mismos
   // golpes pasan a ocupar cada vez menos porcentaje: sobrenivelado casi no te hacen nada.
   const ENEMY_STAGE_CHAPTER =
-    ENEMY_CHAPTER_BY_MISSION[selectedCombatMissionId ?? ''] ?? (activeQuestChapter || 1);
-  const isTrainingTrial = selectedCombatMissionId === 'resource_trial_gold' || selectedCombatMissionId === 'resource_trial_xp';
+    ENEMY_CHAPTER_BY_MISSION[selectedCombatMissionId ?? ''] ??
+    parseGoldRunLevelMissionId(selectedCombatMissionId)?.chapter ??
+    (activeQuestChapter || 1);
+  const isTrainingTrial =
+    selectedCombatMissionId === 'resource_trial_gold' ||
+    selectedCombatMissionId === 'resource_trial_xp' ||
+    selectedCombatMissionId === 'midas_dungeon_easy' ||
+    selectedCombatMissionId === 'midas_dungeon_boss_devorador' ||
+    selectedCombatMissionId === 'midas_dungeon_boss_mimico' ||
+    selectedCombatMissionId === 'midas_dungeon_boss_ignivrax' ||
+    selectedCombatMissionId === 'midas_dungeon_boss_caballero' ||
+    selectedCombatMissionId === 'midas_dungeon_easy_insectos' ||
+    selectedCombatMissionId === 'midas_dungeon_easy_aurumvorax' ||
+    Boolean(selectedCombatMissionId?.startsWith('midas_dungeon_n2_')) ||
+    Boolean(parseGoldRunLevelMissionId(selectedCombatMissionId));
   const enemyDifficultyDamageScale = isTrainingTrial
     ? selectedCombatDifficulty === 3 ? 1.35 : selectedCombatDifficulty === 2 ? 1.15 : 1
     : selectedCombatDifficulty === 3 ? 1.5 : selectedCombatDifficulty === 2 ? 1.25 : 1;
   const ENEMY_DAMAGE_SCALE =
     38 *
     Math.pow(1.45, Math.max(0, ENEMY_STAGE_CHAPTER - 1)) *
-    Math.pow(1.04, Math.max(0, currentFloor - 1)) *
+    Math.pow(
+      1.04,
+      Math.max(
+        0,
+        (parseGoldRunLevelMissionId(selectedCombatMissionId)?.level ?? currentFloor) - 1
+      )
+    ) *
     enemyDifficultyDamageScale;
 
   // Turn Counter
@@ -6968,6 +9180,68 @@ export const CombatView: React.FC = () => {
       '/assets/combat/bugbear_criado_idle.webp',
       '/assets/combat/bugbear_criado_attack.webp',
       '/assets/combat/bugbear_criado_hurt.webp',
+      '/assets/combat/devorador_hierro_idle.webp',
+      '/assets/combat/devorador_hierro_idle_cuerpo.webp',
+      '/assets/combat/devorador_hierro_idle_antena_izq.webp',
+      '/assets/combat/devorador_hierro_idle_antena_der.webp',
+      '/assets/combat/devorador_hierro_idle_colmillo_izq.webp',
+      '/assets/combat/devorador_hierro_idle_colmillo_der.webp',
+      '/assets/combat/devorador_hierro_attack.webp',
+      '/assets/combat/devorador_hierro_hurt.webp',
+      '/assets/combat/devorador_hierro_mordisco.webp',
+      '/assets/combat/devorador_hierro_antenas.webp',
+      '/assets/combat/devorador_hierro_banquete.webp',
+      '/assets/combat/devorador_hierro_corrosion.webp',
+      '/assets/portraits/devorador_hierro_thumb.webp',
+      '/assets/combat/insecto_joya_idle.webp',
+      '/assets/combat/insecto_joya_attack.webp',
+      '/assets/combat/insecto_joya_hurt.webp',
+      '/assets/portraits/insecto_joya_thumb.webp',
+      '/assets/combat/insecto_moneda_idle.webp',
+      '/assets/combat/insecto_moneda_attack.webp',
+      '/assets/combat/insecto_moneda_skill.webp',
+      '/assets/combat/insecto_moneda_hurt.webp',
+      '/assets/portraits/insecto_moneda_thumb.webp',
+      '/assets/combat/insecto_perlas_idle.webp',
+      '/assets/combat/insecto_perlas_attack.webp',
+      '/assets/combat/insecto_perlas_skill.webp',
+      '/assets/combat/insecto_perlas_hurt.webp',
+      '/assets/portraits/insecto_perlas_thumb.webp',
+      '/assets/combat/aurumvorax_joven_idle.webp',
+      '/assets/combat/aurumvorax_joven_attack.webp',
+      '/assets/combat/aurumvorax_joven_skill.webp',
+      '/assets/combat/aurumvorax_joven_hurt.webp',
+      '/assets/portraits/aurumvorax_joven_thumb.webp',
+      '/assets/combat/aurumvorax_alfa_idle.webp',
+      '/assets/combat/aurumvorax_alfa_attack.webp',
+      '/assets/combat/aurumvorax_alfa_skill.webp',
+      '/assets/combat/aurumvorax_alfa_hurt.webp',
+      '/assets/portraits/aurumvorax_alfa_thumb.webp',
+      '/assets/combat/mimico_idle.webp',
+      '/assets/combat/mimico_attack_zarpazo.webp',
+      '/assets/combat/mimico_attack_mordisco.webp',
+      '/assets/combat/mimico_skill_rugido.webp',
+      '/assets/combat/mimico_hurt.webp',
+      '/assets/combat/mimico_cofre_normal.webp',
+      '/assets/portraits/mimico_thumb.webp',
+      '/assets/combat/kobold_alado_idle.webp',
+      '/assets/combat/kobold_alado_attack.webp',
+      '/assets/combat/kobold_alado_hurt.webp',
+      '/assets/portraits/kobold_alado_thumb.webp',
+      '/assets/combat/kobold_escudo_rojo_idle.webp',
+      '/assets/combat/kobold_escudo_rojo_attack.webp',
+      '/assets/combat/kobold_escudo_rojo_hurt.webp',
+      '/assets/portraits/kobold_escudo_rojo_thumb.webp',
+      '/assets/combat/draco_guardian_rojo_idle.webp',
+      '/assets/combat/draco_guardian_rojo_attack.webp',
+      '/assets/combat/draco_guardian_rojo_skill.webp',
+      '/assets/combat/draco_guardian_rojo_hurt.webp',
+      '/assets/portraits/draco_guardian_rojo_thumb.webp',
+      '/assets/combat/semidragon_rojo_veterano_idle.webp',
+      '/assets/combat/semidragon_rojo_veterano_attack.webp',
+      '/assets/combat/semidragon_rojo_veterano_skill.webp',
+      '/assets/combat/semidragon_rojo_veterano_hurt.webp',
+      '/assets/portraits/semidragon_rojo_veterano_thumb.webp',
       '/assets/combat/bugbear_vfx_bandeja.webp',
       '/assets/combat/bugbear_vfx_objetos.webp',
       '/assets/combat/bugbear_ono_bonk.webp',
@@ -7080,10 +9354,24 @@ export const CombatView: React.FC = () => {
   pendingLandingDataRef.current = pendingLandingData;
 
   const isAranaBossCombat =
-    targetEnemy?.configId === 'arana_acorazada_boss' ||
+    isAranaBossConfigId(targetEnemy?.configId) ||
     selectedCombatMissionId === 't2_c1_m4_arana_acorazada';
   const isAranaBossCombatRef = useRef<boolean>(isAranaBossCombat);
   isAranaBossCombatRef.current = isAranaBossCombat;
+
+  const isIgnivraxBossCombat =
+    targetEnemy?.configId === 'ignivrax_boss' ||
+    selectedCombatMissionId === 'midas_dungeon_boss_ignivrax';
+  const isIgnivraxBossCombatRef = useRef<boolean>(isIgnivraxBossCombat);
+  isIgnivraxBossCombatRef.current = isIgnivraxBossCombat;
+
+  const isTenPiedadBossCombat =
+    targetEnemy?.configId === 'ten_piedad' ||
+    selectedCombatMissionId === 't2_c2_m1_ten_piedad';
+
+  const isMimicoBossCombat =
+    targetEnemy?.configId === 'mimico_boss' ||
+    selectedCombatMissionId === 'midas_dungeon_boss_mimico';
 
   const isRoxanneCombat = activeCombatHeroId === 'roxanne';
   const isEdacornCombat = activeCombatHeroId === 'edacorn';
@@ -7262,6 +9550,14 @@ export const CombatView: React.FC = () => {
   }, [getHeroCardPool, createInitialHandForHero]);
 
   const handleSwitchActiveHero = (newHeroId: string) => {
+    if (pvp) {
+      if (!pvp.myTurn) {
+        pvp.onBlockedAction?.('Espera tu turno.');
+        return;
+      }
+      if (newHeroId !== pvp.activeHeroId) pvp.onSwitchHero(newHeroId);
+      return;
+    }
     if (newHeroId === activeCombatHeroId || battleState !== 'idle') return;
     sound.playSFX('powerup');
     
@@ -7672,7 +9968,7 @@ export const CombatView: React.FC = () => {
     const headX = toX(rect.left + anchor.hx * rect.width);
     const headY = toY(rect.top + anchor.hy * rect.height);
     const imgSrc = img?.getAttribute('src') ?? '';
-    const cryoHeadEl = wrapper.querySelector('[data-cryovain-head]') as HTMLElement | null;
+    const cryoHeadEl = wrapper.querySelector('[data-cryovain-head], [data-ignivrax-head]') as HTMLElement | null;
     const cryoHeadRect = cryoHeadEl ? cryoHeadEl.getBoundingClientRect() : null;
     const base: EnemyVfxFrame = {
       x: toX(rect.left + anchor.c * rect.width),
@@ -7708,6 +10004,51 @@ export const CombatView: React.FC = () => {
               mouthX: toX(rect.left + 0.28 * rect.width),
               mouthY: toY(rect.top + 0.40 * rect.height),
             }
+        : imgSrc.includes('ten_piedad')
+        ? {
+            mouthX: toX(rect.left + 0.34 * rect.width),
+            mouthY: toY(rect.top + 0.28 * rect.height),
+          }
+        : imgSrc.includes('ignivrax')
+        ? imgSrc.includes('fire_breath')
+          ? {
+              mouthX: toX(rect.left + 0.423 * rect.width),
+              mouthY: toY(rect.top + 0.33 * rect.height),
+            }
+          : imgSrc.includes('fireballs_arms')
+          ? {
+              mouthX: toX(rect.left + 0.527 * rect.width),
+              mouthY: toY(rect.top + 0.281 * rect.height),
+            }
+          : imgSrc.includes('bite')
+          ? {
+              mouthX: toX(rect.left + 0.128 * rect.width),
+              mouthY: toY(rect.top + 0.429 * rect.height),
+            }
+          : imgSrc.includes('roar')
+          ? {
+              mouthX: toX(rect.left + 0.462 * rect.width),
+              mouthY: toY(rect.top + 0.22 * rect.height),
+            }
+          : imgSrc.includes('grounded')
+          ? {
+              mouthX: toX(rect.left + 0.373 * rect.width),
+              mouthY: toY(rect.top + 0.27 * rect.height),
+            }
+          : {
+              mouthX: toX(rect.left + 0.431 * rect.width),
+              mouthY: toY(rect.top + 0.344 * rect.height),
+            }
+        : imgSrc.includes('semidragon_rojo_veterano')
+        ? {
+            mouthX: toX(rect.left + 0.375 * rect.width),
+            mouthY: toY(rect.top + 0.21 * rect.height),
+          }
+        : imgSrc.includes('draco_guardian_rojo')
+        ? {
+            mouthX: toX(rect.left + 0.13 * rect.width),
+            mouthY: toY(rect.top + 0.40 * rect.height),
+          }
         : imgSrc.includes('cryovain')
         ? cryoHeadRect && cryoHeadRect.width > 0
           ? {
@@ -7721,6 +10062,9 @@ export const CombatView: React.FC = () => {
         : {}),
     };
     if (!withWeaponTip) return base;
+    if (imgSrc.includes('ten_piedad')) {
+      return { ...base, tipFx: 0.14, tipFy: 0.72 };
+    }
     if (imgSrc.includes('arana_acorazada')) {
       if (imgSrc.includes('colgada_telarana')) {
         return { ...base, tipFx: 0.04, tipFy: 0.96 };
@@ -7732,6 +10076,24 @@ export const CombatView: React.FC = () => {
         return { ...base, tipFx: 0.16, tipFy: 0.65 };
       }
       return { ...base, tipFx: 0.14, tipFy: 0.52 };
+    }
+    if (imgSrc.includes('ignivrax')) {
+      if (imgSrc.includes('fireballs_arms')) {
+        return { ...base, tipFx: 0.359, tipFy: 0.179, tip2Fx: 0.664, tip2Fy: 0.157 };
+      }
+      if (imgSrc.includes('claw_swipe')) {
+        return { ...base, tipFx: 0.15, tipFy: 0.61 };
+      }
+      if (imgSrc.includes('bite')) {
+        return { ...base, tipFx: 0.128, tipFy: 0.429 };
+      }
+      if (imgSrc.includes('crater_slam')) {
+        return { ...base, tipFx: 0.466, tipFy: 0.74 };
+      }
+      if (imgSrc.includes('glide_dive')) {
+        return { ...base, tipFx: 0.28, tipFy: 0.65 };
+      }
+      return { ...base, tipFx: 0.423, tipFy: 0.33 };
     }
     if (imgSrc.includes('cryovain')) {
       return { ...base, tipFx: 0.08, tipFy: 0.72 };
@@ -7754,7 +10116,12 @@ export const CombatView: React.FC = () => {
 
   /** Escala base del héroe por complexión: no depende de la pose ni del arma. */
   const getHeroBodyBaseScale = (): number => {
-    const bossScaleMul = isAranaBossCombat ? 0.5 : 1;
+    const bossScaleMul =
+      isAranaBossCombat || isIgnivraxBossCombat
+        ? 0.5
+        : isTenPiedadBossCombat || isMimicoBossCombat
+        ? 0.75
+        : 1;
     if (isPepeCombat) return 0.60375 * bossScaleMul; // enano: ~40% más pequeño que el resto (0.575 + un 5%)
     if (isBarledCombat) return 0.94875 * bossScaleMul; // Barled: ~26,5% más grande que el resto de humanos (0.8625 + un 10%)
     if (isArlemCombat) return 0.825 * bossScaleMul; // Arlem: un 10% más grande que el resto de humanos
@@ -7820,14 +10187,44 @@ export const CombatView: React.FC = () => {
     } as React.CSSProperties;
   };
 
+  /** Traduce cada pose de la Araña Acorazada a la piel de la Viuda Enjoyada. */
+  const ARANA_JOYA_SKIN: Record<string, string> = {
+    '/assets/combat/arana_acorazada_descenso_barrido.webp': '/assets/combat/arana_joya_boss_attack.webp',
+    '/assets/combat/arana_acorazada_attack_barrido.webp': '/assets/combat/arana_joya_boss_attack.webp',
+    '/assets/combat/arana_acorazada_attack_telarana.webp': '/assets/combat/arana_joya_boss_attack.webp',
+    '/assets/combat/arana_acorazada_colgada_telarana.webp': '/assets/combat/arana_joya_boss_attack.webp',
+    '/assets/combat/arana_acorazada_attack_bola.webp': '/assets/combat/arana_joya_boss_attack.webp',
+    '/assets/combat/arana_acorazada_attack_aliento.webp': '/assets/combat/arana_joya_boss_attack.webp',
+    '/assets/combat/arana_acorazada_rugido.webp': '/assets/combat/arana_joya_boss_attack.webp',
+    '/assets/combat/arana_acorazada_colgada_rugido.webp': '/assets/combat/arana_joya_boss_attack.webp',
+    '/assets/combat/arana_acorazada_colgada_chasquido.webp': '/assets/combat/arana_joya_boss_attack.webp',
+    '/assets/combat/arana_acorazada_colgada_mandibulas.webp': '/assets/combat/arana_joya_boss_attack.webp',
+    '/assets/combat/arana_acorazada_hurt.webp': '/assets/combat/arana_joya_boss_hurt.webp',
+    '/assets/combat/arana_acorazada_colgada_hurt.webp': '/assets/combat/arana_joya_boss_hurt.webp',
+  };
+
   const getEnemySpriteUrl = (enemy: ChamberEnemyState): string => {
-    if (isDevoradorRoaring && enemy.configId.includes('devorador')) {
+    const url = getEnemySpriteUrlRaw(enemy);
+    if (enemy.configId !== 'arana_joya_boss') return url;
+    return ARANA_JOYA_SKIN[url] ?? '/assets/combat/arana_joya_boss_idle.webp';
+  };
+  const getEnemySpriteUrlRaw = (enemy: ChamberEnemyState): string => {
+    if (
+      isDevoradorRoaring &&
+      (enemy.configId === 'devorador_quitinoso' || enemy.configId === 'devorador_quitinoso_p2')
+    ) {
       return '/assets/combat/devorador_quitinoso_roar.webp';
     }
     if (isZancudoRoaring && enemy.configId === 'semiboss_zancudo') {
       return '/assets/combat/semiboss_zancudo_roar.webp';
     }
-    if (enemy.configId === 'arana_acorazada_boss') {
+    if (isAranaBossConfigId(enemy.configId)) {
+      if (aranaVerticalPhase === 'jumping_down') {
+        return '/assets/combat/arana_acorazada_salto_suelo.webp';
+      }
+      if (aranaVerticalPhase === 'jumping_up') {
+        return '/assets/combat/arana_acorazada_salto_telarana.webp';
+      }
       if (aranaVerticalPhase === 'falling_flip_1') {
         return '/assets/combat/arana_acorazada_caida_volteo_1.webp';
       }
@@ -7839,6 +10236,9 @@ export const CombatView: React.FC = () => {
           ? '/assets/combat/arana_acorazada_hurt.webp'
           : '/assets/combat/arana_acorazada_colgada_hurt.webp';
       }
+      if (aranaVerticalPhase === 'perched' && isAranaRoaring) {
+        return '/assets/combat/arana_acorazada_colgada_rugido.webp';
+      }
       if (
         enemy.animation === 'strike' ||
         enemyAnimation === 'strike' ||
@@ -7846,20 +10246,126 @@ export const CombatView: React.FC = () => {
         aranaAttackPose === 'chirrido' ||
         aranaAttackPose === 'ceniza'
       ) {
-        if (aranaAttackPose === 'aliento' || aranaAttackPose === 'ceniza' || aranaAttackPose === 'chirrido') {
+        if (aranaAttackPose === 'chirrido' || isAranaRoaring) {
+          return '/assets/combat/arana_acorazada_rugido.webp';
+        }
+        if (aranaAttackPose === 'aliento' || aranaAttackPose === 'ceniza') {
           return '/assets/combat/arana_acorazada_attack_aliento.webp';
         }
         if (aranaAttackPose === 'bola_fuego') {
           return '/assets/combat/arana_acorazada_attack_bola.webp';
         }
         if (aranaAttackPose === 'telarana') {
-          return '/assets/combat/arana_acorazada_colgada_telarana.webp';
+          return aranaVerticalPhase === 'grounded'
+            ? '/assets/combat/arana_acorazada_attack_telarana.webp'
+            : '/assets/combat/arana_acorazada_colgada_telarana.webp';
+        }
+        if (aranaVerticalPhase === 'grounded') {
+          return '/assets/combat/arana_acorazada_attack_barrido.webp';
         }
         return '/assets/combat/arana_acorazada_descenso_barrido.webp';
       }
-      return aranaVerticalPhase === 'grounded'
-        ? '/assets/combat/arana_acorazada_idle.webp'
+      if (aranaVerticalPhase === 'grounded') {
+        return '/assets/combat/arana_acorazada_idle.webp';
+      }
+      return aranaFangSnap
+        ? '/assets/combat/arana_acorazada_colgada_chasquido.webp'
         : '/assets/combat/arana_acorazada_colgada_idle.webp';
+    }
+    if (enemy.configId === 'ignivrax_boss') {
+      if (ignivraxVerticalPhase === 'falling') {
+        return '/assets/combat/ignivrax_falling.webp';
+      }
+      if (ignivraxVerticalPhase === 'gliding') {
+        return '/assets/combat/ignivrax_glide_dive.webp';
+      }
+      if (ignivraxVerticalPhase === 'crater_slam') {
+        return '/assets/combat/ignivrax_crater_slam.webp';
+      }
+      if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
+        return ignivraxVerticalPhase === 'flying' || ignivraxVerticalPhase === 'taking_off'
+          ? '/assets/combat/ignivrax_falling.webp'
+          : '/assets/combat/ignivrax_hurt.webp';
+      }
+      if (isIgnivraxRoaring || ignivraxAttackPose === 'rugido' || ignivraxAttackPose === 'brasas') {
+        return '/assets/combat/ignivrax_roar.webp';
+      }
+      if (ignivraxAttackPose === 'bolas_fuego') {
+        return '/assets/combat/ignivrax_fireballs_arms.webp';
+      }
+      if (ignivraxAttackPose === 'aliento') {
+        return '/assets/combat/ignivrax_fire_breath.webp';
+      }
+      if (ignivraxAttackPose === 'mordisco') {
+        return ignivraxMouthClosed
+          ? '/assets/combat/ignivrax_bite_closed.webp'
+          : '/assets/combat/ignivrax_bite.webp';
+      }
+      if (ignivraxAttackPose === 'zarpazo') {
+        return '/assets/combat/ignivrax_claw_swipe.webp';
+      }
+      if (ignivraxVerticalPhase === 'grounded') {
+        return ignivraxMouthClosed
+          ? '/assets/combat/ignivrax_grounded_idle_closed.webp'
+          : '/assets/combat/ignivrax_grounded_idle.webp';
+      }
+      return ignivraxMouthClosed
+        ? '/assets/combat/ignivrax_flying_idle_closed.webp'
+        : '/assets/combat/ignivrax_flying_idle.webp';
+    }
+    if (enemy.configId === 'ten_piedad') {
+      if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
+        return '/assets/combat/ten_piedad_hurt.webp';
+      }
+      if (tenPiedadAttackPose === 'barrido') {
+        return '/assets/combat/ten_piedad_barrido.webp';
+      }
+      if (tenPiedadAttackPose === 'zarzas') {
+        return '/assets/combat/ten_piedad_zarzas.webp';
+      }
+      if (tenPiedadAttackPose === 'pisoton') {
+        return '/assets/combat/ten_piedad_pisoton.webp';
+      }
+      if (tenPiedadAttackPose === 'escupir') {
+        return '/assets/combat/ten_piedad_escupir.webp';
+      }
+      return '/assets/combat/ten_piedad_idle.webp';
+    }
+    if (enemy.configId === 'devorador_hierro') {
+      if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
+        return '/assets/combat/devorador_hierro_hurt.webp';
+      }
+      if (devoradorHierroAttackPose === 'mordisco') {
+        return '/assets/combat/devorador_hierro_mordisco.webp';
+      }
+      if (devoradorHierroAttackPose === 'antenas') {
+        return '/assets/combat/devorador_hierro_antenas.webp';
+      }
+      if (devoradorHierroAttackPose === 'banquete') {
+        return '/assets/combat/devorador_hierro_banquete.webp';
+      }
+      if (devoradorHierroAttackPose === 'corrosion_profunda') {
+        return '/assets/combat/devorador_hierro_corrosion.webp';
+      }
+      return '/assets/combat/devorador_hierro_idle.webp';
+    }
+    if (enemy.configId === 'mimico_boss') {
+      if (isMimicKnockedOut(enemy)) {
+        return '/assets/combat/mimico_cofre_normal.webp';
+      }
+      if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
+        return '/assets/combat/mimico_hurt.webp';
+      }
+      if (mimicoAttackPose === 'zarpazo') {
+        return '/assets/combat/mimico_attack_zarpazo.webp';
+      }
+      if (mimicoAttackPose === 'mordisco') {
+        return '/assets/combat/mimico_attack_mordisco.webp';
+      }
+      if (mimicoAttackPose === 'rugido') {
+        return '/assets/combat/mimico_skill_rugido.webp';
+      }
+      return '/assets/combat/mimico_idle.webp';
     }
     if (isEnemyHitShaking || enemy.animation === 'hit' || enemyAnimation === 'hit') {
       return enemy.hurtSpriteUrl || enemy.spriteUrl;
@@ -7879,6 +10385,22 @@ export const CombatView: React.FC = () => {
         return bulezauAttackPose === 'orbe'
           ? '/assets/combat/bulezau_attack_orbe.webp'
           : '/assets/combat/bulezau_attack_toque.webp';
+      }
+      if (
+        barraconAttackPose === 'skill' &&
+        (enemy.configId === 'no_muerto' ||
+          enemy.configId === 'perro_asalvajado' ||
+          enemy.configId === 'soldado_no_muerto' ||
+          enemy.configId === 'armadura_reanimada' ||
+          enemy.configId === 'insecto_moneda' ||
+          enemy.configId === 'insecto_collar_perlas' ||
+          enemy.configId === 'aurumvorax_joven' ||
+          enemy.configId === 'aurumvorax_alfa' ||
+          enemy.configId === 'draco_guardian_rojo' ||
+          enemy.configId === 'semidragon_rojo_veterano')
+      ) {
+        const cfgSkillUrl = DUNGEON_ENEMIES[enemy.configId]?.skillSpriteUrl;
+        if (cfgSkillUrl) return cfgSkillUrl;
       }
       return enemy.attackSpriteUrl || enemy.spriteUrl;
     }
@@ -7922,8 +10444,14 @@ export const CombatView: React.FC = () => {
     setGorgonAttackPose('cornada');
     setElementalAireAttackPose('tajo');
     setBulezauAttackPose('toque');
+    setBarraconAttackPose('normal');
     resetCryovainCombatState(true);
+    resetIgnivraxCombatState(true);
     resetAranaCombatState(true);
+    resetTenPiedadCombatState(true);
+    resetDevoradorHierroState();
+    resetMimicoCombatState();
+    resetInsectVenomState();
     setAirPrisonHero(null);
     airPrisonHeroRef.current = null;
 
@@ -7934,8 +10462,19 @@ export const CombatView: React.FC = () => {
     setActiveEnemies(initialEnemies);
     setSelectedEnemyIdx(0);
     setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
-    heroHpRef.current = MAX_HERO_HP;
-    setHeroHp(MAX_HERO_HP);
+    // Expedición roguelite: se entra con la vida y los orbes de la sala anterior.
+    const runAtStart =
+      selectedCombatMissionId && isGoldRunMission(selectedCombatMissionId) ? loadGoldRun() : null;
+    const startHp = runAtStart
+      ? Math.max(1, Math.round(MAX_HERO_HP * Math.max(0.05, runAtStart.hpPct)))
+      : MAX_HERO_HP;
+    heroHpRef.current = startHp;
+    setHeroHp(startHp);
+    if (runAtStart) {
+      setUltimateOrbs(
+        Math.min(MAX_ULTIMATE_ORBS, runAtStart.orbs + goldRunStartOrbs(runAtStart.boons))
+      );
+    }
     setBattleState('idle');
     setWaveClearBanner(null);
     setIsEdacornStealthed(false);
@@ -7954,10 +10493,14 @@ export const CombatView: React.FC = () => {
       devoradorTransitionTimersRef.current = [];
       cryoTimersRef.current.forEach((id) => window.clearTimeout(id));
       cryoTimersRef.current = [];
+      ignivraxTimersRef.current.forEach((id) => window.clearTimeout(id));
+      ignivraxTimersRef.current = [];
       aranaTimersRef.current.forEach((id) => window.clearTimeout(id));
       aranaTimersRef.current = [];
+      tenPiedadTimersRef.current.forEach((id) => window.clearTimeout(id));
+      tenPiedadTimersRef.current = [];
     };
-  }, [selectedCombatMissionId, selectedCombatDifficulty, partyAttackHpScale, createInitialHandForHero, resetCryovainCombatState, resetAranaCombatState]);
+  }, [selectedCombatMissionId, selectedCombatDifficulty, partyAttackHpScale, createInitialHandForHero, resetCryovainCombatState, resetIgnivraxCombatState, resetAranaCombatState, resetTenPiedadCombatState]);
 
   // Intro cinematográfica del jefe Cryovain: zoom centrado sobre el dragón y retorno a la arena
   useEffect(() => {
@@ -7983,10 +10526,38 @@ export const CombatView: React.FC = () => {
     }
   }, [targetEnemy?.uid, targetEnemy?.configId, targetEnemy?.hp, targetEnemy?.isAshDissolving]);
 
+  // Intro cinematográfica del jefe Ignivrax: suspendido en el aire sobre la sala del tesoro con rugido inicial
+  useEffect(() => {
+    if (
+      targetEnemy?.configId === 'ignivrax_boss' &&
+      targetEnemy.hp > 0 &&
+      !targetEnemy.isAshDissolving &&
+      ignivraxIntroUidRef.current !== targetEnemy.uid
+    ) {
+      ignivraxIntroUidRef.current = targetEnemy.uid;
+      setIgnivraxVerticalPhase('flying');
+      setIgnivraxCraterVisible(false);
+      const tZoomIn = window.setTimeout(() => {
+        setIgnivraxCameraMode('boss_focus');
+        setIsIgnivraxRoaring(true);
+        setIgnivraxAttackPose('rugido');
+        setScreenShake('medium');
+        sound.playSFX('roar');
+      }, 180);
+      const tStopShake = window.setTimeout(() => setScreenShake('none'), 540);
+      const tZoomOut = window.setTimeout(() => {
+        setIgnivraxCameraMode('idle');
+        setIsIgnivraxRoaring(false);
+        setIgnivraxAttackPose('idle');
+      }, 1480);
+      ignivraxTimersRef.current.push(tZoomIn, tStopShake, tZoomOut);
+    }
+  }, [targetEnemy?.uid, targetEnemy?.configId, targetEnemy?.hp, targetEnemy?.isAshDissolving]);
+
   // Intro cinematográfica del jefe Araña Acorazada: colgada cabeza abajo en las telarañas superiores, zoom + chillido
   useEffect(() => {
     if (
-      targetEnemy?.configId === 'arana_acorazada_boss' &&
+      isAranaBossConfigId(targetEnemy?.configId) &&
       targetEnemy.hp > 0 &&
       !targetEnemy.isAshDissolving &&
       aranaIntroUidRef.current !== targetEnemy.uid
@@ -8009,9 +10580,123 @@ export const CombatView: React.FC = () => {
     }
   }, [targetEnemy?.uid, targetEnemy?.configId, targetEnemy?.hp, targetEnemy?.isAshDissolving]);
 
+  // Intro cinematográfica del jefe Ten Piedad: zoom al coloso cubierto de maleza y pisotón inicial
+  useEffect(() => {
+    if (
+      targetEnemy?.configId === 'ten_piedad' &&
+      targetEnemy.hp > 0 &&
+      !targetEnemy.isAshDissolving &&
+      tenPiedadIntroUidRef.current !== targetEnemy.uid
+    ) {
+      tenPiedadIntroUidRef.current = targetEnemy.uid;
+      const tZoomIn = window.setTimeout(() => {
+        setTenPiedadCameraMode('boss_focus');
+        setTenPiedadAttackPose('pisoton');
+        setTenPiedadFloorCrackKey((prev) => prev + 1);
+        setScreenShake('heavy');
+        sound.playSFX('thud');
+        sound.playSFX('growl', { rate: 0.72 });
+      }, 180);
+      const tStopShake = window.setTimeout(() => setScreenShake('none'), 540);
+      const tZoomOut = window.setTimeout(() => {
+        setTenPiedadCameraMode('idle');
+        setTenPiedadAttackPose('idle');
+      }, 1480);
+      tenPiedadTimersRef.current.push(tZoomIn, tStopShake, tZoomOut);
+    }
+  }, [targetEnemy?.uid, targetEnemy?.configId, targetEnemy?.hp, targetEnemy?.isAshDissolving]);
+
+  // Chasquido sutil de los colmillos laterales mientras la Araña Acorazada está posada en la telaraña
+  useEffect(() => {
+    const isPerchedIdle =
+      isAranaBossConfigId(targetEnemy?.configId) &&
+      targetEnemy.hp > 0 &&
+      !targetEnemy.isAshDissolving &&
+      aranaVerticalPhase === 'perched' &&
+      targetEnemy.animation === 'idle' &&
+      !isEnemyHitShaking;
+    if (!isPerchedIdle) {
+      setAranaFangSnap(false);
+      return;
+    }
+
+    let stepTimers: number[] = [];
+    const scheduleClicks = () => {
+      stepTimers.forEach((id) => window.clearTimeout(id));
+      stepTimers = [];
+      const t1 = window.setTimeout(() => setAranaFangSnap(true), 120);
+      const t2 = window.setTimeout(() => setAranaFangSnap(false), 260);
+      const t3 = window.setTimeout(() => setAranaFangSnap(true), 390);
+      const t4 = window.setTimeout(() => setAranaFangSnap(false), 530);
+      stepTimers.push(t1, t2, t3, t4);
+    };
+
+    const initialTimer = window.setTimeout(scheduleClicks, 700);
+    const intervalId = window.setInterval(scheduleClicks, 2500);
+    return () => {
+      window.clearTimeout(initialTimer);
+      window.clearInterval(intervalId);
+      stepTimers.forEach((id) => window.clearTimeout(id));
+      setAranaFangSnap(false);
+    };
+  }, [
+    targetEnemy?.uid,
+    targetEnemy?.configId,
+    targetEnemy?.hp,
+    targetEnemy?.isAshDissolving,
+    targetEnemy?.animation,
+    aranaVerticalPhase,
+    isEnemyHitShaking,
+  ]);
+
+  // Movimiento natural de fauces de Ignivrax en reposo (respiración abriendo y cerrando la boca entre vuelo y tierra)
+  useEffect(() => {
+    const isIgnivraxIdle =
+      targetEnemy?.configId === 'ignivrax_boss' &&
+      targetEnemy.hp > 0 &&
+      !targetEnemy.isAshDissolving &&
+      (ignivraxVerticalPhase === 'flying' || ignivraxVerticalPhase === 'grounded') &&
+      ignivraxAttackPose === 'idle' &&
+      !isIgnivraxRoaring &&
+      targetEnemy.animation === 'idle' &&
+      !isEnemyHitShaking;
+    if (!isIgnivraxIdle) {
+      return;
+    }
+
+    let stepTimers: number[] = [];
+    const scheduleJawBreath = () => {
+      stepTimers.forEach((id) => window.clearTimeout(id));
+      stepTimers = [];
+      const t1 = window.setTimeout(() => setIgnivraxMouthClosed(true), 120);
+      const t2 = window.setTimeout(() => setIgnivraxMouthClosed(false), 360);
+      const t3 = window.setTimeout(() => setIgnivraxMouthClosed(true), 560);
+      const t4 = window.setTimeout(() => setIgnivraxMouthClosed(false), 740);
+      stepTimers.push(t1, t2, t3, t4);
+    };
+
+    const initialTimer = window.setTimeout(scheduleJawBreath, 550);
+    const intervalId = window.setInterval(scheduleJawBreath, 2300);
+    return () => {
+      window.clearTimeout(initialTimer);
+      window.clearInterval(intervalId);
+      stepTimers.forEach((id) => window.clearTimeout(id));
+    };
+  }, [
+    targetEnemy?.uid,
+    targetEnemy?.configId,
+    targetEnemy?.hp,
+    targetEnemy?.isAshDissolving,
+    targetEnemy?.animation,
+    ignivraxVerticalPhase,
+    ignivraxAttackPose,
+    isIgnivraxRoaring,
+    isEnemyHitShaking,
+  ]);
+
   // Caída con giro al morir: cuando la Araña Acorazada es derrotada, se desprende de las telarañas, da la vuelta y choca contra el suelo
   useEffect(() => {
-    if (targetEnemy?.configId === 'arana_acorazada_boss' && targetEnemy?.isAshDissolving) {
+    if (isAranaBossConfigId(targetEnemy?.configId) && targetEnemy?.isAshDissolving) {
       setAranaCameraMode('boss_focus');
       setIsAranaRoaring(false);
       setAranaAttackPose('idle');
@@ -8032,6 +10717,46 @@ export const CombatView: React.FC = () => {
         setAranaCameraMode('idle');
       }, 1050);
       aranaTimersRef.current.push(tFlip2, tCrash, tStopShake, tCamReset);
+    }
+  }, [targetEnemy?.configId, targetEnemy?.isAshDissolving]);
+
+  // Caída desde el aire al morir: Ignivrax se desploma en picado creando un cráter en el suelo antes de convertirse en cenizas
+  useEffect(() => {
+    if (targetEnemy?.configId === 'ignivrax_boss' && targetEnemy?.isAshDissolving) {
+      setIgnivraxCameraMode('boss_focus');
+      setIsIgnivraxRoaring(false);
+      setIgnivraxAttackPose('idle');
+      const wasAirborne =
+        ignivraxVerticalPhaseRef.current === 'flying' ||
+        ignivraxVerticalPhaseRef.current === 'taking_off' ||
+        ignivraxVerticalPhaseRef.current === 'gliding';
+      if (wasAirborne) {
+        setIgnivraxVerticalPhase('falling');
+        sound.playSFX('roar', { rate: 0.78 });
+        const tCrash = window.setTimeout(() => {
+          setIgnivraxVerticalPhase('crater_slam');
+          setIgnivraxCraterVisible(true);
+          setIgnivraxCraterPulseKey((k) => k + 1);
+          setScreenShake('heavy');
+          sound.playSFX('arana_fall_slam');
+        }, 280);
+        const tGround = window.setTimeout(() => {
+          setIgnivraxVerticalPhase('grounded');
+        }, 560);
+        const tStopShake = window.setTimeout(() => {
+          setScreenShake('none');
+        }, 760);
+        const tCamReset = window.setTimeout(() => {
+          setIgnivraxCameraMode('idle');
+        }, 1050);
+        ignivraxTimersRef.current.push(tCrash, tGround, tStopShake, tCamReset);
+      } else {
+        setScreenShake('medium');
+        sound.playSFX('arana_fall_slam');
+        const tStopShake = window.setTimeout(() => setScreenShake('none'), 420);
+        const tCamReset = window.setTimeout(() => setIgnivraxCameraMode('idle'), 900);
+        ignivraxTimersRef.current.push(tStopShake, tCamReset);
+      }
     }
   }, [targetEnemy?.configId, targetEnemy?.isAshDissolving]);
 
@@ -8184,27 +10909,62 @@ export const CombatView: React.FC = () => {
       '/assets/combat/cryovain_vfx_aliento_hielo.webp',
       cryovainCavernaEspaciosaBg,
       '/assets/portraits/cryovain_boss_thumb.webp',
+      // Ignivrax (Jefe Final Nivel II · Mazmorra de Midas — Sala del Tesoro con Ascuas)
+      '/assets/combat/ignivrax_flying_idle.webp',
+      '/assets/combat/ignivrax_flying_idle_closed.webp',
+      '/assets/combat/ignivrax_grounded_idle.webp',
+      '/assets/combat/ignivrax_grounded_idle_closed.webp',
+      '/assets/combat/ignivrax_fireballs_arms.webp',
+      '/assets/combat/ignivrax_fire_breath.webp',
+      '/assets/combat/ignivrax_glide_dive.webp',
+      '/assets/combat/ignivrax_crater_slam.webp',
+      '/assets/combat/ignivrax_bite.webp',
+      '/assets/combat/ignivrax_bite_closed.webp',
+      '/assets/combat/ignivrax_claw_swipe.webp',
+      '/assets/combat/ignivrax_falling.webp',
+      '/assets/combat/ignivrax_hurt.webp',
+      '/assets/combat/ignivrax_roar.webp',
+      '/assets/combat/ignivrax_vfx_fireball.webp',
+      '/assets/combat/ignivrax_vfx_fire_breath.webp',
+      '/assets/combat/ignivrax_vfx_claw_slash.webp',
+      '/assets/combat/ignivrax_vfx_crater_burst.webp',
+      '/assets/combat/ignivrax_vfx_bite.webp',
+      '/assets/backgrounds/sala_tesoro_ignivrax.webp',
+      '/assets/portraits/ignivrax_boss_thumb.webp',
       // Tomo II Capítulo I: Barracón Abandonado
       '/assets/combat/no_muerto_idle.webp',
       '/assets/combat/no_muerto_attack.webp',
+      '/assets/combat/no_muerto_skill.webp',
       '/assets/combat/no_muerto_hurt.webp',
+      '/assets/combat/no_muerto_vfx_slam.webp',
       '/assets/combat/soldado_no_muerto_idle.webp',
       '/assets/combat/soldado_no_muerto_attack.webp',
+      '/assets/combat/soldado_no_muerto_skill.webp',
       '/assets/combat/soldado_no_muerto_hurt.webp',
+      '/assets/combat/soldado_no_muerto_vfx_tajo.webp',
       '/assets/combat/perro_asalvajado_idle.webp',
       '/assets/combat/perro_asalvajado_attack.webp',
+      '/assets/combat/perro_asalvajado_skill.webp',
       '/assets/combat/perro_asalvajado_hurt.webp',
+      '/assets/combat/perro_asalvajado_vfx_dentellada.webp',
       '/assets/combat/armadura_reanimada_idle.webp',
       '/assets/combat/armadura_reanimada_attack.webp',
+      '/assets/combat/armadura_reanimada_skill.webp',
       '/assets/combat/armadura_reanimada_hurt.webp',
+      '/assets/combat/armadura_reanimada_vfx_runas.webp',
       '/assets/combat/arana_acorazada_colgada_idle.webp',
+      '/assets/combat/arana_acorazada_colgada_chasquido.webp',
+      '/assets/combat/arana_acorazada_colgada_rugido.webp',
       '/assets/combat/arana_acorazada_colgada_hurt.webp',
       '/assets/combat/arana_acorazada_colgada_telarana.webp',
       '/assets/combat/arana_acorazada_descenso_barrido.webp',
+      '/assets/combat/arana_acorazada_salto_suelo.webp',
+      '/assets/combat/arana_acorazada_salto_telarana.webp',
       '/assets/combat/arana_acorazada_caida_volteo_1.webp',
       '/assets/combat/arana_acorazada_caida_volteo_2.webp',
       '/assets/combat/arana_acorazada_idle.webp',
       '/assets/combat/arana_acorazada_hurt.webp',
+      '/assets/combat/arana_acorazada_rugido.webp',
       '/assets/combat/arana_acorazada_attack_barrido.webp',
       '/assets/combat/arana_acorazada_attack_telarana.webp',
       '/assets/combat/arana_acorazada_attack_bola.webp',
@@ -8216,6 +10976,17 @@ export const CombatView: React.FC = () => {
       '/assets/portraits/arana_acorazada_thumb.webp',
       '/assets/backgrounds/barracon_combate.webp',
       '/assets/backgrounds/sala_arana_acorazada.webp',
+      // Tomo II Capítulo II: Santuario — Ten Piedad
+      '/assets/combat/ten_piedad_idle.webp',
+      '/assets/combat/ten_piedad_barrido.webp',
+      '/assets/combat/ten_piedad_zarzas.webp',
+      '/assets/combat/ten_piedad_hurt.webp',
+      '/assets/combat/ten_piedad_pisoton.webp',
+      '/assets/combat/ten_piedad_escupir.webp',
+      '/assets/combat/ten_piedad_vfx_zarza_suelo.webp',
+      '/assets/combat/ten_piedad_vfx_escupir.webp',
+      '/assets/portraits/ten_piedad_thumb.webp',
+      '/assets/backgrounds/iglesia_destrozada_combate.webp',
       // Status Condition Cartoon VFX Assets
       ...STATUS_VFX_ASSETS,
     ];
@@ -8249,6 +11020,8 @@ export const CombatView: React.FC = () => {
     setEnemyImpactDamageType(dndType || null);
     if (isAranaBossCombatRef.current) {
       sound.playSFX('arana_hurt');
+    } else if (isIgnivraxBossCombatRef.current) {
+      sound.playSFX('arana_hurt', { rate: 0.85 });
     }
     setTimeout(() => {
       setIsEnemyHitShaking(false);
@@ -8347,6 +11120,8 @@ export const CombatView: React.FC = () => {
   };
 
   const [heroConditions, setHeroConditions] = useState<ActiveGachaEffect[]>([]);
+  /** Turnos que le quedan al veneno drenante del Murciélago Carmesí (roba 1 orbe por turno). */
+  const orbDrainTurnsRef = useRef(0);
   // Escarcha de Cryovain: progreso independiente por héroe, incluso al cambiar de personaje.
   const [frostStacksByHero, setFrostStacksByHero] = useState<Record<string, number>>({});
   // Ref sincronizada para consumir las cargas en el mismo instante en que se omite el turno.
@@ -8355,6 +11130,64 @@ export const CombatView: React.FC = () => {
   frostStacksByHeroRef.current = frostStacksByHero;
   const activeHeroFrostStacks = frostStacksByHero[activeCombatHeroId] ?? 0;
   const isCurrentHeroFrostFrozen = activeHeroFrostStacks >= 3;
+  // Corrosión del Devorador de Hierro (0-5 acumulaciones por héroe)
+  const [corrosionStacksByHero, setCorrosionStacksByHero] = useState<Record<string, number>>({});
+  const corrosionStacksByHeroRef = useRef<Record<string, number>>({});
+  corrosionStacksByHeroRef.current = corrosionStacksByHero;
+  const activeHeroCorrosionStacks = corrosionStacksByHero[activeCombatHeroId] ?? 0;
+  const getCorrosionDefLossPct = (stacks: number): number => {
+    if (stacks <= 0) return 0;
+    if (stacks <= 2) return stacks * 5;
+    return stacks * 8;
+  };
+  const [devoradorHierroPhase, setDevoradorHierroPhase] = useState<1 | 2>(1);
+  const devoradorPhaseRef = useRef<1 | 2>(1);
+  const devoradorAntenasCdRef = useRef<number>(0);
+  const devoradorBanqueteCdRef = useRef<number>(0);
+  const resetDevoradorHierroState = useCallback(() => {
+    devoradorPhaseRef.current = 1;
+    devoradorAntenasCdRef.current = 0;
+    devoradorBanqueteCdRef.current = 0;
+    setDevoradorHierroPhase(1);
+    setDevoradorHierroAttackPose('idle');
+    corrosionStacksByHeroRef.current = {};
+    setCorrosionStacksByHero({});
+  }, []);
+  useEffect(() => {
+    const nextDevoradorPhase: 1 | 2 =
+      targetEnemy?.configId === 'devorador_hierro' &&
+      targetEnemy.maxHp > 0 &&
+      targetEnemy.hp <= targetEnemy.maxHp * 0.5
+        ? 2
+        : 1;
+    devoradorPhaseRef.current = nextDevoradorPhase;
+    devoradorAntenasCdRef.current = 0;
+    devoradorBanqueteCdRef.current = 0;
+    setDevoradorHierroPhase(nextDevoradorPhase);
+    setDevoradorHierroAttackPose('idle');
+    mimicoTurnCountRef.current = 0;
+    mimicoChestGraceRef.current = false;
+    setMimicoChestGrace(false);
+    setMimicoAttackPose('idle');
+  }, [targetEnemy?.uid]);
+  // Veneno Persistente de los Insectos del Tesoro (acumulativo todo el combate, por héroe)
+  const [insectVenomStacksByHero, setInsectVenomStacksByHero] = useState<Record<string, number>>({});
+  const insectVenomStacksByHeroRef = useRef<Record<string, number>>({});
+  insectVenomStacksByHeroRef.current = insectVenomStacksByHero;
+  const activeHeroInsectVenomStacks =
+    insectVenomStacksByHero[normalizeCombatHeroId(activeCombatHeroId)] ?? 0;
+  const totalPartyInsectVenomStacks = Object.values(insectVenomStacksByHero).reduce(
+    (sum, s) => sum + (s || 0),
+    0
+  );
+  const getInsectVenomAtkPenaltyPct = (stacks: number): number =>
+    stacks <= 0 ? 0 : Math.min(72, stacks * 12);
+  const getInsectVenomVulnPct = (stacks: number): number =>
+    stacks <= 0 ? 0 : Math.min(48, stacks * 8);
+  const resetInsectVenomState = useCallback(() => {
+    insectVenomStacksByHeroRef.current = {};
+    setInsectVenomStacksByHero({});
+  }, []);
   const heroConditionsRef = useRef<ActiveGachaEffect[]>([]);
   heroConditionsRef.current = heroConditions;
 
@@ -8584,7 +11417,317 @@ export const CombatView: React.FC = () => {
 
   // 5-Orb Ultimate Move Gauge
   const MAX_ULTIMATE_ORBS = 5;
+  // Conejo de Escarcha: cada carga de escarcha congela un orbe de definitiva hasta acabar la misión.
+  const [frozenUltOrbs, setFrozenUltOrbs] = useState(0);
+  const frozenUltOrbsRef = useRef(0);
+  frozenUltOrbsRef.current = frozenUltOrbs;
+  const playerOrbCeiling = Math.max(0, MAX_ULTIMATE_ORBS - frozenUltOrbs);
+  // Zorro de Tundra: la fusión de cartas congela el botón de inventario durante un turno.
+  const [itemsFrozenUntilTurn, setItemsFrozenUntilTurn] = useState(0);
+  // Ciervo de Escarcha: cada enemigo que cae congela el botón de huida durante un turno.
+  const [fleeFrozenUntilTurn, setFleeFrozenUntilTurn] = useState(0);
+  const deerAliveCountRef = useRef<number>(-1);
+  useEffect(() => {
+    const aliveNow = activeEnemies.filter((e) => e.hp > 0 && !e.isAshDissolving).length;
+    const previousAlive = deerAliveCountRef.current;
+    deerAliveCountRef.current = aliveNow;
+    if (
+      previousAlive > aliveNow &&
+      activeEnemies.some((e) => e.configId === 'ciervo_tundra')
+    ) {
+      addFrostCharge('ciervo');
+      setFleeFrozenUntilTurn((prev) => Math.max(prev, turnCounter + 1));
+      setDndProcBanner({
+        text: '🦌 ¡EL CIERVO DE ESCARCHA CONGELA LA HUIDA!',
+        color: '#38bdf8',
+        icon: '🦌',
+      });
+      window.setTimeout(() => setDndProcBanner(null), 2600);
+    }
+  }, [activeEnemies, turnCounter]);
+
+  // Caballero de Escarcha (jefe del Capítulo II): cada dos turnos invoca a la fiera de la
+  // Tundra de la que más cargas de escarcha arrastres; si no hay ninguna, elige al azar.
+  const frostSummonTurnRef = useRef(0);
+  useEffect(() => {
+    if (turnCounter < 2) return;
+    if (frostSummonTurnRef.current === turnCounter) return;
+    const bossAlive = activeEnemiesRef.current.some(
+      (e) => e.configId === 'caballero_escarcha_boss' && e.hp > 0 && !e.isAshDissolving
+    );
+    if (!bossAlive) return;
+
+    // El jefe cambia de pose según lo que haga: la 1 revienta cargas, la 4 invoca fieras.
+    const setBossPose = (url: string) => {
+      const withPose = (list: ChamberEnemyState[]) =>
+        list.map((e) =>
+          e.configId === 'caballero_escarcha_boss'
+            ? { ...e, attackSpriteUrl: url, animation: 'strike' as const }
+            : e
+        );
+      activeEnemiesRef.current = withPose(activeEnemiesRef.current);
+      setActiveEnemies((prev) => withPose(prev));
+      window.setTimeout(() => {
+        const restore = (list: ChamberEnemyState[]) =>
+          list.map((e) =>
+            e.configId === 'caballero_escarcha_boss'
+              ? {
+                  ...e,
+                  attackSpriteUrl: '/assets/combat/caballero_escarcha_boss_attack.webp',
+                  animation: 'idle' as const,
+                }
+              : e
+          );
+        activeEnemiesRef.current = restore(activeEnemiesRef.current);
+        setActiveEnemies((prev) => restore(prev));
+      }, 1600);
+    };
+
+    // Turnos impares: Estallido de Escarcha (pose 1). Revienta las cargas del héroe y
+    // convierte cada una en daño explosivo de hielo.
+    if (turnCounter % 2 === 1) {
+      const heroFrost = frostStacksByHeroRef.current[activeCombatHeroId] ?? 0;
+      if (heroFrost <= 0) return;
+      frostSummonTurnRef.current = turnCounter;
+      setBossPose('/assets/combat/caballero_escarcha_boss_burst.webp');
+      const burstDmg = Math.round(ENEMY_DAMAGE_SCALE * 0.55 * (1 + heroFrost * 0.7));
+      heroHpRef.current = Math.max(1, heroHpRef.current - burstDmg);
+      setHeroHp(heroHpRef.current);
+      spawnFloating(`-${burstDmg}`, false, false, 1, false, undefined, 'cold');
+      const clearedStacks = { ...frostStacksByHeroRef.current, [activeCombatHeroId]: 0 };
+      frostStacksByHeroRef.current = clearedStacks;
+      setFrostStacksByHero(clearedStacks);
+      setScreenFlash('cyan');
+      window.setTimeout(() => setScreenFlash(null), 340);
+      setScreenShake('heavy');
+      sound.playSFX('explosion');
+      setDndProcBanner({
+        text: `❄️ ¡ESTALLIDO DE ESCARCHA! ${heroFrost} CARGA${heroFrost > 1 ? 'S' : ''} ROTA${heroFrost > 1 ? 'S' : ''} · ${burstDmg} DMG`,
+        color: '#38bdf8',
+        icon: '❄️',
+      });
+      window.setTimeout(() => setDndProcBanner(null), 3200);
+      return;
+    }
+
+    const aliveCount = activeEnemiesRef.current.filter(
+      (e) => e.hp > 0 && !e.isAshDissolving
+    ).length;
+    if (aliveCount >= 4) return;
+    frostSummonTurnRef.current = turnCounter;
+    setBossPose('/assets/combat/caballero_escarcha_boss_summon.webp');
+
+    const charges = loadFrostCharges();
+    const withCharges = (Object.keys(charges) as FrostAnimalKey[])
+      .filter((animal) => charges[animal] > 0)
+      .sort((a, b) => charges[b] - charges[a]);
+    const animal: FrostAnimalKey =
+      withCharges[0] ??
+      (['lobo', 'zorro', 'conejo', 'ciervo'] as FrostAnimalKey[])[
+        Math.floor(Math.random() * 4)
+      ];
+    const summonId = FROST_ANIMAL_CONFIG[animal];
+    const cfg = DUNGEON_ENEMIES[summonId];
+    const scaledHp = getBalancedEnemyMaxHp(
+      cfg,
+      selectedCombatMissionId,
+      1,
+      selectedCombatDifficulty,
+      partyAttackHpScale,
+      0.6
+    );
+    const newSummon: ChamberEnemyState = {
+      uid: `caballero_summon_${summonId}_${Date.now()}_${Math.random()}`,
+      configId: summonId,
+      name: `${cfg.name} (Invocado)`,
+      title: 'Fiera de la Ventisca • Invocación del Caballero',
+      hp: scaledHp,
+      maxHp: scaledHp,
+      ultimateOrbs: 0,
+      conditions: [],
+      isAshDissolving: false,
+      isHitShaking: false,
+      hitKey: 0,
+      isTwitching: false,
+      animation: 'idle',
+      spriteUrl: cfg.spriteUrl,
+      attackSpriteUrl: cfg.attackSpriteUrl,
+      hurtSpriteUrl: cfg.hurtSpriteUrl,
+      thumbUrl: cfg.thumbUrl,
+      scaleClass: cfg.scaleClass,
+      width: cfg.width,
+      height: cfg.height,
+      slotIndex: activeEnemiesRef.current.length,
+      isBoss: false,
+      isSemiboss: false,
+    };
+    activeEnemiesRef.current = [...activeEnemiesRef.current, newSummon];
+    setActiveEnemies((prev) => [...prev, newSummon]);
+    sound.playSFX('roar');
+    setDndProcBanner({
+      text: `🛡️ ¡EL CABALLERO INVOCA ${cfg.name.toUpperCase()}! (${'❄️'.repeat(Math.min(5, charges[animal])) || '❄️'})`,
+      color: '#38bdf8',
+      icon: '🛡️',
+    });
+    window.setTimeout(() => setDndProcBanner(null), 3000);
+  }, [
+    turnCounter,
+    selectedCombatMissionId,
+    selectedCombatDifficulty,
+    partyAttackHpScale,
+  ]);
   const [ultimateOrbs, setUltimateOrbs] = useState<number>(0);
+
+  // ---- Modo PvP: la UI y las reglas son las de la campaña; el estado lo manda el servidor ----
+  const pvpStatusToEffects = (list: PvpCombatStatusView[] | undefined): ActiveGachaEffect[] => {
+    let out: ActiveGachaEffect[] = [];
+    (list ?? []).forEach((status) => {
+      const res = stackGachaEffect(
+        out,
+        status.kind as GachaEffectType,
+        Math.max(1, Math.floor(status.turns || 1)),
+        Math.max(1, Math.floor(status.stacks || 1)),
+        2,
+        'pvp'
+      );
+      out = res.updatedEffects;
+    });
+    return out;
+  };
+  const pvpHandKey = pvp ? pvp.hand.map((card) => `${card.uid}:${card.tier}`).join('|') : '';
+  const pvpMyStatusKey = pvp
+    ? pvp.myStatuses.map((s) => `${s.kind}${s.turns}${s.stacks}`).join(',')
+    : '';
+  const pvpFoeStatusKey = pvp
+    ? pvp.foe.statuses.map((s) => `${s.kind}${s.turns}${s.stacks}`).join(',')
+    : '';
+
+  useEffect(() => {
+    if (!pvp) return;
+    heroHpRef.current = pvp.heroHp;
+    setHeroHp(pvp.heroHp);
+  }, [pvp?.heroHp]);
+
+  useEffect(() => {
+    if (!pvp) return;
+    setUltimateOrbs(Math.max(0, Math.min(MAX_ULTIMATE_ORBS, pvp.orbs)));
+  }, [pvp?.orbs]);
+
+  useEffect(() => {
+    if (!pvp) return;
+    const nextHand: ActiveCombatCard[] = pvp.hand.map((card) => ({
+      instanceId: card.uid,
+      skillId: card.skillId,
+      tier: card.tier,
+    }));
+    setHand(nextHand);
+    handRef.current = nextHand;
+    heroHandsRef.current[pvp.activeHeroId] = nextHand;
+  }, [pvpHandKey]);
+
+  useEffect(() => {
+    if (!pvp) return;
+    setActiveCombatHeroId(pvp.activeHeroId);
+    activeCombatHeroIdRef.current = pvp.activeHeroId;
+  }, [pvp?.activeHeroId]);
+
+  useEffect(() => {
+    if (!pvp) return;
+    setHeroConditions(pvpStatusToEffects(pvp.myStatuses));
+  }, [pvpMyStatusKey]);
+
+  useEffect(() => {
+    if (!pvp) return;
+    setBattleState('idle');
+    const foe = pvp.foe;
+    setActiveEnemies([
+      {
+        uid: 'pvp_rival',
+        configId: 'araknoide_rojo' as CombatEnemyId,
+        name: foe.name,
+        title: foe.title || 'Rival de los Pozos',
+        hp: Math.max(0, foe.hp),
+        maxHp: Math.max(1, foe.maxHp),
+        ultimateOrbs: 0,
+        conditions: pvpStatusToEffects(foe.statuses),
+        isAshDissolving: false,
+        isHitShaking: false,
+        hitKey: 0,
+        isTwitching: false,
+        animation: 'idle',
+        spriteUrl: foe.spriteUrl,
+        attackSpriteUrl: foe.attackSpriteUrl,
+        hurtSpriteUrl: foe.hurtSpriteUrl,
+        thumbUrl: foe.thumbUrl,
+        scaleClass: 'w-[190px] h-[240px]',
+        width: 190,
+        height: 240,
+        slotIndex: 0,
+        isBoss: false,
+        isSemiboss: false,
+      },
+    ]);
+  }, [pvp?.foe.hp, pvp?.foe.maxHp, pvp?.foe.name, pvpFoeStatusKey]);
+
+  // Golpes del duelo: la misma animación, VFX y números flotantes de la campaña.
+  const pvpLastActionAt = pvp?.lastAction?.at ?? 0;
+  useEffect(() => {
+    if (!pvp) return;
+    const action = pvp.lastAction;
+    if (!action) return;
+    if (action.kind && action.kind !== 'card') {
+      if (action.kind === 'switch') sound.playSFX('powerup');
+      return;
+    }
+    if (!action.skillId) return;
+    const tier = action.tier ?? 1;
+    if (action.seat === pvp.seat) {
+      sound.playSFX('attack');
+      setActiveVfx({ type: action.skillId as CombatVfxType, tier });
+      setHeroCastSkill(action.skillId);
+      setHeroAnimation('lunge');
+      const hit = window.setTimeout(() => {
+        if (action.missed) {
+          spawnFloating('FALLO', true, false);
+          sound.playSFX('debuff');
+          return;
+        }
+        if (action.damage && action.damage > 0) {
+          spawnFloating(`-${action.damage}`, true, false);
+          triggerEnemyHitReaction();
+          if (action.crit) sound.playSFX('critical');
+        } else if (action.heal && action.heal > 0) {
+          spawnFloating(`+${action.heal}`, false, true);
+        }
+      }, 260);
+      const end = window.setTimeout(() => {
+        setActiveVfx({ type: 'none', tier: 1 });
+        setHeroCastSkill(null);
+        setHeroAnimation('idle');
+      }, 1150);
+      return () => {
+        window.clearTimeout(hit);
+        window.clearTimeout(end);
+      };
+    }
+    window.setTimeout(() => sound.playSFX('attack'), 120);
+    setActiveEnemies((prev) => prev.map((enemy) => ({ ...enemy, animation: 'strike' as const })));
+    const backToIdle = window.setTimeout(() => {
+      setActiveEnemies((prev) => prev.map((enemy) => ({ ...enemy, animation: 'idle' as const })));
+    }, 760);
+    const hit = window.setTimeout(() => {
+      if (action.damage && action.damage > 0) {
+        spawnFloating(`-${action.damage}`, false, false);
+        triggerHeroHitReaction();
+        setScreenShake('light');
+        if (action.crit) sound.playSFX('critical');
+      }
+    }, 340);
+    return () => {
+      window.clearTimeout(hit);
+      window.clearTimeout(backToIdle);
+    };
+  }, [pvpLastActionAt]);
   const setEnemyUltimateOrbs = (updater: number | ((prev: number) => number)) => {
     setActiveEnemies((prev) =>
       prev.map((e) => {
@@ -8624,7 +11767,7 @@ export const CombatView: React.FC = () => {
     );
     return () => timers.forEach((id) => window.clearTimeout(id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeEnemyAttackVisual?.vfxKey, targetEnemy?.uid, cryovainAttackPose, aranaAttackPose, aranaVerticalPhase]);
+  }, [activeEnemyAttackVisual?.vfxKey, targetEnemy?.uid, cryovainAttackPose, ignivraxAttackPose, ignivraxVerticalPhase, ignivraxMouthClosed, aranaAttackPose, aranaVerticalPhase]);
 
   const switchActiveEnemy = useCallback(
     (newIdx: number, isAiSwitch = false) => {
@@ -8744,7 +11887,7 @@ export const CombatView: React.FC = () => {
   const addUltimateOrb = useCallback(
     (amount: number = 1, sfx: string | null = 'coin') => {
       setUltimateOrbs((prev) => {
-        const next = Math.min(MAX_ULTIMATE_ORBS, prev + amount);
+        const next = Math.min(playerOrbCeiling, prev + amount);
         if (next > prev) {
           if (sfx) sound.playSFX(sfx);
           // Disparar animación de carga para el nuevo orbe circular obtenido
@@ -8768,7 +11911,7 @@ export const CombatView: React.FC = () => {
   // Invariante de Definitiva: Si los orbes caen por debajo de MAX_ULTIMATE_ORBS (por ejemplo si un enemigo roba o drena un orbe),
   // la carta de definitivo ('cataclismo_astral') debe desaparecer de la mano inmediatamente porque ya no está cargada.
   useEffect(() => {
-    if (ultimateOrbs < MAX_ULTIMATE_ORBS) {
+    if (ultimateOrbs < playerOrbCeiling) {
       setHand((prev) => {
         if (!prev.some((c) => c.skillId === 'cataclismo_astral')) return prev;
         return prev.filter((c) => c.skillId !== 'cataclismo_astral');
@@ -8776,7 +11919,7 @@ export const CombatView: React.FC = () => {
       setDragIndex(null);
       setHoverIndex(null);
     }
-  }, [ultimateOrbs]);
+  }, [ultimateOrbs, playerOrbCeiling]);
 
   // Helper to strictly ensure UN SOLO EMOJI (single grapheme cluster)
   const toSingleEmoji = (icon: string): string => {
@@ -8801,6 +11944,63 @@ export const CombatView: React.FC = () => {
   }) => {
     // No-op: notification banner removed
   }, []);
+
+  // Expedición de la Mazmorra de Midas: se guarda con la vida y los orbes con los que vas.
+  const goldRunMissionActive = Boolean(
+    selectedCombatMissionId && isGoldRunMission(selectedCombatMissionId)
+  );
+  useEffect(() => {
+    if (!goldRunMissionActive) return;
+    // El ref lleva la vida real: al montar la misión la vida del state todavía es la anterior
+    // y escribirla borraría el avance guardado.
+    const liveHp = heroHpRef.current > 0 ? heroHpRef.current : heroHp;
+    if (battleState === 'defeat' || liveHp <= 0) return;
+    recordGoldRunProgress(liveHp / Math.max(1, MAX_HERO_HP), ultimateOrbs);
+  }, [goldRunMissionActive, heroHp, ultimateOrbs, MAX_HERO_HP, battleState]);
+
+  // Muerte en la expedición: se pierde el avance y se vuelve al Capítulo I.
+  useEffect(() => {
+    if (battleState !== 'defeat' || !goldRunMissionActive) return;
+    resetGoldRun();
+    clearFrostCharges();
+    setDndProcBanner({
+      text: '☠️ EXPEDICIÓN FALLIDA: VUELVES AL CAPÍTULO I',
+      color: '#ef4444',
+      icon: '☠️',
+    });
+    window.setTimeout(() => setDndProcBanner(null), 4000);
+  }, [battleState, goldRunMissionActive]);
+
+  // Transición inmediata a Fase 2 del Devorador de Hierro al llegar al 50% de vida o menos
+  const devoradorEnemyHp = targetEnemy?.configId === 'devorador_hierro' ? targetEnemy.hp : -1;
+  const devoradorEnemyMaxHp = targetEnemy?.configId === 'devorador_hierro' ? targetEnemy.maxHp : 0;
+  useEffect(() => {
+    if (
+      devoradorEnemyHp > 0 &&
+      devoradorEnemyMaxHp > 0 &&
+      devoradorEnemyHp <= devoradorEnemyMaxHp * 0.5 &&
+      devoradorPhaseRef.current === 1
+    ) {
+      devoradorPhaseRef.current = 2;
+      setDevoradorHierroPhase(2);
+      sound.playSFX('roar');
+      setScreenFlash('gold');
+      setTimeout(() => setScreenFlash(null), 320);
+      setDndProcBanner({
+        text: '🦀 FASE 2: FRENESÍ OXIDANTE — ¡CORROSIÓN PROFUNDA DESBLOQUEADA!',
+        color: '#f59e0b',
+        icon: '🦀',
+      });
+      setTimeout(() => setDndProcBanner(null), 3000);
+      queueStatusNotification({
+        icon: '🦀',
+        title: 'Fase 2 — Frenesí Oxidante',
+        detail: 'El Devorador de Hierro entra en frenesí: Antenas corrosivas más frecuentes y Corrosión profunda desbloqueada.',
+        target: 'enemy',
+        isBuff: true,
+      });
+    }
+  }, [devoradorEnemyHp, devoradorEnemyMaxHp, queueStatusNotification]);
 
   // Apply Food Buff & Special In-Combat Effects
   const handleApplyFoodBuff = useCallback(
@@ -8878,7 +12078,7 @@ export const CombatView: React.FC = () => {
       }
 
       // 1. Immediate Heal (Ramen, Potions, etc.) — escalado a la vida compartida
-      if (def.immediateHeal) {
+      if (def.immediateHeal && !heroCannotHeal()) {
         const healed = Math.round(def.immediateHeal * HP_DAMAGE_SCALE);
         heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healed);
         setHeroHp(heroHpRef.current);
@@ -9003,6 +12203,28 @@ export const CombatView: React.FC = () => {
   const startChamber = (floorNumber: number, presetEnemies?: ChamberEnemyState[]) => {
     sound.playSFX('powerup');
     setCurrentFloor(floorNumber);
+    // El veneno drenante no sobrevive al cambio de sala.
+    orbDrainTurnsRef.current = 0;
+    // Power-ups de la expedición que actúan al entrar en una sala nueva (no en la primera).
+    if (
+      (floorNumber > 1 || Boolean(parseGoldRunLevelMissionId(selectedCombatMissionId))) &&
+      selectedCombatMissionId &&
+      isGoldRunMission(selectedCombatMissionId)
+    ) {
+      const boons = loadGoldRun().boons;
+      const bonusOrbs = goldRunStartOrbs(boons);
+      if (bonusOrbs > 0) {
+        setUltimateOrbs((prev) => Math.min(playerOrbCeiling, prev + bonusOrbs));
+      }
+      const roomHeal = goldRunRoomHealPct(boons);
+      if (roomHeal > 0) {
+        heroHpRef.current = Math.min(
+          MAX_HERO_HP,
+          Math.round(heroHpRef.current + MAX_HERO_HP * roomHeal)
+        );
+        setHeroHp(heroHpRef.current);
+      }
+    }
     if (floorNumber > bestFloor) {
       setBestFloor(floorNumber);
       try {
@@ -9020,6 +12242,11 @@ export const CombatView: React.FC = () => {
     setHeroConditions((prev) => prev.filter((c) => c.isBuff));
 
     setTurnCounter(1);
+    frozenUltOrbsRef.current = 0;
+    setFrozenUltOrbs(0);
+    setItemsFrozenUntilTurn(0);
+    setFleeFrozenUntilTurn(0);
+    deerAliveCountRef.current = -1;
     setHeroCastSkill(null);
     setHeroAnimation('idle');
     setEnemyAnimation('idle');
@@ -9034,7 +12261,13 @@ export const CombatView: React.FC = () => {
     setBossTransitioning(false);
     setWaveClearBanner(null);
     resetCryovainCombatState(false);
+    resetIgnivraxCombatState(false);
     resetAranaCombatState(false);
+    resetTenPiedadCombatState(false);
+    if (!presetEnemies) {
+      resetDevoradorHierroState();
+      resetMimicoCombatState();
+    }
     refillHandToFull();
   };
 
@@ -9062,7 +12295,12 @@ export const CombatView: React.FC = () => {
     airPrisonHeroRef.current = null;
     setUltimateOrbs(0);
     resetCryovainCombatState(true);
+    resetIgnivraxCombatState(true);
     resetAranaCombatState(true);
+    resetTenPiedadCombatState(true);
+    resetDevoradorHierroState();
+    resetMimicoCombatState();
+    resetInsectVenomState();
     // Nueva expedición: el cronómetro de las estrellas vuelve a cero (las muertes siguen contadas).
     runStartedAtRef.current = Date.now();
     startChamber(1);
@@ -9090,6 +12328,7 @@ export const CombatView: React.FC = () => {
     heroHpRef.current = MAX_HERO_HP;
     setHeroHp(MAX_HERO_HP);
     setHeroConditions([]);
+    resetInsectVenomState();
     setAirPrisonHero(null);
     airPrisonHeroRef.current = null;
     // La mano se vacía antes: `startChamber` la rellena con cartas nuevas.
@@ -9109,6 +12348,10 @@ export const CombatView: React.FC = () => {
     airPrisonHeroRef.current = null;
     setHand([]);
     setUltimateOrbs(0);
+    resetIgnivraxCombatState(true);
+    resetDevoradorHierroState();
+    resetMimicoCombatState();
+    resetInsectVenomState();
     startChamber(currentFloor);
   };
 
@@ -9172,15 +12415,24 @@ export const CombatView: React.FC = () => {
           aliveEnemies.find((e) => e.uid === landingData.targetEnemyUid) || aliveEnemies[0];
 
         if (target) {
-          const dmg = landingData.damage;
+          const isTargetMimicChest = isMimicKnockedOut(target);
+          const dmg = isTargetMimicChest ? Math.round(landingData.damage * 2) : landingData.damage;
           const eIdx = activeEnemiesRef.current.findIndex((e) => e.uid === target.uid);
+
+          if (target.configId === 'mimico_boss') {
+            mimicoChestGraceRef.current = true;
+            setMimicoChestGrace(true);
+          }
 
           const updatedEnemies = activeEnemiesRef.current.map((e) => {
             if (e.uid !== target.uid) return e;
             if (e.configId === 'cryovain_boss' && dmg > 0) {
               cryoTookDamageThisTurnRef.current = true;
             }
-            if (e.configId === 'arana_acorazada_boss' && dmg > 0) {
+            if (e.configId === 'ignivrax_boss' && dmg > 0) {
+              ignivraxTookDamageThisTurnRef.current = true;
+            }
+            if (isAranaBossConfigId(e.configId) && dmg > 0) {
               aranaTookDamageThisTurnRef.current = true;
             }
             let conds = stackGachaEffect(e.conditions, 'stun', 1, 1, landingData.tier, 'Aterrizaje Heroico').updatedEffects;
@@ -9199,18 +12451,21 @@ export const CombatView: React.FC = () => {
             true,
             false,
             landingData.tier,
-            landingData.tier === 3,
+            landingData.tier === 3 || isTargetMimicChest,
             eIdx >= 0 ? eIdx : undefined,
             'bludgeoning',
-            '💥 ¡ATERRIZAJE SUPERHEROICO!',
-            '#06b6d4'
+            isTargetMimicChest ? '📦 ¡COFRE NOQUEADO · x2 DAÑO!' : '💥 ¡ATERRIZAJE SUPERHEROICO!',
+            isTargetMimicChest ? '#fbbf24' : '#06b6d4'
           );
 
           triggerEnemyHitReaction('bludgeoning');
           queueStatusNotification({
-            icon: '💥',
-            title: '¡Aterrizaje Superheroico!',
-            detail: `¡Smurph Draco impacta contra el suelo con violencia sísmica causando ${dmg} DMG y quebrando al guardia!`,
+            icon: target.configId === 'mimico_boss' ? '📦' : '💥',
+            title: target.configId === 'mimico_boss' ? '¡Mímico Noqueado en Forma de Cofre!' : '¡Aterrizaje Superheroico!',
+            detail:
+              target.configId === 'mimico_boss'
+                ? `¡Smurph Draco impacta causando ${dmg} DMG y noquea al Mímico como un cofre normal (x2 daño)!`
+                : `¡Smurph Draco impacta contra el suelo con violencia sísmica causando ${dmg} DMG y quebrando al guardia!`,
             target: 'enemy',
             isBuff: false,
           });
@@ -9275,6 +12530,9 @@ export const CombatView: React.FC = () => {
         let hobTitle = e.title;
 
         if (dotDamage > 0) {
+          if (isMimicKnockedOut(e)) {
+            dotDamage = Math.round(dotDamage * 2);
+          }
           if (e.configId === 'hobgoblin_capataz') {
             const res = calculateHobgoblinDamage(updatedHp, dotDamage, hobPhase);
             updatedHp = res.nextHp;
@@ -9332,6 +12590,13 @@ export const CombatView: React.FC = () => {
         return;
       }
 
+      // Aliento drenante del Murciélago Carmesí: un orbe de definitiva por turno mientras dure.
+      if (orbDrainTurnsRef.current > 0) {
+        orbDrainTurnsRef.current -= 1;
+        setUltimateOrbs((prevOrbs) => Math.max(0, prevOrbs - 1));
+        setTimeout(() => spawnFloating('🔮 -1', false, false), 140);
+      }
+
       // 2. Snapshot Hero conditions at turn start BEFORE ticking down, then resolve DoT & expiry
       const heroStartConditions = [...heroConditionsRef.current];
       // Auras: solo los estados que seguirán con icono en la barra después del tick de este
@@ -9358,7 +12623,6 @@ export const CombatView: React.FC = () => {
           });
           triggerHeroHitReaction('poison');
           sound.playSFX('hurt');
-
           if (currentHp <= 0) {
             setIsHeroAshDissolving(true);
             setHeroAnimation('dead');
@@ -9408,6 +12672,48 @@ export const CombatView: React.FC = () => {
         return remainingEffects;
       });
 
+      // Sangrado Arterial acumulable en el héroe al inicio de su turno (ignora armadura)
+      const heroBleed = heroStartConditions.find((c) => c.type === 'bleed');
+      if (heroBleed && heroHpRef.current > 0) {
+        const bDmg = Math.max(1, Math.round(4 * heroBleed.stacks * ENEMY_DAMAGE_SCALE));
+        heroHpRef.current = Math.max(0, heroHpRef.current - bDmg);
+        const afterBleedHp = heroHpRef.current;
+        setHeroHp(afterBleedHp);
+        spawnFloating(
+          `🩸 -${bDmg}`,
+          false,
+          false,
+          1,
+          false,
+          undefined,
+          'piercing',
+          `🩸 SANGRADO x${heroBleed.stacks}`,
+          '#f43f5e'
+        );
+        queueStatusNotification({
+          icon: '🩸',
+          title: `Sangrado Arterial (x${heroBleed.stacks})`,
+          detail: `-${bDmg} PV por hemorragia abierta en ${getHeroName()}`,
+          target: 'hero',
+          isBuff: false,
+        });
+        triggerHeroHitReaction('piercing');
+        sound.playSFX('hurt');
+
+        if (afterBleedHp <= 0) {
+          setIsHeroAshDissolving(true);
+          setHeroAnimation('dead');
+          sound.playSFX('necrotic');
+          setTimeout(() => {
+            setIsHeroAshDissolving(false);
+            setHeroAnimation('idle');
+            runDeathsRef.current += 1;
+            setBattleState('defeat');
+            sound.playSFX('defeat');
+          }, 2200);
+        }
+      }
+
       const currentPrison = airPrisonHeroRef.current;
       if (currentPrison && currentPrison.turnsRemaining > 0) {
         const nextTurns = currentPrison.turnsRemaining - 1;
@@ -9428,11 +12734,109 @@ export const CombatView: React.FC = () => {
         }
       }
 
+      // Telarañas en Llamas (Araña Acorazada <= 25% PV): inflige daño de fuego por turno al héroe
+      const burningArana = activeEnemiesRef.current.find(
+        (e) =>
+          isAranaBossConfigId(e.configId) &&
+          e.hp > 0 &&
+          !e.isAshDissolving &&
+          e.hp / Math.max(1, e.maxHp) <= 0.25
+      );
+      if (burningArana && heroHpRef.current > 0) {
+        const webFireDmg = Math.max(1, Math.round(5 * ENEMY_DAMAGE_SCALE));
+        heroHpRef.current = Math.max(0, heroHpRef.current - webFireDmg);
+        const afterFireHp = heroHpRef.current;
+        setHeroHp(afterFireHp);
+        spawnFloating(
+          `🔥 -${webFireDmg}`,
+          false,
+          false,
+          1,
+          false,
+          undefined,
+          'fire',
+          '🔥 TELARAÑAS EN LLAMAS',
+          '#f97316'
+        );
+        queueStatusNotification({
+          icon: '🔥',
+          title: 'Telarañas en Llamas',
+          detail: `Las redes incendiadas abrasan al grupo (-${webFireDmg} PV de fuego).`,
+          target: 'hero',
+          isBuff: false,
+        });
+        triggerHeroHitReaction('fire');
+        sound.playSFX('hurt');
+
+        if (afterFireHp <= 0) {
+          setIsHeroAshDissolving(true);
+          setHeroAnimation('dead');
+          sound.playSFX('necrotic');
+          setTimeout(() => {
+            setIsHeroAshDissolving(false);
+            setHeroAnimation('idle');
+            runDeathsRef.current += 1;
+            setBattleState('defeat');
+            sound.playSFX('defeat');
+          }, 2200);
+        }
+      }
+
+      // Veneno Persistente de los Insectos del Tesoro: drena vida por turno todo el combate (acumulativo)
+      const totalVenomTicks = Object.values(insectVenomStacksByHeroRef.current).reduce(
+        (sum, s) => sum + (s || 0),
+        0
+      );
+      if (totalVenomTicks > 0 && heroHpRef.current > 0) {
+        const insectVenomDmg = Math.max(1, Math.round(5.5 * totalVenomTicks * ENEMY_DAMAGE_SCALE));
+        heroHpRef.current = Math.max(0, heroHpRef.current - insectVenomDmg);
+        const afterVenomHp = heroHpRef.current;
+        setHeroHp(afterVenomHp);
+        spawnFloating(
+          `☣️ -${insectVenomDmg}`,
+          false,
+          false,
+          1,
+          false,
+          undefined,
+          'poison',
+          `☣️ VENENO ACUMULADO x${totalVenomTicks}`,
+          '#22c55e'
+        );
+        queueStatusNotification({
+          icon: '🦂',
+          title: `Veneno Persistente (x${totalVenomTicks})`,
+          detail: `-${insectVenomDmg} PV continuos por el veneno acumulado de los insectos del tesoro.`,
+          target: 'hero',
+          isBuff: false,
+        });
+        triggerHeroHitReaction('poison');
+        sound.playSFX('hurt');
+
+        if (afterVenomHp <= 0) {
+          setIsHeroAshDissolving(true);
+          setHeroAnimation('dead');
+          sound.playSFX('necrotic');
+          setTimeout(() => {
+            setIsHeroAshDissolving(false);
+            setHeroAnimation('idle');
+            runDeathsRef.current += 1;
+            setBattleState('defeat');
+            sound.playSFX('defeat');
+          }, 2200);
+        }
+      }
+
       setTurnCounter((prev) => prev + 1);
       setHeroStatusTrigger((prev) => prev + 1);
 
       // Turn-start HP Regeneration (Ramen Humeante, etc.)
-      if (activeFoodBuff?.regenPerTurn && heroHpRef.current > 0 && heroHpRef.current < heroMaxHp) {
+      if (
+        activeFoodBuff?.regenPerTurn &&
+        heroHpRef.current > 0 &&
+        heroHpRef.current < heroMaxHp &&
+        !heroCannotHeal()
+      ) {
         const healAmt = Math.max(1, Math.round(activeFoodBuff.regenPerTurn * HP_DAMAGE_SCALE));
         heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + healAmt);
         setHeroHp(heroHpRef.current);
@@ -9559,8 +12963,8 @@ export const CombatView: React.FC = () => {
           step += 1;
           const nextHp =
             step >= totalSteps
-              ? devoradorP2Cfg.maxHp
-              : Math.round((devoradorP2Cfg.maxHp * step) / totalSteps);
+              ? devoradorP2Base.maxHp
+              : Math.round((devoradorP2Base.maxHp * step) / totalSteps);
           const updatedP2 = { ...devoradorP2Base, hp: nextHp };
           activeEnemiesRef.current = [updatedP2];
           setActiveEnemies([updatedP2]);
@@ -11120,6 +14524,69 @@ export const CombatView: React.FC = () => {
       return;
     }
 
+    // Bossfight Tomo II - Capítulo II: Ten Piedad (t2_c2_m1_ten_piedad)
+    if (selectedCombatMissionId === 't2_c2_m1_ten_piedad') {
+      resetTenPiedadCombatState(false);
+      sound.playSFX('victory');
+      launchConfetti();
+
+      const bossGold = 20000;
+      const bossCrystals = 680;
+
+      completeQuestMission('t2_c2_m1_ten_piedad', computeMissionStars());
+      addGold(bossGold);
+      addCrystals(bossCrystals);
+      addShelfItem({
+        id: `clavo_culto_piedad_${Date.now()}`,
+        name: 'Clavo Ritual del Culto a la Piedad',
+        category: 'materials',
+        count: 1,
+        icon: '/assets/portraits/ten_piedad_thumb.webp',
+        rarity: 'UR',
+        priceGold: 42000,
+        description: 'Clavo consagrado arrancado del cuerpo colosal de Ten Piedad entre las ruinas del Santuario.',
+      });
+      addShelfItem({
+        id: `zarza_maldita_santuario_${Date.now()}`,
+        name: 'Zarza Maldita del Santuario',
+        category: 'materials',
+        count: 2,
+        icon: '/assets/portraits/ten_piedad_thumb.webp',
+        rarity: 'SSR',
+        priceGold: 22000,
+        description: 'Raíz espinosa impregnada con la savia oscura que invadió la iglesia destrozada.',
+      });
+
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          description: it.description,
+        })
+      );
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+
+      setWaveClearBanner({
+        floor: 1,
+        gold: bossGold,
+        crystals: bossCrystals,
+        nextFloor: 1,
+      });
+
+      setActiveQuestChapter(2);
+      setSelectedCombatMissionId(null);
+      setTimeout(() => {
+        navigateTo('quest');
+      }, 1700);
+      return;
+    }
+
     // Final Bossfight Capítulo VI: Sangre y Hielo (m22_cryovain_final)
     if (selectedCombatMissionId === 'm22_cryovain_final') {
       sound.playSFX('victory');
@@ -11183,10 +14650,22 @@ export const CombatView: React.FC = () => {
     }
 
     // Recompensas exclusivas del Bastión: solo oro o botellas de EXP existentes.
-    if (selectedCombatMissionId === 'resource_trial_gold' || selectedCombatMissionId === 'resource_trial_xp') {
-      // Las pruebas del Bastión son expediciones de cuatro salas. Solo se cobra
-      // la recompensa y se marca la misión al superar la cuarta.
-      const TRAINING_TRIAL_ROOMS = 4;
+    if (
+      selectedCombatMissionId === 'resource_trial_gold' ||
+      selectedCombatMissionId === 'resource_trial_xp' ||
+      selectedCombatMissionId === 'midas_dungeon_easy' ||
+      selectedCombatMissionId === 'midas_dungeon_easy_insectos' ||
+      selectedCombatMissionId === 'midas_dungeon_easy_aurumvorax' ||
+      Boolean(selectedCombatMissionId?.startsWith('midas_dungeon_n2_'))
+    ) {
+      // Las secciones de la Mazmorra de Midas son expediciones de diez salas + jefe;
+      // el resto de pruebas del Bastión mantiene sus cuatro salas. Solo se cobra
+      // la recompensa y se marca la misión al despejar la última sala.
+      const TRAINING_TRIAL_ROOMS = parseGoldRunLevelMissionId(selectedCombatMissionId)
+        ? 1
+        : selectedCombatMissionId?.startsWith('midas_dungeon_')
+        ? 10
+        : 4;
       if (currentFloor < TRAINING_TRIAL_ROOMS) {
         sound.playSFX('victory');
         setWaveClearBanner({
@@ -11201,18 +14680,257 @@ export const CombatView: React.FC = () => {
 
       sound.playSFX('victory');
       launchConfetti();
+      // Si con esta prueba se cierra el capítulo, la expedición entrega un power-up.
+      const runClear = selectedCombatMissionId
+        ? clearGoldRunMission(selectedCombatMissionId)
+        : null;
+      if (runClear?.chapterCompleted && runClear.boon) {
+        setDndProcBanner({
+          text: `🏆 CAPÍTULO COMPLETADO — POWER-UP: ${runClear.boon.name.toUpperCase()}`,
+          color: '#f59e0b',
+          icon: '🏆',
+        });
+        window.setTimeout(() => setDndProcBanner(null), 5000);
+      }
       const tier = selectedCombatDifficulty;
-      const goldReward = tier === 1 ? 5000 : tier === 2 ? 12000 : 25000;
+      const midasN2Rewards: Record<string, { gold: number; crystals: number }> = {
+        midas_dungeon_n2_c1_kobolds_alados: { gold: 11000, crystals: 120 },
+        midas_dungeon_n2_c2_escudos_dragon: { gold: 13500, crystals: 160 },
+        midas_dungeon_n2_c3_dracos_guardianes: { gold: 16500, crystals: 200 },
+        midas_dungeon_n2_c4_semidragones_rojos: { gold: 21000, crystals: 260 },
+        midas_dungeon_n2_c5_horda_ignivrax: { gold: 26500, crystals: 350 },
+      };
+      const n2Reward = selectedCombatMissionId ? midasN2Rewards[selectedCombatMissionId] : undefined;
+      const goldLevelRoom = parseGoldRunLevelMissionId(selectedCombatMissionId);
+      const goldLevelSource = goldLevelRoom
+        ? goldRunLevelSourceMission(goldLevelRoom.chapter, goldLevelRoom.level)
+        : null;
+      const goldLevelDropSource = goldRunLevelDropMission(selectedCombatMissionId);
+      // Cada sala de la expedición paga una décima parte del botín de su tramo.
+      const midasLevelRewards: Record<string, { gold: number; crystals: number }> = {
+        midas_dungeon_easy_insectos: { gold: 650, crystals: 0 },
+        midas_dungeon_easy_aurumvorax: { gold: 950, crystals: 0 },
+        midas_dungeon_n2_c1_kobolds_alados: { gold: 1100, crystals: 12 },
+        midas_dungeon_n2_c2_escudos_dragon: { gold: 1350, crystals: 16 },
+        midas_dungeon_n2_c3_dracos_guardianes: { gold: 1650, crystals: 20 },
+        midas_dungeon_n2_c4_semidragones_rojos: { gold: 2100, crystals: 26 },
+        midas_dungeon_n2_c5_horda_ignivrax: { gold: 2650, crystals: 35 },
+      };
+      const levelReward = goldLevelSource ? midasLevelRewards[goldLevelSource] : undefined;
+      const goldReward =
+        levelReward
+          ? levelReward.gold
+          : n2Reward
+          ? n2Reward.gold
+          : selectedCombatMissionId === 'midas_dungeon_easy_aurumvorax'
+          ? 9500
+          : selectedCombatMissionId === 'midas_dungeon_easy_insectos'
+          ? 6500
+          : selectedCombatMissionId === 'midas_dungeon_easy'
+          ? 5000
+          : tier === 1
+          ? 5000
+          : tier === 2
+          ? 12000
+          : 25000;
       const xpReward = tier === 1
         ? { itemId: 'xp_potion_1', count: 2 }
         : tier === 2
         ? { itemId: 'xp_potion_3', count: 2 }
         : { itemId: 'xp_potion_5', count: 1 };
-      const isGoldTrial = selectedCombatMissionId === 'resource_trial_gold';
+      const isGoldTrial =
+        selectedCombatMissionId === 'resource_trial_gold' ||
+        selectedCombatMissionId === 'midas_dungeon_easy' ||
+        selectedCombatMissionId === 'midas_dungeon_easy_insectos' ||
+        selectedCombatMissionId === 'midas_dungeon_easy_aurumvorax' ||
+        Boolean(selectedCombatMissionId?.startsWith('midas_dungeon_n2_')) ||
+        Boolean(parseGoldRunLevelMissionId(selectedCombatMissionId));
       const gold = isGoldTrial ? goldReward : 0;
+      const crystalsReward = levelReward
+        ? levelReward.crystals
+        : n2Reward
+        ? n2Reward.crystals
+        : 0;
       if (gold > 0) addGold(gold);
+      if (crystalsReward > 0) addCrystals(crystalsReward);
       if (!isGoldTrial) addInventoryItem(xpReward.itemId, xpReward.count);
       // Si había botín pendiente de una expedición anterior, se conserva y se ingresa aparte.
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          priceGold: it.id === 'ing_carne_aurea' ? 260 : it.id === 'ing_bichos_tesoro' ? 190 : undefined,
+          description: it.description,
+        })
+      );
+      if (
+        selectedCombatMissionId === 'midas_dungeon_easy_insectos' ||
+        goldLevelDropSource === 'midas_dungeon_easy_insectos'
+      ) {
+        const bichoCount = 3;
+        addShelfItem({
+          id: `ing_bichos_tesoro_${Date.now()}`,
+          name: 'Bichos del Tesoro',
+          category: 'materials',
+          count: bichoCount,
+          icon: '/assets/items/ing_bichos_tesoro.webp',
+          rarity: 'SR',
+          priceGold: 190,
+          description: 'Bol de porcelana con un Insecto Joya, un Insecto Moneda y un Insecto Collar de Perlas dentro. Crujientes al salteado y muy preciados en cocina exótica.',
+        });
+        try {
+          const stock = loadTavernCookingStock();
+          stock['ing_bichos_tesoro'] = (stock['ing_bichos_tesoro'] || 0) + bichoCount;
+          saveTavernCookingStock(stock);
+        } catch (e) {
+          console.error('Failed to update tavern cooking stock:', e);
+        }
+      }
+      if (
+        selectedCombatMissionId === 'midas_dungeon_n2_c1_kobolds_alados' ||
+        selectedCombatMissionId === 'midas_dungeon_n2_c2_escudos_dragon' ||
+        goldLevelDropSource === 'midas_dungeon_n2_c1_kobolds_alados' ||
+        goldLevelDropSource === 'midas_dungeon_n2_c2_escudos_dragon'
+      ) {
+        const escamaCount =
+          selectedCombatMissionId === 'midas_dungeon_n2_c2_escudos_dragon' ||
+          goldLevelDropSource === 'midas_dungeon_n2_c2_escudos_dragon'
+            ? 3
+            : 2;
+        addShelfItem({
+          id: `escama_draconica_roja_${Date.now()}`,
+          name: 'Escama Dracónica Roja',
+          category: 'materials',
+          rarity: 'SR',
+          count: escamaCount,
+          icon: '/assets/portraits/kobold_escudo_rojo_thumb.webp',
+          priceGold: 2200,
+          description: 'Escamas carmesíes arrancadas a los escudos de los Kobolds de Dragón Rojo en el Nivel II de la Mazmorra de Midas.',
+        });
+      }
+      if (
+        selectedCombatMissionId === 'midas_dungeon_n2_c3_dracos_guardianes' ||
+        goldLevelDropSource === 'midas_dungeon_n2_c3_dracos_guardianes'
+      ) {
+        addShelfItem({
+          id: `escama_draco_guardian_${Date.now()}`,
+          name: 'Escama de Draco Guardián',
+          category: 'materials',
+          rarity: 'SSR',
+          count: 3,
+          icon: '/assets/portraits/draco_guardian_rojo_thumb.webp',
+          priceGold: 3400,
+          description: 'Gruesas placas escarlata resistentes al fuego obtenidas de los Dracos Guardianes Rojos.',
+        });
+      }
+      if (
+        selectedCombatMissionId === 'midas_dungeon_n2_c4_semidragones_rojos' ||
+        selectedCombatMissionId === 'midas_dungeon_n2_c5_horda_ignivrax' ||
+        goldLevelDropSource === 'midas_dungeon_n2_c4_semidragones_rojos' ||
+        goldLevelDropSource === 'midas_dungeon_n2_c5_horda_ignivrax'
+      ) {
+        const blasonCount =
+          selectedCombatMissionId === 'midas_dungeon_n2_c5_horda_ignivrax' ||
+          goldLevelDropSource === 'midas_dungeon_n2_c5_horda_ignivrax'
+            ? 3
+            : 2;
+        addShelfItem({
+          id: `blason_sangre_draconica_${Date.now()}`,
+          name: 'Blasón de Sangre Dracónica',
+          category: 'materials',
+          rarity: 'SSR',
+          count: blasonCount,
+          icon: '/assets/portraits/semidragon_rojo_veterano_thumb.webp',
+          priceGold: 5200,
+          description: 'Insignia de acero y fuego arrebatada a los Semidragones Rojos Veteranos de la escolta de Ignivrax.',
+        });
+      }
+      if (
+        selectedCombatMissionId === 'midas_dungeon_easy_aurumvorax' ||
+        goldLevelDropSource === 'midas_dungeon_easy_aurumvorax'
+      ) {
+        addShelfItem({
+          id: `ing_carne_aurea_${Date.now()}`,
+          name: 'Carne Áurea',
+          category: 'materials',
+          count: 3,
+          icon: '/assets/items/ing_carne_aurea.webp',
+          rarity: 'SSR',
+          priceGold: 260,
+          description: 'Corte veteado con filamentos de oro metálico obtenido de los Aurumvorax. Útil en cocina de monstruos, botica de pociones y venta en tienda.',
+        });
+        try {
+          const stock = loadTavernCookingStock();
+          stock['ing_carne_aurea'] = (stock['ing_carne_aurea'] || 0) + 3;
+          saveTavernCookingStock(stock);
+        } catch (e) {
+          console.error('Failed to update tavern cooking stock:', e);
+        }
+      }
+      if (selectedCombatMissionId) {
+        completeQuestMission(selectedCombatMissionId, computeMissionStars());
+      }
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold,
+        crystals: crystalsReward,
+        nextFloor: currentFloor,
+      });
+      if (selectedCombatMissionId === 'midas_dungeon_easy') {
+        setTimeout(() => {
+          setSelectedCombatMissionId('midas_dungeon_easy_epilogo');
+          navigateTo('story');
+        }, 1500);
+        return;
+      }
+      setSelectedCombatMissionId(null);
+      setTimeout(() => {
+        navigateTo('quest');
+      }, 1500);
+      return;
+    }
+
+    // Recompensas del Jefe: Devorador de Hierro (Mazmorra de Midas)
+    if (selectedCombatMissionId === 'midas_dungeon_boss_devorador') {
+      sound.playSFX('victory');
+      launchConfetti();
+      completeQuestMission('midas_dungeon_boss_devorador', computeMissionStars());
+      addGold(8000);
+      addCrystals(250);
+      addShelfItem({
+        id: `antena_aurea_devorador_${Date.now()}`,
+        name: 'Antena Áurea del Devorador de Hierro',
+        category: 'materials',
+        rarity: 'SSR',
+        count: 1,
+        icon: '/assets/portraits/devorador_hierro_thumb.webp',
+        priceGold: 8000,
+        description: 'Antena dorada vibrante extraída del Monstruo del Óxido que acechaba la bóveda inicial de Midas.',
+      });
+      addShelfItem({
+        id: `ing_carne_devorador_${Date.now()}`,
+        name: 'Carne de Devorador',
+        category: 'materials',
+        count: 3,
+        icon: '/assets/items/ing_carne_devorador.webp',
+        rarity: 'SSR',
+        priceGold: 240,
+        description: 'Carne densa y marmolada protegida por la coraza quitinosa del Devorador. Jugosa, potente y digna de un banquete colosal.',
+      });
+      try {
+        const stock = loadTavernCookingStock();
+        stock['ing_carne_devorador'] = (stock['ing_carne_devorador'] || 0) + 3;
+        saveTavernCookingStock(stock);
+      } catch (e) {
+        console.error('Failed to update tavern cooking stock:', e);
+      }
       if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
       if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
       accumulatedLoot.items.forEach((it) =>
@@ -11226,12 +14944,153 @@ export const CombatView: React.FC = () => {
           description: it.description,
         })
       );
-      completeQuestMission(selectedCombatMissionId, computeMissionStars());
       setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
       setWaveClearBanner({
         floor: currentFloor,
-        gold,
-        crystals: 0,
+        gold: 8000,
+        crystals: 250,
+        nextFloor: currentFloor,
+      });
+      setSelectedCombatMissionId(null);
+      setTimeout(() => {
+        navigateTo('quest');
+      }, 1500);
+      return;
+    }
+
+    // Recompensas del Jefe del Capítulo II: El Caballero de Escarcha (Mazmorra de Midas)
+    if (selectedCombatMissionId === 'midas_dungeon_boss_caballero') {
+      sound.playSFX('victory');
+      launchConfetti();
+      completeQuestMission('midas_dungeon_boss_caballero', computeMissionStars());
+      addGold(18000);
+      addCrystals(420);
+      addShelfItem({
+        id: `lanza_escarcha_eterna_${Date.now()}`,
+        name: 'Punta de la Lanza Eterna',
+        category: 'materials',
+        rarity: 'SSR',
+        count: 1,
+        icon: '/assets/portraits/caballero_escarcha_boss_thumb.webp',
+        priceGold: 18000,
+        description: 'Astilla de la lanza del Caballero de Escarcha, todavía cubierta de hielo que no se derrite.',
+      });
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          description: it.description,
+        })
+      );
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold: 18000,
+        crystals: 420,
+        nextFloor: currentFloor,
+      });
+      setSelectedCombatMissionId(null);
+      setTimeout(() => {
+        navigateTo('quest');
+      }, 1500);
+      return;
+    }
+
+    // Recompensas del Jefe: El Mímico de la Bóveda (Mazmorra de Midas)
+    if (selectedCombatMissionId === 'midas_dungeon_boss_mimico') {
+      sound.playSFX('victory');
+      launchConfetti();
+      completeQuestMission('midas_dungeon_boss_mimico', computeMissionStars());
+      addGold(12000);
+      addCrystals(350);
+      addShelfItem({
+        id: `cofre_maldito_mimico_${Date.now()}`,
+        name: 'Cofre Maldito',
+        category: 'materials',
+        rarity: 'SSR',
+        count: 1,
+        icon: '/assets/combat/mimico_cofre_normal.webp',
+        priceGold: 12000,
+        description: 'Cofre dorado sellado tras noquear y derrotar al Mímico de la Bóveda de Midas. Aún palpita con codicia contenida.',
+      });
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          description: it.description,
+        })
+      );
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold: 12000,
+        crystals: 350,
+        nextFloor: currentFloor,
+      });
+      setSelectedCombatMissionId(null);
+      setTimeout(() => {
+        navigateTo('quest');
+      }, 1500);
+      return;
+    }
+
+    // Recompensas del Jefe Final Nivel II: Ignivrax, El Tirano Carmesí (Mazmorra de Midas)
+    if (selectedCombatMissionId === 'midas_dungeon_boss_ignivrax') {
+      sound.playSFX('victory');
+      launchConfetti();
+      completeQuestMission('midas_dungeon_boss_ignivrax', computeMissionStars());
+      addGold(35000);
+      addCrystals(600);
+      addShelfItem({
+        id: `corazon_igneo_ignivrax_${Date.now()}`,
+        name: 'Corazón Ígneo de Ignivrax',
+        category: 'materials',
+        rarity: 'UR',
+        count: 1,
+        icon: '/assets/portraits/ignivrax_boss_thumb.webp',
+        priceGold: 28000,
+        description: 'Núcleo ardiente arrancado al dragón rojo que custodiaba el final del Nivel II de la Mazmorra de Midas.',
+      });
+      addShelfItem({
+        id: `escamas_carmesies_ignivrax_${Date.now()}`,
+        name: 'Escamas Carmesíes de Ignivrax',
+        category: 'materials',
+        rarity: 'SSR',
+        count: 3,
+        icon: '/assets/portraits/ignivrax_boss_thumb.webp',
+        priceGold: 9500,
+        description: 'Escamas dracónicas forjadas con magma vivo y vetas de obsidiana recogidas tras derrotar a Ignivrax.',
+      });
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          description: it.description,
+        })
+      );
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold: 35000,
+        crystals: 600,
         nextFloor: currentFloor,
       });
       setSelectedCombatMissionId(null);
@@ -11466,8 +15325,47 @@ export const CombatView: React.FC = () => {
       }
     }
 
+    // Manto de Brasas de Ignivrax: si termina el turno del jugador sin recibir daño estando activo, se regenera con fuego
+    if (workingEnemy.configId === 'ignivrax_boss') {
+      const hasEmberShroud = workingEnemy.conditions.some((c) => c.type === 'frost_mist');
+      const tookDamage = ignivraxTookDamageThisTurnRef.current;
+      ignivraxTookDamageThisTurnRef.current = false;
+
+      if (hasEmberShroud && !tookDamage && workingEnemy.hp > 0 && workingEnemy.hp < workingEnemy.maxHp) {
+        const emberHeal = Math.max(24, Math.round(workingEnemy.maxHp * 0.08));
+        const healedHp = Math.min(workingEnemy.maxHp, workingEnemy.hp + emberHeal);
+        workingEnemy = { ...workingEnemy, hp: healedHp };
+        activeEnemiesRef.current = activeEnemiesRef.current.map((e) =>
+          e.uid === workingEnemy.uid ? { ...e, hp: healedHp } : e
+        );
+        setActiveEnemies((prev) =>
+          prev.map((e) => (e.uid === workingEnemy.uid ? { ...e, hp: healedHp } : e))
+        );
+        const ignivraxSlot = activeEnemiesRef.current.findIndex((e) => e.uid === workingEnemy.uid);
+        sound.playSFX('powerup');
+        spawnFloating(
+          `+${emberHeal}`,
+          true,
+          true,
+          2,
+          false,
+          ignivraxSlot >= 0 ? ignivraxSlot : undefined,
+          'fire',
+          '🔥 MANTO DE BRASAS',
+          '#fb923c'
+        );
+        queueStatusNotification({
+          icon: '🔥',
+          title: 'Regeneración en Manto de Brasas',
+          detail: `Ignivrax no recibió ataques este turno y absorbe el calor de las brasas (+${emberHeal} PV).`,
+          target: 'enemy',
+          isBuff: true,
+        });
+      }
+    }
+
     // Capullo de Ceniza de la Araña Acorazada: si termina el turno del jugador sin recibir daño, se regenera entre brasas
-    if (workingEnemy.configId === 'arana_acorazada_boss') {
+    if (isAranaBossConfigId(workingEnemy.configId)) {
       const hasAshShroud = workingEnemy.conditions.some((c) => c.type === 'frost_mist');
       const tookDamage = aranaTookDamageThisTurnRef.current;
       aranaTookDamageThisTurnRef.current = false;
@@ -11526,6 +15424,12 @@ export const CombatView: React.FC = () => {
       return;
     }
 
+    // Si El Mímico llega a actuar (no está congelado ni aturdido), sale de su forma de cofre normal
+    if (workingEnemy.configId === 'mimico_boss' && mimicoChestGraceRef.current) {
+      mimicoChestGraceRef.current = false;
+      setMimicoChestGrace(false);
+    }
+
     // Check Charmed (Velada Encantadora de Roxanne: el enemigo se ataca a sí mismo)
     const charmEffect = actingEnemy.conditions.find((c) => c.type === 'charmed');
     if (charmEffect) {
@@ -11538,7 +15442,8 @@ export const CombatView: React.FC = () => {
         ? rawDamage
         : Math.max(25, Math.round(actingEnemy.maxHp * 0.15));
       const extraDmgPercent = ((charmEffect.tier ?? 1) >= 2) ? 0.10 : 0;
-      const selfDmg = Math.max(16, Math.round(baseAtk * (1 + extraDmgPercent)));
+      const baseSelfDmg = Math.max(16, Math.round(baseAtk * (1 + extraDmgPercent)));
+      const selfDmg = isMimicKnockedOut(actingEnemy) ? Math.round(baseSelfDmg * 2) : baseSelfDmg;
 
       setActiveEnemies((prev) =>
         prev.map((e) =>
@@ -11590,7 +15495,8 @@ export const CombatView: React.FC = () => {
     const isConfused = actingEnemy.conditions.some((c) => c.type === 'confused');
     if (isConfused && Math.random() < 0.35) {
       sound.playSFX('hurt');
-      const selfDmg = Math.max(10, Math.round(actingEnemy.maxHp * 0.12));
+      const baseSelfDmg = Math.max(10, Math.round(actingEnemy.maxHp * 0.12));
+      const selfDmg = isMimicKnockedOut(actingEnemy) ? Math.round(baseSelfDmg * 2) : baseSelfDmg;
       setActiveEnemies((prev) =>
         prev.map((e) =>
           e.uid === actingEnemy.uid
@@ -11753,10 +15659,135 @@ export const CombatView: React.FC = () => {
     const hobPhaseData = HOBGOBLIN_SKILLS_BY_PHASE[currentHobPhase];
 
     const isDevoradorP2 = workingEnemy.configId === 'devorador_quitinoso_p2';
+    const isDevoradorHierro = workingEnemy.configId === 'devorador_hierro';
     const isElementalAire = workingEnemy.configId === 'elemental_aire';
     const isBulezau = workingEnemy.configId === 'bulezau';
     const isCryovain = workingEnemy.configId === 'cryovain_boss';
-    const isArana = workingEnemy.configId === 'arana_acorazada_boss';
+    const isIgnivrax = workingEnemy.configId === 'ignivrax_boss';
+    const isArana = isAranaBossConfigId(workingEnemy.configId);
+    const isMimico = workingEnemy.configId === 'mimico_boss';
+
+    let mimicoAction: 'zarpazo' | 'mordisco' | 'rugido' = 'zarpazo';
+    if (isMimico) {
+      const mimicoTurnIdx = mimicoTurnCountRef.current;
+      if (isUlt || mimicoTurnIdx % 3 === 2) {
+        mimicoAction = 'rugido';
+      } else if (mimicoTurnIdx % 3 === 1) {
+        mimicoAction = 'mordisco';
+      } else {
+        mimicoAction = 'zarpazo';
+      }
+      mimicoTurnCountRef.current += 1;
+    }
+
+    // Lógica táctica del Jefe: Devorador de Hierro (Fases 1/2, Depredador de metal y Corrosión 0-5)
+    let devoradorAction: 'mordisco' | 'antenas' | 'banquete' | 'corrosion_profunda' = 'mordisco';
+    const heroCorrosionBeforeTurn = corrosionStacksByHeroRef.current[activeCombatHeroId] ?? 0;
+    const isDevoradorHierroPhase2 =
+      isDevoradorHierro &&
+      (workingEnemy.hp <= workingEnemy.maxHp * 0.5 || devoradorPhaseRef.current === 2);
+
+    if (isDevoradorHierro) {
+      if (isDevoradorHierroPhase2 && devoradorPhaseRef.current === 1) {
+        devoradorPhaseRef.current = 2;
+        setDevoradorHierroPhase(2);
+      }
+      devoradorAntenasCdRef.current = Math.max(0, devoradorAntenasCdRef.current - 1);
+      devoradorBanqueteCdRef.current = Math.max(0, devoradorBanqueteCdRef.current - 1);
+
+      const hasNegativeOnBoss = workingEnemy.conditions.some((c) => !c.isBuff);
+      const normHeroId = normalizeCombatHeroId(activeCombatHeroId);
+      const isTankHero = normHeroId === 'pepe_loux' || normHeroId === 'raxxar' || normHeroId === 'barled';
+      const heroHasDefBuff =
+        heroConditionsRef.current.some((c) => c.type === 'def_buff') ||
+        foodShieldHp > 0 ||
+        (activeFoodBuff?.defMultiplier !== undefined && activeFoodBuff.defMultiplier < 1);
+      const heroHasDefBreak = heroConditionsRef.current.some((c) => c.type === 'def_break');
+      const heroHasHighDef = (heroHasDefBuff || isTankHero) && !heroHasDefBreak && heroCorrosionBeforeTurn < 3;
+      const heroHasLowDef = heroHasDefBreak || heroCorrosionBeforeTurn >= 3 || (!heroHasDefBuff && !isTankHero);
+
+      const hpRatio = workingEnemy.hp / Math.max(1, workingEnemy.maxHp);
+      const shouldFeast =
+        devoradorBanqueteCdRef.current <= 0 &&
+        workingEnemy.hp < workingEnemy.maxHp &&
+        ((hasNegativeOnBoss && hpRatio <= 0.88) || hpRatio <= (isDevoradorHierroPhase2 ? 0.58 : 0.65));
+
+      if (isDevoradorHierroPhase2 && heroCorrosionBeforeTurn >= 5) {
+        // Corrosión profunda: consume las 5 acumulaciones en Fase 2
+        devoradorAction = 'corrosion_profunda';
+      } else if (shouldFeast) {
+        // Banquete metálico: cura vida, limpia efectos negativos y NO aplica óxido
+        devoradorAction = 'banquete';
+      } else if (
+        devoradorAntenasCdRef.current <= 0 &&
+        (heroHasHighDef || (isDevoradorHierroPhase2 && Math.random() < 0.72) || (!heroHasLowDef && Math.random() < 0.45))
+      ) {
+        // Depredador de metal: ante defensa elevada prioriza Antenas corrosivas (y en Fase 2 aumenta su frecuencia)
+        devoradorAction = 'antenas';
+        devoradorAntenasCdRef.current = isDevoradorHierroPhase2 ? 1 : 2;
+      } else {
+        // Depredador de metal: ante poca defensa prioriza Mordisco triturador
+        devoradorAction = 'mordisco';
+      }
+
+      if (devoradorAction === 'banquete') {
+        devoradorBanqueteCdRef.current = isDevoradorHierroPhase2 ? 4 : 3;
+        setDevoradorHierroAttackPose('banquete');
+        const healAmount = Math.max(
+          18,
+          Math.round(workingEnemy.maxHp * (isDevoradorHierroPhase2 ? 0.14 : 0.08))
+        );
+        const healedHp = Math.min(workingEnemy.maxHp, workingEnemy.hp + healAmount);
+        const applyBanquete = (e: ChamberEnemyState): ChamberEnemyState =>
+          e.uid === workingEnemy.uid
+            ? {
+                ...e,
+                hp: healedHp,
+                conditions: e.conditions.filter((c) => c.isBuff),
+                animation: 'idle',
+              }
+            : e;
+        activeEnemiesRef.current = activeEnemiesRef.current.map(applyBanquete);
+        setActiveEnemies((prev) => prev.map(applyBanquete));
+
+        const slotIdx = activeEnemiesRef.current.findIndex((e) => e.uid === workingEnemy.uid);
+        sound.playSFX('powerup');
+        setScreenFlash('gold');
+        setTimeout(() => setScreenFlash(null), 260);
+        spawnFloating(
+          `+${healAmount}`,
+          true,
+          true,
+          2,
+          false,
+          slotIdx >= 0 ? slotIdx : undefined,
+          'radiant',
+          '🔩 BANQUETE METÁLICO',
+          '#fbbf24'
+        );
+        setDndProcBanner({
+          text: '🔩 BANQUETE METÁLICO — ¡RESTAURA VIDA Y PURIFICA ESTADOS NEGATIVOS!',
+          color: '#fbbf24',
+          icon: '🔩',
+        });
+        setTimeout(() => setDndProcBanner(null), 2600);
+        queueStatusNotification({
+          icon: '🔩',
+          title: 'Banquete Metálico',
+          detail: `El Devorador de Hierro absorbe restos metálicos (+${healAmount} PV), elimina sus estados negativos y no aplica óxido este turno.`,
+          target: 'enemy',
+          isBuff: true,
+        });
+        setTimeout(() => {
+          setDevoradorHierroAttackPose('idle');
+          setActiveEnemies((prev) =>
+            prev.map((e) => (e.uid === workingEnemy.uid ? { ...e, animation: 'idle' } : e))
+          );
+          finalizeEnemyPhase();
+        }, 850);
+        return;
+      }
+    }
 
     // Flujo dinámico de Cryovain:
     // Primeros 4 turnos garantiza Zarpazo -> Mordisco -> Pisotón doble -> Aliento de Hielo
@@ -11806,10 +15837,71 @@ export const CombatView: React.FC = () => {
       cryoTurnCountRef.current += 1;
     }
 
-    // Flujo dinámico de la Araña Acorazada (misma arquitectura multi-fase que Cryovain):
-    // Turnos 0..3: Barrido de Piernas -> Telaraña de Escupir -> Escupir Bola de Fuego -> Aliento de Fuego Incandescente.
-    // Mitad de PV: Chirrido Acorazado (+Def/+Atk). Baja PV (<=25%): Capullo de Ceniza y Brasa.
-    let aranaAction: 'barrido' | 'telarana' | 'bola_fuego' | 'aliento' | 'chirrido' | 'ceniza' = 'barrido';
+    // Flujo dinámico aéreo y terrestre de Ignivrax, El Tirano Carmesí:
+    // - Turno 1 (aéreo): Suspendido en el aire, alza ambos brazos y lanza Bolas de Fuego.
+    // - Turno 2 (descenso): Planea en picado y cae aplastando la sala creando un Cráter en el suelo (queda en tierra).
+    // - Turno 3 (en tierra): Zarpazo Ígneo + Mordisco Incandescente, luego remonta el vuelo.
+    // - Aliento de Fuego Infernal (recargable / Ulti): Cono de llamas desde el aire o tierra (mitad de daño por reflejos).
+    // - Mitad de PV: Rugido Volcánico (+Escamas / +Furia). <=25% PV: Manto de Brasas.
+    let ignivraxAction: 'bolas_fuego' | 'planeo_crater' | 'combo_suelo' | 'aliento' | 'rugido' | 'brasas' = 'bolas_fuego';
+    if (isIgnivrax) {
+      const hpRatio = workingEnemy.hp / Math.max(1, workingEnemy.maxHp);
+      const hasEmberShroud = workingEnemy.conditions.some((c) => c.type === 'frost_mist');
+      const hasRoarBuffs =
+        workingEnemy.conditions.some((c) => c.type === 'def_buff') ||
+        workingEnemy.conditions.some((c) => c.type === 'atk_buff');
+      const ignivraxTurnIdx = ignivraxTurnCountRef.current;
+
+      if (!ignivraxBreathChargedRef.current) {
+        ignivraxBreathCooldownTurnsRef.current += 1;
+        if (isUlt || ignivraxBreathCooldownTurnsRef.current >= 3 || Math.random() < 0.35) {
+          ignivraxBreathChargedRef.current = true;
+          ignivraxBreathCooldownTurnsRef.current = 0;
+          queueStatusNotification({
+            icon: '🔥',
+            title: 'Aliento Infernal Recargado',
+            detail: 'La garganta de Ignivrax vuelve a arder con magma listo para exhalar.',
+            target: 'enemy',
+            isBuff: true,
+          });
+        }
+      }
+
+      if (!ignivraxHasEmberShroudRef.current && hpRatio <= 0.25) {
+        ignivraxAction = 'brasas';
+        ignivraxHasEmberShroudRef.current = true;
+      } else if (!ignivraxHasRoaredRef.current && (hpRatio <= 0.55 || ignivraxTurnIdx === 4)) {
+        ignivraxAction = 'rugido';
+        ignivraxHasRoaredRef.current = true;
+      } else if (ignivraxTurnIdx === 0) {
+        ignivraxAction = isUlt ? 'aliento' : 'bolas_fuego';
+      } else if (ignivraxTurnIdx === 1) {
+        ignivraxAction = 'planeo_crater';
+      } else if (ignivraxTurnIdx === 2) {
+        ignivraxAction = 'combo_suelo';
+      } else if (ignivraxBreathChargedRef.current && (isUlt || ignivraxTurnIdx % 3 === 0)) {
+        ignivraxAction = 'aliento';
+      } else if (!hasEmberShroud && hpRatio <= 0.25 && ignivraxStageTurnsRef.current >= 4 && ignivraxStageTurnsRef.current % 4 === 0) {
+        ignivraxAction = 'brasas';
+        ignivraxStageTurnsRef.current += 1;
+      } else if (!hasRoarBuffs && hpRatio <= 0.3 && ignivraxStageTurnsRef.current % 5 === 3) {
+        ignivraxAction = 'rugido';
+        ignivraxStageTurnsRef.current += 1;
+      } else if (ignivraxVerticalPhaseRef.current === 'grounded') {
+        ignivraxAction = 'combo_suelo';
+        ignivraxStageTurnsRef.current += 1;
+      } else {
+        ignivraxAction = ignivraxStageTurnsRef.current % 2 === 0 ? 'planeo_crater' : 'bolas_fuego';
+        ignivraxStageTurnsRef.current += 1;
+      }
+      ignivraxTurnCountRef.current += 1;
+    }
+
+    // Flujo dinámico de la Araña Acorazada:
+    // - Multiataque: 2 golpes de Barrido de Piernas + 1 ataque de Telaraña de Escupir o Escupir Bola de Fuego.
+    // - Aliento de Fuego (con recarga): cono ígneo que se recarga tras unos turnos; héroes ágiles/protegidos reducen daño a la mitad.
+    // - Mitad de PV: Chirrido Acorazado (+Def/+Atk). <= 25% PV: Capullo de Ceniza + Telarañas en Llamas.
+    let aranaAction: 'multiataque' | 'aliento' | 'chirrido' | 'ceniza' = 'multiataque';
     if (isArana) {
       const hpRatio = workingEnemy.hp / Math.max(1, workingEnemy.maxHp);
       const hasAshShroud = workingEnemy.conditions.some((c) => c.type === 'frost_mist');
@@ -11818,20 +15910,30 @@ export const CombatView: React.FC = () => {
         workingEnemy.conditions.some((c) => c.type === 'atk_buff');
       const aranaTurnIdx = aranaTurnCountRef.current;
 
+      // Recarga del Aliento de Fuego en turnos posteriores tras haberlo usado
+      if (!aranaBreathChargedRef.current) {
+        aranaBreathCooldownTurnsRef.current += 1;
+        if (isUlt || aranaBreathCooldownTurnsRef.current >= 3 || Math.random() < 0.34) {
+          aranaBreathChargedRef.current = true;
+          aranaBreathCooldownTurnsRef.current = 0;
+          queueStatusNotification({
+            icon: '🔥',
+            title: 'Aliento de Fuego Recargado',
+            detail: 'Las fauces incandescentes de la Araña Acorazada vuelven a brillar listas para exhalar.',
+            target: 'enemy',
+            isBuff: true,
+          });
+        }
+      }
+
       if (!aranaHasCenizaRef.current && hpRatio <= 0.25) {
         aranaAction = 'ceniza';
         aranaHasCenizaRef.current = true;
-      } else if (aranaTurnIdx < 4) {
-        const openingSeq: Array<'barrido' | 'telarana' | 'bola_fuego' | 'aliento'> = [
-          'barrido',
-          'telarana',
-          'bola_fuego',
-          'aliento',
-        ];
-        aranaAction = isUlt ? 'aliento' : openingSeq[aranaTurnIdx];
-      } else if (!aranaHasRoaredRef.current && (hpRatio <= 0.6 || aranaTurnIdx === 4)) {
+      } else if (!aranaHasRoaredRef.current && (hpRatio <= 0.55 || aranaTurnIdx === 3)) {
         aranaAction = 'chirrido';
         aranaHasRoaredRef.current = true;
+      } else if (aranaBreathChargedRef.current && (isUlt || (aranaTurnIdx >= 2 && aranaTurnIdx % 2 === 0))) {
+        aranaAction = 'aliento';
       } else if (!hasAshShroud && hpRatio <= 0.25 && aranaStageTurnsRef.current >= 4 && aranaStageTurnsRef.current % 4 === 0) {
         aranaAction = 'ceniza';
         aranaStageTurnsRef.current += 1;
@@ -11839,13 +15941,7 @@ export const CombatView: React.FC = () => {
         aranaAction = 'chirrido';
         aranaStageTurnsRef.current += 1;
       } else {
-        const seqLoop: Array<'bola_fuego' | 'aliento' | 'telarana' | 'barrido'> = [
-          'bola_fuego',
-          'aliento',
-          'telarana',
-          'barrido',
-        ];
-        aranaAction = isUlt ? 'aliento' : seqLoop[aranaStageTurnsRef.current % seqLoop.length];
+        aranaAction = 'multiataque';
         aranaStageTurnsRef.current += 1;
       }
       aranaTurnCountRef.current += 1;
@@ -11938,15 +16034,537 @@ export const CombatView: React.FC = () => {
       return;
     }
 
-    // Acciones cinematográficas sin impacto directo de la Araña Acorazada: cae girando desde el techo, desata Chirrido / Capullo y vuelve a trepar
+    // Secuencia completa aérea y terrestre de Ignivrax, El Tirano Carmesí (siguiendo el sistema de la Araña Acorazada)
+    if (isIgnivrax) {
+      const dmgMult = currentFloor <= 10 ? 1 : 1 + (currentFloor - 10) * 0.06;
+      const computeIgnivraxScaledDamage = (minBase: number, maxBase: number, halfOnSave = false): number => {
+        const rolledBase = minBase + Math.floor(Math.random() * (maxBase - minBase + 1));
+        let dmg = Math.round(rolledBase * dmgMult * ENEMY_DAMAGE_SCALE);
+
+        const enemyAtkDown = workingEnemy.conditions.find((c) => c.type === 'atk_down' || c.type === 'frightened');
+        if (enemyAtkDown) {
+          const atkDownFactor = enemyAtkDown.stacks >= 3 ? 0.65 : enemyAtkDown.stacks === 2 ? 0.72 : 0.8;
+          dmg = Math.max(1, Math.round(dmg * atkDownFactor));
+        }
+        const enemyAtkBuff = workingEnemy.conditions.find((c) => c.type === 'atk_buff');
+        if (enemyAtkBuff) {
+          const atkUpFactor = enemyAtkBuff.stacks >= 3 ? 1.5 : enemyAtkBuff.stacks === 2 ? 1.35 : 1.2;
+          dmg = Math.max(1, Math.round(dmg * atkUpFactor));
+        }
+
+        const heroDefBuff = heroConditions.find((c) => c.type === 'def_buff');
+        if (heroDefBuff) {
+          const reductionPct = heroDefBuff.stacks >= 3 ? 0.90 : heroDefBuff.stacks === 2 ? 0.80 : 0.75;
+          dmg = Math.max(1, Math.round(dmg * (1 - reductionPct)));
+        }
+        const heroDefBreak = heroConditions.find((c) => c.type === 'def_break');
+        if (heroDefBreak) dmg = Math.round(dmg * 1.4);
+        if (activeFoodBuff?.defMultiplier) {
+          dmg = Math.max(1, Math.round(dmg * activeFoodBuff.defMultiplier));
+        }
+        if (halfOnSave) {
+          dmg = Math.max(1, Math.round(dmg * 0.5));
+        }
+        return dmg;
+      };
+
+      const applyIgnivraxHitToHero = (
+        rawDmg: number,
+        hitType: DndDamageType,
+        floatingLabel?: string,
+        floatingColor?: string
+      ): boolean => {
+        if ((isSmurphCombat && isSmurphAirborne) || (isEdacornCombat && isEdacornStealthed)) {
+          return false;
+        }
+        let dmg = rawDmg;
+        if (foodShieldHp > 0) {
+          if (foodShieldHp >= dmg) {
+            setFoodShieldHp((prev) => prev - dmg);
+            dmg = 0;
+          } else {
+            dmg -= foodShieldHp;
+            setFoodShieldHp(0);
+          }
+        }
+        heroHpRef.current = Math.max(0, heroHpRef.current - dmg);
+        setHeroHp(heroHpRef.current);
+        triggerHeroHitReaction(hitType);
+        sound.playSFX('hurt');
+        setScreenShake(hitType === 'fire' ? 'heavy' : 'medium');
+        const tStop = window.setTimeout(() => setScreenShake('none'), 220);
+        ignivraxTimersRef.current.push(tStop);
+        spawnFloating(`-${dmg}`, false, false, 1, false, undefined, hitType, floatingLabel, floatingColor);
+        return heroHpRef.current <= 0;
+      };
+
+      const checkIgnivraxTotalEvasion = (): boolean => {
+        if (isSmurphCombat && isSmurphAirborne) {
+          queueStatusNotification({
+            icon: '🦅',
+            title: '¡Esquivado en Pleno Vuelo!',
+            detail: `¡Smurph Draco vuela sobre las nubes! El ataque de ${actingEnemy.name} falla por completo.`,
+            target: 'hero',
+            isBuff: true,
+          });
+          return true;
+        }
+        if (isEdacornCombat && isEdacornStealthed) {
+          queueStatusNotification({
+            icon: '👻',
+            title: '¡Esquivado en Sigilo!',
+            detail: `Edacorn es intangible. ¡El ataque de ${actingEnemy.name} pasa de largo!`,
+            target: 'hero',
+            isBuff: true,
+          });
+          setIsEdacornStealthed(false);
+          return true;
+        }
+        if (activeFoodBuff?.evadeNextHit) {
+          queueStatusNotification({
+            icon: '🍳',
+            title: '¡Evasión Absoluta!',
+            detail: 'Tortilla de Patatas: Ataque rival esquivado con éxito',
+            target: 'hero',
+            isBuff: true,
+          });
+          sound.playSFX('miss');
+          setActiveFoodBuff((prev) => (prev ? { ...prev, evadeNextHit: false } : null));
+          return true;
+        }
+        return false;
+      };
+
+      const finishIgnivraxTurn = (
+        consumedUlt: boolean,
+        endPhase: 'flying' | 'grounded' | 'takeoff'
+      ) => {
+        setIgnivraxMouthClosed(false);
+        setIgnivraxAttackPose('idle');
+        setActiveEnemyAttackVisual(null);
+        setActiveEnemies((prev) =>
+          prev.map((e) =>
+            e.uid === actingEnemy.uid
+              ? {
+                  ...e,
+                  animation: 'idle',
+                  ultimateOrbs: consumedUlt ? 0 : Math.min(5, e.ultimateOrbs + 1),
+                }
+              : e
+          )
+        );
+        activeEnemiesRef.current = activeEnemiesRef.current.map((e) =>
+          e.uid === actingEnemy.uid
+            ? {
+                ...e,
+                animation: 'idle',
+                ultimateOrbs: consumedUlt ? 0 : Math.min(5, e.ultimateOrbs + 1),
+              }
+            : e
+        );
+
+        if (heroHpRef.current <= 0) {
+          setIgnivraxCameraMode('idle');
+          setIsHeroAshDissolving(true);
+          setHeroAnimation('dead');
+          sound.playSFX('necrotic');
+          const tDefeat = window.setTimeout(() => {
+            setIsHeroAshDissolving(false);
+            setHeroAnimation('idle');
+            runDeathsRef.current += 1;
+            setBattleState('defeat');
+            sound.playSFX('defeat');
+          }, 2200);
+          ignivraxTimersRef.current.push(tDefeat);
+          return;
+        }
+
+        if (endPhase === 'takeoff') {
+          const tTakeoff = window.setTimeout(() => {
+            setIgnivraxVerticalPhase('taking_off');
+            sound.playSFX('arana_climb', { rate: 0.92 });
+            const tArriveAir = window.setTimeout(() => {
+              setIgnivraxVerticalPhase('flying');
+              setIgnivraxCameraMode('idle');
+            }, 380);
+            ignivraxTimersRef.current.push(tArriveAir);
+          }, 120);
+          ignivraxTimersRef.current.push(tTakeoff);
+          const tFinalize = window.setTimeout(finalizeEnemyPhase, 560);
+          ignivraxTimersRef.current.push(tFinalize);
+        } else {
+          setIgnivraxVerticalPhase(endPhase);
+          setIgnivraxCameraMode('idle');
+          const tFinalize = window.setTimeout(finalizeEnemyPhase, 340);
+          ignivraxTimersRef.current.push(tFinalize);
+        }
+      };
+
+      // 1. Rugido Volcánico o Manto de Brasas
+      if (ignivraxAction === 'rugido' || ignivraxAction === 'brasas') {
+        const currentPhase = ignivraxVerticalPhaseRef.current === 'grounded' ? 'grounded' : 'flying';
+        setIgnivraxCameraMode('boss_focus');
+        setIgnivraxMouthClosed(true);
+        setIgnivraxAttackPose('idle');
+
+        const tOpenRoarJaw = window.setTimeout(() => {
+          setIgnivraxMouthClosed(false);
+          setIgnivraxAttackPose(ignivraxAction);
+        }, 120);
+        ignivraxTimersRef.current.push(tOpenRoarJaw);
+
+        if (ignivraxAction === 'rugido') {
+          setIsIgnivraxRoaring(true);
+          setScreenShake('heavy');
+          sound.playSFX('roar');
+          sound.playSFX('powerup');
+
+          const applyIgnivraxRoarBuffs = (e: ChamberEnemyState): ChamberEnemyState => {
+            if (e.uid !== workingEnemy.uid) return e;
+            let conds = stackGachaEffect(e.conditions, 'def_buff', 5, 2, 2, 'Escamas de Obsidiana').updatedEffects;
+            conds = stackGachaEffect(conds, 'atk_buff', 5, 2, 2, 'Furia Carmesí').updatedEffects;
+            return {
+              ...e,
+              animation: 'idle',
+              conditions: conds,
+              ultimateOrbs: Math.min(5, e.ultimateOrbs + 1),
+            };
+          };
+          activeEnemiesRef.current = activeEnemiesRef.current.map(applyIgnivraxRoarBuffs);
+          setActiveEnemies((prev) => prev.map(applyIgnivraxRoarBuffs));
+        } else {
+          setScreenFlash('red');
+          sound.playSFX('arana_breath');
+          ignivraxTookDamageThisTurnRef.current = false;
+
+          setActiveEnemyAttackVisual({
+            enemyConfigId: 'ignivrax_boss',
+            skillName: 'Manto de Brasas Ardientes',
+            dndDamageType: 'fire',
+            vfxType: 'crimson_claw',
+            themeColor: '#fb923c',
+            isUlt: false,
+            isSpecial: false,
+            vfxKey: Date.now(),
+          });
+
+          const applyEmberShroud = (e: ChamberEnemyState): ChamberEnemyState => {
+            if (e.uid !== workingEnemy.uid) return e;
+            const conds = stackGachaEffect(
+              e.conditions,
+              'frost_mist',
+              5,
+              1,
+              4,
+              'Manto de Brasas'
+            ).updatedEffects;
+            return {
+              ...e,
+              animation: 'idle',
+              conditions: conds,
+              ultimateOrbs: Math.min(5, e.ultimateOrbs + 1),
+            };
+          };
+          activeEnemiesRef.current = activeEnemiesRef.current.map(applyEmberShroud);
+          setActiveEnemies((prev) => prev.map(applyEmberShroud));
+
+          queueStatusNotification({
+            icon: '🔥',
+            title: '¡Manto de Brasas Ardientes!',
+            detail: 'Ignivrax envuelve la sala del tesoro en ascuas vivas. ¡Atácale en tu turno o regenerará vida!',
+            target: 'enemy',
+            isBuff: true,
+          });
+        }
+
+        const tClearFlash = window.setTimeout(() => setScreenFlash(null), 280);
+        const tStopShake = window.setTimeout(() => setScreenShake('none'), 520);
+        const tEndZoom = window.setTimeout(() => {
+          setIgnivraxCameraMode('idle');
+          setIsIgnivraxRoaring(false);
+          setIgnivraxMouthClosed(false);
+          setIgnivraxAttackPose('idle');
+          setIgnivraxVerticalPhase(currentPhase);
+          if (ignivraxAction === 'brasas') {
+            setActiveEnemyAttackVisual(null);
+          }
+          setActiveEnemies((prev) =>
+            prev.map((e) => (e.uid === workingEnemy.uid ? { ...e, animation: 'idle' } : e))
+          );
+          finalizeEnemyPhase();
+        }, ignivraxAction === 'brasas' ? 1380 : 1150);
+        ignivraxTimersRef.current.push(tClearFlash, tStopShake, tEndZoom);
+        return;
+      }
+
+      // 2. Bolas de Fuego desde el aire levantando ambos brazos
+      if (ignivraxAction === 'bolas_fuego') {
+        setIgnivraxCameraMode('boss_focus');
+        setIgnivraxVerticalPhase('flying');
+        setIgnivraxMouthClosed(true);
+        setIgnivraxAttackPose('idle');
+
+        const tRaiseArms = window.setTimeout(() => {
+          setIgnivraxMouthClosed(false);
+          setIgnivraxAttackPose('bolas_fuego');
+          sound.playSFX('roar', { rate: 1.08 });
+        }, 110);
+
+        const tCastVfx = window.setTimeout(() => {
+          setActiveEnemyAttackVisual({
+            enemyConfigId: 'ignivrax_boss',
+            skillName: 'Bolas de Fuego',
+            dndDamageType: 'fire',
+            vfxType: 'crimson_claw',
+            themeColor: '#f97316',
+            isUlt: false,
+            isSpecial: true,
+            vfxKey: Date.now(),
+          });
+          sound.playSFX('arana_fireball');
+        }, 280);
+
+        const tImpact = window.setTimeout(() => {
+          if (checkIgnivraxTotalEvasion()) {
+            finishIgnivraxTurn(false, 'flying');
+            return;
+          }
+          const fireDmg = computeIgnivraxScaledDamage(26, 36);
+          const died = applyIgnivraxHitToHero(fireDmg, 'fire', '🔥 BOLAS DE FUEGO', '#f97316');
+          if (!died) {
+            setHeroConditions((prev) =>
+              stackGachaEffect(prev, 'burn', 2, 1, 2, 'Bolas de Fuego').updatedEffects
+            );
+            setHeroStatusTrigger((prev) => prev + 1);
+          }
+          finishIgnivraxTurn(false, 'flying');
+        }, 980);
+
+        ignivraxTimersRef.current.push(tRaiseArms, tCastVfx, tImpact);
+        return;
+      }
+
+      // 3. Planeo y Caída Sísmica creando un cráter ardiente en el suelo de la sala del tesoro
+      if (ignivraxAction === 'planeo_crater') {
+        setIgnivraxCameraMode('boss_focus');
+        setIgnivraxMouthClosed(false);
+        setIgnivraxAttackPose('planeo_crater');
+        setIgnivraxVerticalPhase('gliding');
+        sound.playSFX('roar', { rate: 1.02 });
+        setDndProcBanner({
+          text: '🐉 ¡IGNIVRAX PLANEA EN PICADO HACIA LA SALA DEL TESORO!',
+          color: '#fb923c',
+          icon: '🔥',
+        });
+        const tClearBanner = window.setTimeout(() => setDndProcBanner(null), 2200);
+        ignivraxTimersRef.current.push(tClearBanner);
+
+        const tSlam = window.setTimeout(() => {
+          setIgnivraxVerticalPhase('crater_slam');
+          setIgnivraxCraterVisible(true);
+          setIgnivraxCraterPulseKey((k) => k + 1);
+          setScreenShake('heavy');
+          setScreenFlash('red');
+          sound.playSFX('arana_fall_slam');
+          setActiveEnemyAttackVisual({
+            enemyConfigId: 'ignivrax_boss',
+            skillName: 'Planeo y Cráter Sísmico',
+            dndDamageType: 'bludgeoning',
+            vfxType: 'earth_titan',
+            themeColor: '#fbbf24',
+            isUlt: false,
+            isSpecial: true,
+            vfxKey: Date.now(),
+          });
+        }, 420);
+
+        const tClearFlash = window.setTimeout(() => setScreenFlash(null), 640);
+
+        const tImpact = window.setTimeout(() => {
+          if (checkIgnivraxTotalEvasion()) {
+            finishIgnivraxTurn(false, 'grounded');
+            return;
+          }
+          const slamDmg = computeIgnivraxScaledDamage(28, 38);
+          const died = applyIgnivraxHitToHero(slamDmg, 'bludgeoning', '🌋 ¡CRÁTER SÍSMICO!', '#fbbf24');
+          if (!died) {
+            setHeroConditions((prev) =>
+              stackGachaEffect(prev, 'atk_down', 2, 1, 1, 'Onda de Choque').updatedEffects
+            );
+            setHeroStatusTrigger((prev) => prev + 1);
+          }
+          finishIgnivraxTurn(false, 'grounded');
+        }, 1050);
+
+        ignivraxTimersRef.current.push(tSlam, tClearFlash, tImpact);
+        return;
+      }
+
+      // 4. Aliento de Fuego Infernal (inhalación con fauces cerradas -> exhalación abierta desde la garganta)
+      if (ignivraxAction === 'aliento') {
+        const startedGrounded = ignivraxVerticalPhaseRef.current === 'grounded';
+        ignivraxBreathChargedRef.current = false;
+        ignivraxBreathCooldownTurnsRef.current = 0;
+        setIgnivraxCameraMode('boss_focus');
+        setIgnivraxMouthClosed(true);
+        setIgnivraxAttackPose('idle');
+
+        const tOpenBreathJaw = window.setTimeout(() => {
+          setIgnivraxMouthClosed(false);
+          setIgnivraxAttackPose('aliento');
+        }, 140);
+
+        const tBreathFire = window.setTimeout(() => {
+          setActiveEnemyAttackVisual({
+            enemyConfigId: 'ignivrax_boss',
+            skillName: '¡Aliento de Fuego Infernal!',
+            dndDamageType: 'fire',
+            vfxType: 'crimson_claw',
+            themeColor: isAranaJoyaConfig(workingEnemy.configId) ? '#84cc16' : '#f97316',
+            isUlt: true,
+            isSpecial: false,
+            vfxKey: Date.now(),
+          });
+          sound.playSFX('arana_breath');
+        }, 280);
+
+        const tBreathImpact = window.setTimeout(() => {
+          if (checkIgnivraxTotalEvasion()) {
+            finishIgnivraxTurn(true, startedGrounded ? 'takeoff' : 'flying');
+            return;
+          }
+          const hasHaste = heroConditions.some((c) => c.type === 'haste');
+          const hasGuard = heroConditions.some((c) => c.type === 'def_buff');
+          const isAgileHero = ['edacorn', 'kairon', 'giovani', 'roxanne'].includes(
+            normalizeCombatHeroId(activeCombatHeroIdRef.current)
+          );
+          const halfDamageSaved =
+            hasHaste || hasGuard ? Math.random() < 0.65 : isAgileHero ? Math.random() < 0.45 : Math.random() < 0.25;
+
+          const breathDmg = computeIgnivraxScaledDamage(44, 56, halfDamageSaved);
+          applyIgnivraxHitToHero(
+            breathDmg,
+            'fire',
+            halfDamageSaved ? '💨 REFLEJOS · MITAD DE DAÑO' : '🔥 ALIENTO INFERNAL',
+            halfDamageSaved ? '#fbbf24' : '#f97316'
+          );
+
+          if (halfDamageSaved) {
+            setDndProcBanner({
+              text: '💨 ¡REFLEJOS ÁGILES! MITAD DE DAÑO DEL ALIENTO',
+              color: '#fbbf24',
+              icon: '💨',
+            });
+            const tB = window.setTimeout(() => setDndProcBanner(null), 2400);
+            ignivraxTimersRef.current.push(tB);
+          } else {
+            setHeroConditions((prev) =>
+              stackGachaEffect(prev, 'burn', 3, 2, 2, 'Infierno Carmesí').updatedEffects
+            );
+            setHeroStatusTrigger((prev) => prev + 1);
+          }
+
+          finishIgnivraxTurn(true, startedGrounded ? 'takeoff' : 'flying');
+        }, 1150);
+
+        ignivraxTimersRef.current.push(tOpenBreathJaw, tBreathFire, tBreathImpact);
+        return;
+      }
+
+      // 5. Combo en Tierra: Zarpazo Ígneo + Mordisco Incandescente (y luego remonta el vuelo)
+      setIgnivraxCameraMode('boss_focus');
+      setIgnivraxVerticalPhase('grounded');
+      setIgnivraxMouthClosed(false);
+      setIgnivraxAttackPose('zarpazo');
+      setDndProcBanner({
+        text: '🐉 ASALTO TERRESTRE: ZARPAZO ÍGNEO + MORDISCO INCANDESCENTE',
+        color: '#f97316',
+        icon: '🔥',
+      });
+      const tClearComboBanner = window.setTimeout(() => setDndProcBanner(null), 2400);
+      ignivraxTimersRef.current.push(tClearComboBanner);
+
+      const tClawVfx = window.setTimeout(() => {
+        setIgnivraxAttackPose('zarpazo');
+        setActiveEnemyAttackVisual({
+          enemyConfigId: 'ignivrax_boss',
+          skillName: 'Zarpazo Ígneo',
+          dndDamageType: 'slashing',
+          vfxType: 'crimson_claw',
+          themeColor: '#f97316',
+          isUlt: false,
+          isSpecial: false,
+          vfxKey: Date.now(),
+        });
+        sound.playSFX('arana_sweep');
+      }, 220);
+
+      const tClawImpact = window.setTimeout(() => {
+        if (checkIgnivraxTotalEvasion()) {
+          finishIgnivraxTurn(false, 'takeoff');
+          return;
+        }
+        const clawDmg = computeIgnivraxScaledDamage(17, 23);
+        const died = applyIgnivraxHitToHero(clawDmg, 'slashing', '⚔️ ZARPAZO ÍGNEO', '#fb923c');
+        if (!died) {
+          setHeroConditions((prev) =>
+            stackGachaEffect(prev, 'bleed', 2, 1, 1, 'Garra Abrasadora').updatedEffects
+          );
+          setHeroStatusTrigger((prev) => prev + 1);
+        }
+      }, 680);
+
+      const tBiteVfx = window.setTimeout(() => {
+        if (heroHpRef.current <= 0) return;
+        setActiveEnemies((prev) =>
+          prev.map((e) => (e.uid === actingEnemy.uid ? { ...e, animation: 'strike' } : e))
+        );
+        setIgnivraxMouthClosed(false);
+        setIgnivraxAttackPose('mordisco');
+        setActiveEnemyAttackVisual({
+          enemyConfigId: 'ignivrax_boss',
+          skillName: 'Mordisco Incandescente',
+          dndDamageType: 'piercing',
+          vfxType: 'crimson_claw',
+          themeColor: '#ef4444',
+          isUlt: false,
+          isSpecial: true,
+          vfxKey: Date.now() + 1,
+        });
+        sound.playSFX('bite');
+      }, 860);
+
+      // Chomp real: cierra las fauces de Ignivrax exactamente al morder sobre el héroe
+      const tBiteChompSnap = window.setTimeout(() => {
+        if (heroHpRef.current <= 0) return;
+        setIgnivraxMouthClosed(true);
+      }, 1110);
+
+      const tBiteImpact = window.setTimeout(() => {
+        if (heroHpRef.current <= 0) {
+          finishIgnivraxTurn(false, 'takeoff');
+          return;
+        }
+        const biteDmg = computeIgnivraxScaledDamage(21, 29);
+        const died = applyIgnivraxHitToHero(biteDmg, 'piercing', '🦷 MORDISCO ÍGNEO', '#ef4444');
+        if (!died) {
+          setHeroConditions((prev) =>
+            stackGachaEffect(prev, 'def_break', 2, 1, 1, 'Fauces de Obsidiana').updatedEffects
+          );
+          setHeroStatusTrigger((prev) => prev + 1);
+        }
+        finishIgnivraxTurn(false, 'takeoff');
+      }, 1340);
+
+      ignivraxTimersRef.current.push(tClawVfx, tClawImpact, tBiteVfx, tBiteChompSnap, tBiteImpact);
+      return;
+    }
+
+    // Acciones cinematográficas sin impacto directo de la Araña Acorazada: salta al suelo, desata Chirrido / Capullo y salta de nuevo a la telaraña
     if (isArana && (aranaAction === 'chirrido' || aranaAction === 'ceniza')) {
       setAranaCameraMode('boss_focus');
-      setAranaVerticalPhase('falling_flip_1');
+      setAranaVerticalPhase('jumping_down');
       sound.playSFX('arana_screech', { rate: 1.12 });
-
-      const tFlip2 = window.setTimeout(() => {
-        setAranaVerticalPhase('falling_flip_2');
-      }, 175);
 
       const tLandAction = window.setTimeout(() => {
         setAranaVerticalPhase('grounded');
@@ -11977,11 +16595,13 @@ export const CombatView: React.FC = () => {
           aranaTookDamageThisTurnRef.current = false;
 
           setActiveEnemyAttackVisual({
-            enemyConfigId: 'arana_acorazada_boss',
-            skillName: 'Capullo de Ceniza y Brasa',
-            dndDamageType: 'fire',
+            enemyConfigId: workingEnemy.configId,
+            skillName: isAranaJoyaConfig(workingEnemy.configId)
+              ? 'Capullo de Bilis Esmeralda'
+              : 'Capullo de Ceniza y Brasa',
+            dndDamageType: aranaBossElement(workingEnemy.configId),
             vfxType: 'crimson_claw',
-            themeColor: '#f97316',
+            themeColor: isAranaJoyaConfig(workingEnemy.configId) ? '#84cc16' : '#f97316',
             isUlt: false,
             isSpecial: false,
             vfxKey: Date.now(),
@@ -12015,20 +16635,20 @@ export const CombatView: React.FC = () => {
             isBuff: true,
           });
         }
-      }, 355);
+      }, 340);
 
-      const tStopShake = window.setTimeout(() => setScreenShake('none'), 720);
+      const tStopShake = window.setTimeout(() => setScreenShake('none'), 700);
       const tClearFlash = window.setTimeout(() => setScreenFlash(null), 620);
 
-      const tClimbStart = window.setTimeout(() => {
+      const tJumpUpStart = window.setTimeout(() => {
         setIsAranaRoaring(false);
         setAranaAttackPose('idle');
         if (aranaAction === 'ceniza') {
           setActiveEnemyAttackVisual(null);
         }
-        setAranaVerticalPhase('climbing');
+        setAranaVerticalPhase('jumping_up');
         sound.playSFX('arana_climb');
-      }, aranaAction === 'ceniza' ? 1320 : 1140);
+      }, aranaAction === 'ceniza' ? 1280 : 1100);
 
       const tEndZoom = window.setTimeout(() => {
         setAranaVerticalPhase('perched');
@@ -12037,9 +16657,743 @@ export const CombatView: React.FC = () => {
           prev.map((e) => (e.uid === workingEnemy.uid ? { ...e, animation: 'idle' } : e))
         );
         finalizeEnemyPhase();
-      }, aranaAction === 'ceniza' ? 1620 : 1440);
+      }, aranaAction === 'ceniza' ? 1660 : 1480);
 
-      aranaTimersRef.current.push(tFlip2, tLandAction, tStopShake, tClearFlash, tClimbStart, tEndZoom);
+      aranaTimersRef.current.push(tLandAction, tStopShake, tClearFlash, tJumpUpStart, tEndZoom);
+      return;
+    }
+
+    // Secuencia completa adaptada de la Araña Acorazada: Multiataque (2× Barrido de Piernas + Bola de Fuego o Telaraña) y Aliento de Fuego (con recarga y mitigación parcial)
+    if (isArana) {
+      const dmgMult = currentFloor <= 10 ? 1 : 1 + (currentFloor - 10) * 0.06;
+      const computeAranaScaledDamage = (minBase: number, maxBase: number, halfOnSave = false): number => {
+        const rolledBase = minBase + Math.floor(Math.random() * (maxBase - minBase + 1));
+        let dmg = Math.round(rolledBase * dmgMult * ENEMY_DAMAGE_SCALE);
+
+        const enemyAtkDown = workingEnemy.conditions.find((c) => c.type === 'atk_down' || c.type === 'frightened');
+        if (enemyAtkDown) {
+          const atkDownFactor = enemyAtkDown.stacks >= 3 ? 0.65 : enemyAtkDown.stacks === 2 ? 0.72 : 0.8;
+          dmg = Math.max(1, Math.round(dmg * atkDownFactor));
+        }
+        const enemyAtkBuff = workingEnemy.conditions.find((c) => c.type === 'atk_buff');
+        if (enemyAtkBuff) {
+          const atkUpFactor = enemyAtkBuff.stacks >= 3 ? 1.5 : enemyAtkBuff.stacks === 2 ? 1.35 : 1.2;
+          dmg = Math.max(1, Math.round(dmg * atkUpFactor));
+        }
+
+        const heroDefBuff = heroConditions.find((c) => c.type === 'def_buff');
+        if (heroDefBuff) {
+          const reductionPct = heroDefBuff.stacks >= 3 ? 0.90 : heroDefBuff.stacks === 2 ? 0.80 : 0.75;
+          dmg = Math.max(1, Math.round(dmg * (1 - reductionPct)));
+        }
+        const heroDefBreak = heroConditions.find((c) => c.type === 'def_break');
+        if (heroDefBreak) dmg = Math.round(dmg * 1.4);
+        if (activeFoodBuff?.defMultiplier) {
+          dmg = Math.max(1, Math.round(dmg * activeFoodBuff.defMultiplier));
+        }
+        if (halfOnSave) {
+          dmg = Math.max(1, Math.round(dmg * 0.5));
+        }
+        return dmg;
+      };
+
+      const applyAranaHitToHero = (
+        rawDmg: number,
+        hitType: DndDamageType,
+        floatingLabel?: string,
+        floatingColor?: string
+      ): boolean => {
+        if ((isSmurphCombat && isSmurphAirborne) || (isEdacornCombat && isEdacornStealthed)) {
+          return false;
+        }
+        let dmg = rawDmg;
+        if (foodShieldHp > 0) {
+          if (foodShieldHp >= dmg) {
+            setFoodShieldHp((prev) => prev - dmg);
+            dmg = 0;
+          } else {
+            dmg -= foodShieldHp;
+            setFoodShieldHp(0);
+          }
+        }
+        heroHpRef.current = Math.max(0, heroHpRef.current - dmg);
+        setHeroHp(heroHpRef.current);
+        triggerHeroHitReaction(hitType);
+        sound.playSFX('hurt');
+        setScreenShake(hitType === 'fire' ? 'heavy' : 'medium');
+        const tStop = window.setTimeout(() => setScreenShake('none'), 200);
+        aranaTimersRef.current.push(tStop);
+        spawnFloating(`-${dmg}`, false, false, 1, false, undefined, hitType, floatingLabel, floatingColor);
+        return heroHpRef.current <= 0;
+      };
+
+      const finishAranaTurn = (consumedUlt: boolean) => {
+        setAranaAttackPose('idle');
+        setActiveEnemyAttackVisual(null);
+        setActiveEnemies((prev) =>
+          prev.map((e) =>
+            e.uid === actingEnemy.uid
+              ? {
+                  ...e,
+                  animation: 'idle',
+                  ultimateOrbs: consumedUlt ? 0 : Math.min(5, e.ultimateOrbs + 1),
+                }
+              : e
+          )
+        );
+        activeEnemiesRef.current = activeEnemiesRef.current.map((e) =>
+          e.uid === actingEnemy.uid
+            ? {
+                ...e,
+                animation: 'idle',
+                ultimateOrbs: consumedUlt ? 0 : Math.min(5, e.ultimateOrbs + 1),
+              }
+            : e
+        );
+        const tJumpBackUp = window.setTimeout(() => {
+          setAranaVerticalPhase('jumping_up');
+          sound.playSFX('arana_climb');
+          const tFinishClimb = window.setTimeout(() => {
+            setAranaVerticalPhase('perched');
+            setAranaCameraMode('idle');
+          }, 380);
+          aranaTimersRef.current.push(tFinishClimb);
+        }, 120);
+        aranaTimersRef.current.push(tJumpBackUp);
+
+        if (heroHpRef.current <= 0) {
+          setIsHeroAshDissolving(true);
+          setHeroAnimation('dead');
+          sound.playSFX('necrotic');
+          const tDefeat = window.setTimeout(() => {
+            setIsHeroAshDissolving(false);
+            setHeroAnimation('idle');
+            runDeathsRef.current += 1;
+            setBattleState('defeat');
+            sound.playSFX('defeat');
+          }, 2200);
+          aranaTimersRef.current.push(tDefeat);
+          return;
+        }
+        const tFinalize = window.setTimeout(finalizeEnemyPhase, 560);
+        aranaTimersRef.current.push(tFinalize);
+      };
+
+      // Evasiones totales antes de impactar (Vuelo Dracónico / Sigilo / Tortilla)
+      const checkTotalEvasion = (): boolean => {
+        if (isSmurphCombat && isSmurphAirborne) {
+          queueStatusNotification({
+            icon: '🦅',
+            title: '¡Esquivado en Pleno Vuelo!',
+            detail: `¡Smurph Draco vuela sobre las nubes! El ataque de ${actingEnemy.name} falla por completo.`,
+            target: 'hero',
+            isBuff: true,
+          });
+          return true;
+        }
+        if (isEdacornCombat && isEdacornStealthed) {
+          queueStatusNotification({
+            icon: '👻',
+            title: '¡Esquivado en Sigilo!',
+            detail: `Edacorn es intangible. ¡El ataque de ${actingEnemy.name} pasa de largo!`,
+            target: 'hero',
+            isBuff: true,
+          });
+          setIsEdacornStealthed(false);
+          return true;
+        }
+        if (activeFoodBuff?.evadeNextHit) {
+          queueStatusNotification({
+            icon: '🍳',
+            title: '¡Evasión Absoluta!',
+            detail: 'Tortilla de Patatas: Ataque rival esquivado con éxito',
+            target: 'hero',
+            isBuff: true,
+          });
+          sound.playSFX('miss');
+          setActiveFoodBuff((prev) => (prev ? { ...prev, evadeNextHit: false } : null));
+          return true;
+        }
+        return false;
+      };
+
+      setAranaCameraMode('boss_focus');
+      setAranaVerticalPhase('jumping_down');
+      sound.playSFX('arana_screech', { rate: 1.08 });
+
+      const tLandGround = window.setTimeout(() => {
+        setAranaVerticalPhase('grounded');
+        setScreenShake('heavy');
+        sound.playSFX('arana_fall_slam');
+        const tStopShake = window.setTimeout(() => setScreenShake('none'), 240);
+        aranaTimersRef.current.push(tStopShake);
+      }, 340);
+      aranaTimersRef.current.push(tLandGround);
+
+      if (aranaAction === 'aliento') {
+        aranaBreathChargedRef.current = false;
+        aranaBreathCooldownTurnsRef.current = 0;
+        setAranaAttackPose('aliento');
+
+        const tBreathFire = window.setTimeout(() => {
+          setActiveEnemyAttackVisual({
+            enemyConfigId: workingEnemy.configId,
+            skillName: isAranaJoyaConfig(workingEnemy.configId)
+              ? '¡Aliento de Veneno Esmeralda!'
+              : '¡Aliento de Fuego Incandescente!',
+            dndDamageType: aranaBossElement(workingEnemy.configId),
+            vfxType: 'crimson_claw',
+            themeColor: '#f97316',
+            isUlt: true,
+            isSpecial: false,
+            vfxKey: Date.now(),
+          });
+          sound.playSFX('arana_breath');
+        }, 375);
+
+        const tBreathImpact = window.setTimeout(() => {
+          if (checkTotalEvasion()) {
+            finishAranaTurn(true);
+            return;
+          }
+          const hasHaste = heroConditions.some((c) => c.type === 'haste');
+          const hasGuard = heroConditions.some((c) => c.type === 'def_buff');
+          const isAgileHero = ['edacorn', 'kairon', 'giovani', 'roxanne'].includes(
+            normalizeCombatHeroId(activeCombatHeroIdRef.current)
+          );
+          // Mitigación por reflejos/esquiva parcial
+          const halfDamageSaved =
+            hasHaste || hasGuard ? Math.random() < 0.65 : isAgileHero ? Math.random() < 0.45 : Math.random() < 0.25;
+
+          const breathDmg = computeAranaScaledDamage(46, 58, halfDamageSaved);
+          applyAranaHitToHero(
+            breathDmg,
+            aranaBossElement(workingEnemy.configId),
+            halfDamageSaved
+              ? '💨 REFLEJOS · MITAD DE DAÑO'
+              : isAranaJoyaConfig(workingEnemy.configId)
+              ? '☣️ ALIENTO DE VENENO'
+              : '🔥 ALIENTO DE FUEGO',
+            halfDamageSaved
+              ? '#fbbf24'
+              : isAranaJoyaConfig(workingEnemy.configId)
+              ? '#84cc16'
+              : '#f97316'
+          );
+
+          if (halfDamageSaved) {
+            setDndProcBanner({
+              text: '💨 ¡REFLEJOS ÁGILES! MITAD DE DAÑO DEL ALIENTO DE FUEGO',
+              color: '#fbbf24',
+              icon: '💨',
+            });
+            const tB = window.setTimeout(() => setDndProcBanner(null), 2400);
+            aranaTimersRef.current.push(tB);
+          } else {
+            // Quien falla al esquivar sufre quemadura continua
+            setHeroConditions((prev) =>
+              stackGachaEffect(
+                prev,
+                aranaBossStatus(workingEnemy.configId),
+                2,
+                1,
+                2,
+                isAranaJoyaConfig(workingEnemy.configId) ? 'Ponzoña del Aliento' : 'Llamas del Aliento'
+              ).updatedEffects
+            );
+            setHeroStatusTrigger((prev) => prev + 1);
+          }
+
+          finishAranaTurn(true);
+        }, 1220);
+
+        aranaTimersRef.current.push(tBreathFire, tBreathImpact);
+        return;
+      }
+
+      // MULTIATAQUE: 2× Barrido de Piernas (cortante) + 1× (Telaraña de Escupir o Escupir Bola de Fuego)
+      const thirdStrike: 'telarana' | 'bola_fuego' =
+        aranaTurnCountRef.current <= 1 || Math.random() < 0.5 ? 'telarana' : 'bola_fuego';
+
+      setAranaAttackPose('barrido');
+      setDndProcBanner({
+        text: `🕷️ MULTIATAQUE: 2× BARRIDO DE PIERNAS + ${
+          thirdStrike === 'telarana'
+            ? 'TELARAÑA DE ESCUPIR'
+            : isAranaJoyaConfig(workingEnemy.configId)
+            ? 'BILIS ESMERALDA'
+            : 'BOLA DE FUEGO'
+        }`,
+        color: '#f97316',
+        icon: '🕷️',
+      });
+      const tClearMultiBanner = window.setTimeout(() => setDndProcBanner(null), 2400);
+      aranaTimersRef.current.push(tClearMultiBanner);
+
+      // Golpe 1/3: Barrido de Piernas (1/2)
+      const tSweep1Vfx = window.setTimeout(() => {
+        setAranaAttackPose('barrido');
+        setActiveEnemyAttackVisual({
+          enemyConfigId: workingEnemy.configId,
+          skillName: 'Barrido de Piernas (1/2)',
+          dndDamageType: 'slashing',
+          vfxType: 'earth_titan',
+          themeColor: '#f97316',
+          isUlt: false,
+          isSpecial: false,
+          vfxKey: Date.now(),
+        });
+        sound.playSFX('arana_sweep');
+      }, 375);
+
+      const tSweep1Impact = window.setTimeout(() => {
+        if (checkTotalEvasion()) {
+          finishAranaTurn(false);
+          return;
+        }
+        const dmg1 = computeAranaScaledDamage(13, 19);
+        applyAranaHitToHero(dmg1, 'slashing', '⚔️ BARRIDO 1/2', '#fb923c');
+      }, 820);
+
+      // Golpe 2/3: Barrido de Piernas (2/2)
+      const tSweep2Vfx = window.setTimeout(() => {
+        if (heroHpRef.current <= 0) return;
+        setActiveEnemies((prev) =>
+          prev.map((e) => (e.uid === actingEnemy.uid ? { ...e, animation: 'strike' } : e))
+        );
+        setAranaAttackPose('barrido');
+        setActiveEnemyAttackVisual({
+          enemyConfigId: workingEnemy.configId,
+          skillName: 'Barrido de Piernas (2/2)',
+          dndDamageType: 'slashing',
+          vfxType: 'earth_titan',
+          themeColor: '#f97316',
+          isUlt: false,
+          isSpecial: false,
+          vfxKey: Date.now() + 1,
+        });
+        sound.playSFX('arana_sweep');
+      }, 960);
+
+      const tSweep2Impact = window.setTimeout(() => {
+        if (heroHpRef.current <= 0) {
+          finishAranaTurn(false);
+          return;
+        }
+        const dmg2 = computeAranaScaledDamage(13, 19);
+        const died = applyAranaHitToHero(dmg2, 'slashing', '⚔️ BARRIDO 2/2', '#fb923c');
+        if (!died) {
+          setHeroConditions((prev) =>
+            stackGachaEffect(prev, 'atk_down', 2, 1, 1, 'Barrido Aplastante').updatedEffects
+          );
+          setHeroStatusTrigger((prev) => prev + 1);
+        }
+      }, 1360);
+
+      // Golpe 3/3: Telaraña de Escupir o Escupir Bola de Fuego
+      const tThirdVfx = window.setTimeout(() => {
+        if (heroHpRef.current <= 0) return;
+        setAranaAttackPose(thirdStrike);
+        setActiveEnemyAttackVisual({
+          enemyConfigId: workingEnemy.configId,
+          skillName:
+            thirdStrike === 'telarana'
+              ? 'Telaraña de Escupir'
+              : isAranaJoyaConfig(workingEnemy.configId)
+              ? 'Escupitajo de Bilis Esmeralda'
+              : 'Escupir Bola de Fuego',
+          dndDamageType:
+            thirdStrike === 'telarana' ? 'piercing' : aranaBossElement(workingEnemy.configId),
+          vfxType: thirdStrike === 'telarana' ? 'frost_blizzard' : 'crimson_claw',
+          themeColor:
+            thirdStrike === 'telarana'
+              ? '#e7e5e4'
+              : isAranaJoyaConfig(workingEnemy.configId)
+              ? '#84cc16'
+              : '#f97316',
+          isUlt: false,
+          isSpecial: thirdStrike === 'bola_fuego',
+          vfxKey: Date.now() + 2,
+        });
+        sound.playSFX(thirdStrike === 'telarana' ? 'arana_web' : 'arana_fireball');
+      }, 1520);
+
+      const tThirdImpact = window.setTimeout(() => {
+        if (heroHpRef.current <= 0) {
+          finishAranaTurn(false);
+          return;
+        }
+        if (thirdStrike === 'telarana') {
+          const webDmg = computeAranaScaledDamage(14, 22);
+          const died = applyAranaHitToHero(webDmg, 'piercing', '🕸️ TELARAÑA', '#e7e5e4');
+          if (!died) {
+            setHeroConditions((prev) =>
+              stackGachaEffect(prev, 'def_break', 2, 1, 1, 'Enredado en Telaraña').updatedEffects
+            );
+            setHeroStatusTrigger((prev) => prev + 1);
+          }
+        } else {
+          const fireballDmg = computeAranaScaledDamage(26, 36);
+          applyAranaHitToHero(
+            fireballDmg,
+            aranaBossElement(workingEnemy.configId),
+            isAranaJoyaConfig(workingEnemy.configId) ? '☣️ ESCUPITAJO DE BILIS' : '🔥 BOLA DE FUEGO',
+            isAranaJoyaConfig(workingEnemy.configId) ? '#84cc16' : '#f97316'
+          );
+          setHeroConditions((prev) =>
+            stackGachaEffect(
+              prev,
+              aranaBossStatus(workingEnemy.configId),
+              2,
+              1,
+              1,
+              isAranaJoyaConfig(workingEnemy.configId)
+                ? 'Bilis Incandescente'
+                : 'Llamas Incandescentes'
+            ).updatedEffects
+          );
+          setHeroStatusTrigger((prev) => prev + 1);
+        }
+        finishAranaTurn(false);
+      }, 1960);
+
+      aranaTimersRef.current.push(
+        tSweep1Vfx,
+        tSweep1Impact,
+        tSweep2Vfx,
+        tSweep2Impact,
+        tThirdVfx,
+        tThirdImpact
+      );
+      return;
+    }
+
+    // === TEN PIEDAD (TOMO II · CAPÍTULO II: SANTUARIO — COMBATE NORMAL POR TURNOS) ===
+    if (workingEnemy.configId === 'ten_piedad') {
+      const hpRatio = workingEnemy.hp / Math.max(1, workingEnemy.maxHp);
+      const lowHpEnraged = hpRatio <= 0.5;
+      const turnIdx = tenPiedadTurnCountRef.current;
+      tenPiedadTurnCountRef.current += 1;
+
+      const brambleDensity = Math.min(5, 2 + Math.floor((1 - hpRatio) * 4));
+
+      let tenAction: 'barrido' | 'zarzas' | 'pisoton' | 'escupir' = 'barrido';
+      if (turnIdx === 0) {
+        tenAction = 'barrido';
+      } else if (turnIdx === 1) {
+        tenAction = 'zarzas';
+      } else if (turnIdx === 2) {
+        tenAction = 'escupir';
+      } else if (turnIdx === 3) {
+        tenAction = 'pisoton';
+      } else if (lowHpEnraged) {
+        const roll = Math.random();
+        if (roll < 0.48) tenAction = 'pisoton';
+        else if (roll < 0.68) tenAction = 'barrido';
+        else if (roll < 0.85) tenAction = 'zarzas';
+        else tenAction = 'escupir';
+      } else {
+        const seq: Array<'barrido' | 'zarzas' | 'escupir' | 'pisoton'> = ['barrido', 'zarzas', 'escupir', 'pisoton'];
+        tenAction = seq[turnIdx % seq.length];
+      }
+
+      const computeTenPiedadDamage = (minBase: number, maxBase: number): number => {
+        const rolled = minBase + Math.floor(Math.random() * (maxBase - minBase + 1));
+        let dmg = Math.round(rolled * ENEMY_DAMAGE_SCALE);
+
+        const enemyAtkDown = workingEnemy.conditions.find((c) => c.type === 'atk_down' || c.type === 'frightened');
+        if (enemyAtkDown) {
+          const f = enemyAtkDown.stacks >= 3 ? 0.65 : enemyAtkDown.stacks === 2 ? 0.72 : 0.8;
+          dmg = Math.max(1, Math.round(dmg * f));
+        }
+        const enemyAtkBuff = workingEnemy.conditions.find((c) => c.type === 'atk_buff');
+        if (enemyAtkBuff) {
+          const f = enemyAtkBuff.stacks >= 3 ? 1.5 : enemyAtkBuff.stacks === 2 ? 1.35 : 1.2;
+          dmg = Math.max(1, Math.round(dmg * f));
+        }
+        const heroDefBuff = heroConditions.find((c) => c.type === 'def_buff');
+        if (heroDefBuff) {
+          const red = heroDefBuff.stacks >= 3 ? 0.9 : heroDefBuff.stacks === 2 ? 0.8 : 0.75;
+          dmg = Math.max(1, Math.round(dmg * (1 - red)));
+        }
+        const heroDefBreak = heroConditions.find((c) => c.type === 'def_break');
+        if (heroDefBreak) dmg = Math.round(dmg * 1.4);
+        if (activeFoodBuff?.defMultiplier) {
+          dmg = Math.max(1, Math.round(dmg * activeFoodBuff.defMultiplier));
+        }
+        return dmg;
+      };
+
+      const applyTenPiedadHit = (
+        rawDmg: number,
+        hitType: DndDamageType,
+        floatingLabel?: string,
+        floatingColor?: string
+      ): boolean => {
+        if ((isSmurphCombat && isSmurphAirborne) || (isEdacornCombat && isEdacornStealthed)) {
+          return false;
+        }
+        let dmg = rawDmg;
+        if (foodShieldHp > 0) {
+          if (foodShieldHp >= dmg) {
+            setFoodShieldHp((prev) => prev - dmg);
+            dmg = 0;
+          } else {
+            dmg -= foodShieldHp;
+            setFoodShieldHp(0);
+          }
+        }
+        heroHpRef.current = Math.max(0, heroHpRef.current - dmg);
+        setHeroHp(heroHpRef.current);
+        triggerHeroHitReaction(hitType);
+        sound.playSFX('hurt');
+        setScreenShake(hitType === 'slashing' ? 'heavy' : 'medium');
+        const tStop = window.setTimeout(() => setScreenShake('none'), 220);
+        tenPiedadTimersRef.current.push(tStop);
+        spawnFloating(`-${dmg}`, false, false, 1, false, undefined, hitType, floatingLabel, floatingColor);
+        return heroHpRef.current <= 0;
+      };
+
+      const checkHeroPassiveEvasion = (): boolean => {
+        if (isSmurphCombat && isSmurphAirborne) {
+          queueStatusNotification({
+            icon: '🦅',
+            title: '¡Esquivado en Pleno Vuelo!',
+            detail: '¡Smurph Draco vuela fuera del alcance de Ten Piedad!',
+            target: 'hero',
+            isBuff: true,
+          });
+          return true;
+        }
+        if (isEdacornCombat && isEdacornStealthed) {
+          queueStatusNotification({
+            icon: '👻',
+            title: '¡Esquivado en Sigilo!',
+            detail: 'Edacorn es intangible y esquiva el golpe.',
+            target: 'hero',
+            isBuff: true,
+          });
+          setIsEdacornStealthed(false);
+          return true;
+        }
+        if (activeFoodBuff?.evadeNextHit) {
+          queueStatusNotification({
+            icon: '🍳',
+            title: '¡Evasión Absoluta!',
+            detail: 'Tortilla de Patatas: Ataque esquivado.',
+            target: 'hero',
+            isBuff: true,
+          });
+          sound.playSFX('miss');
+          setActiveFoodBuff((prev) => (prev ? { ...prev, evadeNextHit: false } : null));
+          return true;
+        }
+        return false;
+      };
+
+      const finishTenPiedadTurn = () => {
+        setTenPiedadAttackPose('idle');
+        setTenPiedadCameraMode('idle');
+        setActiveEnemyAttackVisual(null);
+        setActiveEnemies((prev) =>
+          prev.map((e) =>
+            e.uid === actingEnemy.uid
+              ? { ...e, animation: 'idle', ultimateOrbs: Math.min(5, e.ultimateOrbs + 1) }
+              : e
+          )
+        );
+        activeEnemiesRef.current = activeEnemiesRef.current.map((e) =>
+          e.uid === actingEnemy.uid
+            ? { ...e, animation: 'idle', ultimateOrbs: Math.min(5, e.ultimateOrbs + 1) }
+            : e
+        );
+
+        if (heroHpRef.current <= 0) {
+          setIsHeroAshDissolving(true);
+          setHeroAnimation('dead');
+          sound.playSFX('necrotic');
+          const tDefeat = window.setTimeout(() => {
+            setIsHeroAshDissolving(false);
+            setHeroAnimation('idle');
+            runDeathsRef.current += 1;
+            setBattleState('defeat');
+            sound.playSFX('defeat');
+          }, 2200);
+          tenPiedadTimersRef.current.push(tDefeat);
+          return;
+        }
+        const tFinalize = window.setTimeout(finalizeEnemyPhase, 520);
+        tenPiedadTimersRef.current.push(tFinalize);
+      };
+
+      // 1) BARRIDO: Barrido colosal a ras de suelo
+      if (tenAction === 'barrido') {
+        setTenPiedadCameraMode('boss_focus');
+        setTenPiedadAttackPose('barrido');
+        sound.playSFX('growl', { rate: 0.78 });
+
+        const tStrike = window.setTimeout(() => {
+          setTenPiedadCameraMode('idle');
+          setActiveEnemyAttackVisual({
+            enemyConfigId: 'ten_piedad',
+            skillName: 'Barrido',
+            dndDamageType: 'slashing',
+            vfxType: 'crimson_claw',
+            themeColor: '#ef4444',
+            isUlt: true,
+            isSpecial: false,
+            vfxKey: Date.now(),
+          });
+          sound.playSFX('slash', { rate: 0.8 });
+
+          const tImpact = window.setTimeout(() => {
+            if (!checkHeroPassiveEvasion()) {
+              const dmg = computeTenPiedadDamage(34, 44);
+              const died = applyTenPiedadHit(dmg, 'slashing', '💥 BARRIDO COLOSAL', '#ef4444');
+              if (!died) {
+                setHeroConditions((prev) =>
+                  stackGachaEffect(prev, 'atk_down', 2, 1, 2, 'Barrido Aplastante').updatedEffects
+                );
+                setHeroStatusTrigger((prev) => prev + 1);
+              }
+            }
+            const tFinish = window.setTimeout(finishTenPiedadTurn, 480);
+            tenPiedadTimersRef.current.push(tFinish);
+          }, 260);
+          tenPiedadTimersRef.current.push(tImpact);
+        }, 320);
+
+        tenPiedadTimersRef.current.push(tStrike);
+        return;
+      }
+
+      // 2) ZARZAS: Clava ambos puños haciendo brotar zarzas espinosas
+      if (tenAction === 'zarzas') {
+        setTenPiedadCameraMode('boss_focus');
+        setTenPiedadAttackPose('zarzas');
+        sound.playSFX('thud');
+
+        const tErupt = window.setTimeout(() => {
+          setTenPiedadCameraMode('idle');
+          setTenPiedadFloorCrackKey((prev) => prev + 1);
+          setActiveEnemyAttackVisual({
+            enemyConfigId: 'ten_piedad',
+            skillName: 'Zarzas',
+            dndDamageType: 'piercing',
+            vfxType: 'earth_titan',
+            themeColor: '#84cc16',
+            isUlt: false,
+            isSpecial: true,
+            vfxKey: Date.now(),
+          });
+          sound.playSFX('shatter', { rate: 0.85 });
+          setScreenShake('medium');
+
+          const tImpact = window.setTimeout(() => {
+            setScreenShake('none');
+            if (!checkHeroPassiveEvasion()) {
+              const dmg = computeTenPiedadDamage(18 + brambleDensity * 2, 24 + brambleDensity * 3);
+              const died = applyTenPiedadHit(dmg, 'piercing', `🌿 ${brambleDensity}× ZARZAS`, '#84cc16');
+              if (!died) {
+                setHeroConditions((prev) =>
+                  stackGachaEffect(prev, 'bleed', 2, 1, 1, 'Espinas del Santuario').updatedEffects
+                );
+                setHeroStatusTrigger((prev) => prev + 1);
+              }
+            }
+            const tFinish = window.setTimeout(finishTenPiedadTurn, 480);
+            tenPiedadTimersRef.current.push(tFinish);
+          }, 300);
+          tenPiedadTimersRef.current.push(tImpact);
+        }, 340);
+
+        tenPiedadTimersRef.current.push(tErupt);
+        return;
+      }
+
+      // 3) PISOTÓN DE ZARZAS: Pisa el suelo haciendo brotar zarzas bajo el héroe
+      if (tenAction === 'pisoton') {
+        setTenPiedadCameraMode('boss_focus');
+        setTenPiedadAttackPose('pisoton');
+        setTenPiedadFloorCrackKey((prev) => prev + 1);
+        sound.playSFX('thud');
+        setScreenShake('heavy');
+
+        const tStompVfx = window.setTimeout(() => {
+          setTenPiedadCameraMode('idle');
+          setScreenShake('none');
+          setActiveEnemyAttackVisual({
+            enemyConfigId: 'ten_piedad',
+            skillName: 'Pisotón de Zarzas',
+            dndDamageType: 'piercing',
+            vfxType: 'earth_titan',
+            themeColor: '#65a30d',
+            isUlt: lowHpEnraged,
+            isSpecial: true,
+            vfxKey: Date.now(),
+          });
+          sound.playSFX('shatter', { rate: 0.78 });
+        }, 360);
+
+        const tImpact = window.setTimeout(() => {
+          if (!checkHeroPassiveEvasion()) {
+            const dmg = computeTenPiedadDamage(22 + brambleDensity * 3, 28 + brambleDensity * 4);
+            const died = applyTenPiedadHit(dmg, 'piercing', `🦶 PISOTÓN (${brambleDensity}× ZARZAS)`, '#a3e635');
+            if (!died) {
+              setHeroConditions((prev) =>
+                stackGachaEffect(prev, 'bleed', 2, lowHpEnraged ? 2 : 1, 2, 'Raíces Desgarradoras').updatedEffects
+              );
+              setHeroStatusTrigger((prev) => prev + 1);
+            }
+          }
+          const tFinish = window.setTimeout(finishTenPiedadTurn, 480);
+          tenPiedadTimersRef.current.push(tFinish);
+        }, 760);
+
+        tenPiedadTimersRef.current.push(tStompVfx, tImpact);
+        return;
+      }
+
+      // 4) ESCUPIR ZARZAS: Ráfaga de espinas proyectadas hacia el héroe
+      setTenPiedadCameraMode('boss_focus');
+      setTenPiedadAttackPose('escupir');
+      sound.playSFX('growl', { rate: 1.05 });
+
+      const tSpitLaunch = window.setTimeout(() => {
+        setTenPiedadCameraMode('idle');
+        setActiveEnemyAttackVisual({
+          enemyConfigId: 'ten_piedad',
+          skillName: 'Escupir Zarzas',
+          dndDamageType: 'piercing',
+          vfxType: 'shadow_needle',
+          themeColor: '#a3e635',
+          isUlt: lowHpEnraged,
+          isSpecial: true,
+          vfxKey: Date.now(),
+        });
+        sound.playSFX('bow', { rate: 0.92 });
+        if (lowHpEnraged) {
+          const tSecondBow = window.setTimeout(() => sound.playSFX('bow', { rate: 1.02 }), 170);
+          tenPiedadTimersRef.current.push(tSecondBow);
+        }
+      }, 260);
+
+      const tSpitImpact = window.setTimeout(() => {
+        if (!checkHeroPassiveEvasion()) {
+          const dmg = computeTenPiedadDamage(lowHpEnraged ? 30 : 24, lowHpEnraged ? 40 : 32);
+          const died = applyTenPiedadHit(dmg, 'piercing', '🌿 ESCUPIR ZARZAS', '#a3e635');
+          if (!died) {
+            setHeroConditions((prev) =>
+              stackGachaEffect(prev, 'bleed', 2, 1, 1, 'Espinas del Santuario').updatedEffects
+            );
+            setHeroStatusTrigger((prev) => prev + 1);
+          }
+        }
+        const tFinish = window.setTimeout(finishTenPiedadTurn, 480);
+        tenPiedadTimersRef.current.push(tFinish);
+      }, 640);
+
+      tenPiedadTimersRef.current.push(tSpitLaunch, tSpitImpact);
       return;
     }
 
@@ -12075,27 +17429,21 @@ export const CombatView: React.FC = () => {
         title: 'Temblor Glacial',
       },
     };
-    const aranaAttackKind: 'barrido' | 'telarana' | 'bola_fuego' | 'aliento' =
-      aranaAction === 'aliento' || aranaAction === 'bola_fuego' || aranaAction === 'telarana'
-        ? aranaAction
-        : 'barrido';
-    const aranaWebSpitSkill = {
-      name: 'Telaraña de Escupir',
-      desc: 'Escupe una red tensa de seda acerada desde sus quelíceros para inmovilizar a su presa.',
-      damage: [24, 34] as [number, number],
-      vfx: 'crimson_claw' as const,
-      sfx: 'magic',
-      dndDamageType: 'piercing' as DndDamageType,
-      condition: {
-        type: 'stun' as const,
-        duration: 1,
-        stacks: 1,
-        title: 'Inmovilizado por Telaraña',
-      },
+    const devoradorMordiscoBonusSkill = {
+      ...DUNGEON_ENEMIES.devorador_hierro.normalSkill,
+      name: 'Mordisco triturador (Corroído)',
+      damage: [22, 30] as [number, number],
     };
-
     const skill = actingEnemy.configId === 'hobgoblin_capataz'
       ? (isUlt ? hobPhaseData.ultimate : hobPhaseData.normal)
+      : isDevoradorHierro
+      ? devoradorAction === 'corrosion_profunda'
+        ? enemyCfg.ultimateSkill
+        : devoradorAction === 'antenas'
+        ? enemyCfg.specialSkill
+        : heroCorrosionBeforeTurn >= 3
+        ? devoradorMordiscoBonusSkill
+        : enemyCfg.normalSkill
       : isCryovain
       ? cryoAttackKind === 'aliento'
         ? enemyCfg.ultimateSkill
@@ -12103,14 +17451,6 @@ export const CombatView: React.FC = () => {
         ? enemyCfg.specialSkill
         : cryoAttackKind === 'pisoton'
         ? cryoStompSkill
-        : enemyCfg.normalSkill
-      : isArana
-      ? aranaAttackKind === 'aliento'
-        ? enemyCfg.ultimateSkill
-        : aranaAttackKind === 'bola_fuego'
-        ? enemyCfg.specialSkill
-        : aranaAttackKind === 'telarana'
-        ? aranaWebSpitSkill
         : enemyCfg.normalSkill
       : isElementalAire
       ? aireAttackKind === 'prision'
@@ -12122,6 +17462,12 @@ export const CombatView: React.FC = () => {
       ? bulezauAttackKind === 'andanada'
         ? enemyCfg.ultimateSkill
         : bulezauAttackKind === 'bola'
+        ? enemyCfg.specialSkill
+        : enemyCfg.normalSkill
+      : isMimico
+      ? mimicoAction === 'rugido'
+        ? enemyCfg.ultimateSkill
+        : mimicoAction === 'mordisco'
         ? enemyCfg.specialSkill
         : enemyCfg.normalSkill
       : isUlt
@@ -12321,78 +17667,29 @@ export const CombatView: React.FC = () => {
         break;
       }
       case 'no_muerto':
-        vfxType = 'crimson_claw';
-        themeColor = '#94a3b8';
-        attackSfx = isUlt ? 'critical' : 'slash';
+        setBarraconAttackPose(isUlt || turnCounter % 2 === 0 ? 'skill' : 'normal');
+        vfxType = 'earth_titan';
+        themeColor = isUlt || turnCounter % 2 === 0 ? '#a3e635' : '#a8a29e';
+        attackSfx = isUlt ? 'critical' : 'punch';
         break;
       case 'soldado_no_muerto':
+        setBarraconAttackPose(isUlt || turnCounter % 2 === 0 ? 'skill' : 'normal');
         vfxType = 'crimson_claw';
         themeColor = '#ef4444';
         attackSfx = isUlt ? 'critical' : 'slash';
         break;
       case 'perro_asalvajado':
+        setBarraconAttackPose(isUlt || turnCounter % 2 === 0 ? 'skill' : 'normal');
         vfxType = 'crimson_claw';
         themeColor = '#dc2626';
         attackSfx = isUlt ? 'critical' : 'bite';
         break;
       case 'armadura_reanimada':
+        setBarraconAttackPose(isUlt || turnCounter % 2 === 0 ? 'skill' : 'normal');
         vfxType = 'earth_titan';
-        themeColor = '#fbbf24';
+        themeColor = isUlt || turnCounter % 2 === 0 ? '#22d3ee' : '#cbd5e1';
         attackSfx = isUlt ? 'critical' : 'punch';
         break;
-      case 'arana_acorazada_boss': {
-        setAranaCameraMode('boss_focus');
-        setAranaAttackPose(aranaAttackKind);
-        vfxType =
-          aranaAttackKind === 'aliento' || aranaAttackKind === 'bola_fuego'
-            ? 'crimson_claw'
-            : aranaAttackKind === 'telarana'
-            ? 'frost_blizzard'
-            : 'earth_titan';
-        themeColor =
-          aranaAttackKind === 'telarana' ? '#e7e5e4' : '#f97316';
-        attackSfx =
-          aranaAttackKind === 'aliento'
-            ? 'arana_breath'
-            : aranaAttackKind === 'bola_fuego'
-            ? 'arana_fireball'
-            : aranaAttackKind === 'telarana'
-            ? 'arana_web'
-            : 'arana_sweep';
-        if (aranaAttackKind === 'barrido') {
-          setAranaVerticalPhase('descending');
-          const tAranaShake = window.setTimeout(() => {
-            setScreenShake('heavy');
-            const tStopShake = window.setTimeout(() => setScreenShake('none'), 280);
-            aranaTimersRef.current.push(tStopShake);
-          }, 230);
-          aranaTimersRef.current.push(tAranaShake);
-        } else if (aranaAttackKind === 'telarana') {
-          setAranaVerticalPhase('perched');
-          const tWebShake = window.setTimeout(() => {
-            setScreenShake('medium');
-            const tStopShake = window.setTimeout(() => setScreenShake('none'), 220);
-            aranaTimersRef.current.push(tStopShake);
-          }, 180);
-          aranaTimersRef.current.push(tWebShake);
-        } else {
-          // bola_fuego y aliento: cae de las telarañas, da la vuelta en el aire y aterriza de frente antes de disparar
-          setAranaVerticalPhase('falling_flip_1');
-          sound.playSFX('arana_screech', { rate: 1.08 });
-          const tFlip2 = window.setTimeout(() => {
-            setAranaVerticalPhase('falling_flip_2');
-          }, 180);
-          const tLandGround = window.setTimeout(() => {
-            setAranaVerticalPhase('grounded');
-            setScreenShake('heavy');
-            sound.playSFX('arana_fall_slam');
-            const tStopShake = window.setTimeout(() => setScreenShake('none'), 260);
-            aranaTimersRef.current.push(tStopShake);
-          }, 355);
-          aranaTimersRef.current.push(tFlip2, tLandGround);
-        }
-        break;
-      }
       case 'gladiador_onirico':
         vfxType = isUlt || turnCounter % 2 === 1 ? 'crimson_claw' : 'earth_titan';
         themeColor = isUlt ? '#d8b4fe' : turnCounter % 2 === 1 ? '#c084fc' : '#fbbf24';
@@ -12444,14 +17741,97 @@ export const CombatView: React.FC = () => {
         themeColor = '#34d399';
         attackSfx = 'lightning';
         break;
+      case 'guinbang_espada':
+        vfxType = 'crimson_claw';
+        themeColor = '#f59e0b';
+        attackSfx = 'slash';
+        break;
+      case 'guinbang_maza':
+        vfxType = 'earth_titan';
+        themeColor = '#fbbf24';
+        attackSfx = 'thud';
+        break;
+      case 'guinbang_saqueador':
+        vfxType = 'shadow_needle';
+        themeColor = '#eab308';
+        attackSfx = 'slash';
+        break;
+      case 'devorador_hierro':
+        setDevoradorHierroAttackPose(devoradorAction);
+        vfxType = devoradorAction === 'mordisco' ? 'crimson_claw' : 'void_miasma';
+        themeColor = devoradorAction === 'corrosion_profunda' ? '#ea580c' : '#f59e0b';
+        attackSfx = devoradorAction === 'corrosion_profunda' ? 'critical' : devoradorAction === 'antenas' ? 'slime' : 'armor';
+        break;
+      case 'insecto_joya':
+        vfxType = 'void_miasma';
+        themeColor = '#22c55e';
+        attackSfx = isUlt || turnCounter % 2 === 0 ? 'slime' : 'slash';
+        break;
+      case 'insecto_moneda':
+        setBarraconAttackPose(isUlt || turnCounter % 2 === 0 ? 'skill' : 'normal');
+        vfxType = 'void_miasma';
+        themeColor = '#84cc16';
+        attackSfx = isUlt || turnCounter % 2 === 0 ? 'slime' : 'bite';
+        break;
+      case 'insecto_collar_perlas':
+        setBarraconAttackPose(isUlt || turnCounter % 2 === 0 ? 'skill' : 'normal');
+        vfxType = 'void_miasma';
+        themeColor = '#10b981';
+        attackSfx = isUlt || turnCounter % 2 === 0 ? 'slime' : 'bite';
+        break;
+      case 'aurumvorax_joven':
+      case 'aurumvorax_alfa':
+        setBarraconAttackPose(isUlt || turnCounter % 2 === 0 ? 'skill' : 'normal');
+        vfxType = 'crimson_claw';
+        themeColor = '#f59e0b';
+        attackSfx = isUlt || turnCounter % 2 === 0 ? 'bite' : 'slash';
+        break;
+      case 'mimico_boss':
+        setMimicoAttackPose(mimicoAction);
+        vfxType = mimicoAction === 'rugido' ? 'earth_titan' : 'crimson_claw';
+        themeColor = mimicoAction === 'rugido' ? '#f43f5e' : '#dc2626';
+        attackSfx = mimicoAction === 'rugido' ? 'roar' : mimicoAction === 'mordisco' ? 'critical' : 'slash';
+        if (mimicoAction === 'rugido') {
+          setScreenShake('heavy');
+          setTimeout(() => setScreenShake('none'), 300);
+        }
+        break;
+      case 'kobold_alado':
+        vfxType = isUlt || turnCounter % 2 === 0 ? 'earth_titan' : 'crimson_claw';
+        themeColor = '#f97316';
+        attackSfx = isUlt || turnCounter % 2 === 0 ? 'attack' : 'slash';
+        break;
+      case 'kobold_escudo_rojo':
+        vfxType = isUlt || turnCounter % 2 === 0 ? 'earth_titan' : 'crimson_claw';
+        themeColor = '#ef4444';
+        attackSfx = isUlt ? 'roar' : turnCounter % 2 === 0 ? 'attack' : 'slash';
+        break;
+      case 'draco_guardian_rojo':
+        setBarraconAttackPose(!isUlt && turnCounter % 2 === 0 ? 'skill' : 'normal');
+        vfxType = !isUlt && turnCounter % 2 === 0 ? 'earth_titan' : 'crimson_claw';
+        themeColor = '#dc2626';
+        attackSfx = !isUlt && turnCounter % 2 === 0 ? 'attack' : 'bite';
+        if (isUlt || turnCounter % 2 === 0) {
+          setScreenShake('light');
+          setTimeout(() => setScreenShake('none'), 220);
+        }
+        break;
+      case 'semidragon_rojo_veterano':
+        setBarraconAttackPose(isUlt ? 'skill' : 'normal');
+        vfxType = 'crimson_claw';
+        themeColor = isUlt ? '#f97316' : '#ef4444';
+        attackSfx = isUlt ? 'fire' : 'slash';
+        if (isUlt) {
+          setScreenShake('heavy');
+          setTimeout(() => setScreenShake('none'), 320);
+        }
+        break;
       default:
         vfxType = 'crimson_claw';
         themeColor = '#ef4444';
         attackSfx = 'attack';
     }
 
-    const aranaDelayedGroundFire =
-      isArana && (aranaAttackKind === 'bola_fuego' || aranaAttackKind === 'aliento');
     const nextEnemyAttackVisual: ActiveEnemyAttackVfxState = {
       enemyConfigId: actingEnemy.configId,
       skillName: skill.name,
@@ -12460,36 +17840,32 @@ export const CombatView: React.FC = () => {
       themeColor,
       isUlt: isCryovain
         ? cryoAttackKind === 'aliento'
-        : isArana
-        ? aranaAttackKind === 'aliento'
+        : isDevoradorHierro
+        ? devoradorAction === 'corrosion_profunda'
         : isElementalAire
         ? aireAttackKind === 'prision'
         : isBulezau
         ? bulezauAttackKind === 'andanada'
+        : isMimico
+        ? mimicoAction === 'rugido'
         : isUlt,
       isSpecial: isCryovain
         ? cryoAttackKind === 'mordisco'
-        : isArana
-        ? aranaAttackKind === 'bola_fuego'
+        : isDevoradorHierro
+        ? devoradorAction === 'antenas'
         : isElementalAire
         ? aireAttackKind === 'cuchillas'
         : isBulezau
         ? bulezauAttackKind === 'bola'
+        : isMimico
+        ? mimicoAction === 'mordisco'
         : !isUlt && !isDevoradorP2 && turnCounter % 2 === 0,
       hobgoblinPhase: actingEnemy.configId === 'hobgoblin_capataz' ? currentHobPhase : undefined,
       vfxKey: Date.now(),
     };
 
-    if (aranaDelayedGroundFire) {
-      const tFireLaunch = window.setTimeout(() => {
-        setActiveEnemyAttackVisual({ ...nextEnemyAttackVisual, vfxKey: Date.now() });
-        sound.playSFX(attackSfx);
-      }, 375);
-      aranaTimersRef.current.push(tFireLaunch);
-    } else {
-      setActiveEnemyAttackVisual(nextEnemyAttackVisual);
-      sound.playSFX(attackSfx);
-    }
+    setActiveEnemyAttackVisual(nextEnemyAttackVisual);
+    sound.playSFX(attackSfx);
 
     setTimeout(() => {
       // Return animation to idle
@@ -12497,21 +17873,13 @@ export const CombatView: React.FC = () => {
         setCryovainAttackPose('idle');
         setCryovainCameraMode('idle');
       }
-      if (isArana) {
-        setAranaAttackPose('idle');
-        if (aranaAttackKind === 'telarana') {
-          setAranaVerticalPhase('perched');
-          setAranaCameraMode('idle');
-        } else {
-          setAranaVerticalPhase('climbing');
-          sound.playSFX('arana_climb');
-          const tFinishClimb = window.setTimeout(() => {
-            setAranaVerticalPhase('perched');
-            setAranaCameraMode('idle');
-          }, 260);
-          aranaTimersRef.current.push(tFinishClimb);
-        }
+      if (isDevoradorHierro) {
+        setDevoradorHierroAttackPose('idle');
       }
+      if (isMimico) {
+        setMimicoAttackPose('idle');
+      }
+      setBarraconAttackPose('normal');
       setActiveEnemies((prev) =>
         prev.map((e) => (e.uid === actingEnemy.uid ? { ...e, animation: 'idle' } : e))
       );
@@ -12613,6 +17981,20 @@ export const CombatView: React.FC = () => {
       const heroDefBreak = heroConditions.find((c) => c.type === 'def_break');
       if (heroDefBreak) dmg = Math.round(dmg * 1.4);
 
+      const heroCorrosionDefLossPct = getCorrosionDefLossPct(
+        corrosionStacksByHeroRef.current[activeCombatHeroId] ?? 0
+      );
+      if (heroCorrosionDefLossPct > 0) {
+        dmg = Math.round(dmg * (1 + heroCorrosionDefLossPct / 100));
+      }
+
+      const activeVenomVulnPct = getInsectVenomVulnPct(
+        insectVenomStacksByHeroRef.current[normalizeCombatHeroId(activeCombatHeroId)] ?? 0
+      );
+      if (activeVenomVulnPct > 0) {
+        dmg = Math.round(dmg * (1 + activeVenomVulnPct / 100));
+      }
+
       // Food DEF Multiplier (Pizza: -30% daño)
       if (activeFoodBuff?.defMultiplier) {
         dmg = Math.max(1, Math.round(dmg * activeFoodBuff.defMultiplier));
@@ -12672,9 +18054,23 @@ export const CombatView: React.FC = () => {
         dmg = Math.round(dmg * 1.25);
       }
 
+      // Ignivrax: +20% daño por combustión abrasadora si el héroe ya sufre quemadura
+      if (
+        actingEnemy.configId === 'ignivrax_boss' &&
+        enemyDndType === 'fire' &&
+        heroConditions.some((c) => c.type === 'burn')
+      ) {
+        dmg = Math.round(dmg * 1.2);
+      }
+
       // Cryovain acumula escarcha sobre el héroe que recibe el impacto. A 3 cargas queda
       // congelado y pierde su siguiente turno; la carga se conserva al cambiar de héroe.
-      if (actingEnemy.configId === 'cryovain_boss' && enemyDndType === 'cold' && dmg > 0) {
+      if (
+        (actingEnemy.configId === 'cryovain_boss' || actingEnemy.configId === 'lobo_tundra') &&
+        enemyDndType === 'cold' &&
+        dmg > 0
+      ) {
+        if (actingEnemy.configId === 'lobo_tundra') addFrostCharge('lobo');
         const nextFrostStacks = {
           ...frostStacksByHeroRef.current,
           [activeCombatHeroId]: Math.min(
@@ -12684,6 +18080,55 @@ export const CombatView: React.FC = () => {
         };
         frostStacksByHeroRef.current = nextFrostStacks;
         setFrostStacksByHero(nextFrostStacks);
+      }
+
+      // Devorador de Hierro: Mecánica principal de Corrosión (0-5 acumulaciones)
+      if (actingEnemy.configId === 'devorador_hierro') {
+        const curStacks = corrosionStacksByHeroRef.current[activeCombatHeroId] ?? 0;
+        if (devoradorAction === 'corrosion_profunda') {
+          const nextCorrosion = {
+            ...corrosionStacksByHeroRef.current,
+            [activeCombatHeroId]: 0,
+          };
+          corrosionStacksByHeroRef.current = nextCorrosion;
+          setCorrosionStacksByHero(nextCorrosion);
+          setDndProcBanner({
+            text: '🦀 ¡CORROSIÓN PROFUNDA! — ÓXIDO CONSUMIDO Y DEFENSA REDUCIDA',
+            color: '#f59e0b',
+            icon: '🦀',
+          });
+          setTimeout(() => setDndProcBanner(null), 2800);
+          queueStatusNotification({
+            icon: '🦀',
+            title: '¡Corrosión Profunda!',
+            detail: `${getHeroName()} sufre el impacto devastador tras consumir las 5 acumulaciones de óxido. Las cargas regresan a 0.`,
+            target: 'hero',
+            isBuff: false,
+          });
+        } else {
+          const addedStacks = devoradorAction === 'antenas' ? 2 : 1;
+          const nextStacksVal = Math.min(5, curStacks + addedStacks);
+          const nextCorrosion = {
+            ...corrosionStacksByHeroRef.current,
+            [activeCombatHeroId]: nextStacksVal,
+          };
+          corrosionStacksByHeroRef.current = nextCorrosion;
+          setCorrosionStacksByHero(nextCorrosion);
+          const lossPct = getCorrosionDefLossPct(nextStacksVal);
+          queueStatusNotification({
+            icon: '🦀',
+            title:
+              nextStacksVal >= 5 && isDevoradorHierroPhase2
+                ? '¡Corrosión al Máximo (5/5)!'
+                : `Óxido Acumulado (${nextStacksVal}/5)`,
+            detail:
+              devoradorAction === 'mordisco' && curStacks >= 3
+                ? `Mordisco triturador golpea con daño adicional (+2 Óxido -> ${nextStacksVal}/5, -${lossPct}% Defensa).`.replace('+2 Óxido', `+${addedStacks} Óxido`)
+                : `${getHeroName()} acumula +${addedStacks} de óxido (${nextStacksVal}/5 · -${lossPct}% Defensa).`,
+            target: 'hero',
+            isBuff: false,
+          });
+        }
       }
 
       // Food Protective Barrier / Shield
@@ -12699,6 +18144,42 @@ export const CombatView: React.FC = () => {
         }
       }
 
+      // Insectos del Tesoro: si conectan un golpe (dmg > 0), inoculan veneno acumulativo permanente
+      // que debilita al héroe alcanzado y drena vida al grupo durante todo el combate.
+      if (
+        dmg > 0 &&
+        (actingEnemy.configId === 'insecto_joya' ||
+          actingEnemy.configId === 'insecto_moneda' ||
+          actingEnemy.configId === 'insecto_collar_perlas')
+      ) {
+        const heroKey = normalizeCombatHeroId(activeCombatHeroId);
+        const isSpecialOrUltHit = isUlt || turnCounter % 2 === 0;
+        const addedVenom = isSpecialOrUltHit ? 2 : 1;
+        const prevVenom = insectVenomStacksByHeroRef.current[heroKey] ?? 0;
+        const nextVenom = prevVenom + addedVenom;
+        const nextVenomMap = {
+          ...insectVenomStacksByHeroRef.current,
+          [heroKey]: nextVenom,
+        };
+        insectVenomStacksByHeroRef.current = nextVenomMap;
+        setInsectVenomStacksByHero(nextVenomMap);
+        const atkPen = getInsectVenomAtkPenaltyPct(nextVenom);
+        const vulnPct = getInsectVenomVulnPct(nextVenom);
+        setDndProcBanner({
+          text: `🦂 ¡VENENO POTENTE x${nextVenom} EN ${getHeroName().toUpperCase()}! (-${atkPen}% ATQ · +${vulnPct}% DAÑO)`,
+          color: '#22c55e',
+          icon: '☣️',
+        });
+        setTimeout(() => setDndProcBanner(null), 2600);
+        queueStatusNotification({
+          icon: '☣️',
+          title: `Veneno Acumulado (x${nextVenom})`,
+          detail: `${getHeroName()} ha sido envenenado (+${addedVenom}): -${atkPen}% ATQ, +${vulnPct}% daño recibido y pérdida de vida continua todo el combate.`,
+          target: 'hero',
+          isBuff: false,
+        });
+      }
+
       heroHpRef.current = Math.max(0, heroHpRef.current - dmg);
       const nextHp = heroHpRef.current;
       setHeroHp(nextHp);
@@ -12708,6 +18189,9 @@ export const CombatView: React.FC = () => {
       if (enemyDndType === 'cold') {
         sound.playSFX('hurt');
         setScreenFlash('cyan');
+        setTimeout(() => setScreenFlash(null), 240);
+      } else if (actingEnemy.configId === 'ignivrax_boss' && enemyDndType === 'fire') {
+        setScreenFlash('red');
         setTimeout(() => setScreenFlash(null), 240);
       }
       setScreenShake(vfxType === 'earth_titan' || isUlt ? 'heavy' : 'medium');
@@ -12724,6 +18208,18 @@ export const CombatView: React.FC = () => {
           undefined,
           '#38bdf8'
         );
+      } else if (actingEnemy.configId === 'ignivrax_boss' && enemyDndType === 'fire') {
+        spawnFloating(
+          `🔥 -${dmg}`,
+          false,
+          false,
+          2,
+          true,
+          undefined,
+          'fire',
+          undefined,
+          '#f97316'
+        );
       } else {
         spawnFloating(`-${dmg}`, false, false, 1, false, undefined, enemyDndType);
       }
@@ -12732,7 +18228,9 @@ export const CombatView: React.FC = () => {
       // Solo responde si el ataque del enemigo le quita vida de verdad (si el daño queda
       // absorbido por escudo/comida, la guardia sigue armada esperando un golpe real)
       if (isEdacornCombat && edacornCounter && edacornCounter.active && dmg > 0) {
-        const counterDmg = edacornCounter.damage;
+        const counterDmg = isMimicKnockedOut(actingEnemy)
+          ? Math.round(edacornCounter.damage * 2)
+          : edacornCounter.damage;
         setEdacornCounter(null);
         // La pose de ataque entra en el mismo instante del impacto enemigo: sin frame de idle/hurt
         setEdacornStrikePose(true);
@@ -12745,7 +18243,10 @@ export const CombatView: React.FC = () => {
           if (actingEnemy.configId === 'cryovain_boss' && counterDmg > 0) {
             cryoTookDamageThisTurnRef.current = true;
           }
-          if (actingEnemy.configId === 'arana_acorazada_boss' && counterDmg > 0) {
+          if (actingEnemy.configId === 'ignivrax_boss' && counterDmg > 0) {
+            ignivraxTookDamageThisTurnRef.current = true;
+          }
+          if (isAranaBossConfigId(actingEnemy.configId) && counterDmg > 0) {
             aranaTookDamageThisTurnRef.current = true;
           }
           setActiveEnemies((prev) =>
@@ -12836,6 +18337,33 @@ export const CombatView: React.FC = () => {
         });
       }
 
+      // Murciélago Carmesí: su aliento envenena y hace perder orbes de definitiva cada turno
+      if (actingEnemy.configId === 'murcielago_carmesi') {
+        const venomStacks = isUlt ? 2 : 1;
+        setHeroConditions((prev) => {
+          const next = stackGachaEffect(
+            prev,
+            'poison',
+            venomStacks,
+            3,
+            2,
+            'Aliento Drenante'
+          ).updatedEffects;
+          return next.map((c) =>
+            c.type === 'poison' || c.type === 'poisoned' ? { ...c, name: 'Veneno Drenante' } : c
+          );
+        });
+        // El veneno drena un orbe de definitiva al inicio de cada turno (3 turnos, 4 si es su ultimate).
+        orbDrainTurnsRef.current = Math.max(orbDrainTurnsRef.current, isUlt ? 4 : 3);
+        spawnFloating('🔮 VENENO DRENANTE', false, false);
+        setDndProcBanner({
+          text: '🦇 ALIENTO DRENANTE: PIERDES 1 ORBE DE ULTI POR TURNO',
+          color: '#be123c',
+          icon: '🦇',
+        });
+        window.setTimeout(() => setDndProcBanner(null), 2600);
+      }
+
       // Capitán de los Riscos: robo de orbes de definitiva del jugador
       if (actingEnemy.configId === 'bandido_lider') {
         const stealCount = isUlt ? 2 : 1;
@@ -12898,8 +18426,8 @@ export const CombatView: React.FC = () => {
         const stealableCards = handRef.current.filter((candidate) => {
           if (candidate.skillId === 'cataclismo_astral') return false;
           const def = SKILL_DEFINITIONS[candidate.skillId];
-          const info = def?.tiers?.[candidate.tier] as { damage?: number } | undefined;
-          return Boolean(def && def.type !== 'buff' && info && typeof info.damage === 'number' && info.damage > 0);
+          const info = def?.tiers?.[candidate.tier] as { damagePercent?: number } | undefined;
+          return Boolean(def && def.type !== 'buff' && info && typeof info.damagePercent === 'number' && info.damagePercent > 0);
         });
         if (stealableCards.length > 0) {
           const stolenCard = stealableCards[Math.floor(Math.random() * stealableCards.length)];
@@ -13029,6 +18557,21 @@ export const CombatView: React.FC = () => {
           return nextEffects;
         });
         setHeroStatusTrigger((prev) => prev + 1);
+        if (actingEnemy.configId === 'mimico_boss' && cond?.type === 'bleed') {
+          setDndProcBanner({
+            text: `🩸 ¡SANGRADO DEL MÍMICO! (+${cond.stacks} ACUMULACIÓN · IGNORA ARMADURA)`,
+            color: '#f43f5e',
+            icon: '🩸',
+          });
+          setTimeout(() => setDndProcBanner(null), 2400);
+          queueStatusNotification({
+            icon: '🩸',
+            title: `${cond.title} (+${cond.stacks} Sangrado)`,
+            detail: `${getHeroName()} sufre sangrado acumulable por el ataque del Mímico.`,
+            target: 'hero',
+            isBuff: false,
+          });
+        }
       }
 
       // Update acting enemy orbs (Titán Melenudo scales up to 6 orbs)
@@ -13071,13 +18614,7 @@ export const CombatView: React.FC = () => {
       }
 
       setTimeout(finalizeEnemyPhase, 400);
-    }, isArana
-      ? aranaAttackKind === 'aliento'
-        ? 1240
-        : aranaAttackKind === 'bola_fuego'
-        ? 980
-        : 740
-      : isCryovain && cryoAttackKind === 'aliento'
+    }, isCryovain && cryoAttackKind === 'aliento'
       ? 980
       : 700);
   };
@@ -13184,6 +18721,9 @@ export const CombatView: React.FC = () => {
             if (isPuertasBoss) {
               dmg = Math.round(dmg * 0.50);
             }
+            if (isMimicKnockedOut(e)) {
+              dmg = Math.round(dmg * 2);
+            }
 
             const enemyDefBuff = e.conditions.find((c) => c.type === 'def_buff');
             if (enemyDefBuff) {
@@ -13194,7 +18734,10 @@ export const CombatView: React.FC = () => {
             if (e.configId === 'cryovain_boss' && dmg > 0) {
               cryoTookDamageThisTurnRef.current = true;
             }
-            if (e.configId === 'arana_acorazada_boss' && dmg > 0) {
+            if (e.configId === 'ignivrax_boss' && dmg > 0) {
+              ignivraxTookDamageThisTurnRef.current = true;
+            }
+            if (isAranaBossConfigId(e.configId) && dmg > 0) {
               aranaTookDamageThisTurnRef.current = true;
             }
 
@@ -13266,12 +18809,21 @@ export const CombatView: React.FC = () => {
   };
 
   const triggerCastUltimate = () => {
-    if (battleState !== 'idle' || aliveEnemies.length === 0 || ultimateOrbs < MAX_ULTIMATE_ORBS) return;
+    if (battleState !== 'idle' || aliveEnemies.length === 0 || ultimateOrbs < playerOrbCeiling) return;
     executeUltimateMove();
   };
 
   // Execute playing a card: Card disappears immediately, hero attacks, enemy takes damage, enemy counter-attacks, then hand refills!
   const playCard = (card: ActiveCombatCard, cardIndex: number) => {
+    if (pvp) {
+      // En los Pozos la carta la resuelve el servidor con las mismas reglas de la campaña.
+      if (!pvp.myTurn) {
+        pvp.onBlockedAction?.('Espera tu turno.');
+        return;
+      }
+      pvp.onPlayCard(card.instanceId);
+      return;
+    }
     if (battleState !== 'idle' || aliveEnemies.length === 0) return;
 
     // Si es carta de Definitivo, desatar secuencia cinematográfica suprema
@@ -13934,6 +19486,13 @@ export const CombatView: React.FC = () => {
         baseDmg = Math.max(1, Math.round(baseDmg * (1 - penaltyRate)));
       }
 
+      const heroVenomAtkPenaltyPct = getInsectVenomAtkPenaltyPct(
+        insectVenomStacksByHeroRef.current[normalizeCombatHeroId(activeCombatHeroId)] ?? 0
+      );
+      if (heroVenomAtkPenaltyPct > 0) {
+        baseDmg = Math.max(1, Math.round(baseDmg * (1 - heroVenomAtkPenaltyPct / 100)));
+      }
+
       const aliveList = activeEnemiesRef.current.filter((e) => e.hp > 0 && !e.isAshDissolving);
       if (aliveList.length === 0) {
         handleAllEnemiesDefeated();
@@ -14036,21 +19595,35 @@ export const CombatView: React.FC = () => {
         setTimeout(() => setDndProcBanner(null), 2400);
       }
 
+      const isTargetMimicKnockedOut = isMimicKnockedOut(target);
+      if (isTargetMimicKnockedOut) {
+        finalCalculatedDamage = Math.round(finalCalculatedDamage * 2);
+      }
+
       triggerEnemyHitReaction(skillDef.dndDamageType);
       spawnFloating(
         finalCalculatedDamage.toString(),
         true,
         false,
         card.tier,
-        isCriticalHit,
+        isCriticalHit || isTargetMimicKnockedOut,
         targetSlot >= 0 ? targetSlot : undefined,
         skillDef.dndDamageType,
-        `${dndEval.meta.icon} ${dndEval.meta.nameEs.toUpperCase()}`,
-        dndEval.meta.colorHex
+        isTargetMimicKnockedOut
+          ? '📦 ¡COFRE NOQUEADO · x2 DAÑO!'
+          : `${dndEval.meta.icon} ${dndEval.meta.nameEs.toUpperCase()}`,
+        isTargetMimicKnockedOut ? '#fbbf24' : dndEval.meta.colorHex
       );
 
       // Trigger D&D mechanic proc banner notice
-      if (dndEval.bannerNotice && (!isUltimate || !isPuertasBoss)) {
+      if (isTargetMimicKnockedOut) {
+        setDndProcBanner({
+          text: '📦 ¡MÍMICO NOQUEADO EN FORMA DE COFRE! RECIBE x2 DAÑO',
+          color: '#fbbf24',
+          icon: '📦',
+        });
+        setTimeout(() => setDndProcBanner(null), 2400);
+      } else if (dndEval.bannerNotice && (!isUltimate || !isPuertasBoss)) {
         setDndProcBanner({
           text: dndEval.bannerNotice,
           color: dndEval.meta.colorHex,
@@ -14154,8 +19727,30 @@ export const CombatView: React.FC = () => {
       if (target.configId === 'cryovain_boss' && finalCalculatedDamage > 0) {
         cryoTookDamageThisTurnRef.current = true;
       }
-      if (target.configId === 'arana_acorazada_boss' && finalCalculatedDamage > 0) {
+      if (target.configId === 'ignivrax_boss' && finalCalculatedDamage > 0) {
+        ignivraxTookDamageThisTurnRef.current = true;
+      }
+      if (isAranaBossConfigId(target.configId) && finalCalculatedDamage > 0) {
         aranaTookDamageThisTurnRef.current = true;
+      }
+      // Conejo de Escarcha: cada golpe que no sea de fuego le cuesta un orbe de definitiva al héroe.
+      if (
+        target.configId === 'conejo_tundra' &&
+        finalCalculatedDamage > 0 &&
+        skillDef.dndDamageType !== 'fire'
+      ) {
+        addFrostCharge('conejo');
+        const nextFrozenOrbs = Math.min(MAX_ULTIMATE_ORBS, frozenUltOrbsRef.current + 1);
+        frozenUltOrbsRef.current = nextFrozenOrbs;
+        setFrozenUltOrbs(nextFrozenOrbs);
+        setUltimateOrbs((prev) => Math.min(prev, Math.max(0, MAX_ULTIMATE_ORBS - nextFrozenOrbs)));
+        queueStatusNotification({
+          icon: '❄️',
+          title: `¡Orbe Congelado (${nextFrozenOrbs}/${MAX_ULTIMATE_ORBS})!`,
+          detail: 'El Conejo de Escarcha hiela un orbe de definitiva por cada golpe que no sea de fuego. Se mantiene hasta acabar la misión.',
+          target: 'hero',
+          isBuff: false,
+        });
       }
       let targetNextHp = Math.max(0, target.hp - finalCalculatedDamage);
       let targetHobPhase = target.hobgoblinPhase || 1;
@@ -14192,6 +19787,70 @@ export const CombatView: React.FC = () => {
       }
 
       const isTargetDying = targetNextHp <= 0;
+
+      // Si Ignivrax sufre aturdimiento/parálisis/congelación mientras vuela, cae desplomado creando un cráter en el suelo
+      const triggeredIgnivraxAirDrop =
+        target.configId === 'ignivrax_boss' &&
+        !isTargetDying &&
+        (ignivraxVerticalPhaseRef.current === 'flying' || ignivraxVerticalPhaseRef.current === 'taking_off') &&
+        allEffectsToApply.some(
+          (app) =>
+            app.target === 'enemy' &&
+            ['stun', 'stunned', 'paralyze', 'paralyzed', 'shock', 'frozen'].includes(
+              app.type.toLowerCase()
+            )
+        );
+      if (triggeredIgnivraxAirDrop) {
+        setIgnivraxVerticalPhase('falling');
+        sound.playSFX('roar', { rate: 0.8 });
+        const tDropCrater = window.setTimeout(() => {
+          setIgnivraxVerticalPhase('crater_slam');
+          setIgnivraxCraterVisible(true);
+          setIgnivraxCraterPulseKey((k) => k + 1);
+          setScreenShake('heavy');
+          sound.playSFX('arana_fall_slam');
+          setDndProcBanner({
+            text: '💥 ¡IGNIVRAX DERRIBADO EN PLENO VUELO! SE ESTRELLA EN LA SALA',
+            color: '#fb923c',
+            icon: '🐉',
+          });
+        }, 240);
+        const tDropGround = window.setTimeout(() => {
+          setIgnivraxVerticalPhase('grounded');
+          setScreenShake('none');
+        }, 560);
+        const tDropBannerClear = window.setTimeout(() => setDndProcBanner(null), 2600);
+        ignivraxTimersRef.current.push(tDropCrater, tDropGround, tDropBannerClear);
+      }
+
+      const triggeredMimicKnockout =
+        target.configId === 'mimico_boss' &&
+        !isTargetDying &&
+        allEffectsToApply.some(
+          (app) =>
+            app.target === 'enemy' &&
+            ['stun', 'stunned', 'paralyze', 'paralyzed', 'shock', 'frozen'].includes(
+              app.type.toLowerCase()
+            )
+        );
+      if (triggeredMimicKnockout) {
+        mimicoChestGraceRef.current = true;
+        setMimicoChestGrace(true);
+        sound.playSFX('thud');
+        setDndProcBanner({
+          text: '📦 ¡MÍMICO NOQUEADO! SE CIERRA COMO COFRE NORMAL (x2 DAÑO)',
+          color: '#fbbf24',
+          icon: '📦',
+        });
+        setTimeout(() => setDndProcBanner(null), 2800);
+        queueStatusNotification({
+          icon: '📦',
+          title: '¡Mímico Noqueado!',
+          detail: 'El Mímico queda aturdido y adopta la forma de un cofre normal. ¡Todos los ataques le infligen x2 daño!',
+          target: 'enemy',
+          isBuff: false,
+        });
+      }
 
       // Check if all enemies in the chamber will be defeated after this blow
       const otherAliveEnemies = activeEnemiesRef.current.filter(
@@ -14317,6 +19976,18 @@ export const CombatView: React.FC = () => {
   // Merging two cards & Combination Animation (Bronce -> Plata -> Oro)
   // Mover una carta (combinar o reorganizar posición) carga +1 orbe definitivo y CONSUME 1 TURNO
   const executeCardMerge = (fromIdx: number, toIdx: number) => {
+    if (pvp) {
+      const pvpHand = handRef.current;
+      const from = pvpHand[fromIdx];
+      const to = pvpHand[toIdx];
+      if (!from || !to || from.instanceId === to.instanceId) return;
+      if (!pvp.myTurn) {
+        pvp.onBlockedAction?.('Espera tu turno.');
+        return;
+      }
+      pvp.onMergeCards(from.instanceId, to.instanceId);
+      return;
+    }
     const currentHand = handRef.current;
     if (
       battleState !== 'idle' ||
@@ -14342,6 +20013,21 @@ export const CombatView: React.FC = () => {
       cardFrom.skillId === cardTo.skillId &&
       cardFrom.tier === cardTo.tier &&
       cardFrom.tier < 3;
+
+    // Zorro de Tundra: cada fusión de cartas congela el botón de inventario durante un turno.
+    if (
+      isRankUpMerge &&
+      activeEnemiesRef.current.some((e) => e.configId === 'zorro_tundra' && e.hp > 0)
+    ) {
+      addFrostCharge('zorro');
+      setItemsFrozenUntilTurn(turnCounter + 1);
+      setDndProcBanner({
+        text: '🦊 ¡EL ZORRO DE TUNDRA CONGELA TU INVENTARIO!',
+        color: '#38bdf8',
+        icon: '🦊',
+      });
+      setTimeout(() => setDndProcBanner(null), 2600);
+    }
 
     // Comprobar si es Inspiración Bárdica de Roxanne soltada sobre una carta específica para seleccionarla y subirla de rango
     if (cardFrom.skillId === 'roxanne_inspiracion' && fromIdx !== toIdx) {
@@ -14634,8 +20320,28 @@ export const CombatView: React.FC = () => {
     window.addEventListener('touchcancel', handleRelease);
   };
 
+  // Congelación (3 cargas de escarcha): el héroe no puede curarse.
+  const heroCannotHeal = () =>
+    (frostStacksByHeroRef.current[activeCombatHeroId] ?? 0) >= 3;
+
   // Potion usage in battle (la poción cura 35 sobre 100 PV: se escala igual que el daño)
   const handleUsePotion = () => {
+    if (pvp) {
+      setShowInventoryModal(false);
+      pvp.onBlockedAction?.('En los Pozos no se pueden usar objetos.');
+      return;
+    }
+    if (heroCannotHeal()) {
+      setShowInventoryModal(false);
+      sound.playSFX('necrotic');
+      setDndProcBanner({
+        text: '❄️ CONGELADO — NO PUEDES CURARTE',
+        color: '#38bdf8',
+        icon: '❄️',
+      });
+      setTimeout(() => setDndProcBanner(null), 2400);
+      return;
+    }
     sound.playSFX('coin');
     const potionHeal = Math.round(35 * HP_DAMAGE_SCALE);
     heroHpRef.current = Math.min(heroMaxHp, heroHpRef.current + potionHeal);
@@ -15687,7 +21393,30 @@ export const CombatView: React.FC = () => {
           100% { transform: translate3d(-65px, 280px, 0px); opacity: 0; }
         }
 
-        /* ARAÑA ACORAZADA: COLGADA EN TELARAÑAS SUPERIORES, DESCENSO TIPO CRYOVAIN Y CAÍDA CON VOLTEO */
+        /* ARAÑA ACORAZADA: CHASQUIDO DE COLMILLOS Y RESPIRACIÓN EN TELARAÑA, SALTO AL SUELO, ATAQUE EN SUELO Y SALTO DE VUELTA */
+        @keyframes aranaPerchedBreath {
+          0%, 100% { transform: scaleY(1) scaleX(1) translateY(0px); }
+          50% { transform: scaleY(0.982) scaleX(1.018) translateY(2px); }
+        }
+        @keyframes aranaJumpDownArc {
+          0% { transform: translate(0px, 0px) scale(0.94) rotate(0deg); }
+          35% { transform: translate(-28px, -20px) scale(1.04) rotate(-8deg); }
+          75% { transform: translate(-10px, 8px) scale(1.06) rotate(-3deg); }
+          100% { transform: translate(0px, 0px) scale(1.02) rotate(0deg); }
+        }
+        @keyframes aranaJumpUpArc {
+          0% { transform: translate(0px, 10px) scaleX(1.06) scaleY(0.92) rotate(0deg); }
+          35% { transform: translate(-24px, -24px) scale(1.05) rotate(8deg); }
+          75% { transform: translate(-8px, -8px) scale(1.01) rotate(3deg); }
+          100% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+        }
+        @keyframes aranaGroundBarrido {
+          0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+          24% { transform: translate(12px, -8px) rotate(4deg) scale(1.03); }
+          52% { transform: translate(-30px, 4px) rotate(-5deg) scale(1.07); }
+          80% { transform: translate(-12px, 2px) rotate(-2deg) scale(1.03); }
+          100% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+        }
         @keyframes aranaCeilingHangSway {
           0%, 100% { transform: rotate(-1.6deg) translateY(0px) scaleY(1); }
           50% { transform: rotate(1.8deg) translateY(4px) scaleY(1.015); }
@@ -15754,6 +21483,113 @@ export const CombatView: React.FC = () => {
           22% { opacity: 0.9; }
           82% { opacity: 0.72; }
           100% { transform: translate3d(-24px, -240px, 0px) scale(0.4); opacity: 0; }
+        }
+        @keyframes aranaWebFirePulse {
+          0%, 100% { opacity: 0.82; filter: drop-shadow(0 0 6px rgba(249,115,22,0.85)); }
+          50% { opacity: 1; filter: drop-shadow(0 0 13px rgba(251,191,36,0.98)); }
+        }
+        @keyframes aranaWebFlameLick {
+          0%, 100% { transform: translateY(0px) scaleY(0.92) scaleX(1); opacity: 0.78; }
+          45% { transform: translateY(-6px) scaleY(1.18) scaleX(0.94); opacity: 1; }
+          75% { transform: translateY(-3px) scaleY(1.04) scaleX(1.06); opacity: 0.88; }
+        }
+        @keyframes tenPiedadStompRing {
+          0% { transform: translateX(-50%) scale(0.32); opacity: 0.95; }
+          65% { transform: translateX(-50%) scale(1.18); opacity: 0.8; }
+          100% { transform: translateX(-50%) scale(1.65); opacity: 0; }
+        }
+
+        /* IGNIVRAX: VUELO SUSPENDIDO, PLANEO EN PICADO, CRÁTER EN EL SUELO Y ASALTOS */
+        @keyframes ignivraxHoverFloat {
+          0%, 100% { transform: translateY(0px) scaleY(1) scaleX(1); }
+          50% { transform: translateY(-10px) scaleY(1.018) scaleX(0.99); }
+        }
+        @keyframes ignivraxGroundBreath {
+          0%, 100% { transform: scaleY(1) scaleX(1) translateY(0px); }
+          50% { transform: scaleY(0.984) scaleX(1.018) translateY(2px); }
+        }
+        @keyframes ignivraxGlideDive {
+          0% { transform: translate(18px, -16px) rotate(6deg) scale(0.96); }
+          60% { transform: translate(-22px, 14px) rotate(-6deg) scale(1.05); }
+          100% { transform: translate(-8px, 18px) rotate(-3deg) scale(1.07); }
+        }
+        @keyframes ignivraxCraterImpact {
+          0% { transform: translateY(-22px) scale(1.06); }
+          45% { transform: translateY(6px) scaleX(1.08) scaleY(0.92); }
+          75% { transform: translateY(0px) scaleX(1.03) scaleY(0.97); }
+          100% { transform: translateY(0px) scale(1); }
+        }
+        @keyframes ignivraxTakeoffArc {
+          0% { transform: translateY(10px) scaleX(1.05) scaleY(0.92); }
+          40% { transform: translate(-12px, -22px) scale(1.04) rotate(5deg); }
+          100% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+        }
+        @keyframes ignivraxFallingTumble {
+          0% { transform: translateY(-12px) rotate(0deg) scale(0.98); }
+          55% { transform: translate(-8px, 10px) rotate(-10deg) scale(1.04); }
+          100% { transform: translate(-14px, 18px) rotate(-14deg) scale(1.05); }
+        }
+        @keyframes ignivraxFireballsCast {
+          0% { transform: translateY(0px) scale(1); }
+          30% { transform: translateY(-12px) scale(1.05) rotate(2deg); }
+          65% { transform: translate(-12px, -4px) scale(1.07) rotate(-3deg); }
+          100% { transform: translateY(0px) scale(1); }
+        }
+        @keyframes ignivraxClawSwipe {
+          0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+          26% { transform: translate(14px, -6px) rotate(4deg) scale(1.03); }
+          56% { transform: translate(-32px, 4px) rotate(-5deg) scale(1.07); }
+          100% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+        }
+        @keyframes ignivraxBiteLunge {
+          0% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+          24% { transform: translate(16px, -6px) rotate(4deg) scale(1.03); }
+          52% { transform: translate(-34px, 6px) rotate(-6deg) scale(1.08); }
+          100% { transform: translate(0px, 0px) rotate(0deg) scale(1); }
+        }
+
+        /* DEVORADOR DE HIERRO: ANTENAS AL VIENTO COMO PLUMAS Y CHASQUIDO DE COLMILLOS */
+        @keyframes devoradorShellBreath {
+          0%, 100% { transform: scaleY(1) scaleX(1) translateY(0px); }
+          50% { transform: scaleY(0.985) scaleX(1.012) translateY(1.5px); }
+        }
+        @keyframes devoradorAntennaLeftWind {
+          0%, 100% { transform: rotate(0deg) skewY(0deg) scaleY(1); }
+          14% { transform: rotate(-3.8deg) skewY(-1.8deg) scaleY(1.016); }
+          28% { transform: rotate(-1.1deg) skewY(-0.5deg) scaleY(1.004); }
+          44% { transform: rotate(-4.5deg) skewY(-2.2deg) scaleY(1.022); }
+          62% { transform: rotate(1.7deg) skewY(1.1deg) scaleY(0.992); }
+          78% { transform: rotate(-2.2deg) skewY(-1.2deg) scaleY(1.01); }
+        }
+        @keyframes devoradorAntennaRightWind {
+          0%, 100% { transform: rotate(0deg) skewX(0deg) scaleX(1); }
+          16% { transform: rotate(3.9deg) skewX(-1.9deg) scaleX(1.016); }
+          32% { transform: rotate(1.2deg) skewX(-0.5deg) scaleX(1.004); }
+          50% { transform: rotate(4.6deg) skewX(-2.4deg) scaleX(1.022); }
+          68% { transform: rotate(-1.8deg) skewX(1.2deg) scaleX(0.992); }
+          84% { transform: rotate(2.3deg) skewX(-1.1deg) scaleX(1.01); }
+        }
+        @keyframes devoradorFangLeftSnap {
+          0%, 10% { transform: rotate(0deg) scale(1); }
+          16% { transform: rotate(5deg) scale(1); }
+          21% { transform: rotate(-18deg) scale(1.03); }
+          27% { transform: rotate(4deg) scale(1); }
+          32% { transform: rotate(-19deg) scale(1.04); }
+          40%, 66% { transform: rotate(0deg) scale(1); }
+          72% { transform: rotate(3.5deg) scale(1); }
+          77% { transform: rotate(-15deg) scale(1.02); }
+          84%, 100% { transform: rotate(0deg) scale(1); }
+        }
+        @keyframes devoradorFangRightSnap {
+          0%, 10% { transform: rotate(0deg) scale(1); }
+          16% { transform: rotate(-5deg) scale(1); }
+          21% { transform: rotate(18deg) scale(1.03); }
+          27% { transform: rotate(-4deg) scale(1); }
+          32% { transform: rotate(19deg) scale(1.04); }
+          40%, 66% { transform: rotate(0deg) scale(1); }
+          72% { transform: rotate(-3.5deg) scale(1); }
+          77% { transform: rotate(15deg) scale(1.02); }
+          84%, 100% { transform: rotate(0deg) scale(1); }
         }
       `}</style>
 
@@ -15825,7 +21661,7 @@ export const CombatView: React.FC = () => {
               </div>
 
               {/* Boss Mechanics Badge: Break Bar */}
-              {targetEnemy.configId.includes('devorador') && (
+              {(targetEnemy.configId === 'devorador_quitinoso' || targetEnemy.configId === 'devorador_quitinoso_p2') && (
                 <div className="flex items-center gap-1.5">
                   <div className={`px-2 py-0.5 rounded text-[10px] font-black tracking-wider uppercase border shadow-md ${
                     targetEnemy.configId === 'devorador_quitinoso'
@@ -15833,6 +21669,34 @@ export const CombatView: React.FC = () => {
                       : 'bg-rose-950/90 text-rose-300 border-rose-600/80 shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse'
                   }`}>
                     {targetEnemy.configId === 'devorador_quitinoso' ? '🛡️ FASE 1/2 • CORAZA' : '🔥 FASE 2/2 • FRENESÍ'}
+                  </div>
+                </div>
+              )}
+
+              {targetEnemy.configId === 'devorador_hierro' && (
+                <div className="flex items-center gap-1.5">
+                  <div className={`px-2 py-0.5 rounded text-[10px] font-black tracking-wider uppercase border shadow-md ${
+                    devoradorHierroPhase === 1
+                      ? 'bg-amber-950/90 text-amber-200 border-amber-500/80 shadow-[0_0_10px_rgba(245,158,11,0.45)]'
+                      : 'bg-orange-950/90 text-orange-200 border-orange-500/85 shadow-[0_0_12px_rgba(234,88,12,0.7)] animate-pulse'
+                  }`}>
+                    {devoradorHierroPhase === 1 ? '🪨 FASE 1/2 • HAMBRE DE HIERRO' : '🦀 FASE 2/2 • FRENESÍ OXIDANTE'}
+                  </div>
+                </div>
+              )}
+
+              {targetEnemy.configId === 'mimico_boss' && (
+                <div className="flex items-center gap-1.5">
+                  <div
+                    className={`px-2 py-0.5 rounded text-[10px] font-black tracking-wider uppercase border shadow-md ${
+                      isMimicKnockedOut(targetEnemy)
+                        ? 'bg-amber-950/95 text-yellow-200 border-yellow-400/90 shadow-[0_0_14px_rgba(251,191,36,0.75)] animate-pulse'
+                        : 'bg-rose-950/90 text-rose-200 border-rose-500/80 shadow-[0_0_10px_rgba(244,63,94,0.5)]'
+                    }`}
+                  >
+                    {isMimicKnockedOut(targetEnemy)
+                      ? '📦 NOQUEADO • COFRE NORMAL (x2 DAÑO)'
+                      : '🩸 SANGRADO ACUMULABLE • ATÚRDELO PARA x2'}
                   </div>
                 </div>
               )}
@@ -15932,7 +21796,11 @@ export const CombatView: React.FC = () => {
       <div
         ref={arenaRef}
         className={`relative w-full flex-1 min-h-[300px] flex items-center justify-center ${shouldHideDefeatedEnemy ? 'hidden' : ''} ${
-          targetEnemy?.configId === 'cryovain_boss' || targetEnemy?.configId === 'arana_acorazada_boss'
+          targetEnemy?.configId === 'cryovain_boss' ||
+          targetEnemy?.configId === 'ignivrax_boss' ||
+          isAranaBossConfigId(targetEnemy?.configId) ||
+          targetEnemy?.configId === 'ten_piedad' ||
+          targetEnemy?.configId === 'mimico_boss'
             ? 'overflow-hidden'
             : 'overflow-visible'
         } ${
@@ -15945,27 +21813,41 @@ export const CombatView: React.FC = () => {
             : ''
         }`}
       >
-        {/* Capa de cámara cinematográfica de la arena (zoom centrado sobre Cryovain o la Araña Acorazada y retorno fluido) */}
+        {/* Capa de cámara cinematográfica de la arena (zoom centrado sobre Cryovain, Ignivrax, Araña Acorazada o Ten Piedad) */}
         <div
           className="absolute inset-0 z-0"
           style={{
             transformOrigin:
-              targetEnemy?.configId === 'arana_acorazada_boss'
-                ? aranaVerticalPhase === 'perched' || aranaVerticalPhase === 'climbing'
+              isAranaBossConfigId(targetEnemy?.configId)
+                ? aranaVerticalPhase === 'perched' || aranaVerticalPhase === 'climbing' || aranaVerticalPhase === 'jumping_up'
                   ? '58% 12%'
-                  : aranaVerticalPhase === 'descending' || aranaVerticalPhase === 'falling_flip_1'
+                  : aranaVerticalPhase === 'jumping_down' || aranaVerticalPhase === 'descending' || aranaVerticalPhase === 'falling_flip_1'
                   ? '56% 36%'
+                  : '54% 64%'
+                : targetEnemy?.configId === 'ignivrax_boss'
+                ? ignivraxVerticalPhase === 'flying' || ignivraxVerticalPhase === 'taking_off'
+                  ? '58% 18%'
+                  : ignivraxVerticalPhase === 'gliding' || ignivraxVerticalPhase === 'falling'
+                  ? '56% 40%'
                   : '54% 64%'
                 : '58% 52%',
             transform:
-              targetEnemy?.configId === 'arana_acorazada_boss' && aranaCameraMode === 'boss_focus'
-                ? aranaVerticalPhase === 'perched' || aranaVerticalPhase === 'climbing'
+              isAranaBossConfigId(targetEnemy?.configId) && aranaCameraMode === 'boss_focus'
+                ? aranaVerticalPhase === 'perched' || aranaVerticalPhase === 'climbing' || aranaVerticalPhase === 'jumping_up'
                   ? 'scale(1.30) translate3d(-10px, 12px, 0px)'
-                  : aranaVerticalPhase === 'descending' || aranaVerticalPhase === 'falling_flip_1'
+                  : aranaVerticalPhase === 'jumping_down' || aranaVerticalPhase === 'descending' || aranaVerticalPhase === 'falling_flip_1'
                   ? 'scale(1.28) translate3d(-12px, 0px, 0px)'
                   : 'scale(1.26) translate3d(-10px, -6px, 0px)'
                 : targetEnemy?.configId === 'cryovain_boss' && cryovainCameraMode === 'boss_focus'
                 ? 'scale(1.24) translate3d(-12px, 0px, 0px)'
+                : targetEnemy?.configId === 'ignivrax_boss' && ignivraxCameraMode === 'boss_focus'
+                ? ignivraxVerticalPhase === 'flying' || ignivraxVerticalPhase === 'taking_off'
+                  ? 'scale(1.28) translate3d(-10px, 10px, 0px)'
+                  : ignivraxVerticalPhase === 'gliding' || ignivraxVerticalPhase === 'falling'
+                  ? 'scale(1.26) translate3d(-12px, 0px, 0px)'
+                  : 'scale(1.26) translate3d(-10px, -6px, 0px)'
+                : targetEnemy?.configId === 'ten_piedad' && tenPiedadCameraMode === 'boss_focus'
+                ? 'scale(1.22) translate3d(-14px, 4px, 0px)'
                 : 'scale(1) translate3d(0px, 0px, 0px)',
             transition: 'transform 480ms cubic-bezier(0.22, 1, 0.36, 1)',
           }}
@@ -15994,9 +21876,12 @@ export const CombatView: React.FC = () => {
           const isCryovainCaveCombat =
             selectedCombatMissionId === 'm22_cryovain_final' ||
             targetEnemy?.configId === 'cryovain_boss';
+          const isTenPiedadSantuarioCombat =
+            selectedCombatMissionId === 't2_c2_m1_ten_piedad' ||
+            targetEnemy?.configId === 'ten_piedad';
           const isAranaChamberCombat =
             selectedCombatMissionId === 't2_c1_m4_arana_acorazada' ||
-            targetEnemy?.configId === 'arana_acorazada_boss';
+            isAranaBossConfigId(targetEnemy?.configId);
           const isBarraconCombat =
             selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos' ||
             selectedCombatMissionId === 't2_c1_m2_jauria_salas' ||
@@ -16013,9 +21898,63 @@ export const CombatView: React.FC = () => {
             selectedCombatMissionId === 'evento_coliseo_suenos' ||
             selectedCombatMissionId === 'evento_coliseo_suenos_epilogo' ||
             targetEnemy?.configId === 'gladiador_onirico';
-          const backgroundSrc = (
-                  isCryovainCaveCombat
+          const isIgnivraxCombat =
+            selectedCombatMissionId === 'midas_dungeon_boss_ignivrax' ||
+    selectedCombatMissionId === 'midas_dungeon_boss_caballero' ||
+            selectedCombatMissionId === 'midas_dungeon_n2_c5_horda_ignivrax' ||
+            targetEnemy?.configId === 'ignivrax_boss';
+          const isAranaJoyaCombat =
+            selectedCombatMissionId === 'midas_dungeon_boss_mimico' ||
+            targetEnemy?.configId === 'arana_joya_boss';
+          const isMidasSemiplanoCombat =
+            selectedCombatMissionId === 'midas_dungeon_easy' ||
+            selectedCombatMissionId === 'midas_dungeon_boss_devorador' ||
+            selectedCombatMissionId === 'midas_dungeon_boss_mimico' ||
+            selectedCombatMissionId === 'midas_dungeon_boss_ignivrax' ||
+    selectedCombatMissionId === 'midas_dungeon_boss_caballero' ||
+            selectedCombatMissionId === 'midas_dungeon_easy_insectos' ||
+            selectedCombatMissionId === 'midas_dungeon_easy_aurumvorax' ||
+            Boolean(selectedCombatMissionId?.startsWith('midas_dungeon_n2_')) ||
+            Boolean(parseGoldRunLevelMissionId(selectedCombatMissionId)) ||
+            targetEnemy?.configId === 'guinbang_espada' ||
+            targetEnemy?.configId === 'guinbang_maza' ||
+            targetEnemy?.configId === 'guinbang_saqueador' ||
+            targetEnemy?.configId === 'devorador_hierro' ||
+            targetEnemy?.configId === 'mimico_boss' ||
+            targetEnemy?.configId === 'ignivrax_boss' ||
+            targetEnemy?.configId === 'insecto_joya' ||
+            targetEnemy?.configId === 'insecto_moneda' ||
+            targetEnemy?.configId === 'insecto_collar_perlas' ||
+            targetEnemy?.configId === 'aurumvorax_joven' ||
+            targetEnemy?.configId === 'aurumvorax_alfa' ||
+            targetEnemy?.configId === 'kobold_alado' ||
+            targetEnemy?.configId === 'kobold_escudo_rojo' ||
+            targetEnemy?.configId === 'draco_guardian_rojo' ||
+            targetEnemy?.configId === 'semidragon_rojo_veterano';
+          // Capítulo II (Tundra de Escarcha): bóveda helada congelada.
+          const isTundraCombat =
+            selectedCombatMissionId === 'midas_dungeon_n2_c1_kobolds_alados' ||
+            selectedCombatMissionId === 'midas_dungeon_boss_caballero' ||
+            Boolean(selectedCombatMissionId?.startsWith('midas_lvl_2_')) ||
+            targetEnemy?.configId === 'lobo_tundra' ||
+            targetEnemy?.configId === 'zorro_tundra' ||
+            targetEnemy?.configId === 'conejo_tundra' ||
+            targetEnemy?.configId === 'ciervo_tundra';
+          const backgroundSrc = pvp
+            ? '/assets/backgrounds/icespear_combate_guardias.webp'
+            : (
+                  isAranaJoyaCombat
+                    ? '/assets/backgrounds/boveda_midas_veneno.webp'
+                    : isIgnivraxCombat
+                    ? '/assets/backgrounds/sala_tesoro_ignivrax.webp'
+                    : isTundraCombat
+                    ? '/assets/backgrounds/boveda_midas_tundra.webp'
+                    : isMidasSemiplanoCombat
+                    ? '/assets/backgrounds/mazmorra_midas_piedra.webp'
+                    : isCryovainCaveCombat
                     ? cryovainCavernaEspaciosaBg
+                    : isTenPiedadSantuarioCombat
+                    ? '/assets/backgrounds/iglesia_destrozada_combate.webp'
                     : isAranaChamberCombat
                     ? '/assets/backgrounds/sala_arana_acorazada.webp'
                     : isBarraconCombat
@@ -16062,8 +22001,16 @@ export const CombatView: React.FC = () => {
               <img
                 src={backgroundSrc}
                 alt={
-                  isCryovainCaveCombat
+                  isAranaJoyaCombat
+                    ? 'Bóveda Envenenada de Midas cubierta de oro y bilis esmeralda'
+                    : isIgnivraxCombat
+                    ? 'Sala del Tesoro con Ascuas de Ignivrax en la Mazmorra de Midas'
+                    : isMidasSemiplanoCombat
+                    ? 'Bóveda de Piedra de la Mazmorra de Midas repleta de oro'
+                    : isCryovainCaveCombat
                     ? 'Cueva Helada en la Cima de la Montaña de Cryovain'
+                    : isTenPiedadSantuarioCombat
+                    ? 'Iglesia Destrozada e Invadida por la Maleza de Ten Piedad'
                     : isAranaChamberCombat
                     ? 'Sala Hexagonal Incandescente de la Araña Acorazada'
                     : isBarraconCombat
@@ -16111,12 +22058,60 @@ export const CombatView: React.FC = () => {
               />
               {!isCryovainCaveCombat &&
                 !isAranaChamberCombat &&
+                !isIgnivraxCombat &&
                 !(
                   selectedCombatMissionId === 'm14_planta_intermedia_ferton' ||
                   selectedCombatMissionId === 'm14_planta_intermedia_ferton_epilogo'
                 ) && (
                   <StageAmbientFx effect={AMBIENT_BY_BACKGROUND[backgroundSrc] ?? 'snow'} />
                 )}
+              {isIgnivraxCombat && (
+                <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        'radial-gradient(circle at 60% 56%, rgba(251,146,60,0.24) 0%, rgba(220,38,38,0.14) 50%, rgba(16,6,3,0.34) 100%)',
+                    }}
+                  />
+                  {[5, 11, 17, 23, 29, 36, 42, 48, 54, 60, 66, 72, 78, 83, 88, 92, 96].map((leftPct, i) => (
+                    <span
+                      key={i}
+                      className={`absolute rounded-full ${
+                        i % 3 === 0
+                          ? 'bg-amber-200/95 shadow-[0_0_10px_rgba(251,191,36,0.95)]'
+                          : 'bg-orange-400/90 shadow-[0_0_9px_rgba(249,115,22,0.95)]'
+                      }`}
+                      style={{
+                        left: `${leftPct}%`,
+                        bottom: `${(i % 4) * 8 - 4}%`,
+                        width: `${i % 3 === 0 ? 4.5 : i % 2 === 0 ? 3.5 : 2.5}px`,
+                        height: `${i % 3 === 0 ? 4.5 : i % 2 === 0 ? 3.5 : 2.5}px`,
+                        animation: `aranaEmberRise ${2.3 + (i % 4) * 0.45}s linear ${(i * 0.21).toFixed(2)}s infinite`,
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+              {isIgnivraxCombat && targetEnemy?.conditions.some((c) => c.type === 'frost_mist') && (
+                <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden z-[5]">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        'linear-gradient(to top, rgba(249,115,22,0.38) 0%, rgba(220,38,38,0.22) 48%, rgba(124,45,18,0.14) 100%)',
+                    }}
+                  />
+                  <div
+                    className="absolute inset-x-[-18%] bottom-[-8%] h-[78%] animate-[cryovainMistDrift_5.2s_ease-in-out_infinite]"
+                    style={{
+                      background:
+                        'radial-gradient(ellipse at 52% 68%, rgba(254,215,170,0.48) 0%, rgba(249,115,22,0.34) 48%, transparent 82%)',
+                      filter: 'blur(12px)',
+                    }}
+                  />
+                </div>
+              )}
               {isCryovainCaveCombat && (
                 <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden">
                   {/* Ventisca de la cima montañosa entrando a la caverna */}
@@ -16142,30 +22137,206 @@ export const CombatView: React.FC = () => {
                   ))}
                 </div>
               )}
-              {isAranaChamberCombat && (
+              {isAranaChamberCombat && (() => {
+                const isAranaWebsBurning = Boolean(
+                  targetEnemy &&
+                    targetEnemy.hp > 0 &&
+                    !targetEnemy.isAshDissolving &&
+                    targetEnemy.hp / Math.max(1, targetEnemy.maxHp) <= 0.25
+                );
+                return (
                 <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden">
                   <div
-                    className="absolute inset-0"
+                    className="absolute inset-0 transition-all duration-700"
                     style={{
-                      background:
-                        'radial-gradient(circle at 64% 62%, rgba(249,115,22,0.24) 0%, rgba(194,65,12,0.12) 48%, rgba(12,10,9,0.35) 100%)',
+                      background: isAranaWebsBurning
+                        ? 'radial-gradient(circle at 58% 54%, rgba(251,146,60,0.40) 0%, rgba(234,88,12,0.24) 52%, rgba(24,8,4,0.38) 100%)'
+                        : 'radial-gradient(circle at 64% 62%, rgba(249,115,22,0.24) 0%, rgba(194,65,12,0.12) 48%, rgba(12,10,9,0.35) 100%)',
                     }}
                   />
-                  {[8, 19, 31, 44, 57, 68, 79, 90].map((leftPct, i) => (
+                  {/* Telaraña radial anclada a los muros, cornisas, rocas y puente en ruinas; degradado corto justo del balcón para arriba, sin cubrir balcón ni zona del héroe */}
+                  <svg
+                    aria-hidden="true"
+                    style={{ top: '-2%', width: 407, height: 432 }}
+                    className="absolute left-0 pointer-events-none z-[2] overflow-visible"
+                    viewBox="0 0 407 432"
+                  >
+                    <defs>
+                      <linearGradient id="aranaUpperWebSilk" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#e2e8f0" stopOpacity="0.82" />
+                        <stop offset="55%" stopColor="#cbd5e1" stopOpacity="0.72" />
+                        <stop offset="88%" stopColor="#e2e8f0" stopOpacity="0.64" />
+                        <stop offset="100%" stopColor="#fdba74" stopOpacity="0.62" />
+                      </linearGradient>
+                      <linearGradient id="aranaUpperWebCenter" x1="20%" y1="0%" x2="80%" y2="100%">
+                        <stop offset="0%" stopColor="#f1f5f9" stopOpacity="0.86" />
+                        <stop offset="55%" stopColor="#cbd5e1" stopOpacity="0.76" />
+                        <stop offset="88%" stopColor="#fdba74" stopOpacity="0.68" />
+                        <stop offset="100%" stopColor="#fb923c" stopOpacity="0.66" />
+                      </linearGradient>
+                      <linearGradient id="aranaFireWebSilk" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#fef08a" stopOpacity="0.96" />
+                        <stop offset="45%" stopColor="#fb923c" stopOpacity="0.94" />
+                        <stop offset="100%" stopColor="#ea580c" stopOpacity="0.90" />
+                      </linearGradient>
+                      <linearGradient id="aranaFireWebCenter" x1="20%" y1="0%" x2="80%" y2="100%">
+                        <stop offset="0%" stopColor="#fffbeb" stopOpacity="0.98" />
+                        <stop offset="45%" stopColor="#fbbf24" stopOpacity="0.96" />
+                        <stop offset="100%" stopColor="#f97316" stopOpacity="0.92" />
+                      </linearGradient>
+                      <radialGradient id="aranaUpperWebVignette" cx="58%" cy="44%" r="52%">
+                        <stop offset="0%" stopColor={isAranaWebsBurning ? '#fb923c' : '#e7e5e4'} stopOpacity={isAranaWebsBurning ? '0.28' : '0.16'} />
+                        <stop offset="65%" stopColor={isAranaWebsBurning ? '#ea580c' : '#78716c'} stopOpacity={isAranaWebsBurning ? '0.14' : '0.06'} />
+                        <stop offset="100%" stopColor="#0c0a09" stopOpacity="0" />
+                      </radialGradient>
+                      <radialGradient id="aranaWebFlameAura" cx="50%" cy="68%" r="55%">
+                        <stop offset="0%" stopColor="#fef08a" stopOpacity="0.95" />
+                        <stop offset="42%" stopColor="#f97316" stopOpacity="0.75" />
+                        <stop offset="100%" stopColor="#dc2626" stopOpacity="0" />
+                      </radialGradient>
+                      <linearGradient id="aranaWebBalconyFade" x1="0" y1="342" x2="0" y2="375" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#ffffff" />
+                        <stop offset="100%" stopColor="#000000" />
+                      </linearGradient>
+                      <mask id="aranaWebBalconyMask" maskUnits="userSpaceOnUse" x="-60" y="-60" width="527" height="552">
+                        <rect x="-60" y="-60" width="527" height="402" fill="#ffffff" />
+                        <rect x="-60" y="342" width="527" height="33" fill="url(#aranaWebBalconyFade)" />
+                        <rect x="-60" y="375" width="527" height="117" fill="#000000" />
+                      </mask>
+                      <filter id="aranaHeroPocketBlur" x="-30%" y="-30%" width="160%" height="160%">
+                        <feGaussianBlur stdDeviation="11" />
+                      </filter>
+                      <mask id="aranaWebHeroPocketMask" maskUnits="userSpaceOnUse" x="-60" y="-60" width="527" height="552">
+                        <rect x="-60" y="-60" width="527" height="552" fill="#ffffff" />
+                        <rect
+                          x="-36"
+                          y="280"
+                          width="182"
+                          height="190"
+                          rx="28"
+                          fill="#000000"
+                          filter="url(#aranaHeroPocketBlur)"
+                        />
+                      </mask>
+                    </defs>
+
+                    <g mask="url(#aranaWebBalconyMask)">
+                      <g mask="url(#aranaWebHeroPocketMask)">
+                        {/* Bruma sedosa sutil detrás del centro de la telaraña */}
+                        <circle cx="236" cy="136" r="205" fill="url(#aranaUpperWebVignette)" />
+
+                        <g
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          style={
+                            isAranaWebsBurning
+                              ? { animation: 'aranaWebFirePulse 1.15s ease-in-out infinite' }
+                              : undefined
+                          }
+                        >
+                          {/* 1) Contorno de tinta oscura o brasa incandescente al arder */}
+                          <g
+                            stroke={isAranaWebsBurning ? '#ea580c' : '#14110f'}
+                            strokeOpacity={isAranaWebsBurning ? 0.78 : 0.62}
+                            strokeWidth={isAranaWebsBurning ? 3.1 : 1.95}
+                          >
+                            {ARANA_MAIN_ORB_WEB.spokePaths.map((d, i) => (
+                              <path key={`ms-ink-${i}`} d={d} />
+                            ))}
+                          </g>
+                          <g
+                            stroke={isAranaWebsBurning ? '#ea580c' : '#14110f'}
+                            strokeOpacity={isAranaWebsBurning ? 0.72 : 0.54}
+                            strokeWidth={isAranaWebsBurning ? 2.5 : 1.45}
+                          >
+                            <circle cx="236" cy="136" r="10.5" />
+                            {ARANA_MAIN_ORB_WEB.ringPaths.map((d, i) => (
+                              <path key={`mr-ink-${i}`} d={d} />
+                            ))}
+                          </g>
+
+                          {/* 2) Seda gris ceniza o filamentos ardientes cuando queda <= 25% PV */}
+                          <g
+                            stroke={isAranaWebsBurning ? 'url(#aranaFireWebCenter)' : 'url(#aranaUpperWebCenter)'}
+                            strokeWidth={isAranaWebsBurning ? 1.55 : 1.15}
+                          >
+                            {ARANA_MAIN_ORB_WEB.spokePaths.map((d, i) => (
+                              <path key={`ms-silk-${i}`} d={d} />
+                            ))}
+                          </g>
+                          <g
+                            stroke={isAranaWebsBurning ? 'url(#aranaFireWebSilk)' : 'url(#aranaUpperWebSilk)'}
+                            strokeWidth={isAranaWebsBurning ? 1.28 : 0.92}
+                          >
+                            <circle cx="236" cy="136" r="10.5" />
+                            {ARANA_MAIN_ORB_WEB.ringPaths.map((d, i) => (
+                              <path key={`mr-silk-${i}`} d={d} />
+                            ))}
+                          </g>
+                        </g>
+
+                        {/* Lenguas de fuego sobre las telarañas cuando la araña baja del 25% de vida */}
+                        {isAranaWebsBurning && (
+                          <g>
+                            {[
+                              { x: 52, y: 120, r: 22, d: '0s' },
+                              { x: 108, y: 74, r: 20, d: '0.25s' },
+                              { x: 162, y: 175, r: 24, d: '0.5s' },
+                              { x: 236, y: 132, r: 28, d: '0.15s' },
+                              { x: 304, y: 92, r: 24, d: '0.42s' },
+                              { x: 356, y: 184, r: 23, d: '0.68s' },
+                              { x: 244, y: 266, r: 25, d: '0.33s' },
+                              { x: 318, y: 274, r: 22, d: '0.58s' },
+                            ].map((flame, idx) => (
+                              <g
+                                key={`web-flame-${idx}`}
+                                style={{
+                                  transformOrigin: `${flame.x}px ${flame.y}px`,
+                                  animation: `aranaWebFlameLick ${0.85 + (idx % 3) * 0.22}s ease-in-out ${flame.d} infinite`,
+                                }}
+                              >
+                                <circle cx={flame.x} cy={flame.y} r={flame.r} fill="url(#aranaWebFlameAura)" />
+                                <path
+                                  d={`M ${flame.x - flame.r * 0.36} ${flame.y + 4} Q ${flame.x - 4} ${flame.y - flame.r * 1.1} ${flame.x + 2} ${flame.y - flame.r * 1.35} Q ${flame.x + flame.r * 0.45} ${flame.y - flame.r * 0.4} ${flame.x + flame.r * 0.34} ${flame.y + 4} Z`}
+                                  fill="#fb923c"
+                                  fillOpacity="0.62"
+                                />
+                                <path
+                                  d={`M ${flame.x - flame.r * 0.18} ${flame.y + 3} Q ${flame.x} ${flame.y - flame.r * 0.72} ${flame.x + 1} ${flame.y - flame.r * 0.92} Q ${flame.x + flame.r * 0.22} ${flame.y - flame.r * 0.25} ${flame.x + flame.r * 0.16} ${flame.y + 3} Z`}
+                                  fill="#fef08a"
+                                  fillOpacity="0.78"
+                                />
+                              </g>
+                            ))}
+                          </g>
+                        )}
+                      </g>
+                    </g>
+                  </svg>
+                  {(isAranaWebsBurning
+                    ? [4, 12, 19, 27, 36, 44, 53, 61, 68, 76, 84, 92]
+                    : [8, 19, 31, 44, 57, 68, 79, 90]
+                  ).map((leftPct, i) => (
                     <span
                       key={i}
-                      className="absolute rounded-full bg-orange-300/90 shadow-[0_0_8px_rgba(251,146,60,0.95)]"
+                      className={`absolute rounded-full ${
+                        isAranaWebsBurning
+                          ? 'bg-amber-300/95 shadow-[0_0_12px_rgba(249,115,22,1)]'
+                          : 'bg-orange-300/90 shadow-[0_0_8px_rgba(251,146,60,0.95)]'
+                      }`}
                       style={{
                         left: `${leftPct}%`,
                         bottom: `${(i % 3) * 10 - 6}%`,
-                        width: `${i % 2 === 0 ? 4 : 2.5}px`,
-                        height: `${i % 2 === 0 ? 4 : 2.5}px`,
-                        animation: `aranaEmberRise ${2.8 + (i % 4) * 0.55}s linear ${(i * 0.34).toFixed(2)}s infinite`,
+                        width: `${isAranaWebsBurning ? (i % 2 === 0 ? 5 : 3.5) : i % 2 === 0 ? 4 : 2.5}px`,
+                        height: `${isAranaWebsBurning ? (i % 2 === 0 ? 5 : 3.5) : i % 2 === 0 ? 4 : 2.5}px`,
+                        animation: `aranaEmberRise ${(isAranaWebsBurning ? 1.9 : 2.8) + (i % 4) * 0.45}s linear ${(i * 0.26).toFixed(2)}s infinite`,
                       }}
                     />
                   ))}
                 </div>
-              )}
+                );
+              })()}
               {isAranaChamberCombat && targetEnemy?.conditions.some((c) => c.type === 'frost_mist') && (
                 <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden z-[5]">
                   <div
@@ -16258,12 +22429,16 @@ export const CombatView: React.FC = () => {
 
         {/* Tactical Multi-Enemy Formation Roster + Loot + Flashes + Floating Texts serán movidos fuera de la capa de zoom al cerrar arenaCameraLayer */}
 
-        {/* HERO: MAGORDITO / SMURPH DRACO (En Cryovain o Araña Acorazada pasa a primer plano izquierdo para dar espacio al jefe centrado) */}
+        {/* HERO: MAGORDITO / SMURPH DRACO (En Cryovain, Araña Acorazada o Ten Piedad pasa a primer plano izquierdo para dar espacio al jefe centrado) */}
         <div
           key="hero-sprite-wrapper"
           style={{
             bottom:
-              targetEnemy?.configId === 'cryovain_boss' || targetEnemy?.configId === 'arana_acorazada_boss'
+              targetEnemy?.configId === 'cryovain_boss' ||
+              targetEnemy?.configId === 'ignivrax_boss' ||
+              isAranaBossConfigId(targetEnemy?.configId) ||
+              targetEnemy?.configId === 'ten_piedad' ||
+              targetEnemy?.configId === 'mimico_boss'
                 ? '3.5%'
                 : 'calc(5% + 4px)',
             transform:
@@ -16276,7 +22451,11 @@ export const CombatView: React.FC = () => {
                 : undefined, // el paso hacia el enemigo lo anima `heroAttackStep`, que arranca en 0
           }}
           className={`absolute ${
-            targetEnemy?.configId === 'cryovain_boss' || targetEnemy?.configId === 'arana_acorazada_boss'
+            targetEnemy?.configId === 'cryovain_boss' ||
+            targetEnemy?.configId === 'ignivrax_boss' ||
+            isAranaBossConfigId(targetEnemy?.configId) ||
+            targetEnemy?.configId === 'ten_piedad' ||
+            targetEnemy?.configId === 'mimico_boss'
               ? 'left-[4%]'
               : 'left-[6.5%]'
           } w-[149px] h-[256px] flex items-end justify-center transition-all duration-300 z-30 ${
@@ -16358,6 +22537,13 @@ export const CombatView: React.FC = () => {
                 ❄️ {isCurrentHeroFrostFrozen ? 'CONGELADO' : `ESCARCHA ${activeHeroFrostStacks}/3`}
               </div>
             )}
+            {activeHeroInsectVenomStacks > 0 && (
+              <div
+                className={`absolute ${activeHeroFrostStacks > 0 ? '-top-14' : '-top-8'} left-1/2 -translate-x-1/2 z-30 pointer-events-none whitespace-nowrap rounded-full border border-emerald-400/80 bg-emerald-950/90 px-2 py-0.5 text-[9px] font-black tracking-wider text-emerald-200 shadow-[0_0_14px_rgba(34,197,94,0.7)] animate-pulse`}
+              >
+                ☣️ VENENO x{activeHeroInsectVenomStacks} · -{getInsectVenomAtkPenaltyPct(activeHeroInsectVenomStacks)}% ATQ
+              </div>
+            )}
 
             {/* Aura helada reactiva cuando el héroe recibe daño de hielo */}
             {isHeroHitShaking && heroImpactDamageType === 'cold' && (
@@ -16388,6 +22574,9 @@ export const CombatView: React.FC = () => {
                     ? 'saturate(0.45) brightness(1.28) contrast(1.08) drop-shadow(0 0 18px rgba(186,230,253,0.95))'
                     : activeHeroFrostStacks > 0
                     ? `saturate(${1 - activeHeroFrostStacks * 0.12}) drop-shadow(0 0 ${activeHeroFrostStacks * 5}px rgba(56,189,248,0.7))`
+                    : '',
+                  activeHeroInsectVenomStacks > 0
+                    ? `drop-shadow(0 0 ${Math.min(18, 6 + activeHeroInsectVenomStacks * 3)}px rgba(34,197,94,0.75))`
                     : '',
                 ].filter(Boolean).join(' ') || undefined,
               }}
@@ -16650,7 +22839,7 @@ export const CombatView: React.FC = () => {
           )}
 
         {/* CAPULLO DE CENIZA EN PRIMER PLANO CUBRIENDO EL CAMPO DE BATALLA */}
-        {targetEnemy?.configId === 'arana_acorazada_boss' &&
+        {isAranaBossConfigId(targetEnemy?.configId) &&
           targetEnemy.hp > 0 &&
           !targetEnemy.isAshDissolving &&
           targetEnemy.conditions.some((c) => c.type === 'frost_mist') && (
@@ -16674,42 +22863,146 @@ export const CombatView: React.FC = () => {
             </div>
           )}
 
+        {/* MANTO DE BRASAS EN PRIMER PLANO CUBRIENDO EL CAMPO DE BATALLA */}
+        {targetEnemy?.configId === 'ignivrax_boss' &&
+          targetEnemy.hp > 0 &&
+          !targetEnemy.isAshDissolving &&
+          targetEnemy.conditions.some((c) => c.type === 'frost_mist') && (
+            <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden z-[22]">
+              <div
+                className="absolute inset-0"
+                style={{
+                  boxShadow: 'inset 0 0 54px rgba(249,115,22,0.52), inset 0 -46px 64px rgba(220,38,38,0.42)',
+                  background:
+                    'linear-gradient(to top, rgba(251,146,60,0.34) 0%, rgba(234,88,12,0.14) 55%, rgba(124,45,18,0.08) 100%)',
+                }}
+              />
+              <div
+                className="absolute inset-x-[-20%] bottom-[-6%] h-[58%] animate-[cryovainMistDrift_4.8s_ease-in-out_infinite]"
+                style={{
+                  background:
+                    'radial-gradient(ellipse at 28% 72%, rgba(254,215,170,0.42) 0%, rgba(249,115,22,0.26) 46%, transparent 78%), radial-gradient(ellipse at 74% 66%, rgba(253,186,116,0.38) 0%, rgba(234,88,12,0.22) 48%, transparent 80%)',
+                  filter: 'blur(11px)',
+                }}
+              />
+            </div>
+          )}
+
         {/* ENEMY ATTACK VFX OVERLAY */}
         <EnemyAttackVfxOverlay
           activeAttack={activeEnemyAttackVisual}
           enemyFrame={enemyVfxFrame}
-          isSmallHeroScale={isAranaBossCombat}
+          isSmallHeroScale={isAranaBossCombat || isIgnivraxBossCombat}
+          heroScaleMul={
+            isAranaBossCombat || isIgnivraxBossCombat
+              ? 0.5
+              : isTenPiedadBossCombat || isMimicoBossCombat
+              ? 0.75
+              : 1
+          }
         />
         {/* SINGLE ACTIVE ENEMY IN ARENA (1 vs 1 Pokemon Style, Stably Mounted) */}
         {targetEnemy && (
           <div
             className={
-              targetEnemy.configId === 'cryovain_boss' || targetEnemy.configId === 'arana_acorazada_boss'
+              targetEnemy.configId === 'cryovain_boss' ||
+              targetEnemy.configId === 'ignivrax_boss' ||
+              isAranaBossConfigId(targetEnemy.configId) ||
+              targetEnemy.configId === 'ten_piedad' ||
+              targetEnemy.configId === 'mimico_boss'
                 ? 'absolute inset-0 overflow-hidden pointer-events-none z-[14]'
                 : 'absolute inset-0 overflow-visible pointer-events-none z-20'
             }
           >
-          {/* Hilos de telaraña anclados al margen superior de la cámara para la Araña Acorazada */}
-          {targetEnemy.configId === 'arana_acorazada_boss' &&
-            !targetEnemy.isAshDissolving &&
-            targetEnemy.hp > 0 &&
-            (aranaVerticalPhase === 'perched' ||
-              aranaVerticalPhase === 'descending' ||
-              aranaVerticalPhase === 'climbing') && (
-              <svg
-                aria-hidden="true"
-                className="absolute inset-x-0 top-0 w-full h-[55%] pointer-events-none z-[12] opacity-70"
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-              >
-                <line x1="48" y1="0" x2="54" y2={aranaVerticalPhase === 'descending' ? '44' : '16'} stroke="#e7e5e4" strokeWidth="0.35" />
-                <line x1="58" y1="0" x2="58" y2={aranaVerticalPhase === 'descending' ? '48' : '18'} stroke="#f5f5f4" strokeWidth="0.45" />
-                <line x1="68" y1="0" x2="62" y2={aranaVerticalPhase === 'descending' ? '44' : '16'} stroke="#d6d3d1" strokeWidth="0.35" />
-              </svg>
-            )}
+
+          {/* Onda sísmica bajo Ten Piedad al ejecutar Pisotón */}
+          {targetEnemy.configId === 'ten_piedad' && tenPiedadFloorCrackKey > 0 && !targetEnemy.isAshDissolving && (
+            <div
+              key={`ten-piedad-stomp-wave-${tenPiedadFloorCrackKey}`}
+              aria-hidden="true"
+              className="absolute left-[58%] bottom-[2.5%] w-[290px] h-[46px] rounded-full border-4 border-lime-400/85 bg-lime-600/20 shadow-[0_0_24px_rgba(132,204,22,0.75)] pointer-events-none z-[13] animate-[tenPiedadStompRing_0.7s_ease-out_forwards]"
+            />
+          )}
+
+          {/* Cráter ardiente persistente en el suelo y sombra dinámica de Ignivrax */}
+          {targetEnemy.configId === 'ignivrax_boss' && (
+            <>
+              {ignivraxCraterVisible && (
+                <div
+                  aria-hidden="true"
+                  className="absolute left-[55%] bottom-[1%] -translate-x-1/2 w-[310px] h-[66px] pointer-events-none z-[1]"
+                >
+                  <svg viewBox="0 0 310 66" className="w-full h-full overflow-visible">
+                    <defs>
+                      <radialGradient id="ignivraxCraterLava" cx="50%" cy="52%" r="52%">
+                        <stop offset="0%" stopColor="#fde047" stopOpacity="0.92" />
+                        <stop offset="35%" stopColor="#f97316" stopOpacity="0.86" />
+                        <stop offset="72%" stopColor="#7c2d12" stopOpacity="0.88" />
+                        <stop offset="100%" stopColor="#1c1917" stopOpacity="0" />
+                      </radialGradient>
+                    </defs>
+                    <ellipse cx="155" cy="36" rx="134" ry="26" fill="url(#ignivraxCraterLava)" />
+                    <ellipse
+                      cx="155"
+                      cy="36"
+                      rx="126"
+                      ry="22"
+                      fill="none"
+                      stroke="#292524"
+                      strokeWidth="5"
+                      strokeDasharray="18 7 12 6"
+                      opacity="0.92"
+                    />
+                    <path
+                      d="M52 34 L94 31 L118 22 M155 16 L158 36 L146 53 M192 22 L212 34 L256 38 M98 44 L132 39 M182 40 L224 49"
+                      fill="none"
+                      stroke="#fdba74"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                      opacity="0.9"
+                    />
+                  </svg>
+                </div>
+              )}
+              {ignivraxCraterPulseKey > 0 && !targetEnemy.isAshDissolving && (
+                <div
+                  key={`ignivrax-crater-wave-${ignivraxCraterPulseKey}`}
+                  aria-hidden="true"
+                  className="absolute left-[55%] bottom-[2.5%] w-[320px] h-[54px] rounded-full border-4 border-orange-300/90 bg-orange-500/25 shadow-[0_0_28px_rgba(249,115,22,0.85)] pointer-events-none z-[13] animate-[aranaFloorSlamShockwave_0.72s_ease-out_forwards]"
+                />
+              )}
+              <img
+                src="/assets/aistudio/sombra_6ce1cba3.webp"
+                alt="Sombra"
+                data-enemy-shadow=""
+                style={{
+                  width:
+                    ignivraxVerticalPhase === 'grounded' || ignivraxVerticalPhase === 'crater_slam'
+                      ? 320
+                      : ignivraxVerticalPhase === 'gliding' || ignivraxVerticalPhase === 'taking_off'
+                      ? 268
+                      : 215,
+                  height:
+                    ignivraxVerticalPhase === 'grounded' || ignivraxVerticalPhase === 'crater_slam'
+                      ? 38
+                      : 26,
+                  bottom: '3.5%',
+                  opacity:
+                    targetEnemy.isAshDissolving || targetEnemy.hp <= 0
+                      ? 0
+                      : ignivraxVerticalPhase === 'grounded' || ignivraxVerticalPhase === 'crater_slam'
+                      ? 0.72
+                      : ignivraxVerticalPhase === 'gliding' || ignivraxVerticalPhase === 'taking_off'
+                      ? 0.48
+                      : 0.28,
+                }}
+                className="absolute left-[56%] -translate-x-1/2 object-fill pointer-events-none z-0 transition-all duration-300"
+              />
+            </>
+          )}
 
           {/* Sombra proyectada en el suelo de piedra bajo la Araña Acorazada (crece al descender o caer) */}
-          {targetEnemy.configId === 'arana_acorazada_boss' && (
+          {isAranaBossConfigId(targetEnemy.configId) && (
             <>
               <img
                 src="/assets/aistudio/sombra_6ce1cba3.webp"
@@ -16719,7 +23012,7 @@ export const CombatView: React.FC = () => {
                   width:
                     aranaVerticalPhase === 'grounded'
                       ? 312
-                      : aranaVerticalPhase === 'descending' || aranaVerticalPhase === 'falling_flip_2'
+                      : aranaVerticalPhase === 'jumping_down' || aranaVerticalPhase === 'jumping_up' || aranaVerticalPhase === 'descending' || aranaVerticalPhase === 'falling_flip_2'
                       ? 268
                       : 215,
                   height: aranaVerticalPhase === 'grounded' ? 38 : 26,
@@ -16729,8 +23022,8 @@ export const CombatView: React.FC = () => {
                       ? 0
                       : aranaVerticalPhase === 'grounded'
                       ? 0.68
-                      : aranaVerticalPhase === 'descending' || aranaVerticalPhase === 'falling_flip_2'
-                      ? 0.48
+                      : aranaVerticalPhase === 'jumping_down' || aranaVerticalPhase === 'jumping_up' || aranaVerticalPhase === 'descending' || aranaVerticalPhase === 'falling_flip_2'
+                      ? 0.46
                       : 0.28,
                 }}
                 className="absolute left-[56%] -translate-x-1/2 object-fill pointer-events-none z-0 transition-all duration-300"
@@ -16751,10 +23044,10 @@ export const CombatView: React.FC = () => {
             key={`active-enemy-${targetEnemy.uid}`}
             data-enemy-sprite={targetEnemy.uid}
             style={{
-              ...(targetEnemy.configId === 'arana_acorazada_boss'
+              ...(isAranaBossConfigId(targetEnemy.configId)
                 ? {
                     top:
-                      aranaVerticalPhase === 'perched'
+                      aranaVerticalPhase === 'perched' || aranaVerticalPhase === 'jumping_up'
                         ? '-2%'
                         : aranaVerticalPhase === 'climbing'
                         ? '2%'
@@ -16772,17 +23065,52 @@ export const CombatView: React.FC = () => {
                         ? 'translateX(-14px)'
                         : aranaVerticalPhase === 'falling_flip_2'
                         ? 'translateX(-22px)'
-                        : aranaVerticalPhase === 'grounded'
+                        : aranaVerticalPhase === 'jumping_down' || aranaVerticalPhase === 'grounded'
                         ? 'translateX(-18px)'
                         : undefined,
                     transition:
-                      aranaVerticalPhase === 'falling_flip_1' || aranaVerticalPhase === 'falling_flip_2'
+                      aranaVerticalPhase === 'jumping_down'
+                        ? 'top 340ms cubic-bezier(0.32, 0.08, 0.72, 0.45), transform 340ms ease-in'
+                        : aranaVerticalPhase === 'jumping_up'
+                        ? 'top 380ms cubic-bezier(0.22, 0.9, 0.36, 1), transform 380ms cubic-bezier(0.22, 0.9, 0.36, 1)'
+                        : aranaVerticalPhase === 'falling_flip_1' || aranaVerticalPhase === 'falling_flip_2'
                         ? 'top 175ms cubic-bezier(0.55, 0.06, 0.85, 0.45), transform 175ms ease-in'
                         : aranaVerticalPhase === 'descending'
                         ? 'top 230ms cubic-bezier(0.22, 1, 0.36, 1), transform 230ms cubic-bezier(0.22, 1, 0.36, 1)'
                         : aranaVerticalPhase === 'grounded'
-                        ? 'top 180ms cubic-bezier(0.22, 1, 0.36, 1), transform 180ms ease-out'
+                        ? 'top 160ms cubic-bezier(0.22, 1, 0.36, 1), transform 160ms ease-out'
                         : 'top 300ms cubic-bezier(0.22, 1, 0.36, 1), transform 300ms ease-out',
+                  }
+                : targetEnemy.configId === 'ignivrax_boss'
+                ? {
+                    top:
+                      ignivraxVerticalPhase === 'flying'
+                        ? '2%'
+                        : ignivraxVerticalPhase === 'taking_off'
+                        ? '4%'
+                        : ignivraxVerticalPhase === 'gliding'
+                        ? 'calc(68% - 344px)'
+                        : ignivraxVerticalPhase === 'falling'
+                        ? 'calc(76% - 344px)'
+                        : 'calc(97% - 344px)',
+                    transform:
+                      ignivraxVerticalPhase === 'gliding'
+                        ? 'translateX(-26px)'
+                        : ignivraxVerticalPhase === 'falling'
+                        ? 'translateX(-12px)'
+                        : ignivraxVerticalPhase === 'crater_slam' || ignivraxVerticalPhase === 'grounded'
+                        ? 'translateX(-14px)'
+                        : undefined,
+                    transition:
+                      ignivraxVerticalPhase === 'gliding'
+                        ? 'top 400ms cubic-bezier(0.32, 0.08, 0.72, 0.45), transform 400ms ease-in'
+                        : ignivraxVerticalPhase === 'crater_slam'
+                        ? 'top 180ms cubic-bezier(0.22, 1, 0.36, 1), transform 180ms ease-out'
+                        : ignivraxVerticalPhase === 'falling'
+                        ? 'top 240ms cubic-bezier(0.55, 0.06, 0.85, 0.45), transform 240ms ease-in'
+                        : ignivraxVerticalPhase === 'taking_off'
+                        ? 'top 380ms cubic-bezier(0.22, 0.9, 0.36, 1), transform 380ms cubic-bezier(0.22, 0.9, 0.36, 1)'
+                        : 'top 320ms cubic-bezier(0.22, 1, 0.36, 1), transform 320ms ease-out',
                   }
                 : {
                     transform:
@@ -16791,6 +23119,12 @@ export const CombatView: React.FC = () => {
                           ? 'translateX(-118px)'
                           : targetEnemy.configId === 'cryovain_boss'
                           ? 'translateX(-4px)'
+                          : targetEnemy.configId === 'ten_piedad'
+                          ? tenPiedadAttackPose === 'barrido'
+                            ? 'translateX(-24px)'
+                            : 'translateX(-6px)'
+                          : targetEnemy.configId === 'mimico_boss'
+                          ? 'translateX(-14px)'
                           : 'translateX(-40px)'
                         : enemySwitchState === 'exit'
                         ? 'translateX(120px)'
@@ -16800,26 +23134,34 @@ export const CombatView: React.FC = () => {
             className={`absolute ${
               targetEnemy.configId === 'cryovain_boss'
                 ? 'left-[calc(56%-184px)] bottom-[2%] z-[14] transition-all duration-300'
-                : targetEnemy.configId === 'arana_acorazada_boss'
+                : targetEnemy.configId === 'ignivrax_boss'
+                ? 'left-[calc(57%-172px)] z-[14]'
+                : targetEnemy.configId === 'ten_piedad'
+                ? 'left-[calc(60%-143px)] bottom-[2%] z-[14] transition-all duration-300'
+                : targetEnemy.configId === 'mimico_boss'
+                ? 'left-[calc(64%-120px)] bottom-[4%] z-[14] transition-all duration-300'
+                : isAranaBossConfigId(targetEnemy.configId)
                 ? 'left-[calc(58%-164px)] z-[14]'
                 : 'right-[5%] bottom-[21%] z-20 transition-all duration-300'
             } ${targetEnemy.scaleClass} flex items-end justify-center ${
               targetEnemy.hp <= 0 &&
               !targetEnemy.isAshDissolving &&
               !(
-                targetEnemy.configId.includes('devorador') &&
+                (targetEnemy.configId === 'devorador_quitinoso' || targetEnemy.configId === 'devorador_quitinoso_p2') &&
                 (targetEnemy.hasPhaseTwo || isDevoradorRoaring || isDevoradorRefilling)
               )
                 ? 'pointer-events-none opacity-0'
                 : ''
             } ${
-              isDevoradorRoaring && targetEnemy.configId.includes('devorador')
+              isDevoradorRoaring && (targetEnemy.configId === 'devorador_quitinoso' || targetEnemy.configId === 'devorador_quitinoso_p2')
                 ? 'animate-[devoradorRoarTremor_0.34s_ease-in-out_infinite] filter drop-shadow-[0_0_26px_rgba(220,38,38,0.85)]'
                 : isZancudoRoaring && targetEnemy.configId === 'semiboss_zancudo'
                 ? 'animate-[devoradorRoarTremor_0.34s_ease-in-out_infinite] filter drop-shadow-[0_0_28px_rgba(168,85,247,0.9)]'
                 : isCryovainRoaring && targetEnemy.configId === 'cryovain_boss'
                 ? 'animate-[devoradorRoarTremor_0.34s_ease-in-out_infinite] filter drop-shadow-[0_0_30px_rgba(56,189,248,0.9)]'
-                : isAranaRoaring && targetEnemy.configId === 'arana_acorazada_boss'
+                : isIgnivraxRoaring && targetEnemy.configId === 'ignivrax_boss'
+                ? 'animate-[devoradorRoarTremor_0.34s_ease-in-out_infinite] filter drop-shadow-[0_0_30px_rgba(249,115,22,0.92)]'
+                : isAranaRoaring && isAranaBossConfigId(targetEnemy.configId)
                 ? 'animate-[devoradorRoarTremor_0.34s_ease-in-out_infinite] filter drop-shadow-[0_0_30px_rgba(249,115,22,0.92)]'
                 : isEnemyHitShaking
                 ? 'animate-[enemyHitShake_0.42s_cubic-bezier(0.2,0.8,0.2,1)_forwards]'
@@ -16834,22 +23176,54 @@ export const CombatView: React.FC = () => {
                 : ''
             }`}
           >
+            {/* Inspección: mantener pulsado sobre el enemigo rellena el emblema y abre su ficha */}
+            <EnemyDossierHold
+              enemy={{
+                uid: targetEnemy.uid,
+                name: targetEnemy.name,
+                title: targetEnemy.title,
+                hp: targetEnemy.hp,
+                maxHp: targetEnemy.maxHp,
+                spriteUrl: getEnemySpriteUrl(targetEnemy),
+              }}
+              dossier={buildEnemyDossier(
+                DUNGEON_ENEMIES[targetEnemy.configId] ?? currentEnemy,
+                targetEnemy.hp
+              )}
+            />
+
             {/* Authentic Shadow anchored in the exact middle of enemy feet / claws contact plane */}
-            {targetEnemy.configId !== 'arana_acorazada_boss' && (
+            {!isAranaBossConfigId(targetEnemy.configId) &&
+              targetEnemy.configId !== 'ignivrax_boss' && (
               <img
                 src="/assets/aistudio/sombra_6ce1cba3.webp"
                 alt="Sombra"
                 data-enemy-shadow=""
                 style={{
-                  width: targetEnemy.configId === 'cryovain_boss' ? 320 : 140,
-                  height: targetEnemy.configId === 'cryovain_boss' ? 38 : 18,
-                  bottom: targetEnemy.configId === 'cryovain_boss' ? '6%' : -9,
+                  width:
+                    targetEnemy.configId === 'cryovain_boss'
+                      ? 320
+                      : targetEnemy.configId === 'ten_piedad'
+                      ? 250
+                      : targetEnemy.configId === 'mimico_boss'
+                      ? isMimicKnockedOut(targetEnemy)
+                        ? 145
+                        : 220
+                      : targetEnemy.configId === 'devorador_hierro'
+                      ? 210
+                      : targetEnemy.configId === 'insecto_joya' ||
+                        targetEnemy.configId === 'insecto_moneda' ||
+                        targetEnemy.configId === 'insecto_collar_perlas'
+                      ? 96
+                      : 140,
+                  height: targetEnemy.configId === 'cryovain_boss' ? 38 : targetEnemy.configId === 'ten_piedad' ? 34 : targetEnemy.configId === 'mimico_boss' ? 28 : 18,
+                  bottom: targetEnemy.configId === 'cryovain_boss' ? '6%' : targetEnemy.configId === 'ten_piedad' || targetEnemy.configId === 'mimico_boss' ? '2%' : -9,
                 }}
                 className={`absolute left-1/2 transform -translate-x-1/2 object-fill pointer-events-none z-0 transition-opacity duration-1000 ${
                   targetEnemy.isAshDissolving ||
                   (targetEnemy.hp <= 0 &&
                     !(
-                      targetEnemy.configId.includes('devorador') &&
+                      (targetEnemy.configId === 'devorador_quitinoso' || targetEnemy.configId === 'devorador_quitinoso_p2') &&
                       (targetEnemy.hasPhaseTwo || isDevoradorRoaring || isDevoradorRefilling)
                     ))
                     ? 'opacity-0'
@@ -16862,7 +23236,7 @@ export const CombatView: React.FC = () => {
 
             {/* Enemy Sprite (Transparent Background, Stably Mounted) */}
             <div className="relative w-full h-full flex items-end justify-center">
-              {targetEnemy.configId === 'arana_acorazada_boss' ? (
+              {isAranaBossConfigId(targetEnemy.configId) ? (
                 <div className="relative w-full h-full flex items-start justify-center overflow-visible">
                   <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={328} height={278} />
 
@@ -16886,51 +23260,127 @@ export const CombatView: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Sprite animado de la Araña Acorazada (colgada arriba, descenso tipo Cryovain y giro al caer) */}
-                  <img
-                    ref={enemySpriteImgRef}
-                    data-enemy-main=""
-                    key={`enemy-arana-single-${targetEnemy.uid}`}
-                    src={getEnemySpriteUrl(targetEnemy)}
+                  {/* Sprite animado de la Araña Acorazada (sin telaraña en el sprite; todas las patas sujetadas a hilos por encima) */}
+                  <div
                     style={{
                       transformOrigin:
-                        aranaVerticalPhase === 'falling_flip_1' || aranaVerticalPhase === 'falling_flip_2'
+                        aranaVerticalPhase === 'jumping_down' ||
+                        aranaVerticalPhase === 'jumping_up' ||
+                        aranaVerticalPhase === 'falling_flip_1' ||
+                        aranaVerticalPhase === 'falling_flip_2'
                           ? 'center center'
                           : aranaVerticalPhase === 'grounded'
                           ? 'bottom center'
-                          : 'top center',
-                      ...(!isEnemyHitShaking && !targetEnemy.isAshDissolving
-                        ? enemyStatusShaderFilter
-                          ? { filter: enemyStatusShaderFilter }
-                          : undefined
-                        : undefined),
+                          : '50% 44%',
                     }}
-                    alt="Araña Acorazada"
-                    className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-[10] ${
+                    className={`relative h-full aspect-square shrink-0 flex items-center justify-center overflow-visible ${
                       targetEnemy.isAshDissolving
                         ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                        : aranaVerticalPhase === 'jumping_down'
+                        ? 'animate-[aranaJumpDownArc_0.34s_cubic-bezier(0.28,0.84,0.42,1)_forwards]'
+                        : aranaVerticalPhase === 'jumping_up'
+                        ? 'animate-[aranaJumpUpArc_0.38s_cubic-bezier(0.22,1,0.36,1)_forwards]'
                         : aranaVerticalPhase === 'falling_flip_1'
-                        ? 'animate-[aranaFlipTumble1_0.18s_ease-in_forwards] filter drop-shadow-[0_0_24px_rgba(249,115,22,0.85)]'
+                        ? 'animate-[aranaFlipTumble1_0.18s_ease-in_forwards]'
                         : aranaVerticalPhase === 'falling_flip_2'
-                        ? 'animate-[aranaFlipLand2_0.18s_ease-out_forwards] filter drop-shadow-[0_0_26px_rgba(249,115,22,0.85)]'
+                        ? 'animate-[aranaFlipLand2_0.18s_ease-out_forwards]'
                         : isEnemyHitShaking
                         ? getDndImpactAnimationClass(enemyImpactDamageType)
                         : targetEnemy.animation === 'strike' && aranaAttackPose === 'barrido'
-                        ? 'animate-[aranaDiveBarrido_0.66s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_28px_rgba(249,115,22,0.82)]'
+                        ? aranaVerticalPhase === 'grounded'
+                          ? 'animate-[aranaGroundBarrido_0.60s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                          : 'animate-[aranaDiveBarrido_0.66s_cubic-bezier(0.16,1,0.3,1)_forwards]'
                         : targetEnemy.animation === 'strike' && aranaAttackPose === 'telarana'
-                        ? 'animate-[aranaCeilingSpit_0.66s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_26px_rgba(245,245,244,0.85)]'
+                        ? aranaVerticalPhase === 'grounded'
+                          ? 'animate-[aranaSingleSpitLunge_0.62s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                          : 'animate-[aranaCeilingSpit_0.66s_cubic-bezier(0.16,1,0.3,1)_forwards]'
                         : targetEnemy.animation === 'strike' && aranaAttackPose === 'bola_fuego'
-                        ? 'animate-[aranaSingleSpitLunge_0.68s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_28px_rgba(249,115,22,0.85)]'
+                        ? 'animate-[aranaSingleSpitLunge_0.68s_cubic-bezier(0.16,1,0.3,1)_forwards]'
                         : (targetEnemy.animation === 'strike' && aranaAttackPose === 'aliento') ||
                           aranaAttackPose === 'ceniza'
-                        ? 'animate-[aranaSingleBreathAttack_1.04s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_30px_rgba(249,115,22,0.92)]'
+                        ? 'animate-[aranaSingleBreathAttack_1.04s_cubic-bezier(0.16,1,0.3,1)_forwards]'
                         : aranaAttackPose === 'chirrido' || isAranaRoaring
-                        ? 'animate-[aranaSingleRoar_1.06s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_30px_rgba(249,115,22,0.92)]'
+                        ? 'animate-[aranaSingleRoar_1.06s_cubic-bezier(0.16,1,0.3,1)_forwards]'
                         : aranaVerticalPhase === 'grounded'
-                        ? 'animate-[aranaBodyBreath_3.6s_ease-in-out_infinite] filter drop-shadow-[0_0_20px_rgba(249,115,22,0.42)]'
-                        : 'animate-[aranaCeilingHangSway_4.2s_ease-in-out_infinite] filter drop-shadow-[0_0_18px_rgba(249,115,22,0.42)]'
+                        ? 'animate-[aranaBodyBreath_3.6s_ease-in-out_infinite]'
+                        : aranaVerticalPhase === 'perched'
+                        ? 'animate-[aranaPerchedBreath_3.2s_ease-in-out_infinite]'
+                        : ''
                     }`}
-                  />
+                  >
+                    {/* Hilo de seda limpio al descender desde la telaraña superior */}
+                    {!targetEnemy.isAshDissolving &&
+                      targetEnemy.hp > 0 &&
+                      aranaVerticalPhase === 'descending' && (
+                        <svg
+                          aria-hidden="true"
+                          viewBox="0 0 100 100"
+                          className="absolute inset-0 w-full h-full overflow-visible pointer-events-none z-[9]"
+                        >
+                          <defs>
+                            <linearGradient id="aranaLegThreadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                              <stop offset="0%" stopColor="#94a3b8" stopOpacity="0.82" />
+                              <stop offset="65%" stopColor="#cbd5e1" stopOpacity="0.88" />
+                              <stop offset="100%" stopColor="#fed7aa" stopOpacity="0.68" />
+                            </linearGradient>
+                          </defs>
+                          <g fill="none" strokeLinecap="round">
+                            <g stroke="#14110f" strokeOpacity="0.78" strokeWidth="1.4">
+                              <line x1="66" y1="20" x2="66" y2="-220" />
+                              <line x1="74" y1="22" x2="73" y2="-220" />
+                            </g>
+                            <g stroke="url(#aranaLegThreadGrad)" strokeWidth="0.72">
+                              <line x1="66" y1="20" x2="66" y2="-220" />
+                              <line x1="74" y1="22" x2="73" y2="-220" />
+                            </g>
+                          </g>
+                        </svg>
+                      )}
+
+                    <img
+                      ref={enemySpriteImgRef}
+                      data-enemy-main=""
+                      key={`enemy-arana-single-${targetEnemy.uid}`}
+                      src={getEnemySpriteUrl(targetEnemy)}
+                      style={{
+                        ...(!isEnemyHitShaking && !targetEnemy.isAshDissolving
+                          ? enemyStatusShaderFilter
+                            ? { filter: enemyStatusShaderFilter }
+                            : undefined
+                          : undefined),
+                      }}
+                      alt="Araña Acorazada"
+                      className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-[10] ${
+                        aranaVerticalPhase === 'jumping_down' || aranaVerticalPhase === 'jumping_up'
+                          ? 'filter drop-shadow-[0_0_24px_rgba(249,115,22,0.82)]'
+                          : aranaVerticalPhase === 'falling_flip_1'
+                          ? 'filter drop-shadow-[0_0_24px_rgba(249,115,22,0.85)]'
+                          : aranaVerticalPhase === 'falling_flip_2'
+                          ? 'filter drop-shadow-[0_0_26px_rgba(249,115,22,0.85)]'
+                          : targetEnemy.animation === 'strike' && aranaAttackPose === 'barrido'
+                          ? 'filter drop-shadow-[0_0_28px_rgba(249,115,22,0.82)]'
+                          : targetEnemy.animation === 'strike' && aranaAttackPose === 'telarana'
+                          ? 'filter drop-shadow-[0_0_26px_rgba(245,245,244,0.85)]'
+                          : targetEnemy.animation === 'strike' && aranaAttackPose === 'bola_fuego'
+                          ? 'filter drop-shadow-[0_0_28px_rgba(249,115,22,0.85)]'
+                          : (targetEnemy.animation === 'strike' && aranaAttackPose === 'aliento') ||
+                            aranaAttackPose === 'ceniza' ||
+                            aranaAttackPose === 'chirrido' ||
+                            isAranaRoaring
+                          ? 'filter drop-shadow-[0_0_30px_rgba(249,115,22,0.92)]'
+                          : aranaVerticalPhase === 'grounded'
+                          ? 'filter drop-shadow-[0_0_20px_rgba(249,115,22,0.42)]'
+                          : 'filter drop-shadow-[0_0_18px_rgba(249,115,22,0.42)]'
+                      }`}
+                    />
+                    {/* Precarga silenciosa del sprite de chasquido sutil de colmillos laterales */}
+                    <img
+                      aria-hidden="true"
+                      src="/assets/combat/arana_acorazada_colgada_chasquido.webp"
+                      alt=""
+                      className="hidden"
+                    />
+                  </div>
 
                   {/* Capullo de ceniza envolviendo a la Araña Acorazada */}
                   {!targetEnemy.isAshDissolving &&
@@ -17133,6 +23583,146 @@ export const CombatView: React.FC = () => {
                     disabled={targetEnemy.isAshDissolving || targetEnemy.hp <= 0}
                   />
                 </div>
+              ) : targetEnemy.configId === 'ignivrax_boss' ? (
+                <div className="relative w-full h-full flex items-start justify-center overflow-visible">
+                  <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={344} height={344} />
+
+                  {/* Aura ígnea alrededor del Tirano Carmesí */}
+                  {!targetEnemy.isAshDissolving && targetEnemy.hp > 0 && (
+                    <div
+                      className={`absolute left-[48%] -translate-x-1/2 w-[260px] h-[44px] rounded-full bg-orange-500/26 blur-md pointer-events-none z-[1] ${
+                        ignivraxVerticalPhase === 'grounded' || ignivraxVerticalPhase === 'crater_slam'
+                          ? '-bottom-1'
+                          : 'top-[46%]'
+                      }`}
+                    />
+                  )}
+
+                  {/* Ondas expansivas al rugir */}
+                  {isIgnivraxRoaring && !targetEnemy.isAshDissolving && (
+                    <div className="absolute inset-0 pointer-events-none z-[15] flex items-center justify-center">
+                      <div className="w-[250px] h-[250px] rounded-full border-4 border-orange-400/85 bg-red-500/14 shadow-[0_0_40px_rgba(249,115,22,0.9)] animate-[devoradorRoarWave_0.55s_ease-out_infinite]" />
+                      <div
+                        className="absolute w-[195px] h-[195px] rounded-full border-2 border-amber-200/80 animate-[devoradorRoarWave_0.55s_ease-out_infinite]"
+                        style={{ animationDelay: '0.22s' }}
+                      />
+                    </div>
+                  )}
+
+                  {/* Sprite único animado de Ignivrax por acción (Vuelo, Planeo, Cráter, Bolas de Fuego, Aliento, Mordisco, Zarpazo, Caída, Rugido) */}
+                  <div
+                    style={{
+                      transformOrigin:
+                        ignivraxVerticalPhase === 'grounded' || ignivraxVerticalPhase === 'crater_slam'
+                          ? 'bottom center'
+                          : 'center center',
+                    }}
+                    className={`relative h-full aspect-square shrink-0 flex items-center justify-center overflow-visible ${
+                      targetEnemy.isAshDissolving
+                        ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                        : ignivraxVerticalPhase === 'gliding'
+                        ? 'animate-[ignivraxGlideDive_0.42s_cubic-bezier(0.28,0.84,0.42,1)_forwards]'
+                        : ignivraxVerticalPhase === 'crater_slam'
+                        ? 'animate-[ignivraxCraterImpact_0.56s_cubic-bezier(0.22,1,0.36,1)_forwards]'
+                        : ignivraxVerticalPhase === 'taking_off'
+                        ? 'animate-[ignivraxTakeoffArc_0.38s_cubic-bezier(0.22,1,0.36,1)_forwards]'
+                        : ignivraxVerticalPhase === 'falling'
+                        ? 'animate-[ignivraxFallingTumble_0.26s_ease-in_forwards]'
+                        : isEnemyHitShaking
+                        ? getDndImpactAnimationClass(enemyImpactDamageType)
+                        : ignivraxAttackPose === 'bolas_fuego'
+                        ? 'animate-[ignivraxFireballsCast_0.90s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                        : ignivraxAttackPose === 'zarpazo'
+                        ? 'animate-[ignivraxClawSwipe_0.60s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                        : ignivraxAttackPose === 'mordisco'
+                        ? 'animate-[ignivraxBiteLunge_0.64s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                        : ignivraxAttackPose === 'aliento' || ignivraxAttackPose === 'brasas'
+                        ? 'animate-[aranaSingleBreathAttack_1.04s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                        : ignivraxAttackPose === 'rugido' || isIgnivraxRoaring
+                        ? 'animate-[aranaSingleRoar_1.06s_cubic-bezier(0.16,1,0.3,1)_forwards]'
+                        : ignivraxVerticalPhase === 'grounded'
+                        ? 'animate-[ignivraxGroundBreath_3.6s_ease-in-out_infinite]'
+                        : 'animate-[ignivraxHoverFloat_2.8s_ease-in-out_infinite]'
+                    }`}
+                  >
+                    <img
+                      ref={enemySpriteImgRef}
+                      data-enemy-main=""
+                      key={`enemy-ignivrax-single-${targetEnemy.uid}`}
+                      src={getEnemySpriteUrl(targetEnemy)}
+                      referrerPolicy="no-referrer"
+                      style={{
+                        ...(!isEnemyHitShaking && !targetEnemy.isAshDissolving
+                          ? enemyStatusShaderFilter
+                            ? { filter: enemyStatusShaderFilter }
+                            : undefined
+                          : undefined),
+                      }}
+                      alt="Ignivrax, El Tirano Carmesí"
+                      className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-[10] ${
+                        ignivraxVerticalPhase === 'gliding' || ignivraxVerticalPhase === 'crater_slam'
+                          ? 'filter drop-shadow-[0_0_28px_rgba(251,146,60,0.88)]'
+                          : ignivraxVerticalPhase === 'falling'
+                          ? 'filter drop-shadow-[0_0_24px_rgba(239,68,68,0.85)]'
+                          : ignivraxAttackPose === 'bolas_fuego' ||
+                            ignivraxAttackPose === 'aliento' ||
+                            ignivraxAttackPose === 'brasas' ||
+                            ignivraxAttackPose === 'rugido' ||
+                            isIgnivraxRoaring
+                          ? 'filter drop-shadow-[0_0_30px_rgba(249,115,22,0.92)]'
+                          : ignivraxAttackPose === 'zarpazo' || ignivraxAttackPose === 'mordisco'
+                          ? 'filter drop-shadow-[0_0_26px_rgba(239,68,68,0.82)]'
+                          : 'filter drop-shadow-[0_0_20px_rgba(239,68,68,0.48)]'
+                      }`}
+                    />
+                    {/* Brillo incandescente en garganta/fauces al cargar Aliento o Rugido */}
+                    {!targetEnemy.isAshDissolving &&
+                      (ignivraxAttackPose === 'aliento' ||
+                        ignivraxAttackPose === 'brasas' ||
+                        ignivraxAttackPose === 'rugido' ||
+                        isIgnivraxRoaring) && (
+                        <div
+                          aria-hidden="true"
+                          className="absolute pointer-events-none z-[11] rounded-full animate-pulse"
+                          style={{
+                            left: ignivraxAttackPose === 'aliento' ? '40%' : '44%',
+                            top: ignivraxAttackPose === 'aliento' ? '30%' : '20%',
+                            width: '52px',
+                            height: '52px',
+                            transform: 'translate(-50%, -50%)',
+                            background:
+                              'radial-gradient(circle, rgba(254,249,195,0.94) 0%, rgba(251,146,60,0.68) 42%, transparent 76%)',
+                            mixBlendMode: 'screen',
+                          }}
+                        />
+                      )}
+                  </div>
+
+                  {/* Manto de Brasas envolviendo a Ignivrax */}
+                  {!targetEnemy.isAshDissolving &&
+                    targetEnemy.hp > 0 &&
+                    targetEnemy.conditions.some((c) => c.type === 'frost_mist') && (
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-x-[-14%] bottom-[-8px] h-[96px] pointer-events-none z-[13] animate-[cryovainMistDrift_4.4s_ease-in-out_infinite]"
+                        style={{
+                          background:
+                            'radial-gradient(ellipse at 48% 68%, rgba(254,215,170,0.52) 0%, rgba(249,115,22,0.32) 46%, transparent 78%)',
+                          filter: 'blur(9px)',
+                        }}
+                      />
+                    )}
+
+                  <StatusConditionsVfxOverlay
+                    activeEffect={activeEnemyStatusShowcase?.effect ?? null}
+                    cueKey={activeEnemyStatusShowcase?.key ?? 0}
+                    durationMs={activeEnemyStatusShowcase?.durationMs ?? 450}
+                    spriteUrl={getEnemySpriteUrl(targetEnemy)}
+                    spriteImgRef={enemySpriteImgRef}
+                    scaleKey={`${targetEnemy.uid}-${ignivraxAttackPose}-${ignivraxVerticalPhase}-${targetEnemy.animation}-${isEnemyHitShaking}`}
+                    disabled={targetEnemy.isAshDissolving || targetEnemy.hp <= 0}
+                  />
+                </div>
               ) : targetEnemy.configId === 'medusa' ? (
                 <div className="relative w-full h-full flex items-center justify-center animate-[medusaHoverFloat_3.2s_ease-in-out_infinite]">
                   <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={136} height={192} />
@@ -17172,11 +23762,126 @@ export const CombatView: React.FC = () => {
                     disabled={targetEnemy.isAshDissolving || targetEnemy.hp <= 0}
                   />
                 </div>
+              ) : targetEnemy.configId === 'devorador_hierro' ? (
+                <div className="relative w-full h-full flex items-end justify-center overflow-visible">
+                  <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={targetEnemy.width || 220} height={targetEnemy.height || 192} />
+
+                  {(() => {
+                    const isDevoradorIdleRig =
+                      !targetEnemy.isAshDissolving &&
+                      targetEnemy.hp > 0 &&
+                      !isEnemyHitShaking &&
+                      targetEnemy.animation === 'idle' &&
+                      devoradorHierroAttackPose === 'idle';
+                    const activeSpriteUrl = getEnemySpriteUrl(targetEnemy);
+                    return (
+                      <>
+                        <div className="relative flex h-full w-full items-end justify-center">
+                          <span
+                            className="relative flex h-full shrink-0 items-end justify-center"
+                            style={{ transform: getEnemySpriteTransform(targetEnemy), transformOrigin: 'bottom center' }}
+                          >
+                            {isDevoradorIdleRig ? (
+                              <span
+                                style={{
+                                  transformOrigin: 'bottom center',
+                                  filter: enemyStatusShaderFilter || undefined,
+                                }}
+                                className="relative flex h-full shrink-0 items-end justify-center animate-[devoradorShellBreath_3.4s_ease-in-out_infinite] filter drop-shadow-[0_0_18px_rgba(217,119,6,0.52)]"
+                              >
+                                {/* Base dorada sin antenas ni colmillos inferiores */}
+                                <img
+                                  ref={enemySpriteImgRef}
+                                  data-enemy-main=""
+                                  key={`enemy-devorador-cuerpo-${targetEnemy.uid}`}
+                                  src="/assets/combat/devorador_hierro_idle_cuerpo.webp"
+                                  alt={targetEnemy.name}
+                                  className="relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10"
+                                />
+                                {/* Colmillo izquierdo de la mandíbula (chasquido rítmico) */}
+                                <img
+                                  src="/assets/combat/devorador_hierro_idle_colmillo_izq.webp"
+                                  alt=""
+                                  aria-hidden="true"
+                                  style={{ transformOrigin: '22.7% 74.0%' }}
+                                  className="absolute inset-0 w-full h-full object-contain pointer-events-none z-[11] animate-[devoradorFangLeftSnap_2.5s_cubic-bezier(0.22,1,0.36,1)_infinite]"
+                                />
+                                {/* Colmillo derecho de la mandíbula (chasquido rítmico) */}
+                                <img
+                                  src="/assets/combat/devorador_hierro_idle_colmillo_der.webp"
+                                  alt=""
+                                  aria-hidden="true"
+                                  style={{ transformOrigin: '28.8% 74.0%' }}
+                                  className="absolute inset-0 w-full h-full object-contain pointer-events-none z-[11] animate-[devoradorFangRightSnap_2.5s_cubic-bezier(0.22,1,0.36,1)_infinite]"
+                                />
+                                {/* Antena plumada izquierda meciendo ágilmente con el viento */}
+                                <img
+                                  src="/assets/combat/devorador_hierro_idle_antena_izq.webp"
+                                  alt=""
+                                  aria-hidden="true"
+                                  style={{ transformOrigin: '15.2% 65.8%' }}
+                                  className="absolute inset-0 w-full h-full object-contain pointer-events-none z-[12] animate-[devoradorAntennaLeftWind_2.8s_ease-in-out_infinite]"
+                                />
+                                {/* Antena plumada derecha meciendo ágilmente con el viento */}
+                                <img
+                                  src="/assets/combat/devorador_hierro_idle_antena_der.webp"
+                                  alt=""
+                                  aria-hidden="true"
+                                  style={{ transformOrigin: '35.7% 66.2%', animationDelay: '-0.65s' }}
+                                  className="absolute inset-0 w-full h-full object-contain pointer-events-none z-[12] animate-[devoradorAntennaRightWind_2.45s_ease-in-out_infinite]"
+                                />
+                              </span>
+                            ) : (
+                              <img
+                                ref={enemySpriteImgRef}
+                                data-enemy-main=""
+                                key={`enemy-devorador-action-${targetEnemy.uid}`}
+                                src={activeSpriteUrl}
+                                style={{
+                                  ...getBreathVars(activeSpriteUrl, 1.5),
+                                  ...({ '--atk-lunge': '-6px' } as React.CSSProperties),
+                                  filter:
+                                    !isEnemyHitShaking && !targetEnemy.isAshDissolving && enemyStatusShaderFilter
+                                      ? enemyStatusShaderFilter
+                                      : undefined,
+                                }}
+                                alt={targetEnemy.name}
+                                className={`relative h-full w-auto shrink-0 max-w-none object-contain pointer-events-none z-10 ${
+                                  targetEnemy.isAshDissolving
+                                    ? 'animate-[spriteDefeatFade_1.2s_ease-out_forwards]'
+                                    : isEnemyHitShaking
+                                    ? getDndImpactAnimationClass(enemyImpactDamageType)
+                                    : 'filter drop-shadow-[0_0_22px_rgba(234,88,12,0.68)]'
+                                } ${
+                                  !targetEnemy.isAshDissolving &&
+                                  !isEnemyHitShaking &&
+                                  targetEnemy.animation === 'strike'
+                                    ? 'combat-sprite-attack'
+                                    : ''
+                                }`}
+                              />
+                            )}
+                          </span>
+                        </div>
+
+                        <StatusConditionsVfxOverlay
+                          activeEffect={activeEnemyStatusShowcase?.effect ?? null}
+                          cueKey={activeEnemyStatusShowcase?.key ?? 0}
+                          durationMs={activeEnemyStatusShowcase?.durationMs ?? 450}
+                          spriteUrl={isDevoradorIdleRig ? '/assets/combat/devorador_hierro_idle_cuerpo.webp' : activeSpriteUrl}
+                          spriteImgRef={enemySpriteImgRef}
+                          scaleKey={`${targetEnemy.uid}-${isDevoradorIdleRig ? 'rig' : activeSpriteUrl}-${targetEnemy.animation}-${devoradorHierroAttackPose}`}
+                          disabled={targetEnemy.isAshDissolving || targetEnemy.hp <= 0}
+                        />
+                      </>
+                    );
+                  })()}
+                </div>
               ) : (
                 <div className="relative w-full h-full flex items-end justify-center">
                   <AshDisintegrationEffect active={targetEnemy.isAshDissolving} width={targetEnemy.width || 135} height={targetEnemy.height || 192} />
 
-                  {isDevoradorRoaring && targetEnemy.configId.includes('devorador') && (
+                  {isDevoradorRoaring && (targetEnemy.configId === 'devorador_quitinoso' || targetEnemy.configId === 'devorador_quitinoso_p2') && (
                     <div className="absolute inset-0 pointer-events-none z-15 flex items-center justify-center">
                       <div className="w-[240px] h-[240px] rounded-full border-4 border-red-500/80 bg-red-600/15 shadow-[0_0_36px_rgba(239,68,68,0.85)] animate-[devoradorRoarWave_0.55s_ease-out_infinite]" />
                       <div
@@ -17233,6 +23938,17 @@ export const CombatView: React.FC = () => {
                       )}
                     </div>
                   )}
+
+                  {targetEnemy.configId === 'mimico_boss' &&
+                    !targetEnemy.isAshDissolving &&
+                    targetEnemy.hp > 0 &&
+                    isMimicKnockedOut(targetEnemy) && (
+                      <div className="absolute -top-6 inset-x-0 flex justify-center items-center z-30 pointer-events-none animate-bounce">
+                        <span className="px-2.5 py-0.5 rounded-full bg-amber-950/95 text-yellow-200 border border-yellow-400 shadow-[0_0_16px_rgba(251,191,36,0.85)] text-[10px] font-black uppercase tracking-wider font-mono whitespace-nowrap">
+                          📦 NOQUEADO • x2 DAÑO
+                        </span>
+                      </div>
+                    )}
 
                   {/* Anillo giratorio sutil de vórtice en la base del Elemental de Aire */}
                   {targetEnemy.configId === 'elemental_aire' && !targetEnemy.isAshDissolving && targetEnemy.hp > 0 && (
@@ -17578,27 +24294,40 @@ export const CombatView: React.FC = () => {
             style={{
               left: item.isEnemy
                 ? item.slotIndex === 0
-                  ? targetEnemy?.configId === 'cryovain_boss' || targetEnemy?.configId === 'arana_acorazada_boss'
+                  ? targetEnemy?.configId === 'cryovain_boss' ||
+                    targetEnemy?.configId === 'ignivrax_boss' ||
+                    isAranaBossConfigId(targetEnemy?.configId) ||
+                    targetEnemy?.configId === 'ten_piedad'
                     ? '56%'
+                    : targetEnemy?.configId === 'mimico_boss'
+                    ? '64%'
                     : '78%'
                   : item.slotIndex === 1
                   ? '62%'
                   : item.slotIndex === 2
                   ? '46%'
                   : '72%'
-                : isAranaBossCombat
+                : isAranaBossCombat || isIgnivraxBossCombat
                 ? '15%'
+                : isTenPiedadBossCombat || isMimicoBossCombat
+                ? '20%'
                 : '26%',
               top: item.isEnemy
-                ? targetEnemy?.configId === 'arana_acorazada_boss'
-                  ? aranaVerticalPhase === 'perched' || aranaVerticalPhase === 'climbing'
+                ? isAranaBossConfigId(targetEnemy?.configId)
+                  ? aranaVerticalPhase === 'perched' || aranaVerticalPhase === 'climbing' || aranaVerticalPhase === 'jumping_up'
                     ? '18%'
+                    : '46%'
+                  : targetEnemy?.configId === 'ignivrax_boss'
+                  ? ignivraxVerticalPhase === 'flying' || ignivraxVerticalPhase === 'taking_off'
+                    ? '20%'
                     : '46%'
                   : item.tier === 3
                   ? '30%'
                   : '35%'
-                : isAranaBossCombat
+                : isAranaBossCombat || isIgnivraxBossCombat
                 ? '62%'
+                : isTenPiedadBossCombat || isMimicoBossCombat
+                ? '50%'
                 : '39%',
             }}
             className={`absolute pointer-events-none z-50 transform -translate-x-1/2 font-black tracking-wider animate-bounce flex flex-col items-center gap-0.5 ${
@@ -17659,10 +24388,34 @@ export const CombatView: React.FC = () => {
                   ? waveClearBanner.floor >= 3
                     ? '¡GUARDIA ÁUREA DERROTADA!'
                     : `¡OLEADA ${waveClearBanner.floor} DE 3 SUPERADA!`
+                  : selectedCombatMissionId === 't2_c2_m1_ten_piedad'
+                  ? '¡TEN PIEDAD ABATIDO EN EL SANTUARIO!'
                   : selectedCombatMissionId === 'm2_robo'
                   ? waveClearBanner.floor >= 4
                     ? '¡ASALTO A LA MANSIÓN COMPLETADO!'
                     : `¡OLEADA ${waveClearBanner.floor} DE 4 SUPERADA!`
+                  : selectedCombatMissionId === 'midas_dungeon_boss_devorador'
+                  ? '¡DEVORADOR DE HIERRO ABATIDO!'
+                  : selectedCombatMissionId === 'midas_dungeon_boss_mimico'
+                  ? '¡ARACNIA, LA VIUDA ENJOYADA, HA CAÍDO!'
+                  : selectedCombatMissionId === 'midas_dungeon_boss_ignivrax'
+                  ? '¡IGNIVRAX, EL TIRANO CARMESÍ, ABATIDO!'
+                  : selectedCombatMissionId === 'midas_dungeon_easy_insectos'
+                  ? waveClearBanner.floor >= 10
+                    ? '¡ENJAMBRE DEL TESORO ERRADICADO!'
+                    : `¡OLEADA ${waveClearBanner.floor} DE 10 SUPERADA!`
+                  : selectedCombatMissionId === 'midas_dungeon_easy_aurumvorax'
+                  ? waveClearBanner.floor >= 10
+                    ? '¡MANADA DE AURUMVORAX ABATIDA!'
+                    : `¡OLEADA ${waveClearBanner.floor} DE 10 SUPERADA!`
+                  : selectedCombatMissionId?.startsWith('midas_dungeon_n2_')
+                  ? waveClearBanner.floor >= 10
+                    ? '¡CULTO DRACÓNICO DE IGNIVRAX DERROTADO!'
+                    : `¡OLEADA ${waveClearBanner.floor} DE 10 SUPERADA!`
+                  : selectedCombatMissionId === 'midas_dungeon_easy'
+                  ? waveClearBanner.floor >= 10
+                    ? '¡GUARDIANES GUINBANG DERROTADOS!'
+                    : `¡SALA ${waveClearBanner.floor} DE 10 SUPERADA!`
                   : `¡VICTORIA EN SALA ${waveClearBanner.floor}!`}
               </div>
               <div className="text-xl font-black text-white flex items-center gap-2 justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
@@ -17694,10 +24447,30 @@ export const CombatView: React.FC = () => {
                   ? waveClearBanner.floor >= 3
                     ? '¡CARAVANA INTERCEPTADA!'
                     : '¡LÍNEA ENEMIGA ROTURA!'
+                  : selectedCombatMissionId === 't2_c2_m1_ten_piedad'
+                  ? '¡COLOSO DEL CULTO DERROTADO!'
                   : selectedCombatMissionId === 'm2_robo'
                   ? waveClearBanner.floor >= 4
                     ? '¡VICTORIA TOTAL!'
                     : '¡GUARDIAS REPELIDOS!'
+                  : selectedCombatMissionId === 'midas_dungeon_boss_devorador'
+                  ? '¡JEFE DE LA BÓVEDA DERROTADO!'
+                  : selectedCombatMissionId === 'midas_dungeon_boss_mimico'
+                  ? '¡LA BÓVEDA MALDITA QUEDA DESPEJADA!'
+                  : selectedCombatMissionId === 'midas_dungeon_boss_ignivrax'
+                  ? '¡NIVEL II DE MIDAS CONQUISTADO!'
+                  : selectedCombatMissionId === 'midas_dungeon_easy_insectos' && waveClearBanner.floor >= 10
+                  ? '¡BÓVEDA DE JOYAS DESPEJADA!'
+                  : selectedCombatMissionId === 'midas_dungeon_easy_aurumvorax' && waveClearBanner.floor >= 10
+                  ? '¡GUARIDA ÁUREA CONQUISTADA!'
+                  : selectedCombatMissionId === 'midas_dungeon_n2_c5_horda_ignivrax' && waveClearBanner.floor >= 10
+                  ? '¡ANTESALA DE IGNIVRAX CONQUISTADA!'
+                  : selectedCombatMissionId?.startsWith('midas_dungeon_n2_') && waveClearBanner.floor >= 10
+                  ? '¡SECTOR DE NIVEL II DESPEJADO!'
+                  : parseGoldRunLevelMissionId(selectedCombatMissionId)
+                  ? 'Sala superada. La expedición continúa en el siguiente tramo de la bóveda...'
+                  : selectedCombatMissionId === 'midas_dungeon_easy' && waveClearBanner.floor >= 10
+                  ? '¡BÓVEDA INICIAL CONQUISTADA!'
                   : '¡SALA SUPERADA!'}
               </div>
               <div className="text-xs text-yellow-200 mt-2 font-mono font-bold">
@@ -17729,15 +24502,139 @@ export const CombatView: React.FC = () => {
                   ? waveClearBanner.floor >= 3
                     ? 'Cargando epílogo y misterios de Ferton...'
                     : `Siguiente: Oleada ${waveClearBanner.nextFloor} de 3 (${FERTON_GUARD_CHAMBERS[waveClearBanner.nextFloor - 1]?.name?.split(': ')[1] || 'Guardia de Élite'})...`
+                  : selectedCombatMissionId === 't2_c2_m1_ten_piedad'
+                  ? 'Las zarzas de la iglesia destrozada se marchitan tras derrotar al coloso del Culto a la Piedad...'
                   : selectedCombatMissionId === 'm2_robo'
                   ? waveClearBanner.floor >= 4
                     ? 'Cargando diálogo final automáticamente...'
                     : `Siguiente: Oleada ${waveClearBanner.nextFloor} de 4 (${GUARD_CHAMBERS[waveClearBanner.nextFloor - 1]?.name?.split(': ')[1] || 'Refuerzos'})...`
+                  : selectedCombatMissionId === 'midas_dungeon_boss_devorador'
+                  ? 'El monstruo del óxido dorado se desmorona sobre las monedas de la bóveda...'
+                  : selectedCombatMissionId === 'midas_dungeon_boss_mimico'
+                  ? 'La viuda enjoyada se desploma entre gemas y monedas doradas...'
+                  : selectedCombatMissionId === 'midas_dungeon_boss_ignivrax'
+                  ? 'Las llamas del dragón rojo se apagan entre monedas fundidas y escamas incandescentes...'
+                  : selectedCombatMissionId === 'midas_dungeon_easy_insectos'
+                  ? waveClearBanner.floor >= 10
+                    ? 'El enjambre venenoso de joyas y perlas se disipa entre las monedas de Midas...'
+                    : `¡El veneno persiste! Siguiente oleada: Sala ${waveClearBanner.nextFloor} de 10...`
+                  : selectedCombatMissionId === 'midas_dungeon_easy_aurumvorax'
+                  ? waveClearBanner.floor >= 10
+                    ? 'Toda la manada de Aurumvorax cae vencida entre lingotes y monedas áureas...'
+                    : `¡Más rugidos dorados resuenan en la bóveda! Sala ${waveClearBanner.nextFloor} de 10...`
+                  : selectedCombatMissionId?.startsWith('midas_dungeon_n2_')
+                  ? waveClearBanner.floor >= 10
+                    ? 'Has quebrado la línea dracónica de kobolds, dracos guardianes y semidragones rojos...'
+                    : `¡Rugidos y escamas resuenan en la galería! Siguiente oleada: Sala ${waveClearBanner.nextFloor} de 10...`
+                  : selectedCombatMissionId === 'midas_dungeon_easy' && waveClearBanner.floor >= 10
+                  ? '¡Un ruido metálico retumba desde el fondo de la bóveda...! Cargando epílogo...'
                   : `Avanzando directamente a la Sala ${waveClearBanner.nextFloor}...`}
               </div>
               <div className="mt-2 text-[10px] text-stone-300 font-mono">
                 Botín acumulado: 🪙 +{accumulatedLoot.gold.toLocaleString()} • 💎 +{accumulatedLoot.crystals}
               </div>
+              {selectedCombatMissionId === 'midas_dungeon_boss_devorador' && (
+                <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-950/90 border border-purple-400/60 text-purple-100 text-[11px] font-black shadow">
+                  <img
+                    src="/assets/items/ing_carne_devorador.webp"
+                    alt="Carne de Devorador"
+                    referrerPolicy="no-referrer"
+                    className="w-5 h-5 object-contain"
+                  />
+                  <span>
+                    +3 Carne de Devorador (Cocina de Monstruos)
+                  </span>
+                </div>
+              )}
+              {selectedCombatMissionId === 'midas_dungeon_boss_mimico' && (
+                <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-950/95 border border-yellow-400/75 text-yellow-100 text-[11px] font-black shadow">
+                  <img
+                    src="/assets/combat/mimico_cofre_normal.webp"
+                    alt="Cofre Maldito"
+                    referrerPolicy="no-referrer"
+                    className="w-5 h-5 object-contain"
+                  />
+                  <span>+1 Cofre Maldito (SSR · Estantería)</span>
+                </div>
+              )}
+              {selectedCombatMissionId === 'midas_dungeon_easy_insectos' &&
+                waveClearBanner.floor >= 10 && (
+                <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-950/90 border border-purple-400/60 text-purple-100 text-[11px] font-black shadow">
+                  <img
+                    src="/assets/items/ing_bichos_tesoro.webp"
+                    alt="Bichos del Tesoro"
+                    referrerPolicy="no-referrer"
+                    className="w-5 h-5 object-contain"
+                  />
+                  <span>
+                    +3 Bichos del Tesoro (Cocina de Monstruos)
+                  </span>
+                </div>
+              )}
+              {(selectedCombatMissionId === 'midas_dungeon_n2_c1_kobolds_alados' ||
+                selectedCombatMissionId === 'midas_dungeon_n2_c2_escudos_dragon') &&
+                waveClearBanner.floor >= 10 && (
+                <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/95 border border-red-400/70 text-red-100 text-[11px] font-black shadow">
+                  <img
+                    src="/assets/portraits/kobold_escudo_rojo_thumb.webp"
+                    alt="Escama Dracónica Roja"
+                    referrerPolicy="no-referrer"
+                    className="w-5 h-5 object-contain rounded-full"
+                  />
+                  <span>
+                    +{selectedCombatMissionId === 'midas_dungeon_n2_c2_escudos_dragon' ? 3 : 2} Escama Dracónica Roja (SR)
+                  </span>
+                </div>
+              )}
+              {selectedCombatMissionId === 'midas_dungeon_n2_c3_dracos_guardianes' &&
+                waveClearBanner.floor >= 10 && (
+                <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/95 border border-orange-400/75 text-orange-100 text-[11px] font-black shadow">
+                  <img
+                    src="/assets/portraits/draco_guardian_rojo_thumb.webp"
+                    alt="Escama de Draco Guardián"
+                    referrerPolicy="no-referrer"
+                    className="w-5 h-5 object-contain rounded-full"
+                  />
+                  <span>+3 Escama de Draco Guardián (SSR)</span>
+                </div>
+              )}
+              {(selectedCombatMissionId === 'midas_dungeon_n2_c4_semidragones_rojos' ||
+                selectedCombatMissionId === 'midas_dungeon_n2_c5_horda_ignivrax') &&
+                waveClearBanner.floor >= 10 && (
+                <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-950/95 border border-orange-400/80 text-amber-100 text-[11px] font-black shadow">
+                  <img
+                    src="/assets/portraits/semidragon_rojo_veterano_thumb.webp"
+                    alt="Blasón de Sangre Dracónica"
+                    referrerPolicy="no-referrer"
+                    className="w-5 h-5 object-contain rounded-full"
+                  />
+                  <span>
+                    +{selectedCombatMissionId === 'midas_dungeon_n2_c5_horda_ignivrax' ? 3 : 2} Blasón de Sangre Dracónica (SSR)
+                  </span>
+                </div>
+              )}
+              {selectedCombatMissionId === 'midas_dungeon_easy_aurumvorax' && waveClearBanner.floor >= 10 && (
+                <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-950/95 border border-amber-400/70 text-amber-100 text-[11px] font-black shadow">
+                  <img
+                    src="/assets/items/ing_carne_aurea.webp"
+                    alt="Carne Áurea"
+                    referrerPolicy="no-referrer"
+                    className="w-5 h-5 object-contain"
+                  />
+                  <span>+3 Carne Áurea (Cocina, Pociones y Tienda)</span>
+                </div>
+              )}
+              {selectedCombatMissionId === 'midas_dungeon_boss_ignivrax' && (
+                <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/95 border border-orange-400/80 text-orange-100 text-[11px] font-black shadow">
+                  <img
+                    src="/assets/portraits/ignivrax_boss_thumb.webp"
+                    alt="Corazón Ígneo de Ignivrax"
+                    referrerPolicy="no-referrer"
+                    className="w-5 h-5 object-contain rounded-full"
+                  />
+                  <span>+1 Corazón Ígneo de Ignivrax (UR) • +3 Escamas Carmesíes (SSR)</span>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -17981,8 +24878,23 @@ export const CombatView: React.FC = () => {
         }}
       >
         {/* MAGORDITO GACHA ACTIVE STATUS TRAY (CLEAN COMPACT STATUS TOKENS) */}
-        {(heroConditions.length > 0 || activeFoodBuff) && (
+        {(heroConditions.length > 0 || activeFoodBuff || totalPartyInsectVenomStacks > 0) && (
           <div className="absolute -top-9 left-7 z-30 flex items-center gap-1.5 flex-wrap">
+            {totalPartyInsectVenomStacks > 0 && (
+              <div
+                key="insect-venom-persistent"
+                title={`Veneno persistente de insectos: -${Math.round(5.5 * totalPartyInsectVenomStacks * ENEMY_DAMAGE_SCALE)} PV/turno${activeHeroInsectVenomStacks > 0 ? ` · Este héroe: -${getInsectVenomAtkPenaltyPct(activeHeroInsectVenomStacks)}% ATQ, +${getInsectVenomVulnPct(activeHeroInsectVenomStacks)}% daño recibido` : ''}`}
+                className="relative w-7 h-7 rounded-lg border border-emerald-400/90 bg-emerald-950/90 shadow-[0_0_12px_rgba(34,197,94,0.65)] flex items-center justify-center backdrop-blur-md"
+              >
+                <span className="text-sm select-none">☣️</span>
+                <span className="absolute -top-1.5 -right-1 px-1 py-0.2 rounded-full bg-emerald-400 text-slate-950 text-[8px] font-black font-mono leading-none shadow-sm border border-slate-900">
+                  x{totalPartyInsectVenomStacks}
+                </span>
+                <span className="absolute -bottom-1.5 -right-1 px-1 py-0.2 rounded-full bg-slate-900/95 text-emerald-300 text-[8px] font-bold font-mono leading-none border border-emerald-400/40">
+                  ∞
+                </span>
+              </div>
+            )}
             {activeFoodBuff && (
               <button
                 key="active-food-buff"
@@ -18099,15 +25011,26 @@ export const CombatView: React.FC = () => {
               Boolean(airPrisonHero) &&
               airPrisonHero!.turnsRemaining > 0 &&
               normalizeCombatHeroId(heroId) === airPrisonHero!.heroId;
+            const heroVenomCount = insectVenomStacksByHero[normalizeCombatHeroId(heroId)] ?? 0;
             return (
               <button
                 key={heroId}
                 onClick={() => handleSwitchActiveHero(heroId)}
                 disabled={battleState !== 'idle'}
-                title={isHeroInAirPrison ? `${heroLabel} (Inmovilizado por aire)` : heroLabel}
+                title={
+                  isHeroInAirPrison
+                    ? `${heroLabel} (Inmovilizado por aire)`
+                    : heroVenomCount > 0
+                    ? `${heroLabel} (Envenenado x${heroVenomCount}: -${getInsectVenomAtkPenaltyPct(heroVenomCount)}% ATQ)`
+                    : heroLabel
+                }
                 className={`relative w-6 h-6 rounded-full overflow-hidden border-2 transition-all cursor-pointer ${
                   isHeroInAirPrison
                     ? 'border-cyan-400 ring-2 ring-cyan-300/70'
+                    : heroVenomCount > 0
+                    ? isActive
+                      ? 'border-emerald-400 scale-120 shadow-[0_0_10px_#22c55e]'
+                      : 'border-emerald-500/85 opacity-90 hover:opacity-100 hover:scale-110'
                     : isActive
                     ? 'border-yellow-400 scale-120 shadow-[0_0_8px_#facc15]'
                     : 'border-stone-600 opacity-60 hover:opacity-100 hover:scale-110'
@@ -18117,6 +25040,11 @@ export const CombatView: React.FC = () => {
                 {isHeroInAirPrison && (
                   <span className="absolute inset-0 bg-cyan-950/75 flex items-center justify-center text-[10px] leading-none pointer-events-none">
                     🌪️
+                  </span>
+                )}
+                {!isHeroInAirPrison && heroVenomCount > 0 && (
+                  <span className="absolute bottom-0 right-0 px-0.5 rounded-tl bg-emerald-950/90 text-emerald-300 text-[7px] font-black leading-none pointer-events-none">
+                    ☣{heroVenomCount}
                   </span>
                 )}
               </button>
@@ -18145,6 +25073,9 @@ export const CombatView: React.FC = () => {
                 const isFilled = slotIdx < ultimateOrbs;
                 const isMax = ultimateOrbs >= 5;
                 const isGaining = newlyGainedOrbIdx === slotIdx;
+                // El Conejo de Escarcha hiela orbes desde el final de la barra.
+                const isFrozenOrb =
+                  frozenUltOrbs > 0 && slotIdx >= MAX_ULTIMATE_ORBS - frozenUltOrbs;
                 return (
                   <div
                     key={slotIdx}
@@ -18158,6 +25089,7 @@ export const CombatView: React.FC = () => {
                         : 'border border-yellow-600/40 bg-black/55 shadow-[inset_0_2px_4px_rgba(0,0,0,0.95)]'
                     }`}
                   >
+                    {isFrozenOrb && <FrostFreezeOverlay intensity={1} className="rounded-full" />}
                     {isGaining && (
                       <div className="absolute -inset-2 rounded-full border-2 border-yellow-300 animate-ping pointer-events-none" />
                     )}
@@ -18167,30 +25099,128 @@ export const CombatView: React.FC = () => {
             </div>
           </div>
 
-          {/* Clean Hero Health Bar without text overlay */}
-          <div className="relative w-full h-[32px] rounded-sm overflow-hidden flex items-center">
-            {/* Inner trough */}
-            <div className="absolute inset-y-[8%] inset-x-[2.9%] rounded-xs overflow-hidden flex items-center bg-[#031c07] shadow-[inset_0_2px_5px_rgba(0,0,0,0.9)]">
-              {/* HP Fill */}
+          {/* Hero Health Bar — progresivamente oxidada con las acumulaciones de Corrosión (0-5) */}
+          {(() => {
+            const rustStacks = Math.min(5, Math.max(0, activeHeroCorrosionStacks));
+            const rustRatio = rustStacks / 5;
+            const frostStacks = Math.min(3, Math.max(0, activeHeroFrostStacks));
+            const frostRatio = frostStacks / 3;
+            const fillGradientClass =
+              rustStacks === 0
+                ? 'from-[#00ff44] via-[#24ff5b] to-[#00eb38]'
+                : rustStacks === 1
+                ? 'from-[#22c55e] via-[#84cc16] to-[#ca8a04]'
+                : rustStacks === 2
+                ? 'from-[#84cc16] via-[#d97706] to-[#b45309]'
+                : rustStacks === 3
+                ? 'from-[#f59e0b] via-[#c2410c] to-[#9a3412]'
+                : rustStacks === 4
+                ? 'from-[#ea580c] via-[#9a3412] to-[#7c2d12]'
+                : 'from-[#dc2626] via-[#b45309] to-[#451a03]';
+            const fillShadow =
+              rustStacks === 0
+                ? '0 0 18px #00ff44, inset 0 2px 4px rgba(255,255,255,0.7), inset 0 -2px 4px rgba(0,120,20,0.6)'
+                : rustStacks >= 5
+                ? '0 0 18px rgba(234,88,12,0.9), inset 0 2px 5px rgba(251,146,60,0.55), inset 0 -3px 6px rgba(69,10,10,0.85)'
+                : `0 0 ${14 - rustStacks}px rgba(217,119,6,${0.35 + rustRatio * 0.45}), inset 0 2px 4px rgba(255,255,255,${0.55 - rustRatio * 0.35}), inset 0 -2px 5px rgba(90,32,6,0.75)`;
+            return (
               <div
-                style={{
-                  width: `${Math.max(0, Math.min(100, (heroHp / heroMaxHp) * 100))}%`,
-                  boxShadow: '0 0 18px #00ff44, inset 0 2px 4px rgba(255,255,255,0.7), inset 0 -2px 4px rgba(0,120,20,0.6)',
-                }}
-                className="h-full bg-gradient-to-r from-[#00ff44] via-[#24ff5b] to-[#00eb38] transition-all duration-300 filter brightness-110 saturate-200 relative overflow-hidden"
+                title={
+                  frostStacks > 0
+                    ? `Congelación ${frostStacks}/3${frostStacks >= 3 ? ' — congelado, no puedes curarte' : ''}`
+                    : rustStacks > 0
+                    ? `Corrosión ${rustStacks}/5 (-${getCorrosionDefLossPct(rustStacks)}% Defensa)`
+                    : undefined
+                }
+                aria-label={`Vida del héroe ${heroHp} de ${heroMaxHp}${rustStacks > 0 ? `, corrosión ${rustStacks} de 5` : ''}${frostStacks > 0 ? `, congelación ${frostStacks} de 3` : ''}`}
+                className={`relative w-full h-[32px] rounded-sm overflow-hidden flex items-center transition-all duration-500 ${
+                  rustStacks >= 5 ? 'ring-1 ring-orange-500/80 shadow-[0_0_16px_rgba(234,88,12,0.65)]' : ''
+                }`}
               >
-                <div className="absolute top-0 left-0 right-0 h-[45%] bg-gradient-to-b from-white/45 to-transparent pointer-events-none" />
-                <div className="absolute bottom-0 left-0 right-0 h-[25%] bg-black/25 pointer-events-none" />
-              </div>
-            </div>
+                {/* Inner trough */}
+                <div
+                  className="absolute inset-y-[8%] inset-x-[2.9%] rounded-xs overflow-hidden flex items-center shadow-[inset_0_2px_5px_rgba(0,0,0,0.9)] transition-colors duration-500"
+                  style={{
+                    backgroundColor:
+                      rustStacks === 0
+                        ? '#031c07'
+                        : rustStacks <= 2
+                        ? '#1f1606'
+                        : '#2c1105',
+                  }}
+                >
+                  {/* HP Fill */}
+                  <div
+                    style={{
+                      width: `${Math.max(0, Math.min(100, (heroHp / heroMaxHp) * 100))}%`,
+                      boxShadow: fillShadow,
+                    }}
+                    className={`h-full bg-gradient-to-r ${fillGradientClass} transition-all duration-300 filter ${
+                      rustStacks >= 3 ? 'brightness-100 saturate-125' : 'brightness-110 saturate-200'
+                    } relative overflow-hidden`}
+                  >
+                    <div className="absolute top-0 left-0 right-0 h-[45%] bg-gradient-to-b from-white/45 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 right-0 h-[25%] bg-black/25 pointer-events-none" />
+                  </div>
 
-            {/* Authentic Green Health Frame (barra de vida 1.webp) */}
-            <img
-              src="/assets/aistudio/image_7a62ba8b.webp"
-              alt="Hero Health Frame"
-              className="absolute inset-0 w-full h-full object-fill pointer-events-none z-10"
-            />
-          </div>
+                  {/* Costra de óxido progresiva que invade la barra (1 a 5 acumulaciones) */}
+                  {rustStacks > 0 && (
+                    <>
+                      {/* Avance de corrosión oxidada de derecha a izquierda */}
+                      <div
+                        className="absolute inset-y-0 right-0 pointer-events-none transition-all duration-500"
+                        style={{
+                          width: `${Math.min(100, rustStacks * 20)}%`,
+                          opacity: 0.28 + rustRatio * 0.52,
+                          backgroundImage: [
+                            'radial-gradient(circle at 18% 35%, rgba(124,45,18,0.95) 0 4px, transparent 5px)',
+                            'radial-gradient(circle at 46% 68%, rgba(154,52,18,0.9) 0 5px, transparent 6px)',
+                            'radial-gradient(circle at 72% 28%, rgba(180,83,9,0.85) 0 3.5px, transparent 4.5px)',
+                            'radial-gradient(circle at 86% 62%, rgba(69,26,3,0.95) 0 6px, transparent 7px)',
+                            'linear-gradient(90deg, transparent 0%, rgba(124,45,18,0.52) 32%, rgba(154,52,18,0.8) 72%, rgba(67,20,7,0.92) 100%)',
+                          ].join(','),
+                        }}
+                      />
+
+                      {/* Manchas, picaduras y grietas de metal corroído por toda la barra */}
+                      <div
+                        className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${
+                          rustStacks >= 5 ? 'animate-pulse' : ''
+                        }`}
+                        style={{
+                          opacity: 0.22 + rustRatio * 0.68,
+                          backgroundImage: [
+                            'repeating-linear-gradient(125deg, transparent 0 11px, rgba(69,26,3,0.48) 11px 13px, rgba(217,119,6,0.22) 13px 15px, transparent 15px 24px)',
+                            'radial-gradient(ellipse at 12% 22%, rgba(146,64,14,0.75) 0 6px, transparent 8px)',
+                            'radial-gradient(ellipse at 34% 78%, rgba(120,53,15,0.82) 0 7px, transparent 9px)',
+                            'radial-gradient(ellipse at 58% 30%, rgba(194,65,12,0.7) 0 5px, transparent 7px)',
+                            'radial-gradient(ellipse at 82% 72%, rgba(69,26,3,0.88) 0 8px, transparent 10px)',
+                          ].join(','),
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
+
+                {/* Authentic Green Health Frame (barra de vida 1.webp) con pátina de óxido progresiva */}
+                <img
+                  src="/assets/aistudio/image_7a62ba8b.webp"
+                  alt="Hero Health Frame"
+                  style={
+                    rustStacks > 0
+                      ? {
+                          filter: `sepia(${(rustStacks * 0.17).toFixed(2)}) hue-rotate(-${rustStacks * 11}deg) saturate(${(1 + rustStacks * 0.14).toFixed(2)}) brightness(${(1 - rustStacks * 0.05).toFixed(2)}) contrast(${(1 + rustStacks * 0.06).toFixed(2)})`,
+                        }
+                      : undefined
+                  }
+                  className="absolute inset-0 w-full h-full object-fill pointer-events-none z-10 transition-all duration-500"
+                />
+
+                {/* Escarcha del Lobo de Tundra: avanza por la barra con cada carga (1-3) */}
+                <FrostFreezeOverlay intensity={frostRatio} mode="bar" className="z-20" />
+              </div>
+            );
+          })()}
         </div>
       </div>
 
@@ -18307,23 +25337,53 @@ export const CombatView: React.FC = () => {
           <button
             type="button"
             onClick={() => {
+              if (turnCounter <= itemsFrozenUntilTurn) {
+                sound.playSFX('necrotic');
+                setDndProcBanner({
+                  text: '❄️ INVENTARIO CONGELADO POR EL ZORRO DE TUNDRA',
+                  color: '#38bdf8',
+                  icon: '❄️',
+                });
+                setTimeout(() => setDndProcBanner(null), 2200);
+                return;
+              }
               sound.playSFX('click');
               setShowInventoryModal(true);
             }}
-            className="h-[44px] px-3 bg-gradient-to-b from-[#e44901] via-[#c64400] to-[#9d3d01] hover:brightness-110 active:brightness-95 border-[2px] border-[#ff6900] text-white font-black text-[12px] sm:text-[13px] uppercase tracking-wider rounded-[8px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.4),0_3px_6px_rgba(0,0,0,0.7)] cursor-pointer transition-all active:scale-[0.98] text-center flex items-center justify-center select-none"
+            className={`relative overflow-hidden h-[44px] px-3 bg-gradient-to-b from-[#e44901] via-[#c64400] to-[#9d3d01] hover:brightness-110 active:brightness-95 border-[2px] border-[#ff6900] text-white font-black text-[12px] sm:text-[13px] uppercase tracking-wider rounded-[8px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.4),0_3px_6px_rgba(0,0,0,0.7)] cursor-pointer transition-all active:scale-[0.98] text-center flex items-center justify-center select-none ${
+              turnCounter <= itemsFrozenUntilTurn ? 'opacity-80' : ''
+            }`}
           >
-            INVENTARIO
+            {turnCounter <= itemsFrozenUntilTurn && <FrostFreezeOverlay intensity={1} />}
+            <span className="relative z-10">
+              {turnCounter <= itemsFrozenUntilTurn ? 'INVENTARIO ❄️' : 'INVENTARIO'}
+            </span>
           </button>
 
           <button
             type="button"
             onClick={() => {
+              if (turnCounter <= fleeFrozenUntilTurn) {
+                sound.playSFX('necrotic');
+                setDndProcBanner({
+                  text: '❄️ HUIDA CONGELADA POR EL CIERVO DE ESCARCHA',
+                  color: '#38bdf8',
+                  icon: '❄️',
+                });
+                setTimeout(() => setDndProcBanner(null), 2200);
+                return;
+              }
               sound.playSFX('click');
               handleRetreatAndClaim();
             }}
-            className="h-[44px] px-3 bg-gradient-to-b from-[#e44901] via-[#c64400] to-[#9d3d01] hover:brightness-110 active:brightness-95 border-[2px] border-[#ff6900] text-white font-black text-[12px] sm:text-[13px] uppercase tracking-wider rounded-[8px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.4),0_3px_6px_rgba(0,0,0,0.7)] cursor-pointer transition-all active:scale-[0.98] text-center flex items-center justify-center select-none"
+            className={`relative overflow-hidden h-[44px] px-3 bg-gradient-to-b from-[#e44901] via-[#c64400] to-[#9d3d01] hover:brightness-110 active:brightness-95 border-[2px] border-[#ff6900] text-white font-black text-[12px] sm:text-[13px] uppercase tracking-wider rounded-[8px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.4),0_3px_6px_rgba(0,0,0,0.7)] cursor-pointer transition-all active:scale-[0.98] text-center flex items-center justify-center select-none ${
+              turnCounter <= fleeFrozenUntilTurn ? 'opacity-80' : ''
+            }`}
           >
-            HUIR
+            {turnCounter <= fleeFrozenUntilTurn && <FrostFreezeOverlay intensity={1} />}
+            <span className="relative z-10">
+              {turnCounter <= fleeFrozenUntilTurn ? 'HUIR ❄️' : 'HUIR'}
+            </span>
           </button>
         </div>
       </div>
@@ -18464,6 +25524,10 @@ export const CombatView: React.FC = () => {
             <h3 className="text-xl font-serif font-black text-red-400 tracking-wider mb-1">
               {selectedCombatMissionId === 'm22_cryovain_final'
                 ? 'BATALLA FINAL CONTRA CRYOVAIN FALLIDA'
+                : selectedCombatMissionId === 'midas_dungeon_boss_ignivrax'
+                ? 'COMBATE CONTRA IGNIVRAX FALLIDO'
+                : selectedCombatMissionId === 't2_c2_m1_ten_piedad'
+                ? 'COMBATE CONTRA TEN PIEDAD FALLIDO'
                 : selectedCombatMissionId === 't2_c1_m4_arana_acorazada'
                 ? 'COMBATE CONTRA LA ARAÑA ACORAZADA FALLIDO'
                 : selectedCombatMissionId === 't2_c1_m3_custodios_anillo'
@@ -18499,6 +25563,10 @@ export const CombatView: React.FC = () => {
             <p className="text-xs text-stone-300 mb-1">
               {selectedCombatMissionId === 'm22_cryovain_final' ? (
                 <>Has caído ante el aliento y las garras de <b className="text-sky-300">Cryovain</b> en la cueva de la cima helada.</>
+              ) : selectedCombatMissionId === 'midas_dungeon_boss_ignivrax' ? (
+                <>Has caído ante el fuego infernal y las garras de <b className="text-orange-400">Ignivrax</b> en el altar de la Cámara Áurea.</>
+              ) : selectedCombatMissionId === 't2_c2_m1_ten_piedad' ? (
+                <>Has caído ante el barrido y las zarzas de <b className="text-lime-400">Ten Piedad</b> en la iglesia destrozada del Santuario.</>
               ) : selectedCombatMissionId === 't2_c1_m4_arana_acorazada' ? (
                 <>Has caído ante las patas acorazadas y el fuego de la <b className="text-orange-400">Araña Acorazada</b> en la sala hexagonal.</>
               ) : selectedCombatMissionId === 't2_c1_m3_custodios_anillo' ? (
@@ -18533,7 +25601,7 @@ export const CombatView: React.FC = () => {
                 <>Has caído en combate en la <b className="text-amber-300">Sala {currentFloor}</b>.</>
               )}
             </p>
-            {selectedCombatMissionId !== 'm22_cryovain_final' && selectedCombatMissionId !== 't2_c1_m4_arana_acorazada' && selectedCombatMissionId !== 't2_c1_m3_custodios_anillo' && selectedCombatMissionId !== 't2_c1_m2_jauria_salas' && selectedCombatMissionId !== 't2_c1_m1_trincheras_nomuertos' && selectedCombatMissionId !== 'evento_coliseo_suenos' && selectedCombatMissionId !== 'm20_tercera_camara_bulezau' && selectedCombatMissionId !== 'm19_segunda_camara_aire' && selectedCombatMissionId !== 'm18_primera_camara_gorgon' && selectedCombatMissionId !== 'm14_planta_intermedia_ferton' && selectedCombatMissionId !== 'm13_escaleras_durnik' && selectedCombatMissionId !== 'm12_recibidor_mansion_ferton' && selectedCombatMissionId !== 'm2_robo' && selectedCombatMissionId !== 'm3_bosque' && selectedCombatMissionId !== 'm9_emboscada_ferton' && selectedCombatMissionId !== 'm10_hobgoblin_boss' && (
+            {selectedCombatMissionId !== 'm22_cryovain_final' && selectedCombatMissionId !== 'midas_dungeon_boss_ignivrax' && selectedCombatMissionId !== 't2_c2_m1_ten_piedad' && selectedCombatMissionId !== 't2_c1_m4_arana_acorazada' && selectedCombatMissionId !== 't2_c1_m3_custodios_anillo' && selectedCombatMissionId !== 't2_c1_m2_jauria_salas' && selectedCombatMissionId !== 't2_c1_m1_trincheras_nomuertos' && selectedCombatMissionId !== 'evento_coliseo_suenos' && selectedCombatMissionId !== 'm20_tercera_camara_bulezau' && selectedCombatMissionId !== 'm19_segunda_camara_aire' && selectedCombatMissionId !== 'm18_primera_camara_gorgon' && selectedCombatMissionId !== 'm14_planta_intermedia_ferton' && selectedCombatMissionId !== 'm13_escaleras_durnik' && selectedCombatMissionId !== 'm12_recibidor_mansion_ferton' && selectedCombatMissionId !== 'm2_robo' && selectedCombatMissionId !== 'm3_bosque' && selectedCombatMissionId !== 'm9_emboscada_ferton' && selectedCombatMissionId !== 'm10_hobgoblin_boss' && (
               <div className="text-[10px] text-stone-400 font-mono mb-3">
                 Récord alcanzado: <b className="text-amber-400 font-bold">Sala {bestFloor}</b>
               </div>
@@ -18544,6 +25612,10 @@ export const CombatView: React.FC = () => {
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 text-center">
                 {selectedCombatMissionId === 'm22_cryovain_final'
                   ? 'Botín de la Cima Helada'
+                  : selectedCombatMissionId === 'midas_dungeon_boss_ignivrax'
+                  ? 'Botín del Altar Ígneo de Midas'
+                  : selectedCombatMissionId === 't2_c2_m1_ten_piedad'
+                  ? 'Botín de la Iglesia Destrozada'
                   : selectedCombatMissionId === 't2_c1_m4_arana_acorazada'
                   ? 'Botín de la Sala Hexagonal'
                   : selectedCombatMissionId === 't2_c1_m3_custodios_anillo'
@@ -18598,7 +25670,7 @@ export const CombatView: React.FC = () => {
                 onClick={handleRetreatAndClaim}
                 className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-lg"
               >
-                {selectedCombatMissionId === 'evento_coliseo_suenos' ? 'Volver al Plano de los Sueños' : selectedCombatMissionId === 'm22_cryovain_final' || selectedCombatMissionId === 't2_c1_m4_arana_acorazada' || selectedCombatMissionId === 't2_c1_m3_custodios_anillo' || selectedCombatMissionId === 't2_c1_m2_jauria_salas' || selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos' || selectedCombatMissionId === 'm20_tercera_camara_bulezau' || selectedCombatMissionId === 'm19_segunda_camara_aire' || selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm12_recibidor_mansion_ferton' || selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' || selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm10c_callejon_hoggoblins' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
+                {selectedCombatMissionId === 'evento_coliseo_suenos' ? 'Volver al Plano de los Sueños' : selectedCombatMissionId === 'm22_cryovain_final' || selectedCombatMissionId === 'midas_dungeon_boss_ignivrax' || selectedCombatMissionId === 't2_c2_m1_ten_piedad' || selectedCombatMissionId === 't2_c1_m4_arana_acorazada' || selectedCombatMissionId === 't2_c1_m3_custodios_anillo' || selectedCombatMissionId === 't2_c1_m2_jauria_salas' || selectedCombatMissionId === 't2_c1_m1_trincheras_nomuertos' || selectedCombatMissionId === 'm20_tercera_camara_bulezau' || selectedCombatMissionId === 'm19_segunda_camara_aire' || selectedCombatMissionId === 'm18_primera_camara_gorgon' || selectedCombatMissionId === 'm14_planta_intermedia_ferton' || selectedCombatMissionId === 'm13_escaleras_durnik' || selectedCombatMissionId === 'm12_recibidor_mansion_ferton' || selectedCombatMissionId === 'm2_robo' || selectedCombatMissionId === 'm9_emboscada_ferton' || selectedCombatMissionId === 'm10_hobgoblin_boss' || selectedCombatMissionId === 'm10c_callejon_hoggoblins' ? 'Escapar a la Aldea' : 'Cobrar Botín y Volver a la Aldea'}
               </button>
 
               {isBossFight ? (

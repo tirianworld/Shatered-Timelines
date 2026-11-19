@@ -15,6 +15,7 @@ export const CookingIngredientIcon: React.FC<CookingIngredientIconProps> = ({
       <img
         src={ingredient.icon}
         alt={ingredient.name}
+        referrerPolicy="no-referrer"
         className={`${className} object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]`}
         loading="lazy"
       />

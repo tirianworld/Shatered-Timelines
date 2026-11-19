@@ -10,6 +10,14 @@ import { BANNERS, PATROLS, INITIAL_INVENTORY, INITIAL_EQUIPMENT, SHOP_ITEMS, GAC
 import { DAILY_REWARDS } from '../data/dailyRewardsData';
 import { DAILY_PRESENTERS, DEFAULT_PRESENTER_ID } from '../data/dailyRewardPresenters';
 import { sound } from '../services/soundService';
+import {
+  GOLD_RUN_BOONS,
+  GOLD_RUN_CHAPTER_MISSIONS,
+  GOLD_RUN_LEVELS_PER_CHAPTER,
+  goldRunLevelMissionId,
+  loadGoldRun,
+  saveGoldRun,
+} from '../data/goldRun';
 import { safeStorage, safeGetJSON } from '../utils/storage';
 import { playGames } from '../services/playGamesService';
 
@@ -1951,11 +1959,40 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       't2_c1_m3_custodios_anillo',
       't2_c1_m4_arana_acorazada',
       't2_c1_m5_carreta_cid',
+      't2_c2_m1_ten_piedad',
     ];
     // Seed placeholder missions m11..m100 for all future missions and chapters
     for (let i = 11; i <= 100; i++) {
       allKnownMissionIds.push(`m${i}`);
     }
+
+    // Bastión de entrenamiento: pruebas de recursos, las diez salas de cada capítulo de la
+    // Mazmorra de Midas (más sus jefes) y las antiguas misiones de oleadas.
+    const bastionMissionIds = [
+      'resource_trial_gold',
+      'resource_trial_xp',
+      'midas_dungeon_easy',
+      'midas_dungeon_easy_epilogo',
+      'midas_dungeon_easy_insectos',
+      'midas_dungeon_easy_aurumvorax',
+      'midas_dungeon_boss_devorador',
+      'midas_dungeon_boss_mimico',
+      'midas_dungeon_boss_ignivrax',
+      'midas_dungeon_hard',
+      'midas_dungeon_n2_c1_kobolds_alados',
+      'midas_dungeon_n2_c2_escudos_dragon',
+      'midas_dungeon_n2_c3_dracos_guardianes',
+      'midas_dungeon_n2_c4_semidragones_rojos',
+      'midas_dungeon_n2_c5_horda_ignivrax',
+    ];
+    for (let chapter = 1; chapter <= 6; chapter++) {
+      for (let level = 1; level <= GOLD_RUN_LEVELS_PER_CHAPTER; level++) {
+        bastionMissionIds.push(goldRunLevelMissionId(chapter, level));
+      }
+    }
+    bastionMissionIds.forEach((id) => {
+      allKnownMissionIds.push(id, `${id}__normal`, `${id}__hard`);
+    });
 
     const allStars: Record<string, number> = {};
     allKnownMissionIds.forEach((id) => {
@@ -1976,6 +2013,19 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       stars: allStars,
       allMissionsCompleted: true,
     }));
+    // La expedición de la Mazmorra de Midas queda cerrada: los seis capítulos, todas sus
+    // salas y los cuatro power-ups de la run.
+    const clearedGoldMissions = Object.values(GOLD_RUN_CHAPTER_MISSIONS).flat();
+    saveGoldRun({
+      ...loadGoldRun(),
+      active: true,
+      chapter: 6,
+      cleared: clearedGoldMissions,
+      boons: GOLD_RUN_BOONS.map((boon) => boon.id),
+      lastBoon: null,
+      finished: true,
+      hpPct: 1,
+    });
     playGames.unlockAchievement('ach_first_victory');
     playGames.unlockAchievement('ach_chapter_1');
     sound.playSFX('powerup');

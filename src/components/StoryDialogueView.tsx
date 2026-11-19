@@ -64,6 +64,8 @@ import {
   STORY_TOMO2_C1_JAURIA_DIALOGUE,
   STORY_TOMO2_C1_ARMADURA_DIALOGUE,
   STORY_TOMO2_C1_ARANA_DIALOGUE,
+  STORY_MIDAS_EASY_DIALOGUE,
+  STORY_MIDAS_EASY_EPILOGUE_DIALOGUE,
   CHARACTER_PROFILES,
   DialogueLine,
   EmotionType,
@@ -357,8 +359,14 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
   const isForgeIntro = selectedCombatMissionId === FORGE_INTRO_MISSION_ID;
   const isBoticaIntro = selectedCombatMissionId === BOTICA_INTRO_MISSION_ID;
   const isOrderHqIntro = selectedCombatMissionId === ORDER_HQ_INTRO_MISSION_ID;
+  const isMidasEasyMission = selectedCombatMissionId === 'midas_dungeon_easy';
+  const isMidasEasyEpilogue = selectedCombatMissionId === 'midas_dungeon_easy_epilogo';
 
-  const rawDialogueLines = isKitchenMonstersIntro
+  const rawDialogueLines = isMidasEasyEpilogue
+    ? STORY_MIDAS_EASY_EPILOGUE_DIALOGUE
+    : isMidasEasyMission
+    ? STORY_MIDAS_EASY_DIALOGUE
+    : isKitchenMonstersIntro
     ? PACO_MONSTERS_DIALOGUE
     : isBoticaIntro
     ? RAXXAR_BOTICA_DIALOGUE
@@ -796,10 +804,10 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         setTimeout(() => {
           handleStartDrinkingContest();
         }, 1050);
-      } else if (isTome2Ch1CidMission || isCh6VerdadGabrielMission || isCh6ForzarPuertaEpilogue || isCh6CasaGabrielMission || isEventoColiseoEpilogue || isColiseoSuenosMission || isBulezauMazmorraEpilogue || isAireMazmorraEpilogue || isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isMansionFertonLlegadaMission || isBaronMansionMission || isAldeaEpilogue || isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue || isFertonEpilogue || isChispoEncuentroMission || isCallejonHoggoblinsEpilogue || isRecibidorMansionEpilogue || isDurnikEscalerasEpilogue || isPlantaIntermediaMansionEpilogue) {
+      } else if (isMidasEasyEpilogue || isTome2Ch1CidMission || isCh6VerdadGabrielMission || isCh6ForzarPuertaEpilogue || isCh6CasaGabrielMission || isEventoColiseoEpilogue || isColiseoSuenosMission || isBulezauMazmorraEpilogue || isAireMazmorraEpilogue || isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isMansionFertonLlegadaMission || isBaronMansionMission || isAldeaEpilogue || isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isEmboscadaEpilogue || isAsaltoOrcoEpilogue || isFertonEpilogue || isChispoEncuentroMission || isCallejonHoggoblinsEpilogue || isRecibidorMansionEpilogue || isDurnikEscalerasEpilogue || isPlantaIntermediaMansionEpilogue) {
         handleCompleteStory();
-      } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isRoboMission || isBosqueMission || isPuertasMission || isEmboscadaMission || isAsaltoOrcoMission || isFuriaCarmesiMission || (isFertonMission && !isFertonEpilogue) || (isCallejonHoggoblinsMission && !isCallejonHoggoblinsEpilogue) || (isRecibidorMansionMission && !isRecibidorMansionEpilogue) || (isDurnikEscalerasMission && !isDurnikEscalerasEpilogue) || (isPlantaIntermediaMansionMission && !isPlantaIntermediaMansionEpilogue) || (isGorgonMazmorraMission && !isGorgonMazmorraEpilogue) || (isAireMazmorraMission && !isAireMazmorraEpilogue) || (isBulezauMazmorraMission && !isBulezauMazmorraEpilogue)) {
-        setScreenFlash(isBulezauMazmorraMission ? 'purple' : isAireMazmorraMission ? 'cyan' : isGorgonMazmorraMission ? 'pink' : isPlantaIntermediaMansionMission || isDurnikEscalerasMission || isRecibidorMansionMission ? 'gold' : isCallejonHoggoblinsMission ? 'red' : isFertonMission ? 'gold' : isTitanMission ? 'gold' : isZancudoMission ? 'purple' : isCavernaAzulMission ? 'cyan' : isFuriaCarmesiMission ? 'cyan' : 'red');
+      } else if (isMidasEasyMission || isTitanMission || isZancudoMission || isCavernaAzulMission || isRoboMission || isBosqueMission || isPuertasMission || isEmboscadaMission || isAsaltoOrcoMission || isFuriaCarmesiMission || (isFertonMission && !isFertonEpilogue) || (isCallejonHoggoblinsMission && !isCallejonHoggoblinsEpilogue) || (isRecibidorMansionMission && !isRecibidorMansionEpilogue) || (isDurnikEscalerasMission && !isDurnikEscalerasEpilogue) || (isPlantaIntermediaMansionMission && !isPlantaIntermediaMansionEpilogue) || (isGorgonMazmorraMission && !isGorgonMazmorraEpilogue) || (isAireMazmorraMission && !isAireMazmorraEpilogue) || (isBulezauMazmorraMission && !isBulezauMazmorraEpilogue)) {
+        setScreenFlash(isMidasEasyMission ? 'gold' : isBulezauMazmorraMission ? 'purple' : isAireMazmorraMission ? 'cyan' : isGorgonMazmorraMission ? 'pink' : isPlantaIntermediaMansionMission || isDurnikEscalerasMission || isRecibidorMansionMission ? 'gold' : isCallejonHoggoblinsMission ? 'red' : isFertonMission ? 'gold' : isTitanMission ? 'gold' : isZancudoMission ? 'purple' : isCavernaAzulMission ? 'cyan' : isFuriaCarmesiMission ? 'cyan' : 'red');
         setBattleTransitionAlert(true);
         setTimeout(() => {
           handleStartCombatAfterStory();
@@ -818,7 +826,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
         handleCompleteStory();
       }
     }
-  }, [isTyping, currentLine.text, currentLineIndex, dialogueLines.length, isTome2Ch1CidMission, isCh6VerdadGabrielMission, isCh6ForzarPuertaEpilogue, isCh6CasaGabrielMission, isEventoColiseoEpilogue, isColiseoSuenosMission, isBulezauMazmorraMission, isBulezauMazmorraEpilogue, isAireMazmorraMission, isAireMazmorraEpilogue, isGorgonMazmorraMission, isGorgonMazmorraEpilogue, isDespertarSuenosMission, isAudienciaBaronMission, isDespachoFertonMission, isPlantaIntermediaMansionMission, isPlantaIntermediaMansionEpilogue, isDurnikEscalerasMission, isDurnikEscalerasEpilogue, isRecibidorMansionMission, isRecibidorMansionEpilogue, isMansionFertonLlegadaMission, isTabernaDuergarEpilogue, isTabernaDuergarMission, isBaronMansionMission, isAldeaEpilogue, isLaberintoMission, isTitanMission, isTitanEpilogue, isZancudoMission, isZancudoEpilogue, isRoboMission, isRoboEpilogue, isBosqueMission, isBosqueEpilogue, isPuertasMission, isPuertasEpilogue, isEmboscadaMission, isEmboscadaEpilogue, isAsaltoOrcoMission, isAsaltoOrcoEpilogue, isMinasHistoriaMission, isFuriaCarmesiMission, isFuriaCarmesiEpilogue, isCavernaAzulMission, isCavernaAzulEpilogue, isFertonMission, isFertonEpilogue, isHobgoblinBossMission, isHobgoblinBossEpilogue, isChispoEncuentroMission, isCallejonHoggoblinsMission, isCallejonHoggoblinsEpilogue]);
+  }, [isTyping, currentLine.text, currentLineIndex, dialogueLines.length, isMidasEasyMission, isMidasEasyEpilogue, isTome2Ch1CidMission, isCh6VerdadGabrielMission, isCh6ForzarPuertaEpilogue, isCh6CasaGabrielMission, isEventoColiseoEpilogue, isColiseoSuenosMission, isBulezauMazmorraMission, isBulezauMazmorraEpilogue, isAireMazmorraMission, isAireMazmorraEpilogue, isGorgonMazmorraMission, isGorgonMazmorraEpilogue, isDespertarSuenosMission, isAudienciaBaronMission, isDespachoFertonMission, isPlantaIntermediaMansionMission, isPlantaIntermediaMansionEpilogue, isDurnikEscalerasMission, isDurnikEscalerasEpilogue, isRecibidorMansionMission, isRecibidorMansionEpilogue, isMansionFertonLlegadaMission, isTabernaDuergarEpilogue, isTabernaDuergarMission, isBaronMansionMission, isAldeaEpilogue, isLaberintoMission, isTitanMission, isTitanEpilogue, isZancudoMission, isZancudoEpilogue, isRoboMission, isRoboEpilogue, isBosqueMission, isBosqueEpilogue, isPuertasMission, isPuertasEpilogue, isEmboscadaMission, isEmboscadaEpilogue, isAsaltoOrcoMission, isAsaltoOrcoEpilogue, isMinasHistoriaMission, isFuriaCarmesiMission, isFuriaCarmesiEpilogue, isCavernaAzulMission, isCavernaAzulEpilogue, isFertonMission, isFertonEpilogue, isHobgoblinBossMission, isHobgoblinBossEpilogue, isChispoEncuentroMission, isCallejonHoggoblinsMission, isCallejonHoggoblinsEpilogue]);
 
   const handleCompleteStory = () => {
     // Las bienvenidas del fogón y de la forja no son misiones: nunca deben
@@ -844,8 +852,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
     setIsStoryCompleted(true);
     setIsAutoPlay(false);
 
-    if (isTabernaDuergarEpilogue || isEventoColiseoEpilogue || isCh6ForzarPuertaEpilogue) {
-      // Las estrellas y recompensas ya se otorgaron al ganar el evento.
+    if (isMidasEasyEpilogue || isTabernaDuergarEpilogue || isEventoColiseoEpilogue || isCh6ForzarPuertaEpilogue) {
+      // Las estrellas y recompensas ya se otorgaron al ganar el evento o las 4 salas.
       return;
     }
 
@@ -1582,6 +1590,14 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       handleStartDrinkingContest();
       return;
     }
+    if (isMidasEasyEpilogue) {
+      handleCompleteStory();
+      return;
+    }
+    if (isMidasEasyMission) {
+      handleStartCombatAfterStory();
+      return;
+    }
     if (isLaberintoMission || isTitanEpilogue || isZancudoEpilogue || isCavernaAzulEpilogue || isFuriaCarmesiEpilogue || isMinasHistoriaMission || isEmboscadaEpilogue || isRoboEpilogue || isBosqueEpilogue || isPuertasEpilogue || isAsaltoOrcoEpilogue) {
       handleCompleteStory();
     } else if (isTitanMission || isZancudoMission || isCavernaAzulMission || isEmboscadaMission || isRoboMission || isBosqueMission || isPuertasMission || isFuriaCarmesiMission) {
@@ -1661,6 +1677,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
       setSelectedCombatMissionId('t2_c1_m3_custodios_anillo');
     } else if (isTome2Ch1JauriaMission) {
       setSelectedCombatMissionId('t2_c1_m2_jauria_salas');
+    } else if (isMidasEasyMission) {
+      setSelectedCombatMissionId('midas_dungeon_easy');
     } else if (isTome2Ch1BarraconMission) {
       setSelectedCombatMissionId('t2_c1_m1_trincheras_nomuertos');
     } else {
@@ -1861,18 +1879,33 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               key={exitingSpeaker.id}
               className={`absolute bottom-0 ${exitPos} ${exitAnim} z-10 flex flex-col items-center pointer-events-none select-none`}
             >
-              <img
-                src={exitPoseUrl}
-                alt={exitProf.name}
-                style={{
-                  scale: String(SPRITE_POSE_SCALE[exitPoseUrl] ?? 1),
-                  transformOrigin: 'bottom center',
-                }}
-                onError={(event) => {
-                  event.currentTarget.style.visibility = 'hidden';
-                }}
-                className={`${exitProf.framing.height} w-auto max-w-none object-contain brightness-90 transition-all ${exitProf.framing.translateY}`}
-              />
+              {exitingSpeaker.characterId === 'midas' ? (
+                <img
+                  src={exitPoseUrl}
+                  alt={exitProf.name}
+                  style={{
+                    filter: 'sepia(0.92) saturate(2.35) brightness(1.06) contrast(1.06) drop-shadow(0 0 18px rgba(251,191,36,0.72))',
+                    transformOrigin: 'bottom center',
+                  }}
+                  onError={(event) => {
+                    event.currentTarget.style.visibility = 'hidden';
+                  }}
+                  className={`${exitProf.framing.height} w-auto max-w-none object-contain opacity-90 transition-all ${exitProf.framing.translateY}`}
+                />
+              ) : (
+                <img
+                  src={exitPoseUrl}
+                  alt={exitProf.name}
+                  style={{
+                    scale: String(SPRITE_POSE_SCALE[exitPoseUrl] ?? 1),
+                    transformOrigin: 'bottom center',
+                  }}
+                  onError={(event) => {
+                    event.currentTarget.style.visibility = 'hidden';
+                  }}
+                  className={`${exitProf.framing.height} w-auto max-w-none object-contain brightness-90 transition-all ${exitProf.framing.translateY}`}
+                />
+              )}
             </div>
           );
         })()}
@@ -1923,26 +1956,57 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 </div>
               )}
               {/* Character Standing / Sleeping Sprite */}
-              <img
-                src={activePoseUrl}
-                alt={activeProf.name}
-                style={
-                  !isTitanSleeping
-                    ? {
-                        scale: String(SPRITE_POSE_SCALE[activePoseUrl] ?? 1),
-                        transformOrigin: 'bottom center',
-                      }
-                    : undefined
-                }
-                onError={(event) => {
-                  event.currentTarget.style.visibility = 'hidden';
-                }}
-                className={`${activeProf.framing.height} w-auto max-w-none object-contain brightness-110 drop-shadow-[0_0_24px_rgba(251,191,36,0.35)] transition-all ${
-                  isTitanSleeping
-                    ? 'rotate-[-85deg] translate-y-[28%] scale-[0.80] filter saturate-80'
-                    : activeProf.framing.translateY
-                }`}
-              />
+              {activeSpeaker.characterId === 'midas' ? (
+                <div className={`relative flex items-center justify-center ${activeProf.framing.translateY}`}>
+                  {/* Shimmering gold-dust aura & particles for Midas animated statue vision */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute -inset-6 rounded-full bg-[radial-gradient(circle,rgba(251,191,36,0.52)_0%,rgba(245,158,11,0.2)_45%,transparent_75%)] blur-xl animate-pulse pointer-events-none"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 pointer-events-none overflow-visible z-20"
+                  >
+                    <span className="absolute left-[14%] top-[14%] w-2 h-2 rounded-full bg-amber-200 shadow-[0_0_10px_#fde047] animate-ping" />
+                    <span className="absolute right-[12%] top-[28%] w-1.5 h-1.5 rounded-full bg-yellow-300 shadow-[0_0_8px_#fbbf24] animate-bounce" />
+                    <span className="absolute left-[22%] bottom-[24%] w-1.5 h-1.5 rounded-full bg-amber-300 shadow-[0_0_8px_#f59e0b] animate-pulse" />
+                    <span className="absolute right-[18%] bottom-[16%] w-2 h-2 rounded-full bg-yellow-200 shadow-[0_0_10px_#fde047] animate-ping" />
+                  </div>
+                  <img
+                    src={activePoseUrl}
+                    alt={activeProf.name}
+                    style={{
+                      filter: 'sepia(0.92) saturate(2.35) brightness(1.1) contrast(1.06) drop-shadow(0 0 22px rgba(251,191,36,0.88))',
+                      transformOrigin: 'bottom center',
+                    }}
+                    onError={(event) => {
+                      event.currentTarget.style.visibility = 'hidden';
+                    }}
+                    className={`${activeProf.framing.height} w-auto max-w-none object-contain animate-[combatSpriteBreath_3.6s_ease-in-out_infinite]`}
+                  />
+                </div>
+              ) : (
+                <img
+                  src={activePoseUrl}
+                  alt={activeProf.name}
+                  style={
+                    !isTitanSleeping
+                      ? {
+                          scale: String(SPRITE_POSE_SCALE[activePoseUrl] ?? 1),
+                          transformOrigin: 'bottom center',
+                        }
+                      : undefined
+                  }
+                  onError={(event) => {
+                    event.currentTarget.style.visibility = 'hidden';
+                  }}
+                  className={`${activeProf.framing.height} w-auto max-w-none object-contain brightness-110 drop-shadow-[0_0_24px_rgba(251,191,36,0.35)] transition-all ${
+                    isTitanSleeping
+                      ? 'rotate-[-85deg] translate-y-[28%] scale-[0.80] filter saturate-80'
+                      : activeProf.framing.translateY
+                  }`}
+                />
+              )}
             </div>
           );
         })()}
@@ -2134,6 +2198,8 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 ? '¿Saltar la presentación de Nala?'
                 : isRoboMission
                 ? '¿Saltar Diálogo e Iniciar Combate?'
+                : isMidasEasyEpilogue
+                ? '¿Saltar Epílogo de la Bóveda?'
                 : '¿Saltar Prólogo de Historia?'}
             </h4>
             <p className="text-[11px] text-stone-300 leading-relaxed">
@@ -2187,6 +2253,10 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 ? 'Pasarás directamente a la Sede de Orden, donde Nala te señalará qué pestaña tocar para aprender a usar la sede.'
                 : isRoboMission
                 ? 'Saltarás la escena cómica del asalto a la mansión y comenzarás de inmediato el combate contra las 4 oleadas de la guardia urbana en el callejón.'
+                : isMidasEasyEpilogue
+                ? 'Saltarás la huida de los Guinbang tras el ruido del combate y la aparición del Monstruo del Óxido dorado.'
+                : isMidasEasyMission
+                ? 'Saltarás la visión de la estatua de polvo de oro de Midas en Icespear y entrarás directo al semiplano contra los Guinbang.'
                 : isTome2Ch1Story
                 ? 'Darás por vista la escena del barracón y pasarás directamente al combate de la misión.'
                 : 'Completarás la escena narrativa, firmarás el contrato del Capitán Gabriel y desbloquearás la batalla contra Cryovain.'}
@@ -2204,7 +2274,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 onClick={handleSkipStory}
                 className="flex-1 py-1.5 rounded-lg bg-gradient-to-r from-red-600 to-amber-600 text-white text-[10px] font-black uppercase tracking-wider cursor-pointer shadow hover:brightness-110"
               >
-                {isCh6VerdadGabrielMission || isCh6ForzarPuertaEpilogue || isCh6CasaGabrielMission || isAireMazmorraEpilogue || isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isPlantaIntermediaMansionEpilogue || isDurnikEscalerasEpilogue || isRecibidorMansionEpilogue || isMansionFertonLlegadaMission || isTabernaDuergarEpilogue ? 'Finalizar' : isAireMazmorraMission || isGorgonMazmorraMission || isPlantaIntermediaMansionMission || isDurnikEscalerasMission || isRecibidorMansionMission ? '¡Al Combate!' : isTabernaDuergarMission ? '¡Elegir Héroe!' : isKitchenMonstersIntro ? 'Ver Monstruos' : isKitchenIntro ? 'Al Tutorial' : isForgeIntro ? 'Al Yunque' : isBoticaIntro ? 'Al Alambique' : isRoboMission ? '¡A las Armas!' : 'Saltar'}
+                {isMidasEasyEpilogue || isCh6VerdadGabrielMission || isCh6ForzarPuertaEpilogue || isCh6CasaGabrielMission || isAireMazmorraEpilogue || isGorgonMazmorraEpilogue || isDespertarSuenosMission || isAudienciaBaronMission || isDespachoFertonMission || isPlantaIntermediaMansionEpilogue || isDurnikEscalerasEpilogue || isRecibidorMansionEpilogue || isMansionFertonLlegadaMission || isTabernaDuergarEpilogue ? 'Finalizar' : isMidasEasyMission ? '¡Al Semiplano!' : isAireMazmorraMission || isGorgonMazmorraMission || isPlantaIntermediaMansionMission || isDurnikEscalerasMission || isRecibidorMansionMission ? '¡Al Combate!' : isTabernaDuergarMission ? '¡Elegir Héroe!' : isKitchenMonstersIntro ? 'Ver Monstruos' : isKitchenIntro ? 'Al Tutorial' : isForgeIntro ? 'Al Yunque' : isBoticaIntro ? 'Al Alambique' : isRoboMission ? '¡A las Armas!' : 'Saltar'}
               </button>
             </div>
           </div>
@@ -2219,7 +2289,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
               <Swords className="w-6 h-6 text-red-400" />
             </div>
             <span className="text-[10px] font-black uppercase tracking-widest text-red-400 block animate-pulse">
-              {isAireMazmorraMission
+              {isMidasEasyMission
+                ? '¡TRANSPORTE AL SEMIPLANO DE MIDAS!'
+                : isAireMazmorraMission
                 ? '¡TORBELLINO EN LA SEGUNDA CÁMARA! ¡JEFE!'
                 : isGorgonMazmorraMission
                 ? '¡LA PUERTA ROSADA SE ABRE! ¡JEFE DE CÁMARA!'
@@ -2246,7 +2318,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 : '¡ALARMA EN EL CALLEJÓN!'}
             </span>
             <h3 className="font-serif font-black text-base uppercase text-amber-200">
-              {isAireMazmorraMission
+              {isMidasEasyMission
+                ? '¡Los Guinbang Custodian el Tesoro!'
+                : isAireMazmorraMission
                 ? '¡El Elemental de Aire!'
                 : isGorgonMazmorraMission
                 ? '¡El Gorgon de Hierro!'
@@ -2273,7 +2347,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 : '¡Rodeados por la Guardia!'}
             </h3>
             <p className="text-[11px] text-stone-200 leading-snug">
-              {isAireMazmorraMission
+              {isMidasEasyMission
+                ? 'La estatua de polvo de oro de Midas os ha transportado desde Icespear a una cámara de piedra en su semiplano repleta de riquezas. ¡Supera 4 salas frente a tres variantes de Guinbang armados con botín dorado!'
+                : isAireMazmorraMission
                 ? 'En la Segunda Cámara os aguarda un voraz Elemental de Aire. ¡Cuidado con sus tajos de vendaval, sus ráfagas de cuchillas y su vórtice capaz de inmovilizar a un héroe!'
                 : isGorgonMazmorraMission
                 ? 'En la Primera Cámara os aguarda un colosal toro de metal. ¡Cuidado con sus devastadoras cornadas perforantes y su aliento de niebla petrificante!'
@@ -2320,7 +2396,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
             {/* Mission Clear Banner */}
             <div>
               <span className="px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/60 text-[9px] font-black uppercase tracking-widest text-amber-300 inline-block mb-1">
-                {isCh6VerdadGabrielMission
+                {isMidasEasyEpilogue
+                  ? 'EPÍLOGO: LA BÓVEDA DE MIDAS'
+                  : isCh6VerdadGabrielMission
                   ? 'CAPÍTULO VI • REVELACIÓN FINAL: EL FALSO CAPITÁN'
                   : isCh6ForzarPuertaEpilogue
                   ? 'CAPÍTULO VI • EPÍLOGO: LA TRAICIÓN EN LA CIMA'
@@ -2389,7 +2467,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   : 'PRÓLOGO DE HISTORIA SUPERADO'}
               </span>
               <h3 className="font-serif font-black text-lg sm:text-xl uppercase text-amber-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                {isCh6VerdadGabrielMission
+                {isMidasEasyEpilogue
+                  ? '¡EL DEVORADOR DE HIERRO DESPIERTA!'
+                  : isCh6VerdadGabrielMission
                   ? '¡CRYOVAIN SE TRANSFORMA ANTE VOSOTROS!'
                   : isCh6ForzarPuertaEpilogue
                   ? '¡TRAMPA EN LA CUEVA DE CRYOVAIN!'
@@ -2458,7 +2538,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                   : '¡Contrato de Cryovain Aceptado!'}
               </h3>
               <p className="text-[11px] text-stone-300 leading-snug mt-1">
-                {isCh6VerdadGabrielMission
+                {isMidasEasyEpilogue
+                  ? 'Los Guinbang salieron huyendo a toda velocidad al escuchar que el estruendo de vuestro combate había atraído a una bestia metálica. ¡Un Monstruo del Óxido dorado ha irrumpido en la bóveda para devorar vuestro acero!'
+                  : isCh6VerdadGabrielMission
                   ? 'Caldo de Dragón descubrió al verdadero Capitán Gabriel muerto y congelado junto a sus hombres antes siquiera de haberlos reclutado. El impostor confesó que Cryovain fingió ser Gabriel todo este tiempo bajo órdenes de sus «Maestros» y se transformó en el Dragón Blanco para matarlos.'
                   : isCh6ForzarPuertaEpilogue
                   ? 'Al entrar en la casa completamente destrozada, Caldo de Dragón y Chispo Deez hallaron un círculo arcano trazado con sangre congelada. Al acercarse a investigarlo, el hechizo los teletransportó directamente a la cueva de Cryovain... ¡con el Capitán Gabriel sonriendo delante de ellos!'
@@ -2538,7 +2620,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 {/* Reward 1: Oro */}
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <span className="font-mono text-xs font-black text-amber-400">
-                    {isCh6VerdadGabrielMission
+                    {isMidasEasyEpilogue
+                      ? 'GANADO'
+                      : isCh6VerdadGabrielMission
                       ? '+225,000'
                       : isCh6ForzarPuertaEpilogue
                       ? 'GANADO'
@@ -2609,7 +2693,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                 {/* Reward 2: Gemas */}
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <span className="font-mono text-xs font-black text-sky-400">
-                    {isCh6VerdadGabrielMission
+                    {isMidasEasyEpilogue
+                      ? 'JEFE'
+                      : isCh6VerdadGabrielMission
                       ? '+9,500'
                       : isCh6ForzarPuertaEpilogue
                       ? 'GANADO'
@@ -2675,13 +2761,15 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                       ? '+100'
                       : '+150'}
                   </span>
-                  <span className="text-[8px] font-bold uppercase text-sky-200">GEMAS</span>
+                  <span className="text-[8px] font-bold uppercase text-sky-200">{isMidasEasyEpilogue ? 'NUEVO RETO' : 'GEMAS'}</span>
                 </div>
                 {/* Reward 3 */}
                 <div className="flex flex-col items-center p-1.5 rounded-lg bg-[#240c04] border border-[#6b2507]">
                   <img
                     src={
-                      isCh6VerdadGabrielMission
+                      isMidasEasyEpilogue
+                        ? '/assets/portraits/devorador_hierro_thumb.webp'
+                        : isCh6VerdadGabrielMission
                         ? '/assets/portraits/verdad_gabriel_thumb.webp'
                         : isCh6ForzarPuertaEpilogue
                         ? '/assets/portraits/puerta_gabriel_thumb.webp'
@@ -2748,7 +2836,9 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                     className="w-5 h-5 object-contain"
                   />
                   <span className="text-[8px] font-bold uppercase text-amber-300 mt-0.5 truncate max-w-[80px]">
-                    {isCh6VerdadGabrielMission
+                    {isMidasEasyEpilogue
+                      ? 'JEFE ÁUREO'
+                      : isCh6VerdadGabrielMission
                       ? 'INSIGNIA UR'
                       : isCh6ForzarPuertaEpilogue
                       ? 'CERROJO UR'
@@ -2822,7 +2912,7 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
 
             {/* Action Buttons */}
             <div className="space-y-2 pt-1">
-              {!isCh6VerdadGabrielMission && !isCh6ForzarPuertaEpilogue && !isCh6CasaGabrielMission && !isEventoColiseoEpilogue && !isColiseoSuenosMission && !isBulezauMazmorraEpilogue && !isAireMazmorraEpilogue && !isGorgonMazmorraEpilogue && !isDespertarSuenosMission && !isAudienciaBaronMission && !isDespachoFertonMission && !isPlantaIntermediaMansionEpilogue && !isDurnikEscalerasEpilogue && !isRecibidorMansionEpilogue && !isMansionFertonLlegadaMission && !isTabernaDuergarEpilogue && !isBaronMansionMission && !isCallejonHoggoblinsEpilogue && !isChispoEncuentroMission && !isFertonEpilogue && !isCapitulo3IntroMission && !isAldeaEpilogue && !isLaberintoMission && !isRoboEpilogue && !isBosqueEpilogue && !isPuertasEpilogue && !isEmboscadaEpilogue && !isAsaltoOrcoEpilogue && !isFuriaCarmesiEpilogue && !isCavernaAzulEpilogue && !isZancudoEpilogue && (
+              {!isMidasEasyEpilogue && !isCh6VerdadGabrielMission && !isCh6ForzarPuertaEpilogue && !isCh6CasaGabrielMission && !isEventoColiseoEpilogue && !isColiseoSuenosMission && !isBulezauMazmorraEpilogue && !isAireMazmorraEpilogue && !isGorgonMazmorraEpilogue && !isDespertarSuenosMission && !isAudienciaBaronMission && !isDespachoFertonMission && !isPlantaIntermediaMansionEpilogue && !isDurnikEscalerasEpilogue && !isRecibidorMansionEpilogue && !isMansionFertonLlegadaMission && !isTabernaDuergarEpilogue && !isBaronMansionMission && !isCallejonHoggoblinsEpilogue && !isChispoEncuentroMission && !isFertonEpilogue && !isCapitulo3IntroMission && !isAldeaEpilogue && !isLaberintoMission && !isRoboEpilogue && !isBosqueEpilogue && !isPuertasEpilogue && !isEmboscadaEpilogue && !isAsaltoOrcoEpilogue && !isFuriaCarmesiEpilogue && !isCavernaAzulEpilogue && !isZancudoEpilogue && (
                 <button
                   type="button"
                   onClick={handleStartCombatAfterStory}
@@ -2862,6 +2952,26 @@ export const StoryDialogueView: React.FC<StoryDialogueViewProps> = ({
                       ? '¡Entrar en el Barracón!'
                       : '¡Ir al Combate contra Cryovain!'}
                   </span>
+                </button>
+              )}
+
+              {isMidasEasyEpilogue && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    sound.playSFX('click');
+                    setPendingMissionLaunch({
+                      missionId: 'midas_dungeon_boss_devorador',
+                      destination: 'combat',
+                      difficultyTier: 1,
+                    });
+                    setSelectedCombatMissionId('midas_dungeon_boss_devorador');
+                    navigateTo('party', true);
+                  }}
+                  className="w-full py-2.5 bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 hover:brightness-110 text-white font-black rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-[0_0_18px_rgba(245,158,11,0.65)] flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                >
+                  <Swords className="w-4 h-4 text-amber-200" />
+                  <span>¡Enfrentar al Jefe: Devorador de Hierro!</span>
                 </button>
               )}
 

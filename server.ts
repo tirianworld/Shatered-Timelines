@@ -6,6 +6,14 @@ import type { Request, Response } from 'express';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import {
+  pvpIncomingMultiplier,
+  pvpOutgoingMultiplier,
+  pvpStatusHostile,
+  pvpStatusIcon,
+  pvpStatusKind,
+  pvpStatusLabel,
+} from './src/data/pvpStatus';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,8 +61,8 @@ const GITHUB_OWNER = 'theworldoftirian';
 const GITHUB_REPO = 'Cdd-Gacha-Datos';
 const GITHUB_BRANCH = 'main';
 
-const githubHeaders = {
-  Authorization: `Bearer ${GITHUB_TOKEN}`,
+const githubHeaders: Record<string, string> = {
+  ...(GITHUB_TOKEN ? { Authorization: `Bearer ${GITHUB_TOKEN}` } : {}),
   Accept: 'application/vnd.github.v3+json',
   'User-Agent': 'CDD-Gacha-App',
 };
@@ -238,6 +246,14 @@ app.post('/api/github/save-data', async (req: Request, res: Response) => {
     }
   }
 
+  if (!GITHUB_TOKEN) {
+    return res.json({
+      success: true,
+      localOnly: true,
+      message: 'Guardado localmente en el servidor (lectura pública de GitHub activa).',
+    });
+  }
+
   // Push commit to GitHub via GitHub Contents API
   try {
     const filePath = `data/${category}.json`;
@@ -311,6 +327,17 @@ app.post('/api/github/upload-asset', async (req: Request, res: Response) => {
   const targetPath = `assets/${category}/${safeFilename}`;
   const rawUrl = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${targetPath}`;
   const localUrl = `/assets/${category}/${safeFilename}`;
+
+  if (!GITHUB_TOKEN) {
+    return res.json({
+      success: true,
+      localOnly: true,
+      localPath: localUrl,
+      githubUrl: rawUrl,
+      filename: safeFilename,
+      message: 'Asset guardado localmente en el servidor (sin GITHUB_TOKEN para subir a GitHub).',
+    });
+  }
 
   // Upload to GitHub via GitHub Contents API
   try {
@@ -442,6 +469,10 @@ const commitAuctionsToGitHub = async (auctions: any[], commitMsg: string): Promi
   writeLocalAuctions(auctions);
   // Aviso inmediato a los clientes: el guardado en disco ya es firme, el commit va después.
   broadcastRealtime('auctions', { auctionCount: auctions.length });
+
+  if (!GITHUB_TOKEN) {
+    return false;
+  }
 
   try {
     const filePath = 'data/auctions.json';
@@ -1404,6 +1435,1174 @@ app.post('/api/orders/leave', async (req: Request, res: Response) => {
   });
 });
 
+// --- PVP: POZOS DE PELEA (COMBATE DE CAMPAÑA, BOTS Y RANGO) ---
+// Adaptación del combate de PvE al coliseo: vida compartida del escuadrón, mano de 4 cartas
+// de habilidad por héroe (las mismas cartas de la historia), 5 orbes dorados y definitiva al
+// llenarlos. El servidor es la fuente de verdad: reparte manos, valida turno y orbes, mueve a
+// los bots y calcula el Elo.
+
+interface PvpStatusSeed {
+  type: string;
+  duration: number;
+  stacks: number;
+  target: 'enemy' | 'hero';
+}
+
+interface PvpStatus {
+  id: string;
+  type: string;
+  label: string;
+  icon: string;
+  turns: number;
+  stacks: number;
+  hostile: boolean;
+  kind: string;
+}
+
+interface PvpCardSeed {
+  skillId: string;
+  tier: 1 | 2 | 3;
+  name: string;
+  effects?: PvpStatusSeed[];
+  damage: number;
+  heal: number;
+}
+
+interface PvpCard extends PvpCardSeed {
+  uid: string;
+}
+
+interface PvpHero {
+  heroId: string;
+  heroName: string;
+  spriteUrl: string;
+  attackSpriteUrl: string;
+  portraitUrl: string;
+  deck: PvpCardSeed[];
+  hand: PvpCard[];
+}
+
+interface PvpFighter {
+  playerId: string;
+  seat: 0 | 1;
+  name: string;
+  isBot: boolean;
+  rating: number;
+  heroes: PvpHero[];
+  hp: number;
+  maxHp: number;
+  orbs: number;
+  activeIndex: number;
+  swapped: boolean;
+  guard: boolean;
+  connected: boolean;
+  statuses: PvpStatus[];
+  botPool: PvpHero[];
+}
+
+type PvpLogKind = 'damage' | 'heal' | 'ultimate' | 'crit' | 'guard' | 'switch' | 'system';
+
+interface PvpLogEntry {
+  id: string;
+  seat: 0 | 1;
+  text: string;
+  kind: PvpLogKind;
+}
+
+interface PvpActionInput {
+  type: 'card' | 'switch' | 'merge';
+  uid?: string;
+  /** Carta sobre la que se suelta (fusionar o intercambiar). */
+  targetUid?: string;
+  heroIndex?: number;
+}
+
+interface PvpRoom {
+  id: string;
+  createdAt: number;
+  status: 'waiting' | 'playing' | 'finished';
+  round: number;
+  turnSeat: 0 | 1;
+  deadline: number;
+  fighters: [PvpFighter, PvpFighter];
+  log: PvpLogEntry[];
+  lastAction: {
+    seat: 0 | 1;
+    heroName: string;
+    cardName: string;
+    kind?: 'card' | 'merge' | 'move' | 'switch';
+    skillId?: string;
+    tier?: 1 | 2 | 3;
+    damage?: number;
+    heal?: number;
+    crit?: boolean;
+    ultimate?: boolean;
+    switched?: boolean;
+    /** Nombres de los estados que aplicó la carta. */
+    status?: string[];
+    /** La carta falló por ceguera. */
+    missed?: boolean;
+    at: number;
+  } | null;
+  winnerSeat?: 0 | 1;
+  reason?: string;
+  deltas: Record<0 | 1, number>;
+  turnTimer: NodeJS.Timeout | null;
+  botTimer: NodeJS.Timeout | null;
+  forfeitTimers: Map<string, NodeJS.Timeout>;
+}
+
+const PVP_MAX_ORBS = 5;
+
+const PVP_HAND_SIZE = 4;
+
+const PVP_ULTIMATE_SKILL_ID = 'cataclismo_astral';
+
+const PVP_MAX_HP = 2000;
+
+const PVP_TURN_MS = 25000;
+
+const PVP_FORFEIT_MS = 8000;
+
+const PVP_LOG_LIMIT = 14;
+
+const PVP_ROOM_TTL_MS = 1000 * 60 * 30;
+
+const PVP_BOT_SEARCH_MS = 4000;
+
+const PVP_K_FACTOR = 28;
+
+const PVP_MAX_SQUAD = 3;
+
+const PVP_MAX_RATING = 6000;
+
+/** Nombres de cuenta falsos para los escuadrones bot. */
+
+const PVP_BOT_NAMES = [
+  'SombraErrante',
+  'Kael_88',
+  'ZancadaFria',
+  'Morthal',
+  'Vex_Nocturna',
+  'Ryn_Tempestad',
+  'Gormak',
+  'Seraphine_X',
+  'Drakko_77',
+  'Isolde',
+  'Brasa_Oculta',
+  'Nyx_Velada',
+];
+
+const pvpClients = new Map<string, Response>();
+
+const pvpPlayers = new Map<string, PvpFighter>();
+
+const pvpRooms = new Map<string, PvpRoom>();
+
+const pvpRoomByPlayer = new Map<string, string>();
+
+const pvpBotTimers = new Map<string, NodeJS.Timeout>();
+let pvpQueue: string[] = [];
+
+const pvpClamp = (value: unknown, min: number, max: number, fallback: number): number => {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, Math.round(n)));
+};
+
+const pvpCleanText = (value: unknown, fallback: string, max = 32): string => {
+  const text = String(value || '').trim();
+  return (text || fallback).slice(0, max);
+};
+
+const pvpCleanUrl = (value: unknown): string => {
+  const text = String(value || '').trim();
+  if (!text) return '';
+  if (text.startsWith('/')) return text.slice(0, 220);
+  if (/^https?:\/\//i.test(text)) return text.slice(0, 220);
+  return '';
+};
+
+const pvpUid = () => `c_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+
+const pvpSanitizeCard = (raw: any, heroId: string): PvpCardSeed | null => {
+  const skillId = pvpCleanText(raw?.skillId, '', 48);
+  if (!skillId) return null;
+  const tierRaw = pvpClamp(raw?.tier, 1, 3, 1);
+  const tier = (tierRaw === 3 ? 3 : tierRaw === 2 ? 2 : 1) as 1 | 2 | 3;
+  const rawEffects: any[] = Array.isArray(raw?.effects) ? raw.effects : [];
+  const effects: PvpStatusSeed[] = rawEffects
+    .filter((effect) => typeof effect?.type === 'string' && effect.type && effect.type !== 'none')
+    .slice(0, 3)
+    .map((effect) => ({
+      type: String(effect.type).slice(0, 24),
+      duration: pvpClamp(effect.duration, 1, 3, 1),
+      stacks: pvpClamp(effect.stacks, 1, 3, 1),
+      target: effect.target === 'hero' ? ('hero' as const) : ('enemy' as const),
+    }));
+  return {
+    skillId,
+    tier,
+    name: pvpCleanText(raw?.name, 'Habilidad', 34),
+    damage: pvpClamp(raw?.damage, 0, 100, 0),
+    heal: pvpClamp(raw?.heal, 0, 100, 0),
+    effects,
+  };
+};
+
+const pvpSanitizeHero = (raw: any): PvpHero | null => {
+  const heroId = pvpCleanText(raw?.heroId, '', 40);
+  if (!heroId) return null;
+  const rawCards: any[] = Array.isArray(raw?.cards) ? raw.cards : [];
+  let deck = rawCards
+    .slice(0, 12)
+    .map((c) => pvpSanitizeCard(c, heroId))
+    .filter((c): c is PvpCardSeed => Boolean(c));
+  if (deck.length === 0) {
+    deck = [{ skillId: `${heroId}_golpe`, tier: 1, name: 'Golpe', damage: 16, heal: 0 }];
+  }
+  return {
+    heroId,
+    heroName: pvpCleanText(raw?.heroName, 'Aventurero', 32),
+    spriteUrl: pvpCleanUrl(raw?.spriteUrl) || `/assets/combat/${heroId}_idle.webp`,
+    attackSpriteUrl: pvpCleanUrl(raw?.attackSpriteUrl) || `/assets/combat/${heroId}_attack.webp`,
+    portraitUrl: pvpCleanUrl(raw?.portraitUrl) || '/assets/portraits/edacorn_icono.webp',
+    deck,
+    hand: [],
+  };
+};
+
+const pvpUltimateCard = (heroId: string): PvpCard => ({
+  uid: `ult_${heroId}_${pvpUid()}`,
+  skillId: PVP_ULTIMATE_SKILL_ID,
+  tier: 1,
+  name: 'Definitiva',
+  damage: 40,
+  heal: 0,
+});
+
+/** Roba una carta del mazo del héroe; los niveles altos son más raros, como en la campaña. */
+
+const pvpDrawCard = (hero: PvpHero): PvpCard => {
+  const pool = hero.deck;
+  const roll = Math.random();
+  const wantedTier = roll > 0.9 ? 3 : roll > 0.65 ? 2 : 1;
+  const sameTier = pool.filter((c) => c.tier === wantedTier);
+  const seed = (sameTier.length > 0 ? sameTier : pool)[Math.floor(Math.random() * (sameTier.length || pool.length))];
+  return { ...seed, uid: pvpUid() };
+};
+
+/** Fusiona parejas iguales de la mano inicial, como al repartir en la campana. */
+const pvpAutoMergeHand = (hero: PvpHero) => {
+  for (let guard = 0; guard < 12; guard++) {
+    const fromIdx = hero.hand.findIndex((card, idx) => {
+      if (card.skillId === PVP_ULTIMATE_SKILL_ID || card.tier >= 3) return false;
+      return hero.hand.some(
+        (other, otherIdx) =>
+          otherIdx !== idx && other.skillId === card.skillId && other.tier === card.tier
+      );
+    });
+    if (fromIdx < 0) break;
+    const card = hero.hand[fromIdx];
+    const toIdx = hero.hand.findIndex(
+      (other, idx) => idx !== fromIdx && other.skillId === card.skillId && other.tier === card.tier
+    );
+    if (toIdx < 0) break;
+    const nextTier = (card.tier + 1) as 1 | 2 | 3;
+    const seed = hero.deck.find((c) => c.skillId === card.skillId && c.tier === nextTier);
+    hero.hand[toIdx] = {
+      ...hero.hand[toIdx],
+      tier: nextTier,
+      name: seed?.name ?? card.name,
+      damage: seed?.damage ?? card.damage,
+      heal: seed?.heal ?? card.heal,
+      effects: seed?.effects ?? card.effects,
+    };
+    hero.hand.splice(fromIdx, 1);
+  }
+};
+
+const pvpFillHand = (hero: PvpHero) => {
+  while (hero.hand.filter((c) => c.skillId !== PVP_ULTIMATE_SKILL_ID).length < PVP_HAND_SIZE) {
+    hero.hand.push(pvpDrawCard(hero));
+  }
+};
+
+/** Mete o retira la carta dorada de definitiva según los orbes del luchador. */
+const pvpSyncUltimate = (fighter: PvpFighter) => {
+  const hero = pvpActiveHero(fighter);
+  hero.hand = hero.hand.filter((c) => c.skillId !== PVP_ULTIMATE_SKILL_ID);
+  if (fighter.orbs >= PVP_MAX_ORBS) hero.hand.push(pvpUltimateCard(hero.heroId));
+};
+
+const pvpSend = (playerId: string, event: string, payload: Record<string, unknown>) => {
+  const res = pvpClients.get(playerId);
+  if (!res) return;
+  try {
+    res.write(`event: ${event}\ndata: ${JSON.stringify(payload)}\n\n`);
+  } catch {
+    pvpClients.delete(playerId);
+  }
+};
+
+const pvpHeroView = (hero: PvpHero) => ({
+  heroId: hero.heroId,
+  heroName: hero.heroName,
+  spriteUrl: hero.spriteUrl,
+  attackSpriteUrl: hero.attackSpriteUrl,
+  portraitUrl: hero.portraitUrl,
+  hand: hero.hand,
+});
+
+const pvpView = (room: PvpRoom) => ({
+  roomId: room.id,
+  status: room.status,
+  round: room.round,
+  turnSeat: room.turnSeat,
+  deadline: room.deadline,
+  turnMs: PVP_TURN_MS,
+  fighters: room.fighters.map((f) => ({
+    seat: f.seat,
+    playerId: f.playerId,
+    name: f.name,
+    isBot: f.isBot,
+    rating: f.rating,
+    heroes: f.heroes.map(pvpHeroView),
+    hp: Math.max(0, Math.round(f.hp)),
+    maxHp: f.maxHp,
+    orbs: f.orbs,
+    maxOrbs: PVP_MAX_ORBS,
+    activeIndex: f.activeIndex,
+    swapped: f.swapped,
+    guard: f.guard,
+    connected: f.connected || f.isBot,
+    statuses: f.statuses,
+  })),
+  log: room.log,
+  lastAction: room.lastAction,
+  winnerSeat: room.winnerSeat,
+  reason: room.reason,
+  ratingDelta: room.deltas,
+  opponentRating: {
+    0: room.fighters[1]?.rating ?? 0,
+    1: room.fighters[0]?.rating ?? 0,
+  } as Record<0 | 1, number>,
+});
+
+const pvpBroadcast = (room: PvpRoom) => {
+  const state = pvpView(room);
+  room.fighters.forEach((f) => {
+    if (f.isBot) return;
+    pvpSend(f.playerId, 'state', { state, seat: f.seat });
+  });
+};
+
+const pvpLog = (room: PvpRoom, seat: 0 | 1, text: string, kind: PvpLogKind) => {
+  room.log.unshift({ id: `log_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, seat, text, kind });
+  if (room.log.length > PVP_LOG_LIMIT) room.log.length = PVP_LOG_LIMIT;
+};
+
+const pvpClearTimers = (room: PvpRoom) => {
+  if (room.turnTimer) {
+    clearTimeout(room.turnTimer);
+    room.turnTimer = null;
+  }
+  if (room.botTimer) {
+    clearTimeout(room.botTimer);
+    room.botTimer = null;
+  }
+};
+
+const pvpDestroyRoom = (room: PvpRoom) => {
+  pvpClearTimers(room);
+  room.forfeitTimers.forEach((t) => clearTimeout(t));
+  room.forfeitTimers.clear();
+  pvpRooms.delete(room.id);
+  room.fighters.forEach((f) => {
+    if (pvpRoomByPlayer.get(f.playerId) === room.id) pvpRoomByPlayer.delete(f.playerId);
+    if (!f.isBot) pvpPlayers.delete(f.playerId);
+    const botTimer = pvpBotTimers.get(f.playerId);
+    if (botTimer) {
+      clearTimeout(botTimer);
+      pvpBotTimers.delete(f.playerId);
+    }
+  });
+};
+
+const pvpElo = (myRating: number, rivalRating: number, won: boolean): number => {
+  const expected = 1 / (1 + Math.pow(10, (rivalRating - myRating) / 400));
+  const raw = PVP_K_FACTOR * ((won ? 1 : 0) - expected);
+  return Math.max(-40, Math.min(40, Math.round(raw)));
+};
+
+const pvpFinish = (room: PvpRoom, winnerSeat: 0 | 1 | undefined, reason: string) => {
+  pvpClearTimers(room);
+  room.status = 'finished';
+  room.winnerSeat = winnerSeat;
+  room.reason = reason;
+  room.deadline = 0;
+  const [a, b] = room.fighters;
+  room.deltas = {
+    0: pvpElo(a.rating, b.rating, winnerSeat === 0),
+    1: pvpElo(b.rating, a.rating, winnerSeat === 1),
+  };
+  pvpLog(room, typeof winnerSeat === 'number' ? winnerSeat : 0, reason, 'system');
+  pvpBroadcast(room);
+};
+
+/** Aplica un estado al luchador que lo lleva; refresca duración y acumula cargas. */
+const pvpApplyStatus = (
+  room: PvpRoom,
+  fighter: PvpFighter,
+  type: string,
+  turns: number,
+  stacks: number,
+  target: 'enemy' | 'hero'
+): string => {
+  const label = pvpStatusLabel(type);
+  const hostile = pvpStatusHostile(type, target);
+  const existing = fighter.statuses.find((status) => status.type === type);
+  if (existing) {
+    existing.turns = Math.max(existing.turns, turns);
+    existing.stacks = Math.min(5, existing.stacks + stacks);
+  } else {
+    fighter.statuses.push({
+      id: `st_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      type,
+      label,
+      icon: pvpStatusIcon(type),
+      turns,
+      stacks,
+      hostile,
+      kind: pvpStatusKind(type),
+    });
+  }
+  pvpLog(
+    room,
+    fighter.seat,
+    `${fighter.name}: ${label} (${turns} turno${turns > 1 ? 's' : ''})${hostile ? '' : ' a favor'}.`,
+    'system'
+  );
+  return label;
+};
+
+/** Aplica los estados que trae la carta jugada. */
+const pvpApplyCardStatuses = (
+  room: PvpRoom,
+  attacker: PvpFighter,
+  defender: PvpFighter,
+  card: PvpCard
+): string[] => {
+  if (card.skillId === PVP_ULTIMATE_SKILL_ID) return [];
+  const applied: string[] = [];
+  (card.effects ?? []).forEach((effect) => {
+    const bearer = effect.target === 'hero' ? attacker : defender;
+    applied.push(pvpApplyStatus(room, bearer, effect.type, effect.duration, effect.stacks, effect.target));
+  });
+  return applied;
+};
+
+const pvpHasKind = (fighter: PvpFighter, kind: string): boolean =>
+  fighter.statuses.some((status) => status.kind === kind);
+
+/** Daño/curación residual al empezar el turno y descuento de duración (los aturdimientos aparte). */
+const pvpTickStatuses = (room: PvpRoom, fighter: PvpFighter) => {
+  let damage = 0;
+  let heal = 0;
+  fighter.statuses.forEach((status) => {
+    if (status.kind === 'dot') damage += Math.round(fighter.maxHp * 0.04 * status.stacks);
+    if (status.kind === 'hot') heal += Math.round(fighter.maxHp * 0.04 * status.stacks);
+  });
+  if (damage > 0) {
+    fighter.hp = Math.max(0, fighter.hp - damage);
+    pvpLog(room, fighter.seat, `${fighter.name} sufre ${damage} por sus estados.`, 'damage');
+  }
+  if (heal > 0) {
+    fighter.hp = Math.min(fighter.maxHp, fighter.hp + heal);
+    pvpLog(room, fighter.seat, `${fighter.name} recupera ${heal} PV.`, 'heal');
+  }
+  fighter.statuses = fighter.statuses
+    .map((status) => (status.kind === 'stun' ? status : { ...status, turns: status.turns - 1 }))
+    .filter((status) => status.turns > 0);
+};
+
+const pvpActiveHero = (fighter: PvpFighter): PvpHero =>
+  fighter.heroes[Math.max(0, Math.min(fighter.heroes.length - 1, fighter.activeIndex))];
+
+const pvpNextTurn = (room: PvpRoom) => {
+  room.round += 1;
+  room.turnSeat = (room.turnSeat === 0 ? 1 : 0) as 0 | 1;
+  pvpBeginTurn(room);
+};
+
+/** Aplica una acción ya validada. Cambiar de héroe no consume el turno. */
+
+const pvpResolveAction = (room: PvpRoom, action: PvpActionInput) => {
+  const attacker = room.fighters.find((f) => f.seat === room.turnSeat);
+  const defender = room.fighters.find((f) => f.seat !== room.turnSeat);
+  if (!attacker || !defender) return;
+
+  if (action.type === 'switch') {
+    const index = pvpClamp(action.heroIndex, 0, attacker.heroes.length - 1, attacker.activeIndex);
+    attacker.activeIndex = index;
+    attacker.swapped = true;
+    const hero = pvpActiveHero(attacker);
+    pvpFillHand(hero);
+    pvpSyncUltimate(attacker);
+    room.lastAction = {
+      seat: attacker.seat,
+      heroName: hero.heroName,
+      cardName: 'Cambio de héroe',
+      kind: 'switch',
+      switched: true,
+      at: Date.now(),
+    };
+    pvpLog(room, attacker.seat, `${attacker.name} pone a ${hero.heroName} al frente.`, 'switch');
+    pvpBroadcast(room);
+    return;
+  }
+
+  if (action.type === 'merge') {
+    const hero = pvpActiveHero(attacker);
+    const fromIdx = hero.hand.findIndex((c) => c.uid === action.uid);
+    const toIdx = hero.hand.findIndex((c) => c.uid === action.targetUid);
+    if (fromIdx < 0 || toIdx < 0 || fromIdx === toIdx) return;
+
+    const from = hero.hand[fromIdx];
+    const to = hero.hand[toIdx];
+    const canMerge = from.skillId === to.skillId && from.tier === to.tier && from.tier < 3;
+
+    // Como en la campana: fusionar o mover cartas carga un orbe de definitiva.
+    attacker.orbs = Math.min(PVP_MAX_ORBS, attacker.orbs + 1);
+
+    if (canMerge) {
+      const nextTier = (from.tier + 1) as 1 | 2 | 3;
+      const seed = hero.deck.find((c) => c.skillId === to.skillId && c.tier === nextTier);
+      hero.hand[toIdx] = {
+        uid: to.uid,
+        skillId: to.skillId,
+        tier: nextTier,
+        name: seed?.name ?? to.name,
+        damage: seed?.damage ?? to.damage,
+        heal: seed?.heal ?? to.heal,
+        effects: seed?.effects ?? to.effects,
+      };
+      hero.hand.splice(fromIdx, 1);
+      room.lastAction = {
+        seat: attacker.seat,
+        heroName: hero.heroName,
+        cardName: hero.hand[Math.min(toIdx, hero.hand.length - 1)]?.name ?? to.name,
+        kind: 'merge',
+        skillId: to.skillId,
+        tier: nextTier,
+        at: Date.now(),
+      };
+      pvpLog(room, attacker.seat, `${hero.heroName} fusiona dos ${to.name} en una de nivel ${nextTier}.`, 'system');
+    } else {
+      hero.hand[fromIdx] = to;
+      hero.hand[toIdx] = from;
+      room.lastAction = {
+        seat: attacker.seat,
+        heroName: hero.heroName,
+        cardName: 'Reordenar cartas',
+        kind: 'move',
+        at: Date.now(),
+      };
+      pvpLog(room, attacker.seat, `${hero.heroName} cambia de sitio sus cartas.`, 'system');
+    }
+
+    pvpSyncUltimate(attacker);
+    pvpNextTurn(room);
+    return;
+  }
+
+  const hero = pvpActiveHero(attacker);
+  const index = hero.hand.findIndex((c) => c.uid === action.uid);
+  if (index < 0) return;
+  const card = hero.hand[index];
+  const isUltimate = card.skillId === PVP_ULTIMATE_SKILL_ID;
+  if (isUltimate && attacker.orbs < PVP_MAX_ORBS) return;
+
+  hero.hand.splice(index, 1);
+  if (isUltimate) {
+    attacker.orbs = 0;
+  } else {
+    attacker.orbs = Math.min(PVP_MAX_ORBS, attacker.orbs + 1);
+    pvpFillHand(hero);
+  }
+
+  const variance = 0.92 + Math.random() * 0.16;
+  const missed = pvpHasKind(attacker, 'miss') && Math.random() < 0.3;
+  const crit = !missed && !isUltimate && Math.random() < 0.13;
+  const scale = attacker.maxHp / 100;
+
+  let dealt = 0;
+  let healed = missed ? 0 : Math.max(0, Math.round(card.heal * scale * variance));
+  if (!missed && card.damage > 0) {
+    const outgoing = pvpOutgoingMultiplier(attacker.statuses.map((status) => status.kind as never));
+    const incoming = pvpIncomingMultiplier(defender.statuses.map((status) => status.kind as never));
+    let damage = card.damage * scale * 0.9 * variance * (crit ? 1.6 : 1) * outgoing * incoming;
+    const blocked = defender.guard;
+    if (blocked) {
+      damage *= 0.45;
+      defender.guard = false;
+    }
+    dealt = Math.max(1, Math.round(damage));
+    defender.hp = Math.max(0, defender.hp - dealt);
+    defender.orbs = Math.min(PVP_MAX_ORBS, defender.orbs + 1);
+  }
+  if (healed > 0) {
+    attacker.hp = Math.min(attacker.maxHp, attacker.hp + healed);
+  }
+  const pureBuff = card.damage === 0 && card.heal === 0;
+  if (pureBuff) attacker.guard = true;
+
+  const appliedStatuses = pvpApplyCardStatuses(room, attacker, defender, card);
+
+  room.lastAction = {
+    seat: attacker.seat,
+    heroName: hero.heroName,
+    cardName: card.name,
+    kind: 'card',
+    skillId: card.skillId,
+    tier: card.tier,
+    damage: dealt || undefined,
+    heal: healed || undefined,
+    crit,
+    ultimate: isUltimate,
+    status: appliedStatuses.length > 0 ? appliedStatuses : undefined,
+    missed: missed || undefined,
+    at: Date.now(),
+  };
+
+  const parts: string[] = [];
+  if (missed) parts.push('falla el golpe');
+  if (dealt > 0) parts.push(`${dealt} de daño${crit ? ' ¡CRÍTICO!' : ''}`);
+  if (healed > 0) parts.push(`+${healed} PV`);
+  if (pureBuff) parts.push('blinda al escuadrón');
+  if (appliedStatuses.length > 0) parts.push(appliedStatuses.join(', '));
+  pvpLog(
+    room,
+    attacker.seat,
+    `${hero.heroName} usa ${card.name}: ${parts.join(' · ') || 'sin efecto'}.`,
+    isUltimate ? 'ultimate' : crit ? 'crit' : healed > 0 ? 'heal' : dealt > 0 ? 'damage' : 'guard'
+  );
+
+  pvpSyncUltimate(attacker);
+  pvpSyncUltimate(defender);
+
+  if (defender.hp <= 0) {
+    pvpFinish(room, attacker.seat, `${attacker.name} deja a ${defender.name} tendido en la arena.`);
+    return;
+  }
+
+  pvpNextTurn(room);
+};
+
+/** El bot juega como un humano: definitiva con 5 orbes, cura si va mal y si no, su mejor carta. */
+
+const pvpBotAction = (bot: PvpFighter): PvpActionInput => {
+  const hero = pvpActiveHero(bot);
+  pvpFillHand(hero);
+  const hpRatio = bot.hp / Math.max(1, bot.maxHp);
+  const ult = hero.hand.find((c) => c.skillId === PVP_ULTIMATE_SKILL_ID);
+  if (ult && bot.orbs >= PVP_MAX_ORBS) return { type: 'card', uid: ult.uid };
+
+  const heals = hero.hand.filter((c) => c.heal > 0);
+  if (heals.length > 0 && hpRatio < 0.5) {
+    return { type: 'card', uid: heals[0].uid };
+  }
+  const attackers = hero.hand.filter((c) => c.damage > 0);
+  if (attackers.length > 0) {
+    const best = attackers.reduce((a, b) => (b.damage > a.damage ? b : a));
+    return { type: 'card', uid: best.uid };
+  }
+  const anyCard = hero.hand[0];
+  if (anyCard) return { type: 'card', uid: anyCard.uid };
+  return { type: 'switch', heroIndex: (bot.activeIndex + 1) % bot.heroes.length };
+};
+
+const pvpBeginTurn = (room: PvpRoom) => {
+  if (room.status !== 'playing') return;
+  pvpClearTimers(room);
+  const actor = room.fighters.find((f) => f.seat === room.turnSeat);
+  if (!actor) return;
+
+  // Estados al empezar el turno: venenos, regeneración y aturdimientos.
+  const stunned = pvpHasKind(actor, 'stun');
+  pvpTickStatuses(room, actor);
+  if (actor.hp <= 0) {
+    const winner = room.fighters.find((f) => f.seat !== actor.seat);
+    if (winner) pvpFinish(room, winner.seat, `${actor.name} cae por sus heridas.`);
+    return;
+  }
+  if (stunned) {
+    // El aturdimiento se queda visible durante el turno perdido y se gasta justo después.
+    pvpLog(room, actor.seat, `${actor.name} está aturdido y pierde el turno.`, 'system');
+    room.deadline = Date.now() + 1200;
+    pvpBroadcast(room);
+    room.botTimer = setTimeout(() => {
+      if (room.status !== 'playing' || room.turnSeat !== actor.seat) return;
+      actor.statuses = actor.statuses
+        .map((status) => (status.kind === 'stun' ? { ...status, turns: status.turns - 1 } : status))
+        .filter((status) => status.turns > 0);
+      pvpNextTurn(room);
+    }, 1000);
+    return;
+  }
+
+  // Al empezar tu turno vuelves a poder cambiar de héroe y se repone la mano.
+  actor.swapped = false;
+  pvpFillHand(pvpActiveHero(actor));
+  pvpSyncUltimate(actor);
+  room.deadline = Date.now() + PVP_TURN_MS;
+  pvpBroadcast(room);
+
+  room.turnTimer = setTimeout(() => {
+    if (room.status !== 'playing') return;
+    const current = room.fighters.find((f) => f.seat === room.turnSeat);
+    if (!current) return;
+    pvpLog(room, current.seat, `${current.name} duda demasiado: los Pozos le obligan a actuar.`, 'system');
+    pvpResolveAction(room, pvpBotAction(current));
+  }, PVP_TURN_MS);
+
+  if (actor.isBot) {
+    // Los bots piensan un poco antes de golpear para que el duelo se pueda seguir.
+    room.botTimer = setTimeout(() => {
+      if (room.status !== 'playing' || room.turnSeat !== actor.seat) return;
+      pvpResolveAction(room, pvpBotAction(actor));
+    }, 500 + Math.random() * 350);
+  }
+};
+
+const pvpPrepareFighter = (base: PvpFighter, seat: 0 | 1): PvpFighter => {
+  const fightersHeroes = base.heroes.map((h) => ({ ...h, hand: [] as PvpCard[] }));
+  fightersHeroes.forEach((h) => {
+    pvpFillHand(h);
+    pvpAutoMergeHand(h);
+  });
+  const prepared: PvpFighter = {
+    ...base,
+    seat,
+    heroes: fightersHeroes,
+    hp: PVP_MAX_HP,
+    maxHp: PVP_MAX_HP,
+    orbs: 0,
+    activeIndex: 0,
+    swapped: false,
+    guard: false,
+    connected: Boolean(pvpClients.get(base.playerId)),
+    statuses: [],
+  };
+  pvpSyncUltimate(prepared);
+  return prepared;
+};
+
+const pvpMakeBot = (player: PvpFighter, rating: number): PvpFighter => {
+  const rawPool = player.botPool.length > 0 ? player.botPool : player.heroes;
+  // Los bots pelean con héroes que tienen sprite de combate, como en la campaña.
+  const spritePool = rawPool.filter((h) => !String(h.spriteUrl || '').includes('/assets/portraits/'));
+  const pool = spritePool.length >= 2 ? spritePool : rawPool;
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  const size = Math.min(3, Math.max(2, shuffled.length));
+  const heroes = shuffled.slice(0, size).map((h) => ({ ...h, hand: [] as PvpCard[] }));
+  heroes.forEach((h) => {
+    pvpFillHand(h);
+    pvpAutoMergeHand(h);
+  });
+  const names = PVP_BOT_NAMES.filter((n) => n !== player.name);
+  const name = names[Math.floor(Math.random() * names.length)] ?? 'Rival Fantasma';
+  return {
+    playerId: `bot_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    seat: 1,
+    name,
+    isBot: true,
+    rating,
+    heroes,
+    hp: PVP_MAX_HP,
+    maxHp: PVP_MAX_HP,
+    orbs: 0,
+    activeIndex: 0,
+    swapped: false,
+    guard: false,
+    connected: true,
+    statuses: [],
+    botPool: [],
+  };
+};
+
+const pvpStartBotMatch = (aId: string): PvpRoom | null => {
+  const human = pvpPlayers.get(aId);
+  if (!human) return null;
+
+  const player = pvpPrepareFighter(human, 0);
+  const bot = pvpMakeBot(player, player.rating);
+  const room: PvpRoom = {
+    id: `pvp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    createdAt: Date.now(),
+    status: 'playing',
+    round: 1,
+    turnSeat: Math.random() < 0.5 ? 0 : 1,
+    deadline: Date.now() + PVP_TURN_MS,
+    fighters: [player, bot],
+    log: [],
+    lastAction: null,
+    deltas: { 0: 0, 1: 0 },
+    turnTimer: null,
+    botTimer: null,
+    forfeitTimers: new Map(),
+  };
+
+  pvpRooms.set(room.id, room);
+  room.fighters.forEach((f) => {
+    if (!f.isBot) pvpRoomByPlayer.set(f.playerId, room.id);
+  });
+  pvpLog(room, 0, `Las puertas de los Pozos se cierran: ${bot.name} entra con ${bot.heroes.length} héroes.`, 'system');
+  room.fighters.forEach((f) => {
+    if (!f.isBot) pvpSend(f.playerId, 'matched', { roomId: room.id, seat: f.seat });
+  });
+  pvpBeginTurn(room);
+  return room;
+};
+
+const pvpHumanMatch = (aId: string, bId: string): PvpRoom | null => {
+  const a = pvpPlayers.get(aId);
+  const b = pvpPlayers.get(bId);
+  if (!a || !b) return null;
+
+  const room: PvpRoom = {
+    id: `pvp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    createdAt: Date.now(),
+    status: 'playing',
+    round: 1,
+    turnSeat: Math.random() < 0.5 ? 0 : 1,
+    deadline: Date.now() + PVP_TURN_MS,
+    fighters: [pvpPrepareFighter(a, 0), pvpPrepareFighter(b, 1)],
+    log: [],
+    lastAction: null,
+    deltas: { 0: 0, 1: 0 },
+    turnTimer: null,
+    botTimer: null,
+    forfeitTimers: new Map(),
+  };
+
+  pvpRooms.set(room.id, room);
+  room.fighters.forEach((f) => pvpRoomByPlayer.set(f.playerId, room.id));
+  pvpLog(room, 0, 'Las puertas de los Pozos se cierran. Solo queda uno.', 'system');
+  room.fighters.forEach((f) => pvpSend(f.playerId, 'matched', { roomId: room.id, seat: f.seat }));
+  pvpBeginTurn(room);
+  return room;
+};
+
+const pvpClearBotTimer = (playerId: string) => {
+  const timer = pvpBotTimers.get(playerId);
+  if (timer) {
+    clearTimeout(timer);
+    pvpBotTimers.delete(playerId);
+  }
+};
+
+const pvpTryMatch = (playerId: string): PvpRoom | null => {
+  pvpQueue = pvpQueue.filter((id) => pvpPlayers.has(id) && id !== playerId);
+  const rivalId = pvpQueue.find((id) => id !== playerId && Boolean(pvpClients.get(id)));
+  if (!rivalId) {
+    if (!pvpQueue.includes(playerId)) pvpQueue.push(playerId);
+    pvpSend(playerId, 'queue', { position: pvpQueue.indexOf(playerId) + 1, waiting: pvpQueue.length });
+    // Si en unos segundos no aparece nadie, entra un escuadrón bot.
+    pvpClearBotTimer(playerId);
+    const timer = setTimeout(() => {
+      pvpBotTimers.delete(playerId);
+      if (!pvpQueue.includes(playerId)) return;
+      if (pvpRoomByPlayer.has(playerId)) return;
+      pvpQueue = pvpQueue.filter((id) => id !== playerId);
+      const room = pvpStartBotMatch(playerId);
+      if (!room) return;
+      pvpSend(playerId, 'bot', { roomId: room.id });
+    }, PVP_BOT_SEARCH_MS);
+    pvpBotTimers.set(playerId, timer);
+    return null;
+  }
+
+  pvpQueue = pvpQueue.filter((id) => id !== rivalId);
+  pvpClearBotTimer(playerId);
+  pvpClearBotTimer(rivalId);
+  pvpSend(rivalId, 'queue', { position: 0, waiting: pvpQueue.length });
+  return pvpHumanMatch(rivalId, playerId);
+};
+
+app.get('/api/pvp/status', (_req: Request, res: Response) => {
+  const playing = [...pvpRooms.values()].filter((r) => r.status === 'playing').length;
+  res.json({
+    success: true,
+    waiting: pvpQueue.filter((id) => Boolean(pvpClients.get(id))).length,
+    playing,
+    online: pvpClients.size,
+    turnMs: PVP_TURN_MS,
+    botAfterMs: PVP_BOT_SEARCH_MS,
+  });
+});
+
+app.get('/api/pvp/stream', (req: Request, res: Response) => {
+  const playerId = String(req.query.playerId || '').trim();
+  if (!/^[A-Za-z0-9_-]{6,64}$/.test(playerId)) {
+    return res.status(400).json({ success: false, message: 'Falta un playerId válido.' });
+  }
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.flushHeaders?.();
+
+  const previous = pvpClients.get(playerId);
+  if (previous && previous !== res) {
+    try {
+      previous.end();
+    } catch {
+      // La conexión anterior ya estaba cerrada.
+    }
+  }
+  pvpClients.set(playerId, res);
+
+  const roomId = pvpRoomByPlayer.get(playerId);
+  const room = roomId ? pvpRooms.get(roomId) : null;
+  if (room) {
+    const roomFighter = room.fighters.find((f) => f.playerId === playerId);
+    if (roomFighter) {
+      roomFighter.connected = true;
+      const pending = room.forfeitTimers.get(playerId);
+      if (pending) {
+        clearTimeout(pending);
+        room.forfeitTimers.delete(playerId);
+      }
+      pvpBroadcast(room);
+    }
+  }
+
+  res.write(`event: hello\ndata: ${JSON.stringify({ playerId, at: Date.now() })}\n\n`);
+  if (room) {
+    const seat = room.fighters.find((f) => f.playerId === playerId)?.seat ?? 0;
+    pvpSend(playerId, 'state', { state: pvpView(room), seat });
+  }
+
+  const heartbeat = setInterval(() => {
+    try {
+      res.write(': ping\n\n');
+    } catch {
+      pvpClients.delete(playerId);
+    }
+  }, 20000);
+
+  req.on('close', () => {
+    clearInterval(heartbeat);
+    if (pvpClients.get(playerId) === res) pvpClients.delete(playerId);
+    pvpQueue = pvpQueue.filter((id) => id !== playerId);
+    pvpClearBotTimer(playerId);
+
+    const activeRoomId = pvpRoomByPlayer.get(playerId);
+    const activeRoom = activeRoomId ? pvpRooms.get(activeRoomId) : null;
+    if (!activeRoom) return;
+    const me = activeRoom.fighters.find((f) => f.playerId === playerId);
+    if (!me) return;
+    me.connected = false;
+
+    if (activeRoom.status !== 'playing') return;
+    if (activeRoom.forfeitTimers.has(playerId)) return;
+    const forfeit = setTimeout(() => {
+      activeRoom.forfeitTimers.delete(playerId);
+      if (activeRoom.status !== 'playing') return;
+      if (pvpClients.get(playerId)) return;
+      const rival = activeRoom.fighters.find((f) => f.playerId !== playerId);
+      pvpFinish(
+        activeRoom,
+        rival ? rival.seat : undefined,
+        `${me.name} abandonó el pozo. ${rival ? `${rival.name} se lleva la victoria.` : ''}`
+      );
+    }, PVP_FORFEIT_MS);
+    activeRoom.forfeitTimers.set(playerId, forfeit);
+  });
+});
+
+app.post('/api/pvp/find', (req: Request, res: Response) => {
+  const body = req.body || {};
+  const playerId = String(body.playerId || '').trim();
+  if (!/^[A-Za-z0-9_-]{6,64}$/.test(playerId)) {
+    return res.status(400).json({ success: false, message: 'Falta un playerId válido.' });
+  }
+
+  const existingRoomId = pvpRoomByPlayer.get(playerId);
+  const existingRoom = existingRoomId ? pvpRooms.get(existingRoomId) : null;
+  if (existingRoom) {
+    const seat = existingRoom.fighters.find((f) => f.playerId === playerId)?.seat ?? 0;
+    if (existingRoom.status === 'playing') {
+      return res.json({ success: true, matched: true, roomId: existingRoom.id, seat, state: pvpView(existingRoom) });
+    }
+    if (existingRoom.status === 'finished') pvpDestroyRoom(existingRoom);
+  }
+
+  const rawHeroes: any[] = Array.isArray(body.heroes) ? body.heroes : [];
+  const heroes = rawHeroes
+    .map(pvpSanitizeHero)
+    .filter((h): h is PvpHero => Boolean(h))
+    .slice(0, PVP_MAX_SQUAD);
+  if (heroes.length === 0) {
+    return res.status(400).json({ success: false, message: 'Necesitas al menos un héroe en el escuadrón.' });
+  }
+
+  const rawPool: any[] = Array.isArray(body.botPool) ? body.botPool : [];
+  const botPool = rawPool
+    .map(pvpSanitizeHero)
+    .filter((h): h is PvpHero => Boolean(h))
+    .slice(0, 12);
+
+  pvpPlayers.set(playerId, {
+    playerId,
+    seat: 0,
+    name: pvpCleanText(body.name, 'Gladiador', 24),
+    isBot: false,
+    rating: pvpClamp(body.rating, 0, PVP_MAX_RATING, 0),
+    heroes,
+    hp: PVP_MAX_HP,
+    maxHp: PVP_MAX_HP,
+    orbs: 0,
+    activeIndex: 0,
+    swapped: false,
+    guard: false,
+    connected: Boolean(pvpClients.get(playerId)),
+    statuses: [],
+    botPool,
+  });
+
+  const room = pvpTryMatch(playerId);
+  return res.json({
+    success: true,
+    matched: Boolean(room),
+    roomId: room?.id ?? null,
+    waiting: pvpQueue.length,
+    botAfterMs: PVP_BOT_SEARCH_MS,
+  });
+});
+
+app.post('/api/pvp/cancel', (req: Request, res: Response) => {
+  const playerId = String(req.body?.playerId || '').trim();
+  pvpQueue = pvpQueue.filter((id) => id !== playerId);
+  pvpClearBotTimer(playerId);
+  const roomId = pvpRoomByPlayer.get(playerId);
+  const room = roomId ? pvpRooms.get(roomId) : null;
+  if (room && room.status !== 'playing') pvpDestroyRoom(room);
+  pvpPlayers.delete(playerId);
+  res.json({ success: true });
+});
+
+app.post('/api/pvp/action', (req: Request, res: Response) => {
+  const playerId = String(req.body?.playerId || '').trim();
+  const type = String(req.body?.type || 'card') as 'card' | 'switch' | 'merge';
+  const uid = String(req.body?.uid || '').trim();
+  const targetUid = String(req.body?.targetUid || '').trim();
+  const heroIndex = Number(req.body?.heroIndex);
+  const roomId = pvpRoomByPlayer.get(playerId);
+  const room = roomId ? pvpRooms.get(roomId) : null;
+
+  if (!room) return res.status(404).json({ success: false, message: 'No estás en ningún duelo.' });
+  if (room.status !== 'playing') return res.status(409).json({ success: false, message: 'El duelo ya ha terminado.' });
+
+  const me = room.fighters.find((f) => f.playerId === playerId);
+  if (!me) return res.status(403).json({ success: false, message: 'No luchas en este pozo.' });
+  if (me.seat !== room.turnSeat) return res.status(409).json({ success: false, message: 'No es tu turno.' });
+
+  if (type === 'switch') {
+    if (me.swapped) {
+      return res.status(409).json({ success: false, message: 'Solo puedes cambiar de héroe una vez por turno.' });
+    }
+    if (!Number.isInteger(heroIndex) || heroIndex < 0 || heroIndex >= me.heroes.length) {
+      return res.status(400).json({ success: false, message: 'Héroe desconocido.' });
+    }
+    if (heroIndex === me.activeIndex) {
+      return res.status(409).json({ success: false, message: 'Ese héroe ya está en el frente.' });
+    }
+    // El temporizador del turno sigue vivo: cambiar de héroe no consume la acción.
+    pvpResolveAction(room, { type: 'switch', heroIndex });
+    return res.json({ success: true, state: pvpView(room) });
+  }
+
+  if (type === 'merge') {
+    if (!uid || !targetUid || uid === targetUid) {
+      return res.status(400).json({ success: false, message: 'Suelta una carta sobre otra.' });
+    }
+    const activeHero = pvpActiveHero(me);
+    if (!activeHero.hand.some((c) => c.uid === uid) || !activeHero.hand.some((c) => c.uid === targetUid)) {
+      return res.status(400).json({ success: false, message: 'Esa carta ya no está en tu mano.' });
+    }
+    // Fusionar o mover tambien consume el turno, como en la campana.
+    pvpClearTimers(room);
+    pvpResolveAction(room, { type: 'merge', uid, targetUid });
+    return res.json({ success: true, state: pvpView(room) });
+  }
+
+  const hero = pvpActiveHero(me);
+  const card = hero.hand.find((c) => c.uid === uid);
+  if (!card) return res.status(400).json({ success: false, message: 'Esa carta ya no está en tu mano.' });
+  if (card.skillId === PVP_ULTIMATE_SKILL_ID && me.orbs < PVP_MAX_ORBS) {
+    return res.status(409).json({ success: false, message: `La definitiva necesita ${PVP_MAX_ORBS} orbes.` });
+  }
+
+  pvpClearTimers(room);
+  pvpResolveAction(room, { type: 'card', uid });
+  return res.json({ success: true, state: pvpView(room) });
+});
+
+app.post('/api/pvp/rematch', (req: Request, res: Response) => {
+  const playerId = String(req.body?.playerId || '').trim();
+  const roomId = pvpRoomByPlayer.get(playerId);
+  const room = roomId ? pvpRooms.get(roomId) : null;
+  // Destruir la sala borra a sus luchadores: guardamos al nuestro para la revancha.
+  const self = pvpPlayers.get(playerId) ?? room?.fighters.find((f) => f.playerId === playerId && !f.isBot);
+  if (room) pvpDestroyRoom(room);
+
+  if (!self) {
+    return res.status(404).json({ success: false, message: 'Vuelve a entrar en los Pozos para buscar rival.' });
+  }
+  pvpPlayers.set(playerId, {
+    ...self,
+    isBot: false,
+    connected: Boolean(pvpClients.get(playerId)),
+    botPool: self.botPool.length > 0 ? self.botPool : self.heroes,
+  });
+  pvpQueue = pvpQueue.filter((id) => id !== playerId);
+  const next = pvpTryMatch(playerId);
+  return res.json({ success: true, matched: Boolean(next), roomId: next?.id ?? null });
+});
+
+app.post('/api/pvp/leave', (req: Request, res: Response) => {
+  const playerId = String(req.body?.playerId || '').trim();
+  pvpQueue = pvpQueue.filter((id) => id !== playerId);
+  pvpClearBotTimer(playerId);
+  const roomId = pvpRoomByPlayer.get(playerId);
+  const room = roomId ? pvpRooms.get(roomId) : null;
+  if (room && room.status === 'playing') {
+    const rival = room.fighters.find((f) => f.playerId !== playerId);
+    const me = room.fighters.find((f) => f.playerId === playerId);
+    pvpFinish(room, rival?.seat, `${me?.name || 'Un gladiador'} abandonó el pozo.`);
+  } else if (room) {
+    pvpDestroyRoom(room);
+  }
+  pvpPlayers.delete(playerId);
+  res.json({ success: true });
+});
+
+// Limpieza de salas viejas para que el proceso no acumule memoria.
+
+setInterval(() => {
+  const now = Date.now();
+  pvpRooms.forEach((room) => {
+    if (room.status === 'finished' && now - room.createdAt > PVP_ROOM_TTL_MS / 4) {
+      pvpDestroyRoom(room);
+      return;
+    }
+    if (now - room.createdAt > PVP_ROOM_TTL_MS) pvpDestroyRoom(room);
+  });
+}, 60000).unref?.();
+
 // --- SERVICE WORKER & STATIC ASSETS HANDLER ---
 app.get('/sw.js', (_req: Request, res: Response) => {
   const swPath = path.join(__dirname, 'public', 'sw.js');
@@ -1417,7 +2616,10 @@ app.get('/sw.js', (_req: Request, res: Response) => {
   );
 });
 
-const REMOTE_ASSETS_BASE = 'https://raw.githubusercontent.com/tirianworld/Shatered-Timelines/main-nuevo/public';
+const REMOTE_ASSETS_BASES = [
+  'https://raw.githubusercontent.com/tirianworld/Shatered-Timelines/main/public',
+  'https://raw.githubusercontent.com/tirianworld/Shatered-Timelines/main-nuevo/public',
+];
 
 function findCaseInsensitiveFile(dir: string, filename: string): string | null {
   try {
@@ -1465,20 +2667,22 @@ app.use(async (req: Request, res: Response, next) => {
       return res.sendFile(fuzzyMatch);
     }
 
-    // Fallback: fetch from GitHub repo
-    try {
-      const remoteUrl = `${REMOTE_ASSETS_BASE}${targetSubPath}`;
-      const remoteRes = await fetch(remoteUrl);
-      if (remoteRes.ok) {
-        const buffer = Buffer.from(await remoteRes.arrayBuffer());
-        fs.mkdirSync(path.dirname(localFile), { recursive: true });
-        fs.writeFileSync(localFile, buffer);
-        const contentType = remoteRes.headers.get('content-type') || 'application/octet-stream';
-        res.setHeader('Content-Type', contentType);
-        return res.send(buffer);
+    // Fallback: fetch from GitHub repo (main first, then main-nuevo)
+    for (const base of REMOTE_ASSETS_BASES) {
+      try {
+        const remoteUrl = `${base}${targetSubPath}`;
+        const remoteRes = await fetch(remoteUrl);
+        if (remoteRes.ok) {
+          const buffer = Buffer.from(await remoteRes.arrayBuffer());
+          fs.mkdirSync(path.dirname(localFile), { recursive: true });
+          fs.writeFileSync(localFile, buffer);
+          const contentType = remoteRes.headers.get('content-type') || 'application/octet-stream';
+          res.setHeader('Content-Type', contentType);
+          return res.send(buffer);
+        }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
     }
 
     // Cross-folder fallback in public/assets/*

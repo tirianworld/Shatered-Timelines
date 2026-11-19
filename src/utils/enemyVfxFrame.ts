@@ -17,7 +17,10 @@ export interface EnemyVfxFrame {
   /** Punta del arma dentro del sprite (0..1), medida sobre su canal alfa. */
   tipFx?: number;
   tipFy?: number;
-  /** Posición exacta de la boca (p. ej. aliento del Gorgon) respecto al área de combate. */
+  /** Segunda punta / segunda mano (p. ej. ambas garras alzadas de Ignivrax) dentro del sprite (0..1). */
+  tip2Fx?: number;
+  tip2Fy?: number;
+  /** Posición exacta de la boca (p. ej. aliento del Gorgon o Ignivrax) respecto al área de combate. */
   mouthX?: number;
   mouthY?: number;
 }

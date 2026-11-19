@@ -351,6 +351,26 @@ export const COOKING_INGREDIENTS: CookingIngredient[] = [
     description: 'Huevos translúcidos recolectados en los nidos carmesíes de la colonia. Ingrediente exótico con suave luminiscencia nutritiva.',
     priceGold: 160,
   },
+  {
+    id: 'ing_bichos_tesoro',
+    name: 'Bichos del Tesoro',
+    category: 'monstruos',
+    subCategory: 'carnes',
+    icon: '/assets/items/ing_bichos_tesoro.webp',
+    rarity: 'SR',
+    description: 'Bol de porcelana con un Insecto Joya, un Insecto Moneda y un Insecto Collar de Perlas dentro. Crujientes al salteado y muy preciados en cocina exótica.',
+    priceGold: 190,
+  },
+  {
+    id: 'ing_carne_aurea',
+    name: 'Carne Áurea',
+    category: 'monstruos',
+    subCategory: 'carnes',
+    icon: '/assets/items/ing_carne_aurea.webp',
+    rarity: 'SSR',
+    description: 'Corte veteado con filamentos de oro metálico obtenido de los Aurumvorax de seis patas. Manjar regio en cocina de monstruos, potente reactivo en pociones y pieza muy cotizada en la tienda.',
+    priceGold: 260,
+  },
 ];
 
 import { generateAllCookingRecipes } from './cookingRecipesList';

@@ -150,15 +150,16 @@ class SoundService {
     // más larga, así que sale de vez en cuando para no encadenar glissandos.
     celestial: ['celestial_twinkle.mp3', 'celestial_twinkle.mp3', 'celestial_harp.mp3'],
 
-    // Araña Acorazada (sonidos inspirados en Demon's Souls: Stonefang Tunnel 2-1)
-    arana_screech: ['arana/arana_screech.mp3'],
-    arana_web: ['arana/arana_web.mp3'],
-    arana_sweep: ['arana/arana_sweep.mp3'],
-    arana_fireball: ['arana/arana_fireball.mp3'],
-    arana_breath: ['arana/arana_breath.mp3'],
-    arana_fall_slam: ['arana/arana_fall_slam.mp3'],
-    arana_hurt: ['arana/arana_hurt.mp3'],
-    arana_climb: ['arana/arana_climb.mp3'],
+    // Araña Acorazada: cortes del diseño de sonido del Armored Spider de Demon's Souls
+    // (chirrido, barrido, telaraña, bola de fuego, aliento, aterrizaje, daño y patas).
+    arana_screech: ['arana/arana_screech.wav'],
+    arana_web: ['arana/arana_web.wav'],
+    arana_sweep: ['arana/arana_sweep.wav'],
+    arana_fireball: ['arana/arana_fireball.wav'],
+    arana_breath: ['arana/arana_breath.wav'],
+    arana_fall_slam: ['arana/arana_fall_slam.wav'],
+    arana_hurt: ['arana/arana_hurt.wav'],
+    arana_climb: ['arana/arana_climb.wav'],
   };
 
   constructor() {

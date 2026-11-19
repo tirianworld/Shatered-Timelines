@@ -41,9 +41,10 @@ export const QuestView: React.FC = () => {
 
 const TrainingTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToLibrary }) => (
   <div className="relative w-full h-full min-h-0">
-    <TrainingBastionHub onBackToLibrary={onBackToLibrary} />
+    <TrainingBastionHub onBackToLibrary={onBackToLibrary} standalone />
   </div>
 );
+
 const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToLibrary }) => {
   const {
     questProgress,
@@ -86,6 +87,12 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
     questProgress.allMissionsCompleted ||
     questProgress.completedMissions.includes('m21_coliseo_suenos') ||
     questProgress.chapter >= 6;
+
+  const isT2Chapter2Unlocked =
+    questProgress.allMissionsCompleted ||
+    questProgress.completedMissions.includes('t2_c1_m5_carreta_cid') ||
+    questProgress.completedMissions.includes('t2_c1_m4_arana_acorazada') ||
+    questProgress.completedMissions.includes('t2_c2_m1_ten_piedad');
 
 
   // Chapter 1 missions - Exclusively Icespear story & boss (no cave missions)
@@ -560,9 +567,27 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
     },
   ];
 
+  // Tomo II - Capítulo II: Santuario
+  const tome2Chapter2Missions: QuestMission[] = [
+    {
+      id: 't2_c2_m1_ten_piedad',
+      title: 'Ten Piedad',
+      iconType: 'boss',
+      difficulty: 'Pesadilla',
+      description:
+        'En el interior de una iglesia destrozada e invadida por la maleza aguarda Ten Piedad, coloso marcado por los clavos del Culto a la Piedad. Resiste su barrido, sus zarzas y las espinas que escupe.',
+      portrait: '/assets/portraits/ten_piedad_thumb.webp',
+      portraitClass: 'scale-[1.08] object-center',
+      stageId: 'stage_t2_c2_m1',
+      isStory: false,
+    },
+  ];
+
   // Active missions list based on selected tome and chapter
   const missions = isTome2
-    ? tome2Chapter1Missions
+    ? activeQuestChapter === 2 && isT2Chapter2Unlocked
+      ? tome2Chapter2Missions
+      : tome2Chapter1Missions
     : activeQuestChapter === 6 && isChapter6Unlocked
     ? chapter6Missions
     : activeQuestChapter === 5 && isChapter5Unlocked
@@ -575,7 +600,9 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
     ? chapter2Missions
     : chapter1Missions;
   const currentChapter = isTome2
-    ? 1
+    ? activeQuestChapter === 2 && isT2Chapter2Unlocked
+      ? 2
+      : 1
     : activeQuestChapter === 6 && isChapter6Unlocked
     ? 6
     : activeQuestChapter === 5 && isChapter5Unlocked
@@ -609,6 +636,9 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
   });
   const [chestClaimedT2Ch1, setChestClaimedT2Ch1] = useState<boolean>(() => {
     return safeStorage.getItem('cdd_quest_chest_t2_ch1_claimed') === 'true';
+  });
+  const [chestClaimedT2Ch2, setChestClaimedT2Ch2] = useState<boolean>(() => {
+    return safeStorage.getItem('cdd_quest_chest_t2_ch2_claimed') === 'true';
   });
   const [showChestModal, setShowChestModal] = useState(false);
   const [autoRepeatMission, setAutoRepeatMission] = useState<QuestMission | null>(null);
@@ -823,6 +853,27 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
   const handleClaimChest = () => {
     sound.playSFX('victory');
     if (isTome2) {
+      if (currentChapter === 2) {
+        if (!chestClaimedT2Ch2 && isChapterFullyCompleted) {
+          addGold(35000);
+          addCrystals(1200);
+          addShelfItem({
+            id: 'recompensa_santuario_ten_piedad',
+            name: 'Relicario del Santuario Profanado',
+            category: 'materials',
+            count: 1,
+            icon: '/assets/portraits/ten_piedad_thumb.webp',
+            rarity: 'UR',
+            priceGold: 22000,
+            description:
+              'Relicario de bronce envuelto en zarzas y clavos rituales tras derrotar a Ten Piedad en la iglesia en ruinas.',
+          });
+          setChestClaimedT2Ch2(true);
+          safeStorage.setItem('cdd_quest_chest_t2_ch2_claimed', 'true');
+        }
+        setShowChestModal(true);
+        return;
+      }
       if (!chestClaimedT2Ch1 && isChapterFullyCompleted) {
         addGold(25000);
         addCrystals(1000);
@@ -932,8 +983,10 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
   const handleSelectChapter = (chapterNum: number) => {
     if (didDragChapterTabs.current) return;
     if (isTome2) {
-      if (chapterNum !== 1) return;
+      if (chapterNum === 2 && !isT2Chapter2Unlocked) return;
+      if (chapterNum !== 1 && chapterNum !== 2) return;
       sound.playSFX('click');
+      setActiveQuestChapter(chapterNum);
       return;
     }
     // Capítulos bloqueados: pulsar no hace nada (ni sonido ni aviso).
@@ -957,7 +1010,7 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
     6: { top: '1.3%', height: '16.8%' },
   };
   const chapterTabsBand = isTome2
-    ? CHAPTER_TABS_BAND[1]
+    ? CHAPTER_TABS_BAND[currentChapter] ?? CHAPTER_TABS_BAND[1]
     : CHAPTER_TABS_BAND[currentChapter] ?? CHAPTER_TABS_BAND[1];
 
   return (
@@ -966,7 +1019,9 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
       <img
         src={
           isTome2
-            ? '/assets/backgrounds/tablon_barracon_abandonado_ch1.webp'
+            ? currentChapter === 2
+              ? '/assets/backgrounds/tablon_santuario_ch2.webp'
+              : '/assets/backgrounds/tablon_barracon_abandonado_ch1.webp'
             : currentChapter === 6
             ? '/assets/backgrounds/tablon_sangre_hielo_ch6.webp'
             : currentChapter === 5
@@ -981,7 +1036,9 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
         }
         alt={
           isTome2
-            ? 'Tablón de Misiones del Barracón Abandonado'
+            ? currentChapter === 2
+              ? 'Tablón de Misiones del Santuario'
+              : 'Tablón de Misiones del Barracón Abandonado'
             : currentChapter === 6
             ? 'Tablón de Misiones de Sangre y Hielo'
             : currentChapter === 5
@@ -1028,7 +1085,11 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
                 <button
                   type="button"
                   onClick={() => handleSelectChapter(1)}
-                  className="relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-all brightness-110 scale-[1.03] drop-shadow-[0_0_10px_rgba(245,158,11,0.95)]"
+                  className={`relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-all ${
+                    currentChapter === 1
+                      ? 'brightness-110 scale-[1.03] drop-shadow-[0_0_10px_rgba(245,158,11,0.95)]'
+                      : 'brightness-95 hover:brightness-110 drop-shadow-[0_0_6px_rgba(245,158,11,0.45)]'
+                  }`}
                 >
                   <img
                     src="/assets/items/boton_historia.webp"
@@ -1044,31 +1105,51 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
                   </span>
                 </button>
 
-                {/* TOMO 2 TAB 2: CAPITULO II SANTUARIO (Bloqueado) */}
+                {/* TOMO 2 TAB 2: CAPITULO II SANTUARIO */}
                 <button
                   type="button"
                   onClick={() => handleSelectChapter(2)}
-                  className="relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer filter brightness-75 hover:brightness-90 transition-all"
-                  title="Capítulo II: Santuario (Próximamente)"
+                  className={`relative w-[calc((100%-26px)/4)] shrink-0 h-full rounded-md flex flex-col items-center justify-center cursor-pointer transition-all ${
+                    isT2Chapter2Unlocked
+                      ? currentChapter === 2
+                        ? 'brightness-110 scale-[1.03] drop-shadow-[0_0_10px_rgba(52,211,153,0.95)]'
+                        : 'brightness-95 hover:brightness-110 drop-shadow-[0_0_6px_rgba(52,211,153,0.45)]'
+                      : 'filter brightness-75 hover:brightness-90'
+                  }`}
+                  title={
+                    isT2Chapter2Unlocked
+                      ? 'Capítulo II: Santuario'
+                      : 'Capítulo II: Santuario (Completa el Barracón para desbloquear)'
+                  }
                 >
                   <img
                     src="/assets/items/boton_historia.webp"
-                    alt="Capitulo II Bloqueado"
+                    alt="Capitulo II"
                     draggable={false}
                     className="absolute inset-0 w-full h-full object-cover rounded-md pointer-events-none"
                   />
-                  <span className="relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase text-stone-300 leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                  <span
+                    className={`relative z-10 text-[8.5px] sm:text-[9.5px] font-black uppercase leading-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                      isT2Chapter2Unlocked ? 'text-emerald-100' : 'text-stone-300'
+                    }`}
+                  >
                     CAPITULO II
                   </span>
-                  <span className="relative z-10 text-[7px] sm:text-[8px] font-bold uppercase text-stone-400 leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)]">
+                  <span
+                    className={`relative z-10 text-[7px] sm:text-[8px] font-bold uppercase leading-tight tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.95)] ${
+                      isT2Chapter2Unlocked ? 'text-emerald-200' : 'text-stone-400'
+                    }`}
+                  >
                     SANTUARIO
                   </span>
-                  <img
-                    src="/assets/items/CANDADO.webp"
-                    alt="Bloqueado"
-                    draggable={false}
-                    className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
-                  />
+                  {!isT2Chapter2Unlocked && (
+                    <img
+                      src="/assets/items/CANDADO.webp"
+                      alt="Bloqueado"
+                      draggable={false}
+                      className="absolute -bottom-1.5 w-4 h-4.5 object-contain z-20 drop-shadow-md pointer-events-none"
+                    />
+                  )}
                 </button>
 
                 {/* TOMO 2 TAB 3: CAPITULO III BOLETARIA (Bloqueado) */}
@@ -1454,7 +1535,9 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
             <div className="flex items-center justify-between text-[10px] sm:text-[10.5px] font-black text-[#d6c2a5] tracking-wide uppercase">
               <span>
                 {isTome2
-                  ? 'PROGRESO CAPÍTULO I • BARRACÓN ABANDONADO'
+                  ? currentChapter === 2
+                    ? 'PROGRESO CAPÍTULO II • SANTUARIO'
+                    : 'PROGRESO CAPÍTULO I • BARRACÓN ABANDONADO'
                   : currentChapter === 6
                   ? 'PROGRESO CAPÍTULO VI • SANGRE Y HIELO'
                   : currentChapter === 5
@@ -1477,7 +1560,9 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
               <div
                 className={`h-full rounded-full ${
                   isTome2
-                    ? 'bg-gradient-to-r from-[#b45309] via-[#d97706] to-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.8)]'
+                    ? currentChapter === 2
+                      ? 'bg-gradient-to-r from-[#15803d] via-[#10b981] to-[#a3e635] shadow-[0_0_10px_rgba(16,185,129,0.8)]'
+                      : 'bg-gradient-to-r from-[#b45309] via-[#d97706] to-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.8)]'
                     : currentChapter === 6
                     ? 'bg-gradient-to-r from-[#991b1b] via-[#38bdf8] to-[#e0f2fe] shadow-[0_0_10px_rgba(56,189,248,0.85)]'
                     : currentChapter === 5
@@ -1504,7 +1589,9 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
             }`}
             title={
               isTome2
-                ? 'Cofre del Barracón Abandonado'
+                ? currentChapter === 2
+                  ? 'Cofre del Santuario'
+                  : 'Cofre del Barracón Abandonado'
                 : currentChapter === 6
                 ? 'Cofre de Sangre y Hielo'
                 : currentChapter === 5
@@ -1607,7 +1694,8 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
               mission.id === 'm19_segunda_camara_aire' ||
               mission.id === 'm20_tercera_camara_bulezau' ||
               mission.id === 'm22_cryovain_final' ||
-              mission.id === 't2_c1_m4_arana_acorazada';
+              mission.id === 't2_c1_m4_arana_acorazada' ||
+              mission.id === 't2_c2_m1_ten_piedad';
             // Misiones que son escena narrativa (cinemática) y no un combate.
             const isCinematicMission =
               isLaberintoMission ||
@@ -1913,7 +2001,7 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
               'm19_segunda_camara_aire', 'm20_tercera_camara_bulezau',
               'm22_cryovain_final', 't2_c1_m1_trincheras_nomuertos',
               't2_c1_m2_jauria_salas', 't2_c1_m3_custodios_anillo',
-              't2_c1_m4_arana_acorazada',
+              't2_c1_m4_arana_acorazada', 't2_c2_m1_ten_piedad',
             ]);
             const replayMissions = missions.filter((mission) => replayableIds.has(mission.id));
             const tierDone = (tier: 2 | 3) => replayMissions.length > 0 && replayMissions.every((mission) =>
@@ -1978,7 +2066,9 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
 
             <h3 className="font-serif font-black text-base uppercase text-amber-300 drop-shadow">
               {isTome2
-                ? '¡Cofre del Barracón Abandonado!'
+                ? currentChapter === 2
+                  ? '¡Cofre del Santuario!'
+                  : '¡Cofre del Barracón Abandonado!'
                 : currentChapter === 6
                 ? '¡Cofre de Sangre y Hielo!'
                 : currentChapter === 5
@@ -2030,19 +2120,21 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
               <div className="flex items-center justify-center gap-4 py-2 bg-[#140602] rounded-lg border border-amber-900/60">
                 <div className="flex items-center gap-1.5 text-xs font-black text-amber-400 font-mono">
                   <span>
-                    +{isTome2 ? '25,000' : currentChapter === 6 ? '100,000' : currentChapter === 5 ? '60,000' : currentChapter === 4 ? '45,000' : currentChapter === 3 ? '35,000' : currentChapter === 2 ? '25,000' : '15,000'}
+                    +{isTome2 ? (currentChapter === 2 ? '35,000' : '25,000') : currentChapter === 6 ? '100,000' : currentChapter === 5 ? '60,000' : currentChapter === 4 ? '45,000' : currentChapter === 3 ? '35,000' : currentChapter === 2 ? '25,000' : '15,000'}
                   </span>
                   <img src="/assets/items/moneda_de_moonhaven.webp" alt="Oro" className="w-3.5 h-3.5 object-contain" />
                 </div>
                 <div className="flex items-center gap-1.5 text-xs font-black text-sky-400 font-mono">
-                  <span>+{isTome2 ? '1,000' : currentChapter === 6 ? '3,000' : currentChapter === 5 ? '2,000' : currentChapter === 4 ? '1,500' : currentChapter === 3 ? '1,200' : currentChapter === 2 ? '800' : '500'}</span>
+                  <span>+{isTome2 ? (currentChapter === 2 ? '1,200' : '1,000') : currentChapter === 6 ? '3,000' : currentChapter === 5 ? '2,000' : currentChapter === 4 ? '1,500' : currentChapter === 3 ? '1,200' : currentChapter === 2 ? '800' : '500'}</span>
                   <img src="/assets/items/gema_del_recuerdo.webp" alt="Gemas" className="w-3.5 h-3.5 object-contain" />
                 </div>
               </div>
             ) : (
               <div className="py-2 px-3 rounded-lg bg-black/50 border border-stone-800 text-[11px] text-amber-200/90 font-mono">
                 {isTome2
-                  ? 'Recompensa final: +25,000 Oro, +1,000 Gemas y Reliquia del Barracón'
+                  ? currentChapter === 2
+                    ? 'Recompensa final: +35,000 Oro, +1,200 Gemas y Relicario del Santuario'
+                    : 'Recompensa final: +25,000 Oro, +1,000 Gemas y Reliquia del Barracón'
                   : currentChapter === 6
                   ? 'Recompensa final: +100,000 Oro, +3,000 Gemas y 5x Escamas de Cryovain'
                   : currentChapter === 5

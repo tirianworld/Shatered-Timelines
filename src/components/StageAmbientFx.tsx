@@ -13,6 +13,7 @@ export const AMBIENT_BY_BACKGROUND: Record<string, StageAmbientEffect> = {
   '/assets/backgrounds/emboscada_combate.webp': 'fog',
   '/assets/backgrounds/callejon_trasero_taberna.webp': 'rain',
   '/assets/backgrounds/barracon_combate.webp': 'fog',
+  '/assets/backgrounds/iglesia_destrozada_combate.webp': 'fog',
   '/assets/backgrounds/primera_camara_gorgon.webp': 'fog',
   '/assets/backgrounds/segunda_camara_aire.webp': 'wind',
   '/assets/backgrounds/tercera_camara_bulezau.webp': 'dust',
@@ -21,6 +22,7 @@ export const AMBIENT_BY_BACKGROUND: Record<string, StageAmbientEffect> = {
   '/assets/backgrounds/recibidor_mansion_ferton.webp': 'dust',
   '/assets/backgrounds/escaleras_mansion_ferton.webp': 'dust',
   '/assets/backgrounds/coliseo_onirico_bg.webp': 'embers',
+  '/assets/backgrounds/sala_tesoro_ignivrax.webp': 'embers',
   '/assets/aistudio/image_4daa80e0.webp': 'snow',
 };
 

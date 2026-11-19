@@ -50,6 +50,7 @@ export const POTION_MATERIAL_NAMES: Record<string, string> = {
   '/assets/items/escamas_de_cryovain.webp': 'Escamas de Cryovain',
   '/assets/items/medallon moonhaven app.webp': 'Medallón de Moonhaven',
   '/assets/items/moneda de moonhaven.webp': 'Moneda de Moonhaven',
+  '/assets/items/ing_carne_aurea.webp': 'Carne Áurea',
 };
 
 export const POTION_CATEGORIES: readonly PotionCategory[] = [
@@ -75,6 +76,7 @@ const COPPER_INGOT = '/assets/items/lingote_cobre_app.webp';
 const CRYOVAIN = '/assets/items/escamas_de_cryovain.webp';
 const MOONHAVEN_MEDAL = '/assets/items/medallon moonhaven app.webp';
 const MOONHAVEN_COIN = '/assets/items/moneda de moonhaven.webp';
+const GOLDEN_MEAT = '/assets/items/ing_carne_aurea.webp';
 
 const NATURAL = '/assets/items/atributo_natural.webp';
 const ARCANE = '/assets/items/atributo_arcano.webp';
@@ -184,6 +186,18 @@ export const POTION_RECIPES: readonly PotionRecipe[] = [
     elementOrb: ARCANE,
     costGold: 2600,
     ingredients: [ing(PLANT, 8), ing(WILD_GEM, 3), ing(FLASK, 3)],
+  },
+  {
+    id: 'elixir_furia_aurea',
+    name: 'Elixir de Furia Áurea',
+    category: 'Pociones',
+    level: 3,
+    stars: 4,
+    icon: '/assets/items/ing_carne_aurea.webp',
+    element: 'Natural',
+    elementOrb: NATURAL,
+    costGold: 750,
+    ingredients: [ing(GOLDEN_MEAT, 2), ing(HERB, 3), ing(FLASK, 1)],
   },
 
   // --- ENCANTAMIENTOS ---
@@ -308,6 +322,18 @@ export const POTION_RECIPES: readonly PotionRecipe[] = [
     elementOrb: DIVINE,
     costGold: 2200,
     ingredients: [ing(SAPPHIRE, 3), ing(GOLD_INGOT, 4), ing(FLASK, 3)],
+  },
+  {
+    id: 'aceite_garra_aurea',
+    name: 'Aceite de Garra Áurea',
+    category: 'Aceites para Armas',
+    level: 3,
+    stars: 4,
+    icon: '/assets/items/ing_carne_aurea.webp',
+    element: 'Arcano',
+    elementOrb: ARCANE,
+    costGold: 900,
+    ingredients: [ing(GOLDEN_MEAT, 2), ing(GOLD_INGOT, 2), ing(FLASK, 1)],
   },
 ];
 
