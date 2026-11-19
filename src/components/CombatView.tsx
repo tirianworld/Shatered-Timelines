@@ -8517,6 +8517,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
     selectedCombatDifficulty,
     questProgress,
     completeQuestMission,
+    restoreQuestChapterCheckpoint,
     setActiveQuestChapter,
     activeQuestChapter,
     team,
@@ -9057,6 +9058,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
   const [battleState, setBattleState] = useState<
     'idle' | 'player_acting' | 'enemy_acting' | 'victory' | 'defeat'
   >('idle');
+  const chapterCheckpointHandledRef = useRef(false);
 
   // Hero & Enemy animations & Instant Hit Shake/Flash Feedback
   const [heroAnimation, setHeroAnimation] = useState<'idle' | 'lunge' | 'hit' | 'dead'>('idle');
@@ -11975,6 +11977,31 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
     });
     window.setTimeout(() => setDndProcBanner(null), 4000);
   }, [battleState, goldRunMissionActive]);
+
+  // En la campaña principal, una derrota devuelve al primer encuentro
+  // del capítulo actual y conserva el progreso consolidado en el último safepoint.
+  useEffect(() => {
+    if (battleState !== 'defeat') {
+      chapterCheckpointHandledRef.current = false;
+      return;
+    }
+    if (
+      goldRunMissionActive ||
+      chapterCheckpointHandledRef.current ||
+      !selectedCombatMissionId ||
+      !/^m\\d/.test(selectedCombatMissionId)
+    ) return;
+
+    chapterCheckpointHandledRef.current = true;
+    if (restoreQuestChapterCheckpoint()) {
+      setDndProcBanner({
+        text: '☠️ DERROTA: REGRESAS AL INICIO DEL CAPÍTULO',
+        color: '#ef4444',
+        icon: '☠️',
+      });
+      window.setTimeout(() => setDndProcBanner(null), 4000);
+    }
+  }, [battleState, goldRunMissionActive, selectedCombatMissionId, restoreQuestChapterCheckpoint]);
 
   // Transición inmediata a Fase 2 del Devorador de Hierro al llegar al 50% de vida o menos
   const devoradorEnemyHp = targetEnemy?.configId === 'devorador_hierro' ? targetEnemy.hp : -1;
