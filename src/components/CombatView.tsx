@@ -8604,6 +8604,9 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
     items: [],
   });
 
+  // Mantiene la pantalla de resultados abierta al completar una misión.
+  const [isMissionVictory, setIsMissionVictory] = useState(false);
+
   // Reintentos pagados en esta expedición: el primero cuesta 100 cristales, el segundo 200…
   const [retryCount, setRetryCount] = useState(0);
 
@@ -10422,6 +10425,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
   // Reset combat run cleanly when selectedCombatMissionId changes
   useEffect(() => {
     if (!selectedCombatMissionId && previousCombatMissionIdRef.current) {
+      setIsMissionVictory(true);
       previousCombatMissionIdRef.current = null;
       activeEnemiesRef.current = [];
       setActiveEnemies([]);
@@ -10430,6 +10434,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
       return;
     }
     previousCombatMissionIdRef.current = selectedCombatMissionId;
+    setIsMissionVictory(false);
     devoradorTransitionTimersRef.current.forEach((id) => {
       window.clearTimeout(id);
       window.clearInterval(id);
@@ -13057,9 +13062,6 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
       });
 
       setSelectedCombatMissionId(null);
-      setTimeout(() => {
-        navigateTo('quest');
-      }, 1500);
       return;
     }
 
@@ -14100,10 +14102,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
         });
 
         setSelectedCombatMissionId(null);
-        setTimeout(() => {
-          navigateTo('quest');
-        }, 1500);
-        return;
+          return;
       }
 
       setWaveClearBanner({
@@ -14184,10 +14183,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
         });
 
         setSelectedCombatMissionId(null);
-        setTimeout(() => {
-          navigateTo('quest');
-        }, 1500);
-        return;
+          return;
       }
 
       setWaveClearBanner({
@@ -14267,10 +14263,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
 
         setActiveQuestChapter(1);
         setSelectedCombatMissionId(null);
-        setTimeout(() => {
-          navigateTo('quest');
-        }, 1500);
-        return;
+          return;
       }
 
       setWaveClearBanner({
@@ -14360,10 +14353,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
 
         setActiveQuestChapter(1);
         setSelectedCombatMissionId(null);
-        setTimeout(() => {
-          navigateTo('quest');
-        }, 1500);
-        return;
+          return;
       }
 
       setWaveClearBanner({
@@ -14443,10 +14433,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
 
         setActiveQuestChapter(1);
         setSelectedCombatMissionId(null);
-        setTimeout(() => {
-          navigateTo('quest');
-        }, 1500);
-        return;
+          return;
       }
 
       setWaveClearBanner({
@@ -14518,9 +14505,6 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
 
       setActiveQuestChapter(1);
       setSelectedCombatMissionId(null);
-      setTimeout(() => {
-        navigateTo('quest');
-      }, 1700);
       return;
     }
 
@@ -14581,9 +14565,6 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
 
       setActiveQuestChapter(2);
       setSelectedCombatMissionId(null);
-      setTimeout(() => {
-        navigateTo('quest');
-      }, 1700);
       return;
     }
 
@@ -14643,9 +14624,6 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
 
       setActiveQuestChapter(6);
       setSelectedCombatMissionId(null);
-      setTimeout(() => {
-        navigateTo('quest');
-      }, 1700);
       return;
     }
 
@@ -14891,9 +14869,6 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
         return;
       }
       setSelectedCombatMissionId(null);
-      setTimeout(() => {
-        navigateTo('quest');
-      }, 1500);
       return;
     }
 
@@ -14952,9 +14927,6 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
         nextFloor: currentFloor,
       });
       setSelectedCombatMissionId(null);
-      setTimeout(() => {
-        navigateTo('quest');
-      }, 1500);
       return;
     }
 
@@ -14996,9 +14968,6 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
         nextFloor: currentFloor,
       });
       setSelectedCombatMissionId(null);
-      setTimeout(() => {
-        navigateTo('quest');
-      }, 1500);
       return;
     }
 
@@ -15040,9 +15009,6 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
         nextFloor: currentFloor,
       });
       setSelectedCombatMissionId(null);
-      setTimeout(() => {
-        navigateTo('quest');
-      }, 1500);
       return;
     }
 
@@ -15094,9 +15060,6 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
         nextFloor: currentFloor,
       });
       setSelectedCombatMissionId(null);
-      setTimeout(() => {
-        navigateTo('quest');
-      }, 1500);
       return;
     }
 
@@ -15164,9 +15127,6 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
       });
 
       setSelectedCombatMissionId(null);
-      setTimeout(() => {
-        navigateTo('quest');
-      }, 1500);
       return;
     }
 
@@ -25447,31 +25407,33 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
             </div>
 
             <h3 className="text-xl font-serif font-black text-amber-300 tracking-wider mb-1">
-              ¡SALA {currentFloor} CONQUISTADA!
+              {isMissionVictory ? '¡MISIÓN COMPLETADA!' : `¡SALA ${currentFloor} CONQUISTADA!`}
             </h3>
             <p className="text-xs text-stone-300 mb-1">
-              {currentEnemy.name} y sus huestes han caído.
+              {isMissionVictory ? 'Has derrotado a todos los enemigos. Tus recompensas están aseguradas.' : `${currentEnemy.name} y sus huestes han caído.`}
             </p>
-            <div className="flex items-center gap-2 text-[10px] text-amber-400 font-mono font-bold mb-3">
-              <span>🏆 Récord: Sala {bestFloor}</span>
-              {currentFloor >= bestFloor && (
-                <span className="px-1.5 py-0.5 rounded bg-yellow-950 border border-yellow-500 text-yellow-300 animate-pulse font-black">
-                  ¡NUEVO RÉCORD!
-                </span>
-              )}
-            </div>
+            {!isMissionVictory && (
+              <div className="flex items-center gap-2 text-[10px] text-amber-400 font-mono font-bold mb-3">
+                <span>🏆 Récord: Sala {bestFloor}</span>
+                {currentFloor >= bestFloor && (
+                  <span className="px-1.5 py-0.5 rounded bg-yellow-950 border border-yellow-500 text-yellow-300 animate-pulse font-black">
+                    ¡NUEVO RÉCORD!
+                  </span>
+                )}
+              </div>
+            )}
 
             <div className="w-full bg-black/60 border border-amber-900/80 rounded-xl p-3 mb-4 flex flex-col gap-2">
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400">
-                Botín Acumulado de la Expedición
+                {isMissionVictory ? 'Recompensas de la misión' : 'Botín Acumulado de la Expedición'}
               </span>
               <div className="grid grid-cols-2 gap-2 text-xs font-mono font-bold text-stone-200">
                 <div className="flex items-center gap-1.5 justify-center bg-stone-900/80 p-1.5 rounded border border-amber-950">
-                  <span className="text-yellow-400">🪙 +{accumulatedLoot.gold.toLocaleString()}</span>
+                  <span className="text-yellow-400">🪙 +{(isMissionVictory ? waveClearBanner?.gold ?? 0 : accumulatedLoot.gold).toLocaleString()}</span>
                   <span>Oro</span>
                 </div>
                 <div className="flex items-center gap-1.5 justify-center bg-stone-900/80 p-1.5 rounded border border-amber-950">
-                  <span className="text-cyan-400">💎 +{accumulatedLoot.crystals}</span>
+                  <span className="text-cyan-400">💎 +{isMissionVictory ? waveClearBanner?.crystals ?? 0 : accumulatedLoot.crystals}</span>
                   <span>Cristales</span>
                 </div>
               </div>
@@ -25488,28 +25450,35 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
             </div>
 
             <div className="w-full flex flex-col gap-2">
-              <button
-                onClick={() => {
-                  startChamber(currentFloor + 1);
-                }}
-                className="w-full py-2.5 bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-500 hover:from-emerald-500 hover:to-teal-400 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg cursor-pointer transition-transform active:scale-95 flex items-center justify-center gap-1.5"
-              >
-                <span>▶ Continuar al Abismo (Sala {currentFloor + 1})</span>
-              </button>
-
-              <button
-                onClick={handleRetreatAndClaim}
-                className="w-full py-2.5 bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg cursor-pointer transition-transform active:scale-95"
-              >
-                Cobrar Botín y Volver a la Aldea
-              </button>
-
-              <button
-                onClick={restartRun}
-                className="w-full py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs rounded-xl cursor-pointer transition-colors"
-              >
-                Reiniciar desde Sala 1
-              </button>
+              {isMissionVictory ? (
+                <button
+                  onClick={handleRetreatAndClaim}
+                  className="w-full py-2.5 bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg cursor-pointer transition-transform active:scale-95"
+                >
+                  Volver a misiones
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={() => startChamber(currentFloor + 1)}
+                    className="w-full py-2.5 bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-500 hover:from-emerald-500 hover:to-teal-400 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg cursor-pointer transition-transform active:scale-95 flex items-center justify-center gap-1.5"
+                  >
+                    <span>▶ Continuar al Abismo (Sala {currentFloor + 1})</span>
+                  </button>
+                  <button
+                    onClick={handleRetreatAndClaim}
+                    className="w-full py-2.5 bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-stone-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg cursor-pointer transition-transform active:scale-95"
+                  >
+                    Cobrar Botín y Volver a la Aldea
+                  </button>
+                  <button
+                    onClick={restartRun}
+                    className="w-full py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold text-xs rounded-xl cursor-pointer transition-colors"
+                  >
+                    Reiniciar desde Sala 1
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
