@@ -6114,17 +6114,34 @@ const getBalancedEnemyMaxHp = (
 ): number => {
   // El daño de las habilidades ahora parte del ATQ real del héroe.
   // Estos factores convierten los antiguos PV (pensados para daño fijo) a la nueva escala.
-  const roleMultiplier = cfg.isSemiboss
-    ? 8
-    : cfg.isBoss
-      ? cfg.maxHp <= 180
-        ? 14
-        : cfg.maxHp <= 320
-          ? 10
-          : 5.5
-      : missionId?.startsWith('t2_')
-        ? 4.5
-        : 15;
+  // Cada misión define su propia escala de resistencia. En el Bastión de EXP,
+  // los enemigos comunes no heredan el multiplicador genérico de la historia:
+  // su aguante depende de su papel dentro de esa prueba.
+  const resourceXpRoleMultipliers: Partial<Record<CombatEnemyId, number>> = {
+    no_muerto: 1.5,
+    perro_asalvajado: 1.35,
+    soldado_no_muerto: 1.8,
+    araknoide_rojo: 1.7,
+    araknoide_voraz: 2,
+    guarda_negro_espada: 2.2,
+  };
+  const missionRoleMultiplier =
+    missionId === 'resource_trial_xp'
+      ? resourceXpRoleMultipliers[cfg.id as CombatEnemyId]
+      : undefined;
+  const roleMultiplier = missionRoleMultiplier ?? (
+    cfg.isSemiboss
+      ? 8
+      : cfg.isBoss
+        ? cfg.maxHp <= 180
+          ? 14
+          : cfg.maxHp <= 320
+            ? 10
+            : 5.5
+        : missionId?.startsWith('t2_')
+          ? 4.5
+          : 15
+  );
   // En el Bastión, la dificultad aumenta la resistencia sin convertir cada combate
   // en una esponja de PV. Las demás misiones conservan su escalado original.
   const isTrainingTrial = missionId === 'resource_trial_gold' || missionId === 'resource_trial_xp';
