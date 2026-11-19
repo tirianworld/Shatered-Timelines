@@ -41,8 +41,8 @@ export const QuestView: React.FC = () => {
 const TrainingTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToLibrary }) => {
   const { setPendingMissionLaunch, navigateTo } = useGame();
   const trials = [
-    { id: 'resource_trial_gold', title: 'Pruebas de Oro', description: 'Enfréntate a patrullas y saqueadores para conseguir oro.', portrait: '/assets/combat/goblin_garrote_clean.webp', rewards: ['5.000 oro', '12.000 oro', '25.000 oro'] },
-    { id: 'resource_trial_xp', title: 'Pruebas de EXP', description: 'Derrota a los enemigos del barracón y consigue botellas de EXP.', portrait: '/assets/portraits/no_muerto_thumb.webp', rewards: ['2× EXP menor', '2× EXP mayor', '1× EXP supremo'] },
+    { id: 'resource_trial_gold', title: 'Pruebas de Oro', description: 'Supera 4 salas de patrullas y saqueadores para conseguir oro.', portrait: '/assets/combat/goblin_garrote_clean.webp', rewards: ['5.000 oro', '12.000 oro', '25.000 oro'] },
+    { id: 'resource_trial_xp', title: 'Pruebas de EXP', description: 'Supera 4 salas de no muertos y criaturas del barracón para conseguir botellas de EXP.', portrait: '/assets/portraits/no_muerto_thumb.webp', rewards: ['2× EXP menor', '2× EXP mayor', '1× EXP supremo'] },
   ];
   const launchTrial = (missionId: string, tier: 1 | 2 | 3) => {
     sound.playSFX('click');
@@ -56,7 +56,7 @@ const TrainingTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBack
         <div className="min-w-0"><h2 className="font-serif text-base font-black uppercase tracking-wide text-amber-300">Bastión de Entrenamiento</h2><p className="text-[10px] text-stone-400">Tomo independiente · Misiones repetibles</p></div>
       </div>
       <div className="flex-1 overflow-y-auto p-3 space-y-3 pb-24">
-        <div className="rounded-xl border-2 border-amber-800/80 bg-gradient-to-b from-[#321908] to-[#160904] p-3 text-center"><p className="font-serif text-xs font-black uppercase tracking-wider text-amber-200">Entrenamiento y suministros</p><p className="mt-1 text-[10px] text-stone-300">Elige una prueba y ajusta el desafío a la fuerza de tu equipo.</p></div>
+        <div className="rounded-xl border-2 border-amber-800/80 bg-gradient-to-b from-[#321908] to-[#160904] p-3 text-center"><p className="font-serif text-xs font-black uppercase tracking-wider text-amber-200">Entrenamiento y suministros</p><p className="mt-1 text-[10px] text-stone-300">Elige una prueba de 4 salas consecutivas y ajusta el desafío a la fuerza de tu equipo. La recompensa llega al superar la última sala.</p></div>
         {trials.map((trial) => (
           <section key={trial.id} className="rounded-xl border border-amber-800/70 bg-[#241006] p-3 shadow-lg">
             <div className="mb-3 flex items-center gap-3"><img src={trial.portrait} alt="" className="h-14 w-14 rounded-lg border border-amber-800 bg-black/50 object-contain" /><div className="min-w-0"><h3 className="font-serif text-sm font-black text-amber-100">{trial.title}</h3><p className="text-[10px] text-stone-400">{trial.description}</p></div></div>
