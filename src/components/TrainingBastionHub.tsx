@@ -347,16 +347,6 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void }> = ({ 
       <div className="absolute inset-0 bg-gradient-to-b from-[#07101e]/55 via-[#08101d]/35 to-[#05070d]/90 pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(69,139,190,0.28),transparent_58%)] pointer-events-none" />
 
-      {/* Cabecera limpia: únicamente regreso a la biblioteca */}
-      <div className="relative z-20 flex items-center px-3 pt-2 pb-1 shrink-0">
-        <button
-          onClick={() => { sound.playSFX('click'); onBackToLibrary(); }}
-          className="w-9 h-9 shrink-0 rounded-lg border border-amber-300/60 bg-[#160e0b]/90 text-amber-100 shadow-lg flex items-center justify-center"
-          title="Volver a la biblioteca"
-          aria-label="Volver a la biblioteca"
-        ><span className="text-xl leading-none">‹</span></button>
-      </div>
-
       {claimedNotice && (
         <div className="absolute top-12 left-1/2 -translate-x-1/2 z-40 bg-[#3b170c] border-2 border-amber-400 text-amber-200 px-4 py-1.5 rounded-lg text-xs font-bold shadow-2xl pointer-events-none">
           {claimedNotice}
