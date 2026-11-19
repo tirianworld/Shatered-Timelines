@@ -11986,6 +11986,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
       return;
     }
     if (
+      pvp ||
       goldRunMissionActive ||
       chapterCheckpointHandledRef.current ||
       !selectedCombatMissionId ||
@@ -12001,7 +12002,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
       });
       window.setTimeout(() => setDndProcBanner(null), 4000);
     }
-  }, [battleState, goldRunMissionActive, selectedCombatMissionId, restoreQuestChapterCheckpoint]);
+  }, [battleState, goldRunMissionActive, selectedCombatMissionId, restoreQuestChapterCheckpoint, pvp]);
 
   // Transición inmediata a Fase 2 del Devorador de Hierro al llegar al 50% de vida o menos
   const devoradorEnemyHp = targetEnemy?.configId === 'devorador_hierro' ? targetEnemy.hp : -1;
