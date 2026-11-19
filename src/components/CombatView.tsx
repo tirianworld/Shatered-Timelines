@@ -7861,8 +7861,21 @@ export const CombatView: React.FC = () => {
   };
   const [isHeroAshDissolving, setIsHeroAshDissolving] = useState<boolean>(false);
 
+  // Recuerda si el combate venía de una misión: al poner su ID a null tras
+  // la victoria, no debemos inicializar un combate libre con el enemigo por defecto.
+  const previousCombatMissionIdRef = useRef(selectedCombatMissionId);
+
   // Reset combat run cleanly when selectedCombatMissionId changes
   useEffect(() => {
+    if (!selectedCombatMissionId && previousCombatMissionIdRef.current) {
+      previousCombatMissionIdRef.current = null;
+      activeEnemiesRef.current = [];
+      setActiveEnemies([]);
+      setSelectedEnemyIdx(0);
+      setBattleState('victory');
+      return;
+    }
+    previousCombatMissionIdRef.current = selectedCombatMissionId;
     devoradorTransitionTimersRef.current.forEach((id) => {
       window.clearTimeout(id);
       window.clearInterval(id);
