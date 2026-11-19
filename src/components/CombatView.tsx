@@ -11120,6 +11120,20 @@ export const CombatView: React.FC = () => {
       const gold = isGoldTrial ? goldReward : 0;
       if (gold > 0) addGold(gold);
       if (!isGoldTrial) addInventoryItem(xpReward.itemId, xpReward.count);
+      // Si había botín pendiente de una expedición anterior, se conserva y se ingresa aparte.
+      if (accumulatedLoot.gold > 0) addGold(accumulatedLoot.gold);
+      if (accumulatedLoot.crystals > 0) addCrystals(accumulatedLoot.crystals);
+      accumulatedLoot.items.forEach((it) =>
+        addShelfItem({
+          id: `${it.id}_${Date.now()}`,
+          name: it.name,
+          category: 'materials',
+          rarity: it.rarity as any,
+          count: it.count,
+          icon: it.icon,
+          description: it.description,
+        })
+      );
       completeQuestMission(selectedCombatMissionId, computeMissionStars());
       setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
       setWaveClearBanner({
