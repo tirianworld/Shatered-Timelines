@@ -260,7 +260,15 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standal
     addCrystals,
   } = useGame();
 
-  const [bastionView, setBastionView] = useState<'hub' | 'gold_missions'>('hub');
+  const [bastionView, setBastionView] = useState<'hub' | 'gold_missions'>(() =>
+    safeStorage.getItem('cdd_midas_open_chapter_menu_on_return') === 'true'
+      ? 'gold_missions'
+      : 'hub'
+  );
+  // La marca solo sirve para el regreso inmediato desde una victoria de Midas.
+  useEffect(() => {
+    safeStorage.setItem('cdd_midas_open_chapter_menu_on_return', 'false');
+  }, []);
   const [goldChapter, setGoldChapter] = useState<number>(() => loadGoldRun().chapter);
   const [goldRun, setGoldRun] = useState<GoldRunState>(() => loadGoldRun());
 
