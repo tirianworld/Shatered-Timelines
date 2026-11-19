@@ -6141,7 +6141,19 @@ const getBalancedEnemyMaxHp = (
 
 export const createChamberEnemies = (floor: number, missionId?: string | null, difficultyTier: 1 | 2 | 3 = 1, partyAttackScale = 1): ChamberEnemyState[] => {
   let configIds: CombatEnemyId[] = [];
-  if (missionId === 'evento_coliseo_suenos') {
+  if (missionId === 'resource_trial_gold') {
+    configIds = difficultyTier === 1
+      ? ['goblin_daga', 'goblin_honda', 'goblin_garrote']
+      : difficultyTier === 2
+      ? ['guardia_lanza', 'guardia_espada', 'guardia_ballesta']
+      : ['hoggoblin_encapuchado_daga', 'guarda_negro_espada', 'guarda_negro_alabarda', 'guarda_negro_ballesta'];
+  } else if (missionId === 'resource_trial_xp') {
+    configIds = difficultyTier === 1
+      ? ['no_muerto', 'no_muerto', 'perro_asalvajado']
+      : difficultyTier === 2
+      ? ['soldado_no_muerto', 'soldado_no_muerto', 'araknoide_rojo']
+      : ['soldado_no_muerto', 'araknoide_voraz', 'guarda_negro_espada'];
+  } else if (missionId === 'evento_coliseo_suenos') {
     const chamber = COLISEO_SUENOS_CHAMBERS[floor - 1] || COLISEO_SUENOS_CHAMBERS[0];
     configIds = chamber.enemyConfigIds;
   } else if (missionId === 'm22_cryovain_final') {
@@ -6371,6 +6383,7 @@ export const CombatView: React.FC = () => {
     addCrystals,
     summonCrystals,
     addShelfItem,
+    addInventoryItem,
     inventory,
     selectedCombatMissionId,
     setSelectedCombatMissionId,
@@ -6514,6 +6527,7 @@ export const CombatView: React.FC = () => {
       activeEnemies.forEach((enemy) => {
         if (enemy.hp > 0 || droppedUidsRef.current.has(enemy.uid)) return;
         droppedUidsRef.current.add(enemy.uid);
+        if (selectedCombatMissionId === 'resource_trial_gold' || selectedCombatMissionId === 'resource_trial_xp') return;
 
         const cfg = DUNGEON_ENEMIES[enemy.configId];
         const goldMultiplier = enemy.isBoss ? 6 : enemy.isSemiboss ? 3 : 1;
@@ -6575,7 +6589,7 @@ export const CombatView: React.FC = () => {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [activeEnemies]);
+  }, [activeEnemies, selectedCombatMissionId]);
 
   const targetEnemy: ChamberEnemyState =
     activeEnemies[selectedEnemyIdx]?.hp > 0 && !activeEnemies[selectedEnemyIdx]?.isAshDissolving
@@ -11088,6 +11102,36 @@ export const CombatView: React.FC = () => {
       setTimeout(() => {
         navigateTo('quest');
       }, 1700);
+      return;
+    }
+
+    // Recompensas exclusivas del Bastión: solo oro o botellas de EXP existentes.
+    if (selectedCombatMissionId === 'resource_trial_gold' || selectedCombatMissionId === 'resource_trial_xp') {
+      sound.playSFX('victory');
+      launchConfetti();
+      const tier = selectedCombatDifficulty;
+      const goldReward = tier === 1 ? 5000 : tier === 2 ? 12000 : 25000;
+      const xpReward = tier === 1
+        ? { itemId: 'xp_potion_1', count: 2 }
+        : tier === 2
+        ? { itemId: 'xp_potion_3', count: 2 }
+        : { itemId: 'xp_potion_5', count: 1 };
+      const isGoldTrial = selectedCombatMissionId === 'resource_trial_gold';
+      const gold = isGoldTrial ? goldReward : 0;
+      if (gold > 0) addGold(gold);
+      if (!isGoldTrial) addInventoryItem(xpReward.itemId, xpReward.count);
+      completeQuestMission(selectedCombatMissionId, computeMissionStars());
+      setAccumulatedLoot({ gold: 0, crystals: 0, items: [] });
+      setWaveClearBanner({
+        floor: currentFloor,
+        gold,
+        crystals: 0,
+        nextFloor: currentFloor,
+      });
+      setSelectedCombatMissionId(null);
+      setTimeout(() => {
+        navigateTo('quest');
+      }, 1500);
       return;
     }
 
