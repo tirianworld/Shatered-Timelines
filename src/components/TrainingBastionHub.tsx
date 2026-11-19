@@ -625,11 +625,22 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standal
       .map((id) => GOLD_RUN_BOONS.find((b) => b.id === id))
       .filter((b): b is (typeof GOLD_RUN_BOONS)[number] => Boolean(b));
 
+    // Igual que en la historia principal: solo se puede iniciar la primera
+    // misión disponible; cada victoria abre la siguiente sala del capítulo.
+    const isGoldMissionUnlocked = (mission: GoldDungeonMission): boolean => {
+      if (mission.locked || mission.chapter > runChapter) return false;
+      const chapterMissions = visibleGoldMissions;
+      const missionIndex = chapterMissions.findIndex((item) => item.progressId === mission.progressId);
+      if (missionIndex <= 0) return missionIndex === 0;
+      const previousMission = chapterMissions[missionIndex - 1];
+      return goldRun.cleared.includes(previousMission.progressId);
+    };
+
     const handleLaunchGoldMission = (
       mission: GoldDungeonMission,
       forceDestination?: 'story' | 'combat'
     ) => {
-      if (mission.locked) {
+      if (!isGoldMissionUnlocked(mission)) {
         sound.playSFX('click');
         return;
       }
@@ -821,7 +832,7 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standal
             className="w-full flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden scroll-smooth flex flex-col gap-2.5 sm:gap-3 mt-1.5 pb-28 sm:pb-32 cursor-grab active:cursor-grabbing touch-pan-y"
           >
             {visibleGoldMissions.map((mission) => {
-              const isLocked = !!mission.locked || mission.chapter > runChapter;
+              const isLocked = !isGoldMissionUnlocked(mission);
               const isCompleted = !isLocked && goldRun.cleared.includes(mission.progressId);
               const earnedStars = isCompleted
                 ? Math.max(0, Math.min(3, questProgress.stars?.[mission.progressId] ?? 3))
