@@ -1207,16 +1207,18 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standal
             className="group relative z-10 h-[112px] w-full bg-transparent border-0 p-0 cursor-pointer active:scale-[0.97]"
             title="Mejora de equipo"
           >
-            <img
-              src="/assets/backgrounds/granja_xp_boton.webp"
-              alt="Mejora"
-              className="absolute inset-0 block w-full h-full -translate-y-2 scale-y-[1.18] rounded-lg object-fill transition-transform duration-300 group-hover:-translate-y-2 group-hover:scale-y-[1.22] group-hover:scale-x-[1.03] drop-shadow-[0_5px_12px_rgba(0,0,0,0.55)]"
-            />
-            <BannerProgress
-              value={xpProgressPct}
-              tone="cyan"
-              box={{ left: 12.0, top: 92.6, width: 51.5, height: 4.1 }}
-            />
+            <div className="absolute inset-0 -translate-y-2 scale-y-[1.18] transition-transform duration-300 group-hover:-translate-y-2 group-hover:scale-y-[1.22] group-hover:scale-x-[1.03]">
+              <img
+                src="/assets/backgrounds/granja_xp_boton.webp"
+                alt="Mejora"
+                className="absolute inset-0 block w-full h-full rounded-lg object-fill drop-shadow-[0_5px_12px_rgba(0,0,0,0.55)]"
+              />
+              <BannerProgress
+                value={xpProgressPct}
+                tone="cyan"
+                box={{ left: 12.0, top: 92.6, width: 51.5, height: 4.1 }}
+              />
+            </div>
           </button>
         </div>
 
