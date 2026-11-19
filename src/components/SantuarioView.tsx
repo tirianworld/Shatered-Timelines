@@ -375,7 +375,7 @@ export const SantuarioView: React.FC = () => {
       )}
 
       {/* Tablero de actividades: tarjetas ilustradas con navegación real */}
-      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto no-scrollbar px-2.5 pt-1 pb-3 space-y-2">
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto no-scrollbar px-2.5 pt-1 pb-2 space-y-[7px]">
         <div className="px-1 flex items-end justify-between">
           <div>
             <div className="text-[9px] uppercase tracking-[0.28em] text-sky-200/80 font-bold">Santuario de Icespear</div>
@@ -387,7 +387,7 @@ export const SantuarioView: React.FC = () => {
         {/* Actividad destacada */}
         <button
           onClick={() => { sound.playSFX('click'); navigateTo('quest'); }}
-          className="group relative w-full h-[132px] overflow-hidden rounded-xl border-[3px] border-[#9b6a36] shadow-[0_5px_14px_rgba(0,0,0,0.75)] text-left"
+          className="group relative w-full h-[126px] overflow-hidden rounded-lg border-[3px] border-[#b1844b] shadow-[0_5px_14px_rgba(0,0,0,0.8)] text-left ring-1 ring-black/70"
           title="Misiones especiales"
         >
           <img src="/assets/backgrounds/fondo_quest.webp" alt="" className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
@@ -404,7 +404,7 @@ export const SantuarioView: React.FC = () => {
         {/* Farmeo de oro */}
         <button
           onClick={() => { sound.playSFX('coin'); navigateTo('quest'); }}
-          className="group relative w-full h-[112px] overflow-hidden rounded-xl border-[3px] border-[#9b7845] shadow-[0_5px_13px_rgba(0,0,0,0.7)] text-left"
+          className="group relative w-full h-[108px] overflow-hidden rounded-lg border-[3px] border-[#b18b50] shadow-[0_5px_13px_rgba(0,0,0,0.75)] text-left ring-1 ring-black/70"
           title="Misiones de oro"
         >
           <img src="/assets/backgrounds/FONDO TIENDA.webp" alt="" className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
@@ -419,10 +419,10 @@ export const SantuarioView: React.FC = () => {
         </button>
 
         {/* Evolución y mejora */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-[7px]">
           <button
             onClick={() => { sound.playSFX('click'); navigateTo('heroes'); }}
-            className="group relative h-[116px] overflow-hidden rounded-xl border-[3px] border-[#8c633d] shadow-[0_5px_13px_rgba(0,0,0,0.7)] text-left"
+            className="group relative h-[112px] overflow-hidden rounded-lg border-[3px] border-[#a77b49] shadow-[0_5px_13px_rgba(0,0,0,0.75)] text-left ring-1 ring-black/70"
             title="Evolucionar héroes"
           >
             <img src="/assets/backgrounds/fondo_personajes.webp" alt="" className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
@@ -454,7 +454,7 @@ export const SantuarioView: React.FC = () => {
         {/* Evento de batalla */}
         <button
           onClick={() => { sound.playSFX('click'); navigateTo('quest'); }}
-          className="group relative w-full h-[88px] overflow-hidden rounded-xl border-[3px] border-[#9b7845] shadow-[0_5px_13px_rgba(0,0,0,0.7)] text-left"
+          className="group relative w-full h-[82px] overflow-hidden rounded-lg border-[3px] border-[#b18b50] shadow-[0_5px_13px_rgba(0,0,0,0.75)] text-left ring-1 ring-black/70"
           title="Eventos de batalla"
         >
           <img src="/assets/backgrounds/fondo_historia.webp" alt="" className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105" />
@@ -470,7 +470,7 @@ export const SantuarioView: React.FC = () => {
         {/* Acceso al mapa */}
         <button
           onClick={() => { sound.playSFX('click'); navigateTo('world'); }}
-          className="mx-auto flex items-center gap-2 rounded-full border border-sky-200/35 bg-[#07111d]/80 px-4 py-1.5 shadow-lg"
+          className="mx-auto flex items-center gap-2 rounded-full border border-sky-200/45 bg-gradient-to-b from-[#132d42]/90 to-[#07111d]/95 px-4 py-1.5 shadow-[0_3px_10px_rgba(0,0,0,0.8)]"
           title="Mapa del mundo"
         >
           <img src="/assets/items/WORLD BUTTON.webp" alt="" className="w-6 h-6 object-contain" />
