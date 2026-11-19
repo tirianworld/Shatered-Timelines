@@ -44,20 +44,24 @@ const TrainingTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBack
     {
       id: 'resource_trial_gold',
       title: 'Pruebas de Oro',
-      type: 'FARME0 · ORO',
+      eyebrow: 'RECURSOS · MONEDAS',
       description: 'Asalta las patrullas y los puestos de saqueadores. Supera cuatro salas para conseguir oro.',
+      background: '/assets/backgrounds/FONDO TIENDA.webp',
       portrait: '/assets/combat/goblin_garrote_clean.webp',
       portraitClass: 'scale-[1.8] origin-top',
       rewards: ['5.000 oro', '12.000 oro', '25.000 oro'],
+      accent: 'gold',
     },
     {
       id: 'resource_trial_xp',
       title: 'Pruebas de EXP',
-      type: 'FARME0 · EXPERIENCIA',
+      eyebrow: 'RECURSOS · EXPERIENCIA',
       description: 'Enfréntate a los no muertos y las criaturas del barracón. Supera cuatro salas para obtener botellas de EXP.',
+      background: '/assets/backgrounds/FONDO XP.webp',
       portrait: '/assets/portraits/no_muerto_thumb.webp',
       portraitClass: 'scale-[1.65] origin-top',
       rewards: ['2× EXP menor', '2× EXP mayor', '1× EXP supremo'],
+      accent: 'violet',
     },
   ];
   const launchTrial = (missionId: string, tier: 1 | 2 | 3) => {
@@ -67,80 +71,79 @@ const TrainingTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBack
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col bg-[#180a04] text-stone-100 overflow-hidden">
-      <div className="shrink-0 flex items-center gap-3 px-3 py-3 border-b border-amber-900/70 bg-[#240d04]">
+    <div className="relative w-full h-full flex flex-col overflow-hidden select-none bg-[#080d18] text-white">
+      <img
+        src="/assets/backgrounds/icespear_luces.webp"
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#061323]/65 via-[#07101d]/75 to-[#100603]/95 pointer-events-none" />
+
+      <div className="relative z-10 shrink-0 flex items-center gap-3 px-3 py-3 border-b-2 border-[#9b6334] bg-gradient-to-r from-[#321307]/95 via-[#180903]/95 to-[#321307]/95 shadow-[0_4px_12px_rgba(0,0,0,0.75)]">
         <button
           type="button"
-          onClick={onBackToLibrary}
-          className="rounded-lg border border-amber-800 bg-black/30 p-2 text-amber-200 hover:bg-amber-950"
+          onClick={() => { sound.playSFX('click'); onBackToLibrary(); }}
+          className="w-11 h-11 shrink-0 rounded-xl border-2 border-[#bd8a4d] bg-gradient-to-b from-[#71300d] to-[#2b1006] text-amber-200 shadow-lg active:scale-95 flex items-center justify-center"
           aria-label="Volver a la biblioteca"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-6 h-6" />
         </button>
-        <div className="min-w-0">
-          <h2 className="font-serif text-base font-black uppercase tracking-wide text-amber-300">Bastión de Entrenamiento</h2>
-          <p className="text-[10px] text-stone-400">Tomo independiente · Misiones repetibles</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-[8px] uppercase tracking-[0.28em] font-black text-amber-300/80">Bastión · Actividades</p>
+          <h2 className="font-serif text-[17px] leading-tight font-black uppercase tracking-wide text-amber-200 drop-shadow-[0_2px_3px_#000]">Bastión de Entrenamiento</h2>
+          <p className="text-[9px] text-stone-300">Incursiones repetibles · Cuatro salas por misión</p>
         </div>
+        <img src="/assets/items/quest tarot.webp" alt="" className="w-11 h-11 object-contain drop-shadow-[0_2px_5px_#000]" />
       </div>
 
-      <div className="flex-1 overflow-y-auto px-3 pt-3 pb-28 flex flex-col gap-2.5 sm:gap-3">
-        <div className="relative w-full rounded-xl overflow-hidden border border-[#9e521e]/80 bg-[#1a0b04] px-3 py-3 text-center shadow-[inset_0_2px_10px_rgba(0,0,0,0.75)]">
-          <p className="font-serif text-xs font-black uppercase tracking-wider text-amber-200">Entrenamiento y suministros</p>
-          <p className="mt-1 text-[10px] text-stone-300">Elige una misión y su dificultad. Cada incursión consta de cuatro salas consecutivas; la recompensa se entrega al completar la última.</p>
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto no-scrollbar px-2.5 pt-3 pb-28 flex flex-col gap-3">
+        <div className="relative h-[112px] shrink-0 overflow-hidden rounded-xl border-[3px] border-[#a97943] shadow-[0_5px_14px_rgba(0,0,0,0.8)]">
+          <img src="/assets/backgrounds/fondo_quest.webp" alt="" className="absolute inset-0 w-full h-full object-cover object-center" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#100719]/95 via-[#1c0b28]/65 to-[#170817]/15" />
+          <div className="absolute inset-0 flex flex-col justify-center px-4">
+            <span className="text-[8px] uppercase tracking-[0.3em] font-black text-amber-200">Campo de entrenamiento</span>
+            <h3 className="mt-1 font-serif text-[22px] leading-none font-black italic text-white drop-shadow-[0_2px_4px_#000]">Incursiones especiales</h3>
+            <p className="mt-2 max-w-[245px] text-[10px] leading-snug font-semibold text-stone-100 drop-shadow">Elige un suministro, selecciona la dificultad y completa las cuatro salas para reclamar tu recompensa.</p>
+          </div>
+          <div className="absolute right-3 bottom-2 rounded-full border border-amber-200/70 bg-black/65 px-2.5 py-1 text-[8px] font-black tracking-wider text-amber-100">2 DESAFÍOS</div>
         </div>
 
-        {trials.map((trial) => (
+        {trials.map((trial, index) => (
           <section
             key={trial.id}
-            className="relative w-full min-h-[116px] rounded-xl overflow-hidden flex items-center px-3 py-2.5 shadow-md shrink-0 border border-[#9e521e]/60"
+            className={`relative w-full h-[190px] shrink-0 overflow-hidden rounded-xl border-[3px] ${index === 0 ? 'border-[#c18b3e]' : 'border-[#8b6aa8]'} shadow-[0_6px_16px_rgba(0,0,0,0.85)]`}
           >
-            <img
-              src="/assets/items/HISTORIA NIVEL BOTON.webp"
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none z-0"
-            />
-            <div className="relative z-10 w-[66px] h-[66px] rounded-xl overflow-hidden bg-[#100703] border-[2.5px] border-[#9e521e] shrink-0 shadow-[inset_0_2px_4px_rgba(0,0,0,0.85),0_2px_4px_rgba(0,0,0,0.5)] flex items-center justify-center">
-              <img
-                src={trial.portrait}
-                alt={trial.title}
-                className={`w-full h-full object-contain pointer-events-none select-none ${trial.portraitClass}`}
-              />
+            <img src={trial.background} alt="" className="absolute inset-0 w-full h-full object-cover object-center" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#100904]/95 via-[#160c0a]/65 to-[#100817]/25" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10" />
+
+            <div className="absolute left-3 top-3 flex items-center gap-2">
+              <div className="w-[76px] h-[76px] rounded-xl overflow-hidden bg-[#090604]/90 border-[3px] border-[#bd8b50] shadow-[0_3px_9px_rgba(0,0,0,0.9)] flex items-center justify-center">
+                <img src={trial.portrait} alt="" className={`w-full h-full object-contain ${trial.portraitClass}`} />
+              </div>
+              <div className="min-w-0 max-w-[150px]">
+                <span className="inline-block rounded-sm bg-black/65 border border-amber-300/50 px-1.5 py-0.5 text-[7px] font-black tracking-widest text-amber-200">{trial.eyebrow}</span>
+                <h3 className="mt-1 font-serif text-[17px] leading-tight font-black italic text-white drop-shadow-[0_2px_4px_#000]">{trial.title}</h3>
+                <p className="mt-1 text-[9px] leading-snug font-semibold text-stone-100 drop-shadow-[0_1px_3px_#000]">{trial.description}</p>
+              </div>
             </div>
 
-            <div className="relative z-10 flex-1 min-w-0 pl-3 pr-2 flex flex-col justify-center gap-1">
-              <h3 className="font-serif font-black text-xs sm:text-[13px] text-[#3d1908] truncate drop-shadow-[0_1px_0_rgba(255,255,255,0.4)]">
-                {trial.title}
-              </h3>
-              <span className="w-fit px-1.5 py-0.5 rounded-full font-sans font-black text-[7px] uppercase tracking-wide bg-emerald-800/95 text-emerald-100 border border-emerald-500/50">
-                {trial.type}
-              </span>
-              <p className="text-[9px] sm:text-[10px] text-[#4d240e] leading-snug font-semibold line-clamp-3">
-                {trial.description}
-              </p>
-              <span className="text-[8px] font-black tracking-wide text-[#71350e]">4 SALAS · RECOMPENSA FINAL</span>
+            <div className="absolute left-3 right-3 bottom-2 flex items-center justify-between">
+              <span className="rounded-full border border-white/30 bg-black/65 px-2 py-1 text-[8px] font-black tracking-wider text-white">4 SALAS · PREMIO FINAL</span>
+              <span className="text-[8px] font-black uppercase tracking-widest text-amber-100">Elige dificultad</span>
             </div>
 
-            <div className="relative z-10 flex flex-col items-center justify-center shrink-0 gap-1 pl-1">
+            <div className="absolute right-2 top-2 bottom-2 flex flex-col justify-center gap-1.5">
               {([1, 2, 3] as const).map((tier) => (
                 <button
                   key={tier}
                   type="button"
                   onClick={() => launchTrial(trial.id, tier)}
-                  className={`w-[76px] sm:w-[86px] py-1.5 px-1 rounded-lg border shadow-md hover:brightness-110 active:scale-95 transition-all flex flex-col items-center justify-center ${
-                    tier === 1
-                      ? 'border-emerald-700/80 bg-gradient-to-b from-emerald-800 to-emerald-950'
-                      : tier === 2
-                      ? 'border-sky-700/80 bg-gradient-to-b from-sky-800 to-sky-950'
-                      : 'border-rose-700/80 bg-gradient-to-b from-rose-800 to-rose-950'
-                  }`}
+                  className={`w-[91px] min-h-[39px] rounded-lg border shadow-[0_3px_7px_rgba(0,0,0,0.75)] active:scale-95 transition-transform flex flex-col items-center justify-center ${tier === 1 ? 'border-emerald-300/70 bg-gradient-to-b from-emerald-600 to-emerald-950' : tier === 2 ? 'border-sky-300/70 bg-gradient-to-b from-sky-600 to-sky-950' : 'border-rose-300/70 bg-gradient-to-b from-rose-600 to-rose-950'}`}
                   title={`Iniciar ${tier === 1 ? 'Fácil' : tier === 2 ? 'Normal' : 'Difícil'}`}
                 >
-                  <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-white">
-                    {tier === 1 ? 'FÁCIL' : tier === 2 ? 'NORMAL' : 'DIFÍCIL'}
-                  </span>
-                  <span className="text-[7px] sm:text-[8px] font-bold text-amber-100 leading-tight text-center">
-                    {trial.rewards[tier - 1]}
-                  </span>
+                  <span className="text-[9px] font-black uppercase tracking-wider text-white">{tier === 1 ? 'FÁCIL' : tier === 2 ? 'NORMAL' : 'DIFÍCIL'}</span>
+                  <span className="text-[7px] font-bold text-white/90 leading-tight text-center">{trial.rewards[tier - 1]}</span>
                 </button>
               ))}
             </div>
@@ -150,7 +153,6 @@ const TrainingTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBack
     </div>
   );
 };
-
 const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToLibrary }) => {
   const {
     questProgress,
