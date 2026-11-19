@@ -116,6 +116,7 @@ interface GameContextType {
   activeQuestChapter: number;
   setActiveQuestChapter: (chapter: number) => void;
   completeQuestMission: (missionId: string, stars: number) => void;
+  restoreQuestChapterCheckpoint: () => boolean;
   completeAllMissions: () => void;
   selectedCombatMissionId: string | null;
   setSelectedCombatMissionId: (id: string | null) => void;
@@ -1870,6 +1871,73 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     !!questProgress.allMissionsCompleted || questProgress.completedMissions.includes('m21_coliseo_suenos');
   const isColiseoEventUnlocked = isDreamPlaneUnlocked;
 
+  const restoreQuestChapterCheckpoint = (): boolean => {
+    if (questProgress.allMissionsCompleted) return false;
+
+    const chapterStartMission: Record<number, string> = {
+      1: 'm1_tirano',
+      2: 'm5_minas_historia',
+      3: 'm8_intro_capitulo3',
+      4: 'm11_llegada_mansion_ferton',
+      5: 'm17_despertar_suenos',
+      6: 'm21b_casa_gabriel',
+    };
+    const chapterMissionIds: Record<number, string[]> = {
+      1: ['m1_tirano', 'm2_robo', 'm3_bosque', 'm4_puertas_selladas'],
+      2: ['m5_minas_historia', 'm3_cuevas_rojo', 'm4_cuevas_azul', 'm5_cuevas_zancudo', 'm6_cuevas_titan', 'm6_puerta_laberinto', 'm7_cuevas_reina', 'm7_epilogo_aldea'],
+      3: ['m8_intro_capitulo3', 'm9_emboscada_ferton', 'm10_hobgoblin_boss', 'm10b_encuentro_chispo', 'm10c_callejon_hoggoblins', 'm10d_mansion_baron', 'm10e_taberna_duergar'],
+      4: ['m11_llegada_mansion_ferton', 'm12_recibidor_mansion_ferton', 'm13_escaleras_durnik', 'm14_planta_intermedia_ferton', 'm15_despacho_ferton', 'm16_audiencia_baron'],
+      5: ['m17_despertar_suenos', 'm18_primera_camara_gorgon', 'm19_segunda_camara_aire', 'm20_tercera_camara_bulezau', 'm21_coliseo_suenos'],
+      6: ['m21b_casa_gabriel', 'm21c_forzar_puerta', 'm21d_verdad_gabriel', 'm22_cryovain_final'],
+    };
+    const savedCheckpoint = safeGetJSON<any>(`${STORAGE_KEY}_quest_checkpoint`, null);
+    const chapter = Number.isInteger(savedCheckpoint?.chapter) && savedCheckpoint.chapter >= 1 && savedCheckpoint.chapter <= 6
+      ? savedCheckpoint.chapter
+      : Math.min(6, Math.max(1, questProgress.chapter));
+    const firstMissionId = chapterStartMission[chapter];
+    if (!firstMissionId) return false;
+
+    // Para partidas antiguas sin checkpoint, conserva las misiones de capítulos
+    // anteriores y elimina cualquier avance del capítulo actual o posterior.
+    const currentAndLaterIds = new Set(
+      Object.entries(chapterMissionIds)
+        .filter(([chapterNumber]) => Number(chapterNumber) >= chapter)
+        .flatMap(([, ids]) => ids)
+    );
+    const sourceCompleted = Array.isArray(savedCheckpoint?.completedMissions)
+      ? savedCheckpoint.completedMissions
+      : questProgress.completedMissions.filter((id) => {
+          const baseId = id.replace(/__(normal|hard)$/, '');
+          return !currentAndLaterIds.has(baseId);
+        });
+    const sourceStars = savedCheckpoint?.stars && typeof savedCheckpoint.stars === 'object'
+      ? savedCheckpoint.stars
+      : Object.fromEntries(
+          Object.entries(questProgress.stars).filter(([id]) => {
+            const baseId = id.replace(/__(normal|hard)$/, '');
+            return !currentAndLaterIds.has(baseId);
+          })
+        );
+    const restored = createQuestProgressState({
+      chapter,
+      completedMissions: sourceCompleted,
+      stars: sourceStars,
+      allMissionsCompleted: false,
+    });
+
+    setQuestProgress(restored);
+    safeStorage.setItem(`${STORAGE_KEY}_quest_progress`, JSON.stringify({
+      chapter: restored.chapter,
+      completedMissions: restored.completedMissions,
+      stars: restored.stars,
+      allMissionsCompleted: false,
+    }));
+    setActiveQuestChapter(chapter);
+    setSelectedCombatMissionId(firstMissionId);
+    setSelectedCombatDifficulty(1);
+    return true;
+  };
+
   const completeQuestMission = (missionId: string, stars: number) => {
     // Todas las misiones de Midas deben registrarse en el guardado propio de la
     // expedición, no solo en el progreso general de misiones.
@@ -1917,6 +1985,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         stars: newStars,
         allMissionsCompleted: prev.allMissionsCompleted,
       });
+      // Cada avance de capítulo consolida un punto de control: al perder,
+      // se conserva lo anterior y se reinicia desde la primera misión nueva.
+      if (!prev.allMissionsCompleted && nextChapter > prev.chapter) {
+        safeStorage.setItem(`${STORAGE_KEY}_quest_checkpoint`, JSON.stringify({
+          chapter: nextChapter,
+          completedMissions: completed,
+          stars: newStars,
+        }));
+      }
       safeStorage.setItem(`${STORAGE_KEY}_quest_progress`, JSON.stringify({
         chapter: updated.chapter,
         completedMissions: Array.isArray(updated.completedMissions) ? Array.from(updated.completedMissions) : completed,
@@ -2234,6 +2311,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         activeQuestChapter,
         setActiveQuestChapter,
         completeQuestMission,
+        restoreQuestChapterCheckpoint,
         completeAllMissions,
         selectedCombatMissionId,
         setSelectedCombatMissionId,
