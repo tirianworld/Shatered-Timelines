@@ -31,7 +31,47 @@ export const QuestView: React.FC = () => {
     );
   }
 
+  if (activeQuestTome === 'training_bastion') {
+    return <TrainingTomeContent onBackToLibrary={() => setActiveQuestTome(null)} />;
+  }
+
   return <QuestTomeContent onBackToLibrary={() => setActiveQuestTome(null)} />;
+};
+
+const TrainingTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToLibrary }) => {
+  const { setPendingMissionLaunch, navigateTo } = useGame();
+  const trials = [
+    { id: 'resource_trial_gold', title: 'Pruebas de Oro', description: 'Enfréntate a patrullas y saqueadores para conseguir oro.', portrait: '/assets/combat/goblin_garrote_clean.webp', rewards: ['5.000 oro', '12.000 oro', '25.000 oro'] },
+    { id: 'resource_trial_xp', title: 'Pruebas de EXP', description: 'Derrota a los enemigos del barracón y consigue botellas de EXP.', portrait: '/assets/portraits/no_muerto_thumb.webp', rewards: ['2× EXP menor', '2× EXP mayor', '1× EXP supremo'] },
+  ];
+  const launchTrial = (missionId: string, tier: 1 | 2 | 3) => {
+    sound.playSFX('click');
+    setPendingMissionLaunch({ missionId, destination: 'combat', difficultyTier: tier });
+    navigateTo('party');
+  };
+  return (
+    <div className="relative w-full h-full flex flex-col bg-[#180a04] text-stone-100 overflow-hidden">
+      <div className="shrink-0 flex items-center gap-3 px-3 py-3 border-b border-amber-900/70 bg-[#240d04]">
+        <button type="button" onClick={onBackToLibrary} className="rounded-lg border border-amber-800 bg-black/30 p-2 text-amber-200 hover:bg-amber-950" aria-label="Volver a la biblioteca"><ChevronLeft className="w-5 h-5" /></button>
+        <div className="min-w-0"><h2 className="font-serif text-base font-black uppercase tracking-wide text-amber-300">Bastión de Entrenamiento</h2><p className="text-[10px] text-stone-400">Tomo independiente · Misiones repetibles</p></div>
+      </div>
+      <div className="flex-1 overflow-y-auto p-3 space-y-3 pb-24">
+        <div className="rounded-xl border-2 border-amber-800/80 bg-gradient-to-b from-[#321908] to-[#160904] p-3 text-center"><p className="font-serif text-xs font-black uppercase tracking-wider text-amber-200">Entrenamiento y suministros</p><p className="mt-1 text-[10px] text-stone-300">Elige una prueba y ajusta el desafío a la fuerza de tu equipo.</p></div>
+        {trials.map((trial) => (
+          <section key={trial.id} className="rounded-xl border border-amber-800/70 bg-[#241006] p-3 shadow-lg">
+            <div className="mb-3 flex items-center gap-3"><img src={trial.portrait} alt="" className="h-14 w-14 rounded-lg border border-amber-800 bg-black/50 object-contain" /><div className="min-w-0"><h3 className="font-serif text-sm font-black text-amber-100">{trial.title}</h3><p className="text-[10px] text-stone-400">{trial.description}</p></div></div>
+            <div className="grid grid-cols-3 gap-2">
+              {([1, 2, 3] as const).map((tier) => (
+                <button key={tier} type="button" onClick={() => launchTrial(trial.id, tier)} className={tier === 1 ? 'rounded-lg border border-emerald-700 bg-emerald-950/60 px-1.5 py-3 hover:bg-emerald-900/70 active:scale-95' : tier === 2 ? 'rounded-lg border border-sky-700 bg-sky-950/60 px-1.5 py-3 hover:bg-sky-900/70 active:scale-95' : 'rounded-lg border border-rose-700 bg-rose-950/60 px-1.5 py-3 hover:bg-rose-900/70 active:scale-95'}>
+                  <span className="block text-[10px] font-black text-white">{tier === 1 ? 'FÁCIL' : tier === 2 ? 'NORMAL' : 'DIFÍCIL'}</span><span className="mt-1 block text-[9px] font-semibold text-amber-200">{trial.rewards[tier - 1]}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToLibrary }) => {
@@ -564,28 +604,6 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
     : activeQuestChapter === 2 && isChapter2Unlocked
     ? chapter2Missions
     : chapter1Missions;
-  const resourceTrialMissions: QuestMission[] = [
-    {
-      id: 'resource_trial_gold',
-      title: 'Pruebas de Oro',
-      iconType: 'swords',
-      difficulty: 'Facil',
-      description: 'Derrota a las patrullas y saqueadores para conseguir oro.',
-      portrait: '/assets/combat/goblin_garrote_clean.webp',
-      stageId: 'stage_resource_gold',
-      isStory: false,
-    },
-    {
-      id: 'resource_trial_xp',
-      title: 'Pruebas de EXP',
-      iconType: 'swords',
-      difficulty: 'Facil',
-      description: 'Derrota a los enemigos del barracón y consigue botellas de EXP.',
-      portrait: '/assets/portraits/no_muerto_thumb.webp',
-      stageId: 'stage_resource_xp',
-      isStory: false,
-    },
-  ];
   const currentChapter = isTome2
     ? 1
     : activeQuestChapter === 6 && isChapter6Unlocked
@@ -1548,46 +1566,6 @@ const QuestTomeContent: React.FC<{ onBackToLibrary: () => void }> = ({ onBackToL
           onPointerLeave={handleContentPointerUp}
           className="w-full flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden scroll-smooth flex flex-col gap-2.5 sm:gap-3 mt-1.5 pb-28 sm:pb-32 cursor-grab active:cursor-grabbing touch-pan-y"
         >
-          {/* Bastión de Entrenamiento: actividades repetibles independientes del capítulo activo. */}
-          <section className="rounded-xl border-2 border-[#8a5a22] bg-gradient-to-b from-[#2b1609] to-[#160904] p-3 shadow-[inset_0_1px_8px_rgba(0,0,0,0.6)]">
-            <div className="mb-2 text-center">
-              <h3 className="font-serif text-sm font-black uppercase tracking-wider text-amber-300">Bastión de Entrenamiento</h3>
-              <p className="text-[9px] text-amber-100/70">Misiones repetibles de oro y experiencia</p>
-            </div>
-            {resourceTrialMissions.map((trial) => (
-              <div key={trial.id} className="mb-2 last:mb-0 rounded-lg border border-amber-800/70 bg-black/30 p-2">
-                <div className="mb-2 flex items-center gap-2">
-                  <img src={trial.portrait} alt="" className="h-10 w-10 rounded-md border border-amber-700 bg-black/50 object-contain" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[11px] font-black text-amber-100">{trial.title}</p>
-                    <p className="text-[8px] text-stone-400">{trial.description}</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {[1, 2, 3].map((tier) => {
-                    const labels = tier === 1 ? 'FÁCIL' : tier === 2 ? 'NORMAL' : 'DIFÍCIL';
-                    const reward = trial.id === 'resource_trial_gold'
-                      ? (tier === 1 ? '5.000 oro' : tier === 2 ? '12.000 oro' : '25.000 oro')
-                      : (tier === 1 ? '2× EXP menor' : tier === 2 ? '2× EXP mayor' : '1× EXP supremo');
-                    return (
-                      <button
-                        key={tier}
-                        type="button"
-                        onClick={() => handleLaunchMission(trial, false, tier as 1 | 2 | 3)}
-                        className={`rounded-md border px-1 py-2 text-center transition-colors active:scale-95 ${
-                          tier === 1 ? 'border-emerald-800 bg-emerald-950/70' : tier === 2 ? 'border-sky-800 bg-sky-950/70' : 'border-rose-800 bg-rose-950/70'
-                        }`}
-                      >
-                        <span className="block text-[8px] font-black text-stone-100">{labels}</span>
-                        <span className="mt-0.5 block text-[7px] font-semibold text-amber-200">{reward}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </section>
-
           {missions.length === 0 && (
             <div className="relative w-full rounded-xl overflow-hidden border-2 border-[#3b170c] bg-[#1a0b04]/85 px-4 py-6 text-center shadow-[inset_0_2px_10px_rgba(0,0,0,0.75)] flex flex-col items-center justify-center space-y-2 mt-2">
               <h3 className="font-serif font-black text-sm text-amber-200 tracking-wide">
