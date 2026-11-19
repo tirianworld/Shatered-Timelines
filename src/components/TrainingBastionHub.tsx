@@ -838,6 +838,45 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standal
                 ? Math.max(0, Math.min(3, questProgress.stars?.[mission.progressId] ?? 3))
                 : 0;
 
+              // Las misiones cerradas usan el mismo diseño de candado que Historia:
+              // silueta oscura, descripción atenuada y candado visible a la derecha.
+              if (isLocked) {
+                return (
+                  <div
+                    key={mission.progressId}
+                    className="relative w-full h-[90px] sm:h-[94px] rounded-xl overflow-hidden flex items-center px-3 sm:px-3.5 py-2 bg-[#180a04]/90 border border-[#3b170c] shadow-inner opacity-85 shrink-0"
+                  >
+                    <div className="relative w-14 h-14 sm:w-15 sm:h-15 rounded-lg overflow-hidden bg-[#0c0402] border-2 border-[#381406] shrink-0 shadow-inner flex items-center justify-center">
+                      <div className="w-7 h-7 rounded-full bg-[#1c0a03] mb-1.5" />
+                      <div className="absolute bottom-0.5 w-9 h-4.5 rounded-t-full bg-[#1c0a03]" />
+                      <img
+                        src="/assets/items/CANDADO.webp"
+                        alt="Bloqueado"
+                        className="absolute w-5 h-5.5 object-contain drop-shadow"
+                      />
+                    </div>
+                    <div className="relative flex-1 min-w-0 pl-3 flex flex-col justify-center space-y-0.5">
+                      <h4 className="font-serif font-black text-xs sm:text-[13px] text-stone-300 truncate">
+                        {mission.title}
+                      </h4>
+                      <p className="text-[9px] sm:text-[9.5px] text-stone-400 font-medium line-clamp-1">
+                        {mission.description}
+                      </p>
+                    </div>
+                    <div className="relative flex items-center gap-1.5 pr-1.5 shrink-0">
+                      <span className="text-[10px] sm:text-[10.5px] font-black uppercase tracking-wider text-[#ef4444] drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)]">
+                        BLOQUEADO
+                      </span>
+                      <img
+                        src="/assets/items/CANDADO.webp"
+                        alt="Bloqueado"
+                        className="w-4 h-4.5 object-contain drop-shadow"
+                      />
+                    </div>
+                  </div>
+                );
+              }
+
               return (
                 <div
                   key={mission.progressId}
