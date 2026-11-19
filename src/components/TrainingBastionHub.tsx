@@ -246,6 +246,42 @@ const GOLD_DUNGEON_MISSIONS: GoldDungeonMission[] = GOLD_RUN_CHAPTERS.flatMap((c
   ...GOLD_BOSS_MISSIONS.filter((mission) => mission.chapter === chapter.id),
 ]);
 
+/**
+ * Barra de progreso dibujada dentro del hueco de un cartel. El relleno va enmascarado
+ * al rectangulo interior (en % del cartel) para que no se salga del marco ilustrado.
+ */
+const BannerProgress: React.FC<{
+  value: number;
+  box: { left: number; top: number; width: number; height: number };
+  tone: 'gold' | 'cyan';
+}> = ({ value, box, tone }) => {
+  const pct = Math.max(0, Math.min(1, value)) * 100;
+  const fill =
+    tone === 'gold'
+      ? 'bg-gradient-to-r from-amber-600 via-amber-300 to-amber-100 shadow-[0_0_9px_rgba(251,191,36,0.85)]'
+      : 'bg-gradient-to-r from-sky-700 via-sky-400 to-cyan-100 shadow-[0_0_9px_rgba(56,189,248,0.85)]';
+  return (
+    <div
+      className="pointer-events-none absolute"
+      style={{
+        left: `${box.left}%`,
+        top: `${box.top}%`,
+        width: `${box.width}%`,
+        height: `${box.height}%`,
+      }}
+    >
+      <div className="relative h-full w-full overflow-hidden rounded-full bg-black/60 shadow-[inset_0_1px_2px_rgba(0,0,0,0.9)]">
+        <div
+          className={`h-full rounded-full transition-[width] duration-700 ease-out ${fill}`}
+          style={{ width: `${pct}%` }}
+        >
+          <div className="h-1/2 w-full rounded-t-full bg-white/25" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standalone?: boolean }> = ({ onBackToLibrary: _onBackToLibrary, standalone }) => {
   const {
     navigateTo,
@@ -258,6 +294,7 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standal
     setPendingMissionLaunch,
     addGold,
     addCrystals,
+    heroes,
   } = useGame();
 
   const [bastionView, setBastionView] = useState<'hub' | 'gold_missions'>(() =>
@@ -287,6 +324,19 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standal
   const isGoldListDragging = useRef(false);
   const goldListStartY = useRef(0);
   const goldListStartScroll = useRef(0);
+
+  // Progreso de las dos barras de los carteles: expedicion de oro y XP del heroe.
+  const goldClearedCount = goldRun.cleared.filter((id) =>
+    GOLD_DUNGEON_MISSIONS.some((mission) => mission.progressId === id)
+  ).length;
+  const goldProgressPct = GOLD_DUNGEON_MISSIONS.length
+    ? goldClearedCount / GOLD_DUNGEON_MISSIONS.length
+    : 0;
+  const leadHero = heroes?.[0];
+  const xpProgressPct =
+    leadHero && leadHero.xpToNextLevel > 0
+      ? Math.min(1, Math.max(0, leadHero.currentXp / leadHero.xpToNextLevel))
+      : 0;
 
   const [showBondModal, setShowBondModal] = useState(false);
   const [showBlessingModal, setShowBlessingModal] = useState(false);
@@ -1128,6 +1178,11 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standal
             alt="Mazmorra de Midas"
             className="block w-full h-auto transition-transform duration-300 group-hover:scale-[1.02] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)]"
           />
+          <BannerProgress
+            value={goldProgressPct}
+            tone="gold"
+            box={{ left: 13.45, top: 82.75, width: 34.55, height: 3.7 }}
+          />
         </button>
 
         {/* Evolución y mejora */}
@@ -1156,6 +1211,11 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standal
               src="/assets/backgrounds/granja_xp_boton.webp"
               alt="Mejora"
               className="absolute inset-0 block w-full h-full -translate-y-2 scale-y-[1.18] rounded-lg object-fill transition-transform duration-300 group-hover:-translate-y-2 group-hover:scale-y-[1.22] group-hover:scale-x-[1.03] drop-shadow-[0_5px_12px_rgba(0,0,0,0.55)]"
+            />
+            <BannerProgress
+              value={xpProgressPct}
+              tone="cyan"
+              box={{ left: 15.3, top: 90.9, width: 46.65, height: 4.05 }}
             />
           </button>
         </div>
