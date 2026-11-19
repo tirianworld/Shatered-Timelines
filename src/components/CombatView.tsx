@@ -10528,9 +10528,28 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
         : activeCombatHeroIdRef.current;
     setActiveCombatHeroId(restoredHeroId);
     activeCombatHeroIdRef.current = restoredHeroId;
-    const initHeroHand = savedRunDecks?.hands?.[restoredHeroId]?.length
-      ? getOrCreateHeroHand(restoredHeroId)
-      : createInitialHandForHero(restoredHeroId);
+    const savedActiveHand = savedRunDecks?.hands?.[restoredHeroId];
+    let initHeroHand: ActiveCombatCard[];
+    if (savedActiveHand?.length) {
+      // En Midas se conserva exactamente la mano guardada y solo se rellenan
+      // los huecos vacíos hasta llegar a cuatro cartas.
+      initHeroHand = [...savedActiveHand];
+      if (isMidasRoom && initHeroHand.length < 4) {
+        const heroPool = getHeroCardPool(restoredHeroId);
+        while (initHeroHand.length < 4) {
+          const skillId = heroPool[Math.floor(Math.random() * heroPool.length)];
+          initHeroHand.push({
+            instanceId: `midas_fill_${restoredHeroId}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+            skillId,
+            tier: 1,
+          });
+        }
+      } else if (!isMidasRoom) {
+        initHeroHand = getOrCreateHeroHand(restoredHeroId);
+      }
+    } else {
+      initHeroHand = createInitialHandForHero(restoredHeroId);
+    }
     heroHandsRef.current[restoredHeroId] = initHeroHand;
     setHand(initHeroHand);
     // El efecto de sincronización siguiente no debe guardar la mano del render anterior.
