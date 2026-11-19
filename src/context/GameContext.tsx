@@ -1932,9 +1932,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       stars: restored.stars,
       allMissionsCompleted: false,
     }));
+    // Mantén la misión derrotada seleccionada mientras se muestra el modal.
+    // El menú de misiones abrirá el capítulo restaurado cuando el jugador salga.
     setActiveQuestChapter(chapter);
-    setSelectedCombatMissionId(firstMissionId);
-    setSelectedCombatDifficulty(1);
     return true;
   };
 
