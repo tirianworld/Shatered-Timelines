@@ -10539,7 +10539,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
       tenPiedadTimersRef.current.forEach((id) => window.clearTimeout(id));
       tenPiedadTimersRef.current = [];
     };
-  }, [selectedCombatMissionId, selectedCombatDifficulty, partyAttackHpScale, createInitialHandForHero, resetCryovainCombatState, resetIgnivraxCombatState, resetAranaCombatState, resetTenPiedadCombatState]);
+  }, [selectedCombatMissionId, selectedCombatDifficulty, partyAttackHpScale, partyHeroesList, createInitialHandForHero, getOrCreateHeroHand, resetCryovainCombatState, resetIgnivraxCombatState, resetAranaCombatState, resetTenPiedadCombatState]);
 
   // Intro cinematográfica del jefe Cryovain: zoom centrado sobre el dragón y retorno a la arena
   useEffect(() => {
