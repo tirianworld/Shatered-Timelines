@@ -1181,7 +1181,7 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standal
           <BannerProgress
             value={goldProgressPct}
             tone="gold"
-            box={{ left: 13.45, top: 82.75, width: 34.55, height: 3.7 }}
+            box={{ left: 12.6, top: 89.1, width: 37.1, height: 4.4 }}
           />
         </button>
 
@@ -1215,7 +1215,7 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standal
             <BannerProgress
               value={xpProgressPct}
               tone="cyan"
-              box={{ left: 15.3, top: 90.9, width: 46.65, height: 4.05 }}
+              box={{ left: 12.0, top: 92.6, width: 51.5, height: 4.1 }}
             />
           </button>
         </div>
