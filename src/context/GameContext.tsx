@@ -1942,9 +1942,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Todas las misiones de Midas deben registrarse en el guardado propio de la
     // expedición, no solo en el progreso general de misiones.
     if (missionId.startsWith('midas_')) {
+      // clearGoldRunMission actualiza el capítulo de la expedición si esta
+      // victoria completa el tramo actual.
       clearGoldRunMission(missionId);
-      // Al volver desde combate, QuestView debe abrir directamente el Bastión
-      // de Entrenamiento (donde está la Mazmorra de Midas), no la biblioteca.
+      // Al cerrar la victoria, regresar directamente al tablón de Midas.
+      // TrainingBastionHub leerá el capítulo actualizado y abrirá su menú.
+      safeStorage.setItem('cdd_midas_open_chapter_menu_on_return', 'true');
       setActiveQuestTome('training_bastion');
     }
 
