@@ -176,6 +176,7 @@ interface GameContextType {
   /** Guarda en el inventario de equipo una pieza fabricada en la forja. */
   addForgedEquipment: (item: Omit<EquipmentItem, 'id'>) => EquipmentItem;
   buyShopItem: (itemId: string) => boolean;
+  addInventoryItem: (itemId: string, count?: number) => void;
   useInventoryItem: (itemId: string, heroId?: string) => boolean;
   /** Sube una estrella gastando los materiales indicados y el oro del Despertar. */
   awakenHero: (heroId: string, materials: { id: string; count: number }[], goldCost: number) => boolean;
@@ -1367,6 +1368,18 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return true;
   };
 
+  const addInventoryItem = (itemId: string, count: number = 1) => {
+    if (count <= 0) return;
+    const template = INITIAL_INVENTORY.find((item) => item.id === itemId);
+    if (!template) return;
+    setInventory((prev) => {
+      const exists = prev.some((item) => item.id === itemId);
+      return exists
+        ? prev.map((item) => (item.id === itemId ? { ...item, count: item.count + count } : item))
+        : [...prev, { ...template, count }];
+    });
+  };
+
   const useInventoryItem = (itemId: string, heroId?: string): boolean => {
     const item = inventory.find((i) => i.id === itemId);
     if (!item || item.count <= 0) return false;
@@ -2222,6 +2235,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         forgeNewEquipment,
         addForgedEquipment,
         buyShopItem,
+        addInventoryItem,
         useInventoryItem,
         awakenHero,
         setHeroes,
