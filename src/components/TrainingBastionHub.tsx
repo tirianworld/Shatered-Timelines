@@ -1097,7 +1097,7 @@ export const TrainingBastionHub: React.FC<{ onBackToLibrary: () => void; standal
             <img
               src="/assets/backgrounds/granja_xp_boton.webp"
               alt="Mejora"
-              className="absolute inset-0 block w-full h-full rounded-lg object-fill transition-transform duration-300 group-hover:scale-[1.03] drop-shadow-[0_5px_12px_rgba(0,0,0,0.55)]"
+              className="absolute inset-0 block w-full h-full scale-y-[1.18] rounded-lg object-fill transition-transform duration-300 group-hover:scale-y-[1.22] group-hover:scale-x-[1.03] drop-shadow-[0_5px_12px_rgba(0,0,0,0.55)]"
             />
           </button>
         </div>
