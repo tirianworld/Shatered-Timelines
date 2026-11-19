@@ -11989,7 +11989,7 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
       goldRunMissionActive ||
       chapterCheckpointHandledRef.current ||
       !selectedCombatMissionId ||
-      !/^m\\d/.test(selectedCombatMissionId)
+      !/^m\d/.test(selectedCombatMissionId)
     ) return;
 
     chapterCheckpointHandledRef.current = true;
