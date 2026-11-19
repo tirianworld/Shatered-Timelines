@@ -79,6 +79,18 @@ export const QUEST_TOMES: QuestTomeEntry[] = [
     unlocked: true,
   },
   {
+    id: 'training_bastion',
+    shelfIndex: 1,
+    tomeNumber: 'Tomo de Recursos',
+    arcType: 'Entrenamiento',
+    title: 'Bastión de Entrenamiento',
+    synopsis: 'Pruebas repetibles para obtener oro y botellas de experiencia, con tres niveles de desafío.',
+    chaptersCount: 1,
+    missionIds: [],
+    coverImage: tomeSealedGrimoireImg,
+    unlocked: true,
+  },
+  {
     id: 'tome_2_boletaria',
     shelfIndex: 2,
     tomeNumber: 'Tomo II',
