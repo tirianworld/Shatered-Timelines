@@ -9527,12 +9527,24 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
 
   const createInitialHandForHero = useCallback((heroId: string): ActiveCombatCard[] => {
     const pool = getHeroCardPool(heroId);
-    return [
-      { instanceId: `init_${heroId}_1_${Date.now()}`, skillId: pool[0] || 'rayo_necrotico', tier: 1 },
-      { instanceId: `init_${heroId}_2_${Date.now()}`, skillId: pool[1] || pool[0], tier: 1 },
-      { instanceId: `init_${heroId}_3_${Date.now()}`, skillId: pool[2 % pool.length] || pool[0], tier: 1 },
-      { instanceId: `init_${heroId}_4_${Date.now()}`, skillId: pool[0], tier: 1 },
-    ];
+    // Cada misión comienza con una distribución aleatoria de las habilidades
+    // propias del héroe. Se incluyen las tres habilidades y se repite una
+    // cuarta al azar para completar los cuatro espacios de la mano.
+    const shuffled = [...pool];
+    for (let i = shuffled.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const slots = [...shuffled];
+    if (pool.length > 0) {
+      slots.push(pool[Math.floor(Math.random() * pool.length)]);
+    }
+    const createdAt = Date.now();
+    return Array.from({ length: 4 }, (_, index) => ({
+      instanceId: `init_${heroId}_${createdAt}_${index}_${Math.random().toString(36).slice(2, 7)}`,
+      skillId: slots[index] || pool[0] || 'rayo_necrotico',
+      tier: 1,
+    }));
   }, [getHeroCardPool]);
 
   const getOrCreateHeroHand = useCallback((heroId: string): ActiveCombatCard[] => {
