@@ -6642,6 +6642,12 @@ export const CombatView: React.FC = () => {
           isSemiboss: false,
         };
 
+  // No mostrar el enemigo de reserva (araknoide) cuando la oleada ya ha terminado.
+  // La transición especial del Devorador conserva su escena para la fase 2.
+  const shouldHideDefeatedEnemy =
+    aliveEnemies.length === 0 &&
+    !activeEnemies.some((enemy) => enemy.configId === 'devorador_quitinoso' && enemy.hasPhaseTwo);
+
   const currentEnemyId = targetEnemy.configId;
   const currentEnemy = DUNGEON_ENEMIES[currentEnemyId] || DUNGEON_ENEMIES['araknoide_rojo'];
   const currentBoss = currentEnemyId === 'medusa' ? 'medusa' : 'araknoide';
@@ -15698,7 +15704,7 @@ export const CombatView: React.FC = () => {
       {/* ========================================================================= */}
       {/* 1. TOP HEADER: BOSS HEALTH BAR, 5 ORBS & PORTRAIT */}
       <div
-        className="relative z-20 w-[calc(100%+36px)] -mx-[18px] min-h-[58px] py-2 px-5 flex flex-col justify-center shadow-lg shrink-0 overflow-visible"
+        className={`relative z-20 w-[calc(100%+36px)] -mx-[18px] min-h-[58px] py-2 px-5 flex flex-col justify-center shadow-lg shrink-0 overflow-visible ${shouldHideDefeatedEnemy ? "hidden" : ""}`}
         style={{
           backgroundImage: 'url(/assets/aistudio/image_b8a81806.webp)',
           backgroundSize: '112% 115%',
@@ -15865,7 +15871,7 @@ export const CombatView: React.FC = () => {
       {/* ========================================================================= */}
       <div
         ref={arenaRef}
-        className={`relative w-full flex-1 min-h-[300px] flex items-center justify-center ${
+        className={`relative w-full flex-1 min-h-[300px] flex items-center justify-center ${shouldHideDefeatedEnemy ? 'hidden' : ''} ${
           targetEnemy?.configId === 'cryovain_boss' || targetEnemy?.configId === 'arana_acorazada_boss'
             ? 'overflow-hidden'
             : 'overflow-visible'
