@@ -1871,15 +1871,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const isColiseoEventUnlocked = isDreamPlaneUnlocked;
 
   const completeQuestMission = (missionId: string, stars: number) => {
-    // Los jefes de Midas tienen manejadores de victoria propios, fuera del flujo
-    // genérico de salas. Registra aquí su progreso para que también quede guardado
-    // en la expedición y aparezcan como completados al volver a la mazmorra.
-    if (
-      missionId === 'midas_dungeon_boss_mimico' ||
-      missionId === 'midas_dungeon_boss_caballero' ||
-      missionId === 'midas_dungeon_boss_ignivrax'
-    ) {
+    // Todas las misiones de Midas deben registrarse en el guardado propio de la
+    // expedición, no solo en el progreso general de misiones.
+    if (missionId.startsWith('midas_')) {
       clearGoldRunMission(missionId);
+      // Al volver desde combate, QuestView debe abrir directamente el Bastión
+      // de Entrenamiento (donde está la Mazmorra de Midas), no la biblioteca.
+      setActiveQuestTome('training_bastion');
     }
 
     const progressMissionId = selectedCombatDifficulty === 2
