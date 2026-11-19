@@ -9343,8 +9343,11 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
   const activeCombatHeroIdRef = useRef<string>(defaultHeroId);
   activeCombatHeroIdRef.current = activeCombatHeroId;
 
-  // Persistent Hand per Hero: Each hero has their own exclusive deck and hand in combat
+  // Persistent Hand per Hero: Each hero has their own exclusive deck and hand in combat.
+  // Midas carries the exact card layout (and active hero) between expedition rooms.
   const heroHandsRef = useRef<Record<string, ActiveCombatCard[]>>({});
+  const skipNextGoldDeckPersistRef = useRef(false);
+  const GOLD_RUN_DECK_STORAGE_KEY = 'cdd_gold_run_combat_decks_v1';
 
   useEffect(() => {
     setActiveCombatHeroId(defaultHeroId);
@@ -10487,10 +10490,39 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
     setIsEdacornStealthed(false);
     setEdacornCounter(null);
     setEdacornStrikePose(false);
-    heroHandsRef.current = {};
-    const initHeroHand = createInitialHandForHero(activeCombatHeroIdRef.current);
-    heroHandsRef.current[activeCombatHeroIdRef.current] = initHeroHand;
+    const isMidasRoom = Boolean(selectedCombatMissionId && isGoldRunMission(selectedCombatMissionId));
+    let savedRunDecks: { seed: number; activeHeroId: string; hands: Record<string, ActiveCombatCard[]> } | null = null;
+    if (isMidasRoom) {
+      try {
+        const rawDecks = localStorage.getItem(GOLD_RUN_DECK_STORAGE_KEY);
+        const parsed = rawDecks ? JSON.parse(rawDecks) : null;
+        const currentRun = loadGoldRun();
+        if (
+          parsed &&
+          parsed.seed === currentRun.seed &&
+          parsed.hands &&
+          typeof parsed.hands === 'object'
+        ) {
+          savedRunDecks = parsed;
+        }
+      } catch {
+        savedRunDecks = null;
+      }
+    }
+    heroHandsRef.current = savedRunDecks?.hands ?? {};
+    const restoredHeroId =
+      savedRunDecks?.activeHeroId && partyHeroesList.includes(savedRunDecks.activeHeroId)
+        ? savedRunDecks.activeHeroId
+        : activeCombatHeroIdRef.current;
+    setActiveCombatHeroId(restoredHeroId);
+    activeCombatHeroIdRef.current = restoredHeroId;
+    const initHeroHand = savedRunDecks?.hands?.[restoredHeroId]?.length
+      ? getOrCreateHeroHand(restoredHeroId)
+      : createInitialHandForHero(restoredHeroId);
+    heroHandsRef.current[restoredHeroId] = initHeroHand;
     setHand(initHeroHand);
+    // El efecto de sincronización siguiente no debe guardar la mano del render anterior.
+    skipNextGoldDeckPersistRef.current = isMidasRoom;
 
     return () => {
       devoradorTransitionTimersRef.current.forEach((id) => {
@@ -11312,10 +11344,29 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
   const handRef = useRef<ActiveCombatCard[]>(hand);
   handRef.current = hand;
 
-  // Auto-sync persistent heroHandsRef whenever hand changes
+  // Auto-sync the active hero's hand. In Midas, persist every hero's exact
+  // four-slot card layout so the next room resumes with the same decks.
   useEffect(() => {
+    if (!selectedCombatMissionId || !isGoldRunMission(selectedCombatMissionId)) return;
+    if (skipNextGoldDeckPersistRef.current) {
+      skipNextGoldDeckPersistRef.current = false;
+      return;
+    }
     heroHandsRef.current[activeCombatHeroId] = hand;
-  }, [hand, activeCombatHeroId]);
+    try {
+      const run = loadGoldRun();
+      localStorage.setItem(
+        GOLD_RUN_DECK_STORAGE_KEY,
+        JSON.stringify({
+          seed: run.seed,
+          activeHeroId: activeCombatHeroId,
+          hands: heroHandsRef.current,
+        })
+      );
+    } catch {
+      // Si el almacenamiento no está disponible, el combate continúa normalmente.
+    }
+  }, [hand, activeCombatHeroId, selectedCombatMissionId]);
 
   const dragIndexRef = useRef<number | null>(null);
   const hoverIndexRef = useRef<number | null>(null);
