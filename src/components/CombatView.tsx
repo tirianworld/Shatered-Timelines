@@ -8638,6 +8638,8 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
     lootSacksRef.current = lootSacks;
   }, [lootSacks]);
   const droppedUidsRef = useRef<Set<string>>(new Set());
+  // Evita que la fase siguiente se ejecute en el mismo instante en que cae un enemigo.
+  const enemyDeathPauseHandledUidsRef = useRef<Set<string>>(new Set());
 
   // No cambiamos de enemigo mientras el saquito del derrotado aún se disuelve:
   // el jugador sigue viendo al enemigo que acaba de caer hasta que el botín desaparece.
@@ -12513,6 +12515,16 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
 
   // Finalize enemy phase: tick conditions on enemies & hero, resolve start-of-turn DoT/HoT, refill hand
   const finalizeEnemyPhase = () => {
+    // Deja un segundo para contemplar la caída del enemigo y el saquito antes
+    // de resolver estados o iniciar la siguiente fase del combate.
+    const newlyDefeatedEnemies = activeEnemiesRef.current.filter(
+      (enemy) => enemy.hp <= 0 && !enemyDeathPauseHandledUidsRef.current.has(enemy.uid)
+    );
+    if (newlyDefeatedEnemies.length > 0) {
+      newlyDefeatedEnemies.forEach((enemy) => enemyDeathPauseHandledUidsRef.current.add(enemy.uid));
+      window.setTimeout(() => finalizeEnemyPhase(), 1000);
+      return;
+    }
     // If Smurph Draco was airborne, drop down in Superhero Landing before ending turn
     if (isSmurphAirborne && pendingLandingDataRef.current) {
       const landingData = pendingLandingDataRef.current;
