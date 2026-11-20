@@ -8644,15 +8644,21 @@ export const CombatView: React.FC<{ pvp?: PvpCombatBridge | null }> = ({ pvp }) 
   // No cambiamos de enemigo mientras el saquito del derrotado aún se disuelve:
   // el jugador sigue viendo al enemigo que acaba de caer hasta que el botín desaparece.
   const switchTargetAfterLoot = useCallback((nextIdx: number, deadUid: string) => {
-    const attempt = (tries: number) => {
+    // El saquito se crea en un efecto diferido (setTimeout 0). No basta con
+    // consultar lootSacksRef inmediatamente: todavía puede estar vacío.
+    // Mantén al enemigo derrotado en escena al menos 1 s y espera también a
+    // que su saquito haya terminado la caída y desaparecido.
+    const startedAt = Date.now();
+    const attempt = () => {
+      const elapsed = Date.now() - startedAt;
       const stillOnField = lootSacksRef.current.some((sack) => sack.key.startsWith(deadUid));
-      if (stillOnField && tries < 60) {
-        window.setTimeout(() => attempt(tries + 1), 80);
+      if (elapsed < 1000 || stillOnField) {
+        window.setTimeout(attempt, 80);
         return;
       }
       setSelectedEnemyIdx((prev) => (activeEnemiesRef.current[prev]?.uid === deadUid ? nextIdx : prev));
     };
-    attempt(0);
+    window.setTimeout(attempt, 80);
   }, []);
   const lootLayerRef = useRef<HTMLDivElement | null>(null);
   const grantGoldRef = useRef(addGold);
